@@ -1,13 +1,11 @@
 import { css } from '@emotion/react';
 import { motion } from 'framer-motion';
-import { AnyPointerEvent } from 'framer-motion/types/gestures/PanSession';
 import React from 'react';
 import { NodeData } from 'reaflow';
 import { EdgeData } from 'reaflow/dist/types';
 import BaseNodeComponent from '../types/BaseNodeComponent';
 import BaseNodeData from '../types/BaseNodeData';
-import { BaseNodeDefaultProps } from '../types/BaseNodeDefaultProps';
-import { createNode } from '../utils/nodes';
+import { createNodeFromDefaultProps } from '../utils/nodes';
 import InformationNode from './nodes/InformationNode';
 import QuestionNode from './nodes/QuestionNode';
 
@@ -17,11 +15,13 @@ type Props = {
   setNodes: (nodes: NodeData[]) => void;
   edges: EdgeData[];
   setEdges: (edges: EdgeData[]) => void;
-  onNodeDragStart: (event: AnyPointerEvent, node: BaseNodeData) => void;
+  onNodeDragStart: (event: React.MouseEvent<HTMLElement>, node: BaseNodeData) => void;
 }
 
 /**
+ * Container of nodes.
  *
+ * Each node can be clicked on drag and dropped, and will added into the Playground.
  */
 const NodesContainer: React.FunctionComponent<Props> = (props): JSX.Element | null => {
   const {
@@ -48,25 +48,16 @@ const NodesContainer: React.FunctionComponent<Props> = (props): JSX.Element | nu
     >
       {
         blockComponents.map((BlockComponent: BaseNodeComponent, index: number) => {
-          const blockDefaultProps: BaseNodeDefaultProps = BlockComponent.getDefaultNodeProps();
-          const node = {
-            text: blockDefaultProps.previewText,
-            width: blockDefaultProps.minWidth,
-            height: blockDefaultProps.minHeight,
-            data: {
-              type: blockDefaultProps.type,
-            },
-          }
+          const newNode = createNodeFromDefaultProps(BlockComponent.getDefaultNodeProps());
 
           return (
             <motion.div
               key={index}
               className="node"
-              // @ts-ignore
-              onMouseDown={(event) => onNodeDragStart(event, node)}
+              onMouseDown={(event) => {
+                return onNodeDragStart(event, newNode);
+              }}
               onClick={(event) => {
-                const newNode: BaseNodeData = createNode(node);
-
                 setNodes([...nodes, newNode]);
               }}
             >
