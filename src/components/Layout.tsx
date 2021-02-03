@@ -1,6 +1,7 @@
-import React, { ReactNode } from 'react'
-import Link from 'next/link'
-import Head from 'next/head'
+import { css } from '@emotion/react';
+import Head from 'next/head';
+import Link from 'next/link';
+import React, { ReactNode } from 'react';
 
 type Props = {
   children?: ReactNode
@@ -8,14 +9,26 @@ type Props = {
 }
 
 const Layout = ({ children, title = 'POC Next.js + Reaflow' }: Props) => (
-  <div>
+  <div
+    css={css`
+      .nav {
+        height: 50px;
+        display: flex;
+      }
+      
+      .footer {
+        height: 50px;
+        display: flex;
+      }
+    `}
+  >
     <Head>
       <title>{title}</title>
       <meta charSet="utf-8" />
       <meta name="viewport" content="initial-scale=1.0, width=device-width" />
     </Head>
 
-    <header>
+    <header className={'nav'}>
       <nav>
         <Link href="/">
           <a>Home</a>
@@ -25,11 +38,10 @@ const Layout = ({ children, title = 'POC Next.js + Reaflow' }: Props) => (
 
     {children}
 
-    <footer>
-      <hr />
+    <footer className={'footer'}>
       <span>Made with Next.js and <a href={'https://github.com/reaviz/reaflow'}>Reaflow</a></span>
     </footer>
   </div>
-)
+);
 
-export default Layout
+export default Layout;

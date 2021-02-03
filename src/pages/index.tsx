@@ -1,9 +1,9 @@
 import Layout from '../components/Layout';
-import ReaflowContainer from '../components/ReaflowContainer';
+import EditorContainer from '../components/EditorContainer';
 
 const IndexPage = () => (
   <Layout>
-    <ReaflowContainer />
+    <EditorContainer />
   </Layout>
 );
 
