@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-const BaseBlock = styled.button`
+const BaseNode = styled.button`
   height: 100px;
   width: 100px;
   cursor: grab;
@@ -20,4 +20,4 @@ const BaseBlock = styled.button`
   color: white;
 `;
 
-export default BaseBlock;
+export default BaseNode;

@@ -1,17 +1,17 @@
 import { css } from '@emotion/react';
 import React from 'react';
 import { Node } from 'reaflow';
-import BaseBlockComponent  from '../../types/BaseBlockComponent';
-import { BaseBlockDefaultProps } from '../../types/BaseBlockDefaultProps';
-import BaseBlockProps from '../../types/BaseBlockProps';
-import BaseBlock from './BaseBlock';
+import BaseNodeComponent  from '../../types/BaseNodeComponent';
+import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
+import BaseNodeProps from '../../types/BaseNodeProps';
+import BaseNode from './BaseNode';
 
-type Props = {} & BaseBlockProps;
+type Props = {} & BaseNodeProps;
 
 const minWidth = 200;
 const minHeight = 400;
 
-const InformationBlock: BaseBlockComponent<Props> = (props) => {
+const InformationNode: BaseNodeComponent<Props> = (props) => {
   const {
     isPreview = false,
     ...rest
@@ -19,9 +19,9 @@ const InformationBlock: BaseBlockComponent<Props> = (props) => {
 
   if (isPreview) {
     return (
-      <BaseBlock>
+      <BaseNode>
         Information
-      </BaseBlock>
+      </BaseNode>
     );
   } else {
     return (
@@ -46,7 +46,7 @@ const InformationBlock: BaseBlockComponent<Props> = (props) => {
     );
   }
 };
-InformationBlock.getDefaultNodeProps = (): BaseBlockDefaultProps => {
+InformationNode.getDefaultNodeProps = (): BaseNodeDefaultProps => {
   return {
     previewText: 'Information',
     type: 'information',
@@ -55,4 +55,4 @@ InformationBlock.getDefaultNodeProps = (): BaseBlockDefaultProps => {
   };
 };
 
-export default InformationBlock;
+export default InformationNode;

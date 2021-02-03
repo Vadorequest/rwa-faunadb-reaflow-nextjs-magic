@@ -14,10 +14,10 @@ import {
 } from 'reaflow';
 import { EdgeData } from 'reaflow/dist/types';
 import { v1 as uuid } from 'uuid'; // XXX Use v1 for uniqueness - See https://www.sohamkamani.com/blog/2016/10/05/uuid1-vs-uuid4/
-import BaseBlockData from '../types/BaseBlockData';
+import BaseNodeData from '../types/BaseNodeData';
 import { createNode } from '../utils/nodes';
-import BaseBlock from './blocks/BaseBlock';
-import BlocksContainer from './BlocksContainer';
+import BaseNode from './nodes/BaseNode';
+import NodesContainer from './NodesContainer';
 import PlaygroundContainer from './PlaygroundContainer';
 
 type Props = {}
@@ -31,7 +31,7 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   }
   const blocksContainerWidth = '30vw';
 
-  const [nodes, setNodes] = useState<BaseBlockData[]>([
+  const [nodes, setNodes] = useState<BaseNodeData[]>([
     {
       id: uuid(),
       text: 'Information',
@@ -46,16 +46,16 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
 
   const dragControls = useDragControls();
   const [enteredNode, setEnteredNode] = useState<NodeData | undefined>(undefined);
-  const [activeDraggedBlock, setActiveDraggedBlock] = useState<BaseBlockData | undefined>(undefined);
+  const [activeDraggedBlock, setActiveDraggedBlock] = useState<BaseNodeData | undefined>(undefined);
   const [droppable, setDroppable] = useState<boolean>(false);
 
-  const onBlockDragStart = (event: AnyPointerEvent, block: BaseBlockData) => {
-    console.log('Start of Dragging', event, block);
-    setActiveDraggedBlock(block);
+  const onNodeDragStart = (event: AnyPointerEvent, node: BaseNodeData) => {
+    console.log('Start of Dragging', event, node);
+    setActiveDraggedBlock(node);
     dragControls.start(event, { snapToCursor: true });
   };
 
-  const onBlockDragEnd = (event: AnyPointerEvent, info: PanInfo) => {
+  const onNodeDragEnd = (event: AnyPointerEvent, info: PanInfo) => {
     console.log('End of Dragging', event);
     console.log('droppable', droppable);
 
@@ -112,13 +112,13 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         }
       `}
     >
-      <BlocksContainer
+      <NodesContainer
         blocksContainerWidth={blocksContainerWidth}
         nodes={nodes}
         setNodes={setNodes}
         edges={edges}
         setEdges={setEdges}
-        onBlockDragStart={onBlockDragStart}
+        onNodeDragStart={onNodeDragStart}
       />
 
       <PlaygroundContainer
@@ -136,12 +136,12 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
           drag
           dragControls={dragControls}
           className="dragger"
-          onDragEnd={onBlockDragEnd}
+          onDragEnd={onNodeDragEnd}
         >
           {activeDraggedBlock && (
-            <BaseBlock className="dragInner">
+            <BaseNode className="dragInner">
               {activeDraggedBlock.text}
-            </BaseBlock>
+            </BaseNode>
           )}
         </motion.div>
       </Portal>

@@ -4,10 +4,10 @@ import {
   NodeData,
   NodeProps,
 } from 'reaflow';
-import BaseBlockData from '../types/BaseBlockData';
-import BaseBlockType from '../types/BaseBlockType';
-import InformationBlock from './blocks/InformationBlock';
-import QuestionBlock from './blocks/QuestionBlock';
+import BaseNodeData from '../types/BaseNodeData';
+import BaseNodeType from '../types/BaseNodeType';
+import InformationNode from './nodes/InformationNode';
+import QuestionNode from './nodes/QuestionNode';
 
 type Props = {
   node: NodeProps;
@@ -22,7 +22,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
 
   const { properties } = node || {};
   const { data } = properties || {};
-  const { type }: { type: BaseBlockType } = data || {};
+  const { type }: { type: BaseNodeType } = data || {};
 
   if (!type) {
     try {
@@ -38,22 +38,22 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
     ...node,
     className: `node node-${type}`,
     onClick: () => console.log(`node clicked (${node?.properties?.text || node?.id})`, node),
-    onEnter: (event: MouseEvent, node: BaseBlockData) => setEnteredNode(node),
-    onLeave: (event: MouseEvent, node: BaseBlockData) => setEnteredNode(undefined)
+    onEnter: (event: MouseEvent, node: BaseNodeData) => setEnteredNode(node),
+    onLeave: (event: MouseEvent, node: BaseNodeData) => setEnteredNode(undefined)
   };
 
-  // console.log('rendering block of type: ', type, commonBlockProps)
+  // console.log('rendering node of type: ', type, commonBlockProps)
 
   switch (type) {
     case 'information':
       return (
-        <InformationBlock
+        <InformationNode
           {...commonBlockProps}
         />
       );
     case 'question':
       return (
-        <QuestionBlock
+        <QuestionNode
           {...commonBlockProps}
         />
       );

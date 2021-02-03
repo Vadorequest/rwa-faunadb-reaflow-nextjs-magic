@@ -4,12 +4,12 @@ import { AnyPointerEvent } from 'framer-motion/types/gestures/PanSession';
 import React from 'react';
 import { NodeData } from 'reaflow';
 import { EdgeData } from 'reaflow/dist/types';
-import BaseBlockComponent from '../types/BaseBlockComponent';
-import BaseBlockData from '../types/BaseBlockData';
-import { BaseBlockDefaultProps } from '../types/BaseBlockDefaultProps';
+import BaseNodeComponent from '../types/BaseNodeComponent';
+import BaseNodeData from '../types/BaseNodeData';
+import { BaseNodeDefaultProps } from '../types/BaseNodeDefaultProps';
 import { createNode } from '../utils/nodes';
-import InformationBlock from './blocks/InformationBlock';
-import QuestionBlock from './blocks/QuestionBlock';
+import InformationNode from './nodes/InformationNode';
+import QuestionNode from './nodes/QuestionNode';
 
 type Props = {
   blocksContainerWidth: string;
@@ -17,25 +17,25 @@ type Props = {
   setNodes: (nodes: NodeData[]) => void;
   edges: EdgeData[];
   setEdges: (edges: EdgeData[]) => void;
-  onBlockDragStart: (event: AnyPointerEvent, block: BaseBlockData) => void;
+  onNodeDragStart: (event: AnyPointerEvent, node: BaseNodeData) => void;
 }
 
 /**
  *
  */
-const BlocksContainer: React.FunctionComponent<Props> = (props): JSX.Element | null => {
+const NodesContainer: React.FunctionComponent<Props> = (props): JSX.Element | null => {
   const {
     blocksContainerWidth,
     nodes,
     setNodes,
     edges,
     setEdges,
-    onBlockDragStart,
+    onNodeDragStart,
   } = props;
 
-  const blockComponents: BaseBlockComponent[] = [
-    InformationBlock,
-    QuestionBlock,
+  const blockComponents: BaseNodeComponent[] = [
+    InformationNode,
+    QuestionNode,
   ];
 
   return (
@@ -47,8 +47,8 @@ const BlocksContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
       `}
     >
       {
-        blockComponents.map((BlockComponent: BaseBlockComponent, index: number) => {
-          const blockDefaultProps: BaseBlockDefaultProps = BlockComponent.getDefaultNodeProps();
+        blockComponents.map((BlockComponent: BaseNodeComponent, index: number) => {
+          const blockDefaultProps: BaseNodeDefaultProps = BlockComponent.getDefaultNodeProps();
           const node = {
             text: blockDefaultProps.previewText,
             width: blockDefaultProps.minWidth,
@@ -61,11 +61,11 @@ const BlocksContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
           return (
             <motion.div
               key={index}
-              className="block"
+              className="node"
               // @ts-ignore
-              onMouseDown={(event) => onBlockDragStart(event, node)}
+              onMouseDown={(event) => onNodeDragStart(event, node)}
               onClick={(event) => {
-                const newNode: BaseBlockData = createNode(node);
+                const newNode: BaseNodeData = createNode(node);
 
                 setNodes([...nodes, newNode]);
               }}
@@ -81,4 +81,4 @@ const BlocksContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   );
 };
 
-export default BlocksContainer;
+export default NodesContainer;
