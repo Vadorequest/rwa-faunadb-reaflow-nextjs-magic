@@ -7,6 +7,8 @@
     "type-check": "tsc"
   },
   "dependencies": {
+    "@unly/utils": "1.0.3",
+    "framer-motion": "3.2.1",
     "next": "10.0.6",
     "react": "17.0.1",
     "react-dom": "17.0.1",
