@@ -39,7 +39,8 @@ const Layout = ({ children, title = 'POC Next.js + Reaflow' }: Props) => (
     {children}
 
     <footer className={'footer'}>
-      <span>Made with Next.js and <a href={'https://github.com/reaviz/reaflow'}>Reaflow</a></span>
+      <span>Made with Next.js and <a href={'https://github.com/reaviz/reaflow'}>Reaflow</a></span><br />
+      <a href={'https://github.com/Vadorequest/poc-nextjs-reaflow'}>GitHub</a>
     </footer>
   </div>
 );
