@@ -4,8 +4,8 @@ import { AnyPointerEvent } from 'framer-motion/types/gestures/PanSession';
 import React from 'react';
 import { NodeData } from 'reaflow';
 import { EdgeData } from 'reaflow/dist/types';
-import BaseBlockData from '../types/BaseBlockData';
 import BaseBlockComponent from '../types/BaseBlockComponent';
+import BaseBlockData from '../types/BaseBlockData';
 import InformationBlock from './blocks/InformationBlock';
 import QuestionBlock from './blocks/QuestionBlock';
 
@@ -53,13 +53,16 @@ const BlocksContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
               // @ts-ignore
               onMouseDown={(event) => onBlockDragStart(event, {
                 text: BlockComponent.previewText,
+                data: {
+                  type: BlockComponent.type,
+                },
               })}
             >
               <BlockComponent
                 isPreview={true}
               />
             </motion.div>
-          )
+          );
         })
       }
     </div>

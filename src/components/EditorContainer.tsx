@@ -30,41 +30,16 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   }
   const blocksContainerWidth = '30vw';
 
-  const [nodes, setNodes] = useState<NodeData[]>([
+  const [nodes, setNodes] = useState<BaseBlockData[]>([
     {
-      id: '2',
-      text: 'Mother',
+      id: uuid(),
+      text: 'Information',
       data: {
-        gender: 'female',
-      },
-    },
-    {
-      id: '3',
-      text: 'Daughter',
-      data: {
-        gender: 'female',
-      },
-    },
-    {
-      id: '4',
-      text: 'Son',
-      data: {
-        gender: 'male',
+        type: 'information',
       },
     },
   ]);
-  const [edges, setEdges] = useState<EdgeData[]>([
-    {
-      id: '2-3',
-      from: '2',
-      to: '3',
-    },
-    {
-      id: '2-4',
-      from: '2',
-      to: '4',
-    },
-  ]);
+  const [edges, setEdges] = useState<EdgeData[]>([]);
 
   const dragControls = useDragControls();
   const [enteredNode, setEnteredNode] = useState<NodeData | undefined>(undefined);

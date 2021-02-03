@@ -1,4 +1,5 @@
 import React from 'react';
+import { Node } from 'reaflow';
 import BaseBlockComponent from '../../types/BaseBlockComponent';
 import BaseBlockProps from '../../types/BaseBlockProps';
 import BaseBlock from './BaseBlock';
@@ -6,7 +7,10 @@ import BaseBlock from './BaseBlock';
 type Props = {} & BaseBlockProps;
 
 const InformationBlock: BaseBlockComponent<Props> = (props) => {
-  const { isPreview = true } = props;
+  const {
+    isPreview = true,
+    ...rest
+  } = props;
 
   if (isPreview) {
     return (
@@ -16,12 +20,13 @@ const InformationBlock: BaseBlockComponent<Props> = (props) => {
     );
   } else {
     return (
-      <BaseBlock>
-        Information
-      </BaseBlock>
+      <Node
+        {...rest}
+      />
     );
   }
 };
 InformationBlock.previewText = 'Information';
+InformationBlock.type = 'information';
 
 export default InformationBlock;

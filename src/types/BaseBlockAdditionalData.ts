@@ -1,8 +1,10 @@
+import BaseBlockType from './BaseBlockType';
+
 /**
  * Additional data properties specific to our application.
  */
 export type BaseBlockAdditionalData = {
-  type: 'information' | 'question';
+  type: BaseBlockType;
 };
 
 export default BaseBlockAdditionalData;
