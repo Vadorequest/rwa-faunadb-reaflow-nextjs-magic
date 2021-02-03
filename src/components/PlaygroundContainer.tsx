@@ -5,11 +5,11 @@ import {
   Edge,
   EdgeProps,
   hasLink,
-  Node,
   NodeData,
   NodeProps,
 } from 'reaflow';
 import { EdgeData } from 'reaflow/dist/types';
+import NodeRouter from './NodeRouter';
 
 type Props = {
   blocksContainerWidth: string;
@@ -72,12 +72,12 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
         }
       `}
       onMouseEnter={() => {
-        console.log('setDroppable', true)
-        setDroppable(true)
+        console.log('setDroppable', true);
+        setDroppable(true);
       }}
       onMouseLeave={() => {
-        console.log('setDroppable', false)
-        setDroppable(false)
+        console.log('setDroppable', false);
+        setDroppable(false);
       }}
     >
       <div className={'background'} />
@@ -86,12 +86,9 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
         nodes={nodes}
         edges={edges}
         node={(node: NodeProps) => (
-          <Node
-            {...node}
-            className={'node'}
-            onClick={() => console.log(`node clicked (${node?.properties?.text || node?.id})`, node)}
-            onEnter={(event, node) => setEnteredNode(node)}
-            onLeave={(event, node) => setEnteredNode(undefined)}
+          <NodeRouter
+            node={node}
+            setEnteredNode={setEnteredNode}
           />
         )}
         edge={(edge: EdgeProps) => (
