@@ -1,15 +1,33 @@
 import { css } from '@emotion/react';
+import { motion } from 'framer-motion';
+import { AnyPointerEvent } from 'framer-motion/types/gestures/PanSession';
 import React from 'react';
+import { NodeData } from 'reaflow';
+import { EdgeData } from 'reaflow/dist/types';
+import Block from '../types/Block';
+import InformationBlock from './blocks/InformationBlock';
 
 type Props = {
   blocksContainerWidth: string;
+  nodes: NodeData[];
+  setNodes: (nodes: NodeData[]) => void;
+  edges: EdgeData[];
+  setEdges: (edges: EdgeData[]) => void;
+  onBlockDragStart: (event: AnyPointerEvent, block: Block) => void;
 }
 
 /**
  *
  */
 const BlocksContainer: React.FunctionComponent<Props> = (props): JSX.Element | null => {
-  const { blocksContainerWidth } = props;
+  const {
+    blocksContainerWidth,
+    nodes,
+    setNodes,
+    edges,
+    setEdges,
+    onBlockDragStart,
+  } = props;
 
   return (
     <div
@@ -19,7 +37,15 @@ const BlocksContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         background-color: lightgrey;
       `}
     >
-      Block 1
+      <motion.div
+        className="block"
+        // @ts-ignore
+        onMouseDown={(event) => onBlockDragStart(event, {
+          label: 'Information',
+        })}
+      >
+        <InformationBlock isPreview={true} />
+      </motion.div>
     </div>
   );
 };

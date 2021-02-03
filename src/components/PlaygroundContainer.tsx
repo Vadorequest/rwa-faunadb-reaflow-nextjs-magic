@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Canvas,
   Edge,
@@ -13,6 +13,12 @@ import { EdgeData } from 'reaflow/dist/types';
 
 type Props = {
   blocksContainerWidth: string;
+  nodes: NodeData[];
+  setNodes: (nodes: NodeData[]) => void;
+  edges: EdgeData[];
+  setEdges: (edges: EdgeData[]) => void;
+  setDroppable: (isDroppable: boolean) => void;
+  setEnteredNode: (node: NodeData | undefined) => void;
 }
 
 /**
@@ -21,43 +27,13 @@ type Props = {
 const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element | null => {
   const {
     blocksContainerWidth,
+    nodes,
+    edges,
+    setNodes,
+    setEdges,
+    setDroppable,
+    setEnteredNode,
   } = props;
-
-  const [nodes, setNodes] = useState<NodeData[]>([
-    {
-      id: '2',
-      text: 'Mother',
-      data: {
-        gender: 'female',
-      },
-    },
-    {
-      id: '3',
-      text: 'Daughter',
-      data: {
-        gender: 'female',
-      },
-    },
-    {
-      id: '4',
-      text: 'Son',
-      data: {
-        gender: 'male',
-      },
-    },
-  ]);
-  const [edges, setEdges] = useState<EdgeData[]>([
-    {
-      id: '2-3',
-      from: '2',
-      to: '3',
-    },
-    {
-      id: '2-4',
-      from: '2',
-      to: '4',
-    },
-  ]);
 
   return (
     <div
@@ -107,6 +83,8 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
             {...node}
             className={'node'}
             onClick={() => console.log(node.properties.data)}
+            onEnter={(event, node) => setEnteredNode(node)}
+            onLeave={(event, node) => setEnteredNode(undefined)}
           />
         )}
         edge={(edge: EdgeProps) => (
@@ -115,6 +93,8 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
             className={'edge'}
           />
         )}
+        onMouseEnter={() => setDroppable(true)}
+        onMouseLeave={() => setDroppable(false)}
         onLayoutChange={layout => console.log('Layout', layout)}
         onNodeLinkCheck={(from: NodeData, to: NodeData) => {
           return !hasLink(edges, from, to);

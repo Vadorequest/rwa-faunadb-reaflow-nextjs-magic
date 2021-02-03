@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@emotion/react": "11.1.4",
+    "@emotion/styled": "11.0.0",
     "@unly/utils": "1.0.3",
     "framer-motion": "3.2.1",
     "next": "10.0.6",
