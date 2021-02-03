@@ -1,3 +1,9 @@
+# POC Next.js + Reaflow
+
+Using [https://github.com/reaviz/reaflow](https://github.com/reaviz/reaflow), hosted on Vercel.
+
+---
+
 # TypeScript Next.js example
 
 This is a really simple project that shows the usage of Next.js with TypeScript.
