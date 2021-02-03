@@ -14,7 +14,7 @@
     "next": "10.0.6",
     "react": "17.0.1",
     "react-dom": "17.0.1",
-    "reaflow": "2.6.4",
+    "reaflow": "2.7.0",
     "uuid": "8.3.2"
   },
   "devDependencies": {
