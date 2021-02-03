@@ -1,6 +1,6 @@
 # POC Next.js + Reaflow
 
-Using [https://github.com/reaviz/reaflow](https://github.com/reaviz/reaflow), hosted on Vercel.
+Using [https://github.com/reaviz/reaflow](https://github.com/reaviz/reaflow), hosted on [Vercel at https://poc-nextjs-reaflow.vercel.app/](https://poc-nextjs-reaflow.vercel.app/).
 
 ---
 
