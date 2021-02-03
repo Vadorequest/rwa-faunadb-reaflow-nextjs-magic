@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import React from 'react';
 import { Node } from 'reaflow';
 import BaseBlockComponent from '../../types/BaseBlockComponent';
@@ -22,7 +23,23 @@ const InformationBlock: BaseBlockComponent<Props> = (props) => {
     return (
       <Node
         {...rest}
-      />
+        css={css`
+          width: 200px;
+          height: 400px;
+        `}
+      >
+        {
+          (event) => {
+            return (
+              <foreignObject height={event.height} width={event.width} x={30} y={30}>
+                <textarea>
+                  Some text
+                </textarea>
+              </foreignObject>
+            );
+          }
+        }
+      </Node>
     );
   }
 };
