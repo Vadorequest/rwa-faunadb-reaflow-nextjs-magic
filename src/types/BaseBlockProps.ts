@@ -1,8 +1,8 @@
 /**
  * Props received by any block.
  */
-export type BlockProps = {
+export type BaseBlockProps = {
   isPreview?: boolean;
 }
 
-export default BlockProps;
+export default BaseBlockProps;

@@ -13,7 +13,7 @@ import {
   NodeData,
 } from 'reaflow';
 import { EdgeData } from 'reaflow/dist/types';
-import Block from '../types/Block';
+import BaseBlockData from '../types/BaseBlockData';
 import BaseBlock from './blocks/BaseBlock';
 import BlocksContainer from './BlocksContainer';
 import PlaygroundContainer from './PlaygroundContainer';
@@ -67,10 +67,10 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
 
   const dragControls = useDragControls();
   const [enteredNode, setEnteredNode] = useState<NodeData | undefined>(undefined);
-  const [activeDraggedBlock, setActiveDraggedBlock] = useState<Block | undefined>(undefined);
+  const [activeDraggedBlock, setActiveDraggedBlock] = useState<BaseBlockData | undefined>(undefined);
   const [droppable, setDroppable] = useState<boolean>(false);
 
-  const onBlockDragStart = (event: AnyPointerEvent, block: Block) => {
+  const onBlockDragStart = (event: AnyPointerEvent, block: BaseBlockData) => {
     console.log('Start of Dragging', event, block);
     setActiveDraggedBlock(block);
     dragControls.start(event, { snapToCursor: true });

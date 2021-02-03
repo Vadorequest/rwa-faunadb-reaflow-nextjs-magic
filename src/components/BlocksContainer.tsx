@@ -4,8 +4,8 @@ import { AnyPointerEvent } from 'framer-motion/types/gestures/PanSession';
 import React from 'react';
 import { NodeData } from 'reaflow';
 import { EdgeData } from 'reaflow/dist/types';
-import Block from '../types/Block';
-import BlockComponent from '../types/BlockComponent';
+import BaseBlockData from '../types/BaseBlockData';
+import BaseBlockComponent from '../types/BaseBlockComponent';
 import InformationBlock from './blocks/InformationBlock';
 import QuestionBlock from './blocks/QuestionBlock';
 
@@ -15,7 +15,7 @@ type Props = {
   setNodes: (nodes: NodeData[]) => void;
   edges: EdgeData[];
   setEdges: (edges: EdgeData[]) => void;
-  onBlockDragStart: (event: AnyPointerEvent, block: Block) => void;
+  onBlockDragStart: (event: AnyPointerEvent, block: BaseBlockData) => void;
 }
 
 /**
@@ -31,7 +31,7 @@ const BlocksContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     onBlockDragStart,
   } = props;
 
-  const blockComponents: BlockComponent[] = [
+  const blockComponents: BaseBlockComponent[] = [
     InformationBlock,
     QuestionBlock,
   ];
@@ -45,7 +45,7 @@ const BlocksContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
       `}
     >
       {
-        blockComponents.map((BlockComponent: BlockComponent, index: number) => {
+        blockComponents.map((BlockComponent: BaseBlockComponent, index: number) => {
           return (
             <motion.div
               key={index}
