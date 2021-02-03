@@ -53,6 +53,8 @@ const BlocksContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
               // @ts-ignore
               onMouseDown={(event) => onBlockDragStart(event, {
                 text: BlockComponent.previewText,
+                width: BlockComponent.minWidth,
+                height: BlockComponent.minHeight,
                 data: {
                   type: BlockComponent.type,
                 },

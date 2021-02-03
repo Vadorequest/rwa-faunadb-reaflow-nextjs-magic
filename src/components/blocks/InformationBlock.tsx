@@ -7,6 +7,9 @@ import BaseBlock from './BaseBlock';
 
 type Props = {} & BaseBlockProps;
 
+const minWidth = 200;
+const minHeight = 400;
+
 const InformationBlock: BaseBlockComponent<Props> = (props) => {
   const {
     isPreview = false,
@@ -24,14 +27,15 @@ const InformationBlock: BaseBlockComponent<Props> = (props) => {
       <Node
         {...rest}
         css={css`
-          width: 200px;
-          height: 400px;
+          width: ${minWidth}px;
+          height: ${minHeight}px;
         `}
       >
         {
           (event) => {
+            console.log('event', event);
             return (
-              <foreignObject height={event.height} width={event.width} x={30} y={30}>
+              <foreignObject width={minWidth} height={minHeight} x={30} y={30}>
                 <textarea>
                   Some text
                 </textarea>
@@ -45,5 +49,7 @@ const InformationBlock: BaseBlockComponent<Props> = (props) => {
 };
 InformationBlock.previewText = 'Information';
 InformationBlock.type = 'information';
+InformationBlock.minWidth = minWidth;
+InformationBlock.minHeight = minHeight;
 
 export default InformationBlock;

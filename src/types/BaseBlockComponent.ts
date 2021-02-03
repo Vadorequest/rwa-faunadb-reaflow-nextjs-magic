@@ -10,6 +10,8 @@ import { GenericObject } from './GenericObject';
 export type BaseBlockComponent<Props extends GenericObject = BaseBlockProps> = FunctionComponent<Props> & {
   previewText: string;
   type: BaseBlockType;
+  minWidth: number;
+  minHeight: number;
 }
 
 export default BaseBlockComponent;

@@ -34,6 +34,8 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     {
       id: uuid(),
       text: 'Information',
+      width: 200,
+      height: 400,
       data: {
         type: 'information',
       },

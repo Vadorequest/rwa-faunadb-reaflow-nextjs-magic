@@ -6,6 +6,9 @@ import BaseBlock from './BaseBlock';
 
 type Props = {} & BaseBlockProps;
 
+const minWidth = 100;
+const minHeight = 50;
+
 const QuestionBlock: BaseBlockComponent<Props> = (props) => {
   const {
     isPreview = false,
@@ -28,5 +31,7 @@ const QuestionBlock: BaseBlockComponent<Props> = (props) => {
 };
 QuestionBlock.previewText = 'Question';
 QuestionBlock.type = 'question';
+QuestionBlock.minWidth = minWidth;
+QuestionBlock.minHeight = minHeight;
 
 export default QuestionBlock;
