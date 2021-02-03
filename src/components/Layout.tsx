@@ -13,12 +13,10 @@ const Layout = ({ children, title = 'POC Next.js + Reaflow' }: Props) => (
     css={css`
       .nav {
         height: 50px;
-        display: flex;
       }
       
       .footer {
         height: 50px;
-        display: flex;
       }
     `}
   >
@@ -32,15 +30,17 @@ const Layout = ({ children, title = 'POC Next.js + Reaflow' }: Props) => (
       <nav>
         <Link href="/">
           <a>Home</a>
-        </Link>{' '}
+        </Link>{' | '}
+        <a href={'https://github.com/Vadorequest/poc-nextjs-reaflow'}>GitHub</a>
       </nav>
     </header>
 
     {children}
 
     <footer className={'footer'}>
-      <span>Made with Next.js and <a href={'https://github.com/reaviz/reaflow'}>Reaflow</a></span><br />
-      <a href={'https://github.com/Vadorequest/poc-nextjs-reaflow'}>GitHub</a>
+      <div>
+        Made with <a href={'https://nextjs.org/'}>Next.js</a> and <a href={'https://github.com/reaviz/reaflow'}>Reaflow</a>
+      </div>
     </footer>
   </div>
 );
