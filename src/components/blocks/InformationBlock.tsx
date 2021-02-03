@@ -1,10 +1,9 @@
 import React from 'react';
 import BlockComponent from '../../types/BlockComponent';
+import BlockProps from '../../types/BlockProps';
 import BaseBlock from './BaseBlock';
 
-type Props = {
-  isPreview?: boolean;
-}
+type Props = {} & BlockProps;
 
 const InformationBlock: BlockComponent<Props> = (props) => {
   const { isPreview = true } = props;

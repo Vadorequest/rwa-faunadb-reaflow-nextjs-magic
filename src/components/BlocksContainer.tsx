@@ -56,7 +56,6 @@ const BlocksContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
               })}
             >
               <BlockComponent
-                // @ts-ignore
                 isPreview={true}
               />
             </motion.div>
