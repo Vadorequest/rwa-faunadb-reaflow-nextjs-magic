@@ -2087,7 +2087,7 @@ rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-rdk@^5.0.6:
+rdk@5.0.6, rdk@^5.0.6:
   version "5.0.6"
   resolved "https://registry.yarnpkg.com/rdk/-/rdk-5.0.6.tgz#6724786f7220a0937ab5ff3b6a78dc5b743561e4"
   integrity sha512-aPKfLq2c0ms680wgnbdXLCqF8HHp7ZUaRBZlUR45OuUCMyMpHz667ptlDyW13T3YiGa6E0cWhw+ZfVHCvJBcbQ==
