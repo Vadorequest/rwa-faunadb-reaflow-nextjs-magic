@@ -1,5 +1,6 @@
 import { css } from '@emotion/react';
 import { motion } from 'framer-motion';
+import { AnyPointerEvent } from 'framer-motion/types/gestures/PanSession';
 import React from 'react';
 import { NodeData } from 'reaflow';
 import { EdgeData } from 'reaflow/dist/types';
@@ -15,7 +16,7 @@ type Props = {
   setNodes: (nodes: NodeData[]) => void;
   edges: EdgeData[];
   setEdges: (edges: EdgeData[]) => void;
-  onNodeDragStart: (event: React.MouseEvent<HTMLElement>, node: BaseNodeData) => void;
+  onNodeDragStart: (event: AnyPointerEvent, node: BaseNodeData) => void;
 }
 
 /**
@@ -55,6 +56,7 @@ const NodesContainer: React.FunctionComponent<Props> = (props): JSX.Element | nu
               key={index}
               className="node"
               onMouseDown={(event) => {
+                // @ts-ignore
                 return onNodeDragStart(event, newNode);
               }}
               onClick={(event) => {

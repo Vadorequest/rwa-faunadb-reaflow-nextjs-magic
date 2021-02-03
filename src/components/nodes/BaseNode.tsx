@@ -1,5 +1,10 @@
 import styled from '@emotion/styled';
 
+/**
+ * Base style used by all nodes, in any mode (preview or not).
+ *
+ * XXX Currently not applied outside of preview mode (TODO)
+ */
 const BaseNode = styled.button`
   height: 100px;
   width: 100px;
