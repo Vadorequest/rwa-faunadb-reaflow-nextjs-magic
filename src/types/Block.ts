@@ -1,5 +1,8 @@
+/**
+ * Shape of any block.
+ */
 export type Block = {
-  label: string;
+  name: string;
 }
 
 export default Block;

@@ -6,6 +6,7 @@ import { NodeData } from 'reaflow';
 import { EdgeData } from 'reaflow/dist/types';
 import Block from '../types/Block';
 import InformationBlock from './blocks/InformationBlock';
+import QuestionBlock from './blocks/QuestionBlock';
 
 type Props = {
   blocksContainerWidth: string;
@@ -41,10 +42,20 @@ const BlocksContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         className="block"
         // @ts-ignore
         onMouseDown={(event) => onBlockDragStart(event, {
-          label: 'Information',
+          name: InformationBlock.defaultName,
         })}
       >
         <InformationBlock isPreview={true} />
+      </motion.div>
+
+      <motion.div
+        className="block"
+        // @ts-ignore
+        onMouseDown={(event) => onBlockDragStart(event, {
+          name: QuestionBlock.defaultName,
+        })}
+      >
+        <QuestionBlock isPreview={true} />
       </motion.div>
     </div>
   );

@@ -6,23 +6,23 @@ type Props = {
   isPreview?: boolean;
 }
 
-const InformationBlock: BlockComponent<Props> = (props) => {
+const QuestionBlock: BlockComponent<Props> = (props) => {
   const { isPreview = true } = props;
 
   if (isPreview) {
     return (
       <BaseBlock>
-        Information
+        Question
       </BaseBlock>
     );
   } else {
     return (
       <BaseBlock>
-        Information
+        Question
       </BaseBlock>
     );
   }
 };
-InformationBlock.defaultName = 'Information';
+QuestionBlock.defaultName = 'Question';
 
-export default InformationBlock;
+export default QuestionBlock;

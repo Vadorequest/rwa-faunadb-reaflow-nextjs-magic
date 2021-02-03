@@ -80,7 +80,7 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     console.log('End of Dragging', event);
 
     if (droppable) {
-      const id = `${activeDraggedBlock?.label}-${Math.floor(Math.random() * (100 - 1 + 1)) + 1}`;
+      const id = `${activeDraggedBlock?.name}-${Math.floor(Math.random() * (100 - 1 + 1)) + 1}`;
       const result = addNodeAndEdge(
         nodes,
         edges,
@@ -160,7 +160,7 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         >
           {activeDraggedBlock && (
             <BaseBlock className="dragInner">
-              {activeDraggedBlock.label}
+              {activeDraggedBlock.name}
             </BaseBlock>
           )}
         </motion.div>
