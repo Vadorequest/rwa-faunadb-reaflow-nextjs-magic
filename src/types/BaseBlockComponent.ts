@@ -7,7 +7,7 @@ import { GenericObject } from './GenericObject';
  * Used by all block components.
  */
 export type BaseBlockComponent<Props extends GenericObject = BaseBlockProps> = FunctionComponent<Props> & {
-  defaultName: string
+  previewText: string
 }
 
 export default BaseBlockComponent;

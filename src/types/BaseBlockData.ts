@@ -1,8 +1,8 @@
 /**
  * Shape of any block.
  */
-export type BaseBlockData = {
-  name: string;
-}
+import { NodeData } from 'reaflow';
+
+export type BaseBlockData = {} & NodeData;
 
 export default BaseBlockData;

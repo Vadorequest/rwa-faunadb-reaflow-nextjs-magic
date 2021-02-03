@@ -52,7 +52,7 @@ const BlocksContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
               className="block"
               // @ts-ignore
               onMouseDown={(event) => onBlockDragStart(event, {
-                name: BlockComponent.defaultName,
+                text: BlockComponent.previewText,
               })}
             >
               <BlockComponent

@@ -22,6 +22,6 @@ const QuestionBlock: BaseBlockComponent<Props> = (props) => {
     );
   }
 };
-QuestionBlock.defaultName = 'Question';
+QuestionBlock.previewText = 'Question';
 
 export default QuestionBlock;

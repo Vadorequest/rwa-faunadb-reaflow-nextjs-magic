@@ -22,6 +22,6 @@ const InformationBlock: BaseBlockComponent<Props> = (props) => {
     );
   }
 };
-InformationBlock.defaultName = 'Information';
+InformationBlock.previewText = 'Information';
 
 export default InformationBlock;
