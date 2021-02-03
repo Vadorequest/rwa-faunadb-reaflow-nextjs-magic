@@ -33,12 +33,10 @@ const InformationBlock: BaseBlockComponent<Props> = (props) => {
       >
         {
           (event) => {
-            console.log('event', event);
+            // console.log('event', event);
             return (
               <foreignObject width={minWidth} height={minHeight} x={30} y={30}>
-                <textarea>
-                  Some text
-                </textarea>
+                <textarea defaultValue={`Default text`} />
               </foreignObject>
             );
           }

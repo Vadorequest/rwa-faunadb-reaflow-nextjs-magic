@@ -6,6 +6,7 @@ import { NodeData } from 'reaflow';
 import { EdgeData } from 'reaflow/dist/types';
 import BaseBlockComponent from '../types/BaseBlockComponent';
 import BaseBlockData from '../types/BaseBlockData';
+import { createNode } from '../utils/nodes';
 import InformationBlock from './blocks/InformationBlock';
 import QuestionBlock from './blocks/QuestionBlock';
 
@@ -59,6 +60,18 @@ const BlocksContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
                   type: BlockComponent.type,
                 },
               })}
+              onClick={(event) => {
+                const newNode: BaseBlockData = createNode({
+                  text: BlockComponent.previewText,
+                  width: BlockComponent.minWidth,
+                  height: BlockComponent.minHeight,
+                  data: {
+                    type: BlockComponent.type,
+                  },
+                });
+
+                setNodes([...nodes, newNode]);
+              }}
             >
               <BlockComponent
                 isPreview={true}

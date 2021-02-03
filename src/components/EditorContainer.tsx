@@ -15,6 +15,7 @@ import {
 import { EdgeData } from 'reaflow/dist/types';
 import { v1 as uuid } from 'uuid'; // XXX Use v1 for uniqueness - See https://www.sohamkamani.com/blog/2016/10/05/uuid1-vs-uuid4/
 import BaseBlockData from '../types/BaseBlockData';
+import { createNode } from '../utils/nodes';
 import BaseBlock from './blocks/BaseBlock';
 import BlocksContainer from './BlocksContainer';
 import PlaygroundContainer from './PlaygroundContainer';
@@ -62,12 +63,7 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
       console.log('activeDraggedBlock', activeDraggedBlock);
       console.log('enteredNode', enteredNode);
 
-      const id = uuid();
-      const newNode: NodeData = {
-        ...activeDraggedBlock,
-        id,
-      };
-      console.log('newNode', newNode);
+      const newNode: NodeData = createNode(activeDraggedBlock);
       const result = addNodeAndEdge(
         nodes,
         edges,
