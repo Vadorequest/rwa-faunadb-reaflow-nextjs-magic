@@ -48,14 +48,12 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
     case 'information':
       return (
         <InformationBlock
-          isPreview={false}
           {...commonBlockProps}
         />
       );
     case 'question':
       return (
         <QuestionBlock
-          isPreview={false}
           {...commonBlockProps}
         />
       );

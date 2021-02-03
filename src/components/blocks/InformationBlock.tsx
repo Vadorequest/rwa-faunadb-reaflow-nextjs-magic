@@ -8,7 +8,7 @@ type Props = {} & BaseBlockProps;
 
 const InformationBlock: BaseBlockComponent<Props> = (props) => {
   const {
-    isPreview = true,
+    isPreview = false,
     ...rest
   } = props;
 
