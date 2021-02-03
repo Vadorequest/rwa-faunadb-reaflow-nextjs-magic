@@ -78,9 +78,10 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
 
   const onBlockDragEnd = (event: AnyPointerEvent, info: PanInfo) => {
     console.log('End of Dragging', event);
+    console.log('droppable', droppable)
 
     if (droppable) {
-      const id = `${activeDraggedBlock?.name}-${Math.floor(Math.random() * (100 - 1 + 1)) + 1}`;
+      const id = `${activeDraggedBlock?.name}-${Math.floor(Math.random() * (1000 - 1 + 1)) + 1}`;
       const result = addNodeAndEdge(
         nodes,
         edges,
