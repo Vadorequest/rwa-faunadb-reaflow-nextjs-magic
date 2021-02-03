@@ -1,7 +1,8 @@
 import { css } from '@emotion/react';
 import React from 'react';
 import { Node } from 'reaflow';
-import BaseBlockComponent from '../../types/BaseBlockComponent';
+import BaseBlockComponent  from '../../types/BaseBlockComponent';
+import { BaseBlockDefaultProps } from '../../types/BaseBlockDefaultProps';
 import BaseBlockProps from '../../types/BaseBlockProps';
 import BaseBlock from './BaseBlock';
 
@@ -45,9 +46,13 @@ const InformationBlock: BaseBlockComponent<Props> = (props) => {
     );
   }
 };
-InformationBlock.previewText = 'Information';
-InformationBlock.type = 'information';
-InformationBlock.minWidth = minWidth;
-InformationBlock.minHeight = minHeight;
+InformationBlock.getDefaultNodeProps = (): BaseBlockDefaultProps => {
+  return {
+    previewText: 'Information',
+    type: 'information',
+    minWidth: minWidth,
+    minHeight: minHeight,
+  };
+};
 
 export default InformationBlock;

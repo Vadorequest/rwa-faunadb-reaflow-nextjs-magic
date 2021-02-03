@@ -1,6 +1,7 @@
 import React from 'react';
 import { Node } from 'reaflow';
 import BaseBlockComponent from '../../types/BaseBlockComponent';
+import { BaseBlockDefaultProps } from '../../types/BaseBlockDefaultProps';
 import BaseBlockProps from '../../types/BaseBlockProps';
 import BaseBlock from './BaseBlock';
 
@@ -29,9 +30,13 @@ const QuestionBlock: BaseBlockComponent<Props> = (props) => {
     );
   }
 };
-QuestionBlock.previewText = 'Question';
-QuestionBlock.type = 'question';
-QuestionBlock.minWidth = minWidth;
-QuestionBlock.minHeight = minHeight;
+QuestionBlock.getDefaultNodeProps = (): BaseBlockDefaultProps => {
+  return {
+    previewText: 'Question',
+    type: 'question',
+    minWidth: minWidth,
+    minHeight: minHeight,
+  };
+};
 
 export default QuestionBlock;
