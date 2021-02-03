@@ -5,6 +5,7 @@ import React from 'react';
 import { NodeData } from 'reaflow';
 import { EdgeData } from 'reaflow/dist/types';
 import Block from '../types/Block';
+import BlockComponent from '../types/BlockComponent';
 import InformationBlock from './blocks/InformationBlock';
 import QuestionBlock from './blocks/QuestionBlock';
 
@@ -30,6 +31,11 @@ const BlocksContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     onBlockDragStart,
   } = props;
 
+  const blockComponents: BlockComponent[] = [
+    InformationBlock,
+    QuestionBlock,
+  ];
+
   return (
     <div
       className={'blocks-container'}
@@ -38,25 +44,25 @@ const BlocksContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         background-color: lightgrey;
       `}
     >
-      <motion.div
-        className="block"
-        // @ts-ignore
-        onMouseDown={(event) => onBlockDragStart(event, {
-          name: InformationBlock.defaultName,
-        })}
-      >
-        <InformationBlock isPreview={true} />
-      </motion.div>
-
-      <motion.div
-        className="block"
-        // @ts-ignore
-        onMouseDown={(event) => onBlockDragStart(event, {
-          name: QuestionBlock.defaultName,
-        })}
-      >
-        <QuestionBlock isPreview={true} />
-      </motion.div>
+      {
+        blockComponents.map((BlockComponent: BlockComponent, index: number) => {
+          return (
+            <motion.div
+              key={index}
+              className="block"
+              // @ts-ignore
+              onMouseDown={(event) => onBlockDragStart(event, {
+                name: BlockComponent.defaultName,
+              })}
+            >
+              <BlockComponent
+                // @ts-ignore
+                isPreview={true}
+              />
+            </motion.div>
+          )
+        })
+      }
     </div>
   );
 };
