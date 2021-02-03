@@ -13,6 +13,7 @@ import {
   NodeData,
 } from 'reaflow';
 import { EdgeData } from 'reaflow/dist/types';
+import { v1 as uuid } from 'uuid'; // XXX Use v1 for uniqueness - See https://www.sohamkamani.com/blog/2016/10/05/uuid1-vs-uuid4/
 import BaseBlockData from '../types/BaseBlockData';
 import BaseBlock from './blocks/BaseBlock';
 import BlocksContainer from './BlocksContainer';
@@ -78,17 +79,22 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
 
   const onBlockDragEnd = (event: AnyPointerEvent, info: PanInfo) => {
     console.log('End of Dragging', event);
-    console.log('droppable', droppable)
+    console.log('droppable', droppable);
 
     if (droppable) {
-      const id = `${activeDraggedBlock?.text}-${Math.floor(Math.random() * (1000 - 1 + 1)) + 1}`;
+      console.log('activeDraggedBlock', activeDraggedBlock);
+      console.log('enteredNode', enteredNode);
+
+      const id = uuid();
+      const newNode: NodeData = {
+        ...activeDraggedBlock,
+        id,
+      };
+      console.log('newNode', newNode);
       const result = addNodeAndEdge(
         nodes,
         edges,
-        {
-          id,
-          text: id,
-        },
+        newNode,
         enteredNode,
       );
       setNodes(result.nodes);

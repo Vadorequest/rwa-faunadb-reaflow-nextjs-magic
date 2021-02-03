@@ -89,7 +89,7 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
           <Node
             {...node}
             className={'node'}
-            onClick={() => console.log(node.properties.data)}
+            onClick={() => console.log(`node clicked (${node?.properties?.text || node?.id})`, node)}
             onEnter={(event, node) => setEnteredNode(node)}
             onLeave={(event, node) => setEnteredNode(undefined)}
           />
