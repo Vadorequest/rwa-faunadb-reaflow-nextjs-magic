@@ -95,6 +95,7 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
           const id = node.id;
 
           const updateCurrentNode = (nodeData: Partial<BaseNodeData>): void => {
+            console.log('Updating current node with', nodeData);
             const nodeToUpdateIndex = nodes.findIndex((node: BaseNodeData) => node.id === id);
             console.log('updateCurrentNode nodeToUpdateIndex', nodeToUpdateIndex);
             const nodeToUpdate = {
@@ -105,7 +106,7 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
             console.log('updateCurrentNode updated node', nodeToUpdate);
 
             const newNodes = nodes;
-            newNodes[nodeToUpdateIndex] = nodeToUpdate
+            newNodes[nodeToUpdateIndex] = nodeToUpdate;
             console.log('updateCurrentNode new nodes', newNodes);
 
             setNodes(newNodes);
