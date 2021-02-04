@@ -39,6 +39,11 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
             console.log('event ...rest', rest);
             console.log('event', event);
 
+            const {
+              width,
+              height,
+            } = event;
+
             /**
              * When textarea input height changes, we need to increase the height of the element accordingly.
              *
@@ -59,8 +64,8 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
             return (
               <foreignObject
                 className={'information-node-container node-container'}
-                width={defaultWidth}
-                height={defaultHeight}
+                width={width}
+                height={height}
                 x={0}
                 y={0}
                 css={css`
