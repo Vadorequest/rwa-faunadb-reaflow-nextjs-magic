@@ -7,9 +7,12 @@ import BaseNodeData from '../types/BaseNodeData';
 import BaseNodeType from '../types/BaseNodeType';
 import InformationNode from './nodes/InformationNode';
 import QuestionNode from './nodes/QuestionNode';
+import classnames from 'classnames';
 
 type Props = {
   node: NodeProps;
+  isDroppable: boolean;
+  distance: number | null;
   enteredNode: BaseNodeData | undefined;
   setEnteredNode: (node: NodeData | undefined) => void;
 }
@@ -17,6 +20,8 @@ type Props = {
 const NodeRouter: React.FunctionComponent<Props> = (props) => {
   const {
     node,
+    isDroppable,
+    distance,
     enteredNode: previouslyEnteredNode,
     setEnteredNode,
   } = props;
@@ -35,9 +40,14 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
     return null;
   }
 
+  const strokeWidth = previouslyEnteredNode?.id === node.id && isDroppable && distance && distance < 40 ? -distance + 40 : 1;
+
   const commonBlockProps = {
     ...node,
-    className: `node node-${type}`,
+    className: classnames({ closest: previouslyEnteredNode?.id === node.id }, `node node-${type}`),
+    style: {
+      strokeWidth: strokeWidth
+    },
     onClick: () => console.log(`node clicked (${node?.properties?.text || node?.id})`, node),
     onEnter: (event: MouseEvent, node: BaseNodeData) => {
       if (node?.id !== previouslyEnteredNode?.id) {

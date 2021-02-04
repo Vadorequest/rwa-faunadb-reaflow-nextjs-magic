@@ -1,7 +1,8 @@
 import { css } from '@emotion/react';
-import React from 'react';
+import React, { MutableRefObject } from 'react';
 import {
   Canvas,
+  CanvasRef,
   Edge,
   EdgeProps,
   hasLink,
@@ -12,11 +13,13 @@ import BaseNodeData from '../types/BaseNodeData';
 import NodeRouter from './NodeRouter';
 
 type Props = {
+  canvasRef: MutableRefObject<CanvasRef | null>;
   blocksContainerWidth: string;
   nodes: BaseNodeData[];
   setNodes: (nodes: BaseNodeData[]) => void;
   edges: EdgeData[];
   setEdges: (edges: EdgeData[]) => void;
+  distance: number | null;
   isDroppable: boolean;
   setDroppable: (isDroppable: boolean) => void;
   enteredNode: BaseNodeData | undefined;
@@ -28,11 +31,13 @@ type Props = {
  */
 const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element | null => {
   const {
+    canvasRef,
     blocksContainerWidth,
     nodes,
     edges,
     setNodes,
     setEdges,
+    distance,
     isDroppable,
     setDroppable,
     enteredNode,
@@ -78,6 +83,7 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
     >
       <div className={'background'} />
       <Canvas
+        ref={canvasRef}
         className={'reaflow-canvas'}
         direction={'RIGHT'}
         nodes={nodes}
@@ -85,6 +91,8 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
         node={(node: NodeProps) => (
           <NodeRouter
             node={node}
+            isDroppable={isDroppable}
+            distance={distance}
             enteredNode={enteredNode}
             setEnteredNode={setEnteredNode}
           />
