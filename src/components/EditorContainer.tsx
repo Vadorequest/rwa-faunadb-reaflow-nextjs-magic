@@ -7,8 +7,14 @@ import {
 } from 'framer-motion';
 import { AnyPointerEvent } from 'framer-motion/types/gestures/PanSession';
 import { Portal } from 'rdk';
-import React, { useState } from 'react';
-import { addNodeAndEdge } from 'reaflow';
+import React, {
+  useRef,
+  useState,
+} from 'react';
+import {
+  addNodeAndEdge,
+  CanvasRef,
+} from 'reaflow';
 import { EdgeData } from 'reaflow/dist/types';
 import { v1 as uuid } from 'uuid'; // XXX Use v1 for uniqueness - See https://www.sohamkamani.com/blog/2016/10/05/uuid1-vs-uuid4/
 import BaseNodeData from '../types/BaseNodeData';
@@ -41,14 +47,24 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   ]);
   const [edges, setEdges] = useState<EdgeData[]>([]);
 
+  // Controls from framer-motion for dragging
   const dragControls = useDragControls();
-  const [enteredNode, setEnteredNode] = useState<BaseNodeData | undefined>(undefined);
-  const [activeDraggedBlock, setActiveDraggedBlock] = useState<BaseNodeData | undefined>(undefined);
+
+  // Used to create a reference to the canvas so we can pass it to the hook so it has knowledge about the canvas
+  const canvasRef = useRef<CanvasRef | null>(null);
+
+  // Used to determine if we can drop the element (onto the canvas)
   const [isDroppable, setDroppable] = useState<boolean>(false);
+
+  // Used to know which node has been last entered, so that when the user ends the drag we can link the activeDraggedNode to it
+  const [enteredNode, setEnteredNode] = useState<BaseNodeData | undefined>(undefined);
+
+  // Used to know which node is being dragged by the user, so that we can display a "dragging preview" and link it to the enteredNode when drag ends
+  const [activeDraggedNode, setActiveDraggedNode] = useState<BaseNodeData | undefined>(undefined);
 
   const onNodeDragStart = (event: AnyPointerEvent, node: BaseNodeData) => {
     console.log('Start of Dragging', event, node);
-    setActiveDraggedBlock(node);
+    setActiveDraggedNode(node);
     dragControls.start(event, { snapToCursor: true });
   };
 
@@ -57,10 +73,10 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     console.log('droppable', isDroppable);
 
     if (isDroppable) {
-      console.log('activeDraggedBlock', activeDraggedBlock);
+      console.log('activeDraggedBlock', activeDraggedNode);
       console.log('enteredNode', enteredNode);
 
-      const newNode: BaseNodeData = createNode(activeDraggedBlock);
+      const newNode: BaseNodeData = createNode(activeDraggedNode);
       const result = addNodeAndEdge(
         nodes,
         edges,
@@ -72,7 +88,7 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     }
 
     setDroppable(false);
-    setActiveDraggedBlock(undefined);
+    setActiveDraggedNode(undefined);
     setEnteredNode(undefined);
   };
 
@@ -139,9 +155,9 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
           className="dragger"
           onDragEnd={onNodeDragEnd}
         >
-          {activeDraggedBlock && (
+          {activeDraggedNode && (
             <BaseNode className="dragInner">
-              {activeDraggedBlock.text}
+              {activeDraggedNode.text}
             </BaseNode>
           )}
         </motion.div>
