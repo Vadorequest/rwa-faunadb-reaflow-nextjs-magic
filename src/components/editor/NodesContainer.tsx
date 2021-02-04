@@ -2,11 +2,11 @@ import { css } from '@emotion/react';
 import { motion } from 'framer-motion';
 import { AnyPointerEvent } from 'framer-motion/types/gestures/PanSession';
 import React from 'react';
-import BaseNodeComponent from '../types/BaseNodeComponent';
-import BaseNodeData from '../types/BaseNodeData';
-import { createNodeFromDefaultProps } from '../utils/nodes';
-import InformationNode from './nodes/InformationNode';
-import QuestionNode from './nodes/QuestionNode';
+import BaseNodeComponent from '../../types/BaseNodeComponent';
+import BaseNodeData from '../../types/BaseNodeData';
+import { createNodeFromDefaultProps } from '../../utils/nodes';
+import InformationNode from '../nodes/InformationNode';
+import QuestionNode from '../nodes/QuestionNode';
 
 type Props = {
   blocksContainerWidth: string;

@@ -18,12 +18,12 @@ import {
 } from 'reaflow';
 import { EdgeData } from 'reaflow/dist/types';
 import { useRecoilState } from 'recoil';
-import settings from '../settings';
-import { edgesState } from '../states/edges';
-import { nodesState } from '../states/nodes'; // XXX Use v1 for uniqueness - See https://www.sohamkamani.com/blog/2016/10/05/uuid1-vs-uuid4/
-import BaseNodeData from '../types/BaseNodeData';
-import { createNode } from '../utils/nodes';
-import BasePreviewBlock from './blocks/BasePreviewBlock';
+import settings from '../../settings';
+import { edgesState } from '../../states/edges';
+import { nodesState } from '../../states/nodes'; // XXX Use v1 for uniqueness - See https://www.sohamkamani.com/blog/2016/10/05/uuid1-vs-uuid4/
+import BaseNodeData from '../../types/BaseNodeData';
+import { createNode } from '../../utils/nodes';
+import BasePreviewBlock from '../blocks/BasePreviewBlock';
 import ContainerSeparator from './ContainerSeparator';
 import NodesContainer from './NodesContainer';
 import PlaygroundContainer from './PlaygroundContainer';

@@ -10,10 +10,10 @@ import {
 } from 'reaflow';
 import { EdgeData } from 'reaflow/dist/types';
 import { useRecoilState } from 'recoil';
-import { edgesState } from '../states/edges';
-import { nodesState } from '../states/nodes';
-import BaseNodeData from '../types/BaseNodeData';
-import NodeRouter from './NodeRouter';
+import { edgesState } from '../../states/edges';
+import { nodesState } from '../../states/nodes';
+import BaseNodeData from '../../types/BaseNodeData';
+import NodeRouter from '../nodes/NodeRouter';
 import cloneDeep from 'lodash.clonedeep';
 
 type Props = {

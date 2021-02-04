@@ -1,5 +1,5 @@
 import Layout from '../components/Layout';
-import EditorContainer from '../components/EditorContainer';
+import EditorContainer from '../components/editor/EditorContainer';
 
 const IndexPage = () => (
   <Layout>

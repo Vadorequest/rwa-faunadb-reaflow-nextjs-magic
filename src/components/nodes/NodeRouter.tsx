@@ -4,10 +4,10 @@ import {
   NodeData,
   NodeProps,
 } from 'reaflow';
-import BaseNodeData from '../types/BaseNodeData';
-import BaseNodeType from '../types/BaseNodeType';
-import InformationNode from './nodes/InformationNode';
-import QuestionNode from './nodes/QuestionNode';
+import BaseNodeData from '../../types/BaseNodeData';
+import BaseNodeType from '../../types/BaseNodeType';
+import InformationNode from './InformationNode';
+import QuestionNode from './QuestionNode';
 
 type Props = {
   node: NodeProps;
