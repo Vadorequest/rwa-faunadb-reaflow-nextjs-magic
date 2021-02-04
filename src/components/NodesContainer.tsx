@@ -2,8 +2,6 @@ import { css } from '@emotion/react';
 import { motion } from 'framer-motion';
 import { AnyPointerEvent } from 'framer-motion/types/gestures/PanSession';
 import React from 'react';
-import { NodeData } from 'reaflow';
-import { EdgeData } from 'reaflow/dist/types';
 import BaseNodeComponent from '../types/BaseNodeComponent';
 import BaseNodeData from '../types/BaseNodeData';
 import { createNodeFromDefaultProps } from '../utils/nodes';
@@ -12,10 +10,6 @@ import QuestionNode from './nodes/QuestionNode';
 
 type Props = {
   blocksContainerWidth: string;
-  nodes: NodeData[];
-  setNodes: (nodes: NodeData[]) => void;
-  edges: EdgeData[];
-  setEdges: (edges: EdgeData[]) => void;
   onNodeDragStart: (event: AnyPointerEvent, node: BaseNodeData) => void;
 }
 
@@ -27,10 +21,6 @@ type Props = {
 const NodesContainer: React.FunctionComponent<Props> = (props): JSX.Element | null => {
   const {
     blocksContainerWidth,
-    nodes,
-    setNodes,
-    edges,
-    setEdges,
     onNodeDragStart,
   } = props;
 
@@ -72,9 +62,6 @@ const NodesContainer: React.FunctionComponent<Props> = (props): JSX.Element | nu
               onMouseDown={(event) => {
                 // @ts-ignore
                 return onNodeDragStart(event, newNode);
-              }}
-              onClick={(event) => {
-                setNodes([...nodes, newNode]);
               }}
             >
               <BlockComponent

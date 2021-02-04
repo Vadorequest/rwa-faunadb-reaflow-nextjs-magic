@@ -9,16 +9,16 @@ import {
   NodeProps,
 } from 'reaflow';
 import { EdgeData } from 'reaflow/dist/types';
+import { useRecoilState } from 'recoil';
+import { edgesState } from '../states/edges';
+import { nodesState } from '../states/nodes';
 import BaseNodeData from '../types/BaseNodeData';
 import NodeRouter from './NodeRouter';
+import cloneDeep from 'lodash.clonedeep';
 
 type Props = {
   canvasRef: MutableRefObject<CanvasRef | null>;
   blocksContainerWidth: string;
-  nodes: BaseNodeData[];
-  setNodes: (nodes: BaseNodeData[]) => void;
-  edges: EdgeData[];
-  setEdges: (edges: EdgeData[]) => void;
   isDraggedNodeClose: boolean;
   isDroppable: boolean;
   setDroppable: (isDroppable: boolean) => void;
@@ -33,16 +33,14 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
   const {
     canvasRef,
     blocksContainerWidth,
-    nodes,
-    edges,
-    setNodes,
-    setEdges,
     isDraggedNodeClose,
     isDroppable,
     setDroppable,
     enteredNode,
     setEnteredNode,
   } = props;
+  const [nodes, setNodes] = useRecoilState<BaseNodeData[]>(nodesState);
+  const [edges, setEdges] = useRecoilState<EdgeData[]>(edgesState);
 
   console.log('playground nodes', nodes);
 
@@ -105,7 +103,7 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
             };
             console.log('updateCurrentNode updated node', nodeToUpdate);
 
-            const newNodes = nodes;
+            const newNodes = cloneDeep(nodes);
             newNodes[nodeToUpdateIndex] = nodeToUpdate;
             console.log('updateCurrentNode new nodes', newNodes);
 
