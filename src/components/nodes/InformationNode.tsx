@@ -1,15 +1,15 @@
 import { css } from '@emotion/react';
 import React from 'react';
 import { Node } from 'reaflow';
-import BaseNodeComponent  from '../../types/BaseNodeComponent';
+import BaseNodeComponent from '../../types/BaseNodeComponent';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
-import BaseNode from './BaseNode';
+import BasePreviewBlock from '../blocks/BasePreviewBlock';
 
 type Props = {} & BaseNodeProps;
 
 const minWidth = 200;
-const minHeight = 400;
+const minHeight = 100;
 
 const InformationNode: BaseNodeComponent<Props> = (props) => {
   const {
@@ -19,29 +19,54 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
 
   if (isPreview) {
     return (
-      <BaseNode>
+      <BasePreviewBlock>
         Information
-      </BaseNode>
+      </BasePreviewBlock>
     );
   } else {
     return (
       <Node
         {...rest}
-        // css={css`
-        //   width: ${minWidth}px;
-        //   height: ${minHeight}px;
-        // `}
       >
-        {/*{
+        {
           (event) => {
             // console.log('event', event);
             return (
-              <foreignObject width={minWidth} height={minHeight} x={30} y={30}>
-                <textarea defaultValue={`Default text`} />
+              <foreignObject
+                className={'information-node-container node-container'}
+                width={minWidth}
+                height={minHeight}
+                x={0}
+                y={0}
+                css={css`
+                  .node {
+                    margin: 5px;
+                  }
+
+                  .information-text {
+                    margin-top: 15px;
+                    background-color: #eaeaea;
+                  }
+                `}
+              >
+                <div
+                  className={'information-node node'}
+                >
+                  <div
+                    className={'node-header information-header'}
+                  >
+                    Information
+                  </div>
+                  <textarea
+                    className={'information-text'}
+                    defaultValue={`Default text`}
+                    placeholder={'Text here'}
+                  />
+                </div>
               </foreignObject>
             );
           }
-        }*/}
+        }
       </Node>
     );
   }

@@ -17,10 +17,14 @@ import {
   useProximity,
 } from 'reaflow';
 import { EdgeData } from 'reaflow/dist/types';
-import { v1 as uuid } from 'uuid'; // XXX Use v1 for uniqueness - See https://www.sohamkamani.com/blog/2016/10/05/uuid1-vs-uuid4/
+import settings from '../settings'; // XXX Use v1 for uniqueness - See https://www.sohamkamani.com/blog/2016/10/05/uuid1-vs-uuid4/
 import BaseNodeData from '../types/BaseNodeData';
-import { createNode } from '../utils/nodes';
-import BaseNode from './nodes/BaseNode';
+import {
+  createNode,
+  createNodeFromDefaultProps,
+} from '../utils/nodes';
+import BasePreviewBlock from './blocks/BasePreviewBlock';
+import InformationNode from './nodes/InformationNode';
 import NodesContainer from './NodesContainer';
 import PlaygroundContainer from './PlaygroundContainer';
 
@@ -33,18 +37,10 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   if (!isBrowser()) {
     return null;
   }
-  const blocksContainerWidth = '30vw';
+  const blocksContainerWidth = '10vw';
 
   const [nodes, setNodes] = useState<BaseNodeData[]>([
-    {
-      id: uuid(),
-      text: 'Information',
-      width: 200,
-      height: 400,
-      data: {
-        type: 'information',
-      },
-    },
+    createNodeFromDefaultProps(InformationNode.getDefaultNodeProps()),
   ]);
   const [edges, setEdges] = useState<EdgeData[]>([]);
 
@@ -137,8 +133,8 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         width: 100vw;
         height: calc(100vh - 120px);
 
-        .closest {
-          stroke: yellow !important;
+        .dnd-closest {
+          stroke: ${settings.dnd.colorClosest} !important;
         }
 
         .dragger {
@@ -197,9 +193,9 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
           onDragEnd={onNodeDragEnd}
         >
           {activeDraggedNode && (
-            <BaseNode className="dragInner">
+            <BasePreviewBlock className="dragInner">
               {activeDraggedNode.text}
-            </BaseNode>
+            </BasePreviewBlock>
           )}
         </motion.div>
       </Portal>

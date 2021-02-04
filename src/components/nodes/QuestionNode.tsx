@@ -3,7 +3,7 @@ import { Node } from 'reaflow';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
-import BaseNode from './BaseNode';
+import BasePreviewBlock from '../blocks/BasePreviewBlock';
 
 type Props = {} & BaseNodeProps;
 
@@ -18,9 +18,9 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
 
   if (isPreview) {
     return (
-      <BaseNode>
+      <BasePreviewBlock>
         Question
-      </BaseNode>
+      </BasePreviewBlock>
     );
   } else {
     return (

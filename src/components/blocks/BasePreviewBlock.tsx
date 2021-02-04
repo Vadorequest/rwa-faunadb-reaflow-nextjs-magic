@@ -1,15 +1,14 @@
 import styled from '@emotion/styled';
 
 /**
- * Base style used by all nodes, in any mode (preview or not).
- *
- * XXX Currently not applied outside of preview mode (TODO)
+ * Base style used by all preview blocks.
  */
-const BaseNode = styled.button`
+const BasePreviewBlock = styled.button`
   height: 100px;
   width: 100px;
   cursor: grab;
-  background: black;
+  background: #f5f5f5;
+  color: black;
   margin-right: 10px;
   display: flex;
   align-items: center;
@@ -22,7 +21,6 @@ const BaseNode = styled.button`
   -ms-user-select: none;
   user-select: none;
   flex: 1;
-  color: white;
 `;
 
-export default BaseNode;
+export default BasePreviewBlock;
