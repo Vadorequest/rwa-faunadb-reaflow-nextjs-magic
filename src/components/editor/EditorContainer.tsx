@@ -19,8 +19,10 @@ import {
 import { EdgeData } from 'reaflow/dist/types';
 import { useRecoilState } from 'recoil';
 import settings from '../../settings';
-import { edgesState } from '../../states/edges';
-import { nodesState } from '../../states/nodes'; // XXX Use v1 for uniqueness - See https://www.sohamkamani.com/blog/2016/10/05/uuid1-vs-uuid4/
+import { edgesState } from '../../states/edgesState';
+import { isDraggedNodeDroppableState } from '../../states/isDraggedNodeDroppableState';
+import { lastFocusedNodeState } from '../../states/lastFocusedNodeState';
+import { nodesState } from '../../states/nodesState'; // XXX Use v1 for uniqueness - See https://www.sohamkamani.com/blog/2016/10/05/uuid1-vs-uuid4/
 import BaseNodeData from '../../types/BaseNodeData';
 import { createNode } from '../../utils/nodes';
 import BasePreviewBlock from '../blocks/BasePreviewBlock';
@@ -39,8 +41,8 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   }
   const blocksContainerWidth = '150px';
 
-  const [nodes, setNodes] = useRecoilState<BaseNodeData[]>(nodesState);
-  const [edges, setEdges] = useRecoilState<EdgeData[]>(edgesState);
+  const [nodes, setNodes] = useRecoilState(nodesState);
+  const [edges, setEdges] = useRecoilState(edgesState);
 
   // Controls from framer-motion for dragging
   const dragControls = useDragControls();
