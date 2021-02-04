@@ -29,8 +29,8 @@ export const createNodeFromDefaultProps = (defaultProps: BaseNodeDefaultProps): 
   console.log('createNodeFromDefaultProps', defaultProps);
   const node = {
     text: defaultProps.previewText,
-    width: defaultProps.minWidth,
-    height: defaultProps.minHeight,
+    width: defaultProps.defaultWidth,
+    height: defaultProps.defaultHeight,
     data: {
       type: defaultProps.type,
     },

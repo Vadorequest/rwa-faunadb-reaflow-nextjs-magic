@@ -11,6 +11,7 @@ import QuestionNode from './nodes/QuestionNode';
 
 type Props = {
   node: NodeProps;
+  updateCurrentNode: (nodeData: Partial<BaseNodeData>) => void;
   isDroppable: boolean;
   isDraggedNodeClose: boolean;
   enteredNode: BaseNodeData | undefined;
@@ -20,11 +21,13 @@ type Props = {
 const NodeRouter: React.FunctionComponent<Props> = (props) => {
   const {
     node,
+    updateCurrentNode,
     isDroppable,
     isDraggedNodeClose,
     enteredNode: previouslyEnteredNode,
     setEnteredNode,
   } = props;
+  console.log('router nodes', props)
 
   const { properties } = node || {};
   const { data } = properties || {};
@@ -45,6 +48,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
 
   const commonBlockProps = {
     ...node,
+    updateCurrentNode,
     className: classnames({ 'dnd-closest': previouslyEnteredNode?.id === node.id }, `node node-${type}`),
     style: {
       strokeWidth: strokeWidth,

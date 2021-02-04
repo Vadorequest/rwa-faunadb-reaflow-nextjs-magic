@@ -31,6 +31,11 @@ import PlaygroundContainer from './PlaygroundContainer';
 
 type Props = {}
 
+const initialNodes: BaseNodeData[] = [
+  createNodeFromDefaultProps(InformationNode.getDefaultNodeProps()),
+];
+const initialEdges: EdgeData[] = [];
+
 /**
  * Displays the blocks container (left) and the playground (right).
  */
@@ -40,10 +45,8 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   }
   const blocksContainerWidth = '150px';
 
-  const [nodes, setNodes] = useState<BaseNodeData[]>([
-    createNodeFromDefaultProps(InformationNode.getDefaultNodeProps()),
-  ]);
-  const [edges, setEdges] = useState<EdgeData[]>([]);
+  const [nodes, setNodes] = useState<BaseNodeData[]>(initialNodes);
+  const [edges, setEdges] = useState<EdgeData[]>(initialEdges);
 
   // Controls from framer-motion for dragging
   const dragControls = useDragControls();
@@ -142,7 +145,7 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     setEnteredNode(undefined);
   };
 
-  console.log('EditorContainer renders');
+  console.log('EditorContainer renders', nodes);
 
   return (
     <div

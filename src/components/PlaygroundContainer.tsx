@@ -44,6 +44,8 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
     setEnteredNode,
   } = props;
 
+  console.log('playground nodes', nodes);
+
   return (
     <div
       className={'playground-container'}
@@ -89,15 +91,38 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
         direction={'RIGHT'}
         nodes={nodes}
         edges={edges}
-        node={(node: NodeProps) => (
-          <NodeRouter
-            node={node}
-            isDroppable={isDroppable}
-            isDraggedNodeClose={isDraggedNodeClose}
-            enteredNode={enteredNode}
-            setEnteredNode={setEnteredNode}
-          />
-        )}
+        node={(node: NodeProps) => {
+          const id = node.id;
+
+          const updateCurrentNode = (nodeData: Partial<BaseNodeData>): void => {
+            const nodeToUpdateIndex = nodes.findIndex((node: BaseNodeData) => node.id === id);
+            console.log('updateCurrentNode nodeToUpdateIndex', nodeToUpdateIndex);
+            const nodeToUpdate = {
+              ...nodes[nodeToUpdateIndex],
+              ...nodeData,
+              id, // Force keep same id to avoid edge cases
+            };
+            console.log('updateCurrentNode updated node', nodeToUpdate);
+
+            const newNodes = nodes;
+            newNodes[nodeToUpdateIndex] = nodeToUpdate
+            console.log('updateCurrentNode new nodes', newNodes);
+
+            setNodes(newNodes);
+          };
+
+          console.log('node in canvas', node, nodes);
+          return (
+            <NodeRouter
+              node={node}
+              updateCurrentNode={updateCurrentNode}
+              isDroppable={isDroppable}
+              isDraggedNodeClose={isDraggedNodeClose}
+              enteredNode={enteredNode}
+              setEnteredNode={setEnteredNode}
+            />
+          );
+        }}
         edge={(edge: EdgeProps) => (
           <Edge
             {...edge}
@@ -116,10 +141,12 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
           // setDroppable(false);
         }}
         onNodeLinkCheck={(from: BaseNodeData, to: BaseNodeData) => {
+          console.log('onNodeLinkCheck', 'will link?', !hasLink(edges, from, to));
           return !hasLink(edges, from, to);
         }}
         onNodeLink={(from, to) => {
           const id = `${from.id}-${to.id}`;
+          console.log('onNodeLink', id);
 
           setEdges([
             ...edges,

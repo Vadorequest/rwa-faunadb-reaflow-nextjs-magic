@@ -1,19 +1,25 @@
 import { css } from '@emotion/react';
 import React from 'react';
+import { TextareaHeightChangeMeta } from 'react-textarea-autosize/dist/declarations/src';
 import { Node } from 'reaflow';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
+import BaseNodeData from '../../types/BaseNodeData';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
 import BasePreviewBlock from '../blocks/BasePreviewBlock';
+import Textarea from '../plugins/Textarea';
 
-type Props = {} & BaseNodeProps;
+type Props = {
+  updateCurrentNode?: (nodeData: Partial<BaseNodeData>) => void;
+} & BaseNodeProps;
 
-const minWidth = 200;
-const minHeight = 100;
+const defaultWidth = 200;
+const defaultHeight = 100;
 
 const InformationNode: BaseNodeComponent<Props> = (props) => {
   const {
     isPreview = false,
+    updateCurrentNode,
     ...rest
   } = props;
 
@@ -30,12 +36,31 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
       >
         {
           (event) => {
-            // console.log('event', event);
+            console.log('event ...rest', rest);
+            console.log('event', event);
+
+            /**
+             * When textarea input height changes, we need to increase the height of the element accordingly.
+             *
+             * @param height
+             * @param meta
+             */
+            const onHeightChange = (height: number, meta: TextareaHeightChangeMeta) => {
+              // Only consider additional height, by ignoring the height of the first row
+              const additionalHeight = height - meta.rowHeight;
+
+              if (updateCurrentNode) {
+                updateCurrentNode({
+                  height: defaultHeight + additionalHeight,
+                });
+              }
+            };
+
             return (
               <foreignObject
                 className={'information-node-container node-container'}
-                width={minWidth}
-                height={minHeight}
+                width={defaultWidth}
+                height={defaultHeight}
                 x={0}
                 y={0}
                 css={css`
@@ -57,10 +82,11 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
                   >
                     Information
                   </div>
-                  <textarea
+                  <Textarea
                     className={'information-text'}
                     defaultValue={`Default text`}
                     placeholder={'Text here'}
+                    onHeightChange={onHeightChange}
                   />
                 </div>
               </foreignObject>
@@ -75,8 +101,8 @@ InformationNode.getDefaultNodeProps = (): BaseNodeDefaultProps => {
   return {
     previewText: 'Information',
     type: 'information',
-    minWidth: minWidth,
-    minHeight: minHeight,
+    defaultWidth: defaultWidth,
+    defaultHeight: defaultHeight,
   };
 };
 

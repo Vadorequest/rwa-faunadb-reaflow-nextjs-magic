@@ -1,18 +1,22 @@
 import React from 'react';
 import { Node } from 'reaflow';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
+import BaseNodeData from '../../types/BaseNodeData';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
 import BasePreviewBlock from '../blocks/BasePreviewBlock';
 
-type Props = {} & BaseNodeProps;
+type Props = {
+  updateCurrentNode?: (nodeData: Partial<BaseNodeData>) => void;
+} & BaseNodeProps;
 
-const minWidth = 100;
-const minHeight = 50;
+const defaultWidth = 100;
+const defaultHeight = 50;
 
 const QuestionNode: BaseNodeComponent<Props> = (props) => {
   const {
     isPreview = false,
+    updateCurrentNode,
     ...rest
   } = props;
 
@@ -34,8 +38,8 @@ QuestionNode.getDefaultNodeProps = (): BaseNodeDefaultProps => {
   return {
     previewText: 'Question',
     type: 'question',
-    minWidth: minWidth,
-    minHeight: minHeight,
+    defaultWidth: defaultWidth,
+    defaultHeight: defaultHeight,
   };
 };
 
