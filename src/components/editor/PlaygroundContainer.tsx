@@ -1,29 +1,12 @@
 import { css } from '@emotion/react';
 import React, { MutableRefObject } from 'react';
-import {
-  Canvas,
-  CanvasRef,
-  Edge,
-  EdgeProps,
-  hasLink,
-  NodeProps,
-} from 'reaflow';
-import { EdgeData } from 'reaflow/dist/types';
-import { useRecoilState } from 'recoil';
-import { edgesState } from '../../states/edges';
-import { nodesState } from '../../states/nodes';
-import BaseNodeData from '../../types/BaseNodeData';
-import NodeRouter from '../nodes/NodeRouter';
-import cloneDeep from 'lodash.clonedeep';
+import { CanvasRef } from 'reaflow';
+import CanvasContainer from './CanvasContainer';
 
 type Props = {
   canvasRef: MutableRefObject<CanvasRef | null>;
   blocksContainerWidth: string;
   isDraggedNodeClose: boolean;
-  isDroppable: boolean;
-  setDroppable: (isDroppable: boolean) => void;
-  enteredNode: BaseNodeData | undefined;
-  setEnteredNode: (node: BaseNodeData | undefined) => void;
 }
 
 /**
@@ -34,15 +17,7 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
     canvasRef,
     blocksContainerWidth,
     isDraggedNodeClose,
-    isDroppable,
-    setDroppable,
-    enteredNode,
-    setEnteredNode,
   } = props;
-  const [nodes, setNodes] = useRecoilState<BaseNodeData[]>(nodesState);
-  const [edges, setEdges] = useRecoilState<EdgeData[]>(edgesState);
-
-  console.log('playground nodes', nodes);
 
   return (
     <div
@@ -65,97 +40,13 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
           transform: scale(1);
           z-index: -10000;
         }
-
-        .reaflow-canvas {
-          .edge {
-            stroke: #b1b1b7;
-            stroke-dasharray: 5;
-            animation: dashdraw .5s linear infinite;
-            stroke-width: 1;
-          }
-
-          @keyframes dashdraw {
-            0% {
-              stroke-dashoffset: 10;
-            }
-          }
-        }
       `}
     >
       <div className={'background'} />
-      <Canvas
-        ref={canvasRef}
-        className={'reaflow-canvas'}
-        direction={'RIGHT'}
-        nodes={nodes}
-        edges={edges}
-        node={(node: NodeProps) => {
-          const id = node.id;
-
-          const updateCurrentNode = (nodeData: Partial<BaseNodeData>): void => {
-            console.log('Updating current node with', nodeData);
-            const nodeToUpdateIndex = nodes.findIndex((node: BaseNodeData) => node.id === id);
-            console.log('updateCurrentNode nodeToUpdateIndex', nodeToUpdateIndex);
-            const nodeToUpdate = {
-              ...nodes[nodeToUpdateIndex],
-              ...nodeData,
-              id, // Force keep same id to avoid edge cases
-            };
-            console.log('updateCurrentNode updated node', nodeToUpdate);
-
-            const newNodes = cloneDeep(nodes);
-            newNodes[nodeToUpdateIndex] = nodeToUpdate;
-            console.log('updateCurrentNode new nodes', newNodes);
-
-            setNodes(newNodes);
-          };
-
-          console.log('node in canvas', node, nodes);
-          return (
-            <NodeRouter
-              node={node}
-              updateCurrentNode={updateCurrentNode}
-              isDroppable={isDroppable}
-              isDraggedNodeClose={isDraggedNodeClose}
-              enteredNode={enteredNode}
-              setEnteredNode={setEnteredNode}
-            />
-          );
-        }}
-        edge={(edge: EdgeProps) => (
-          <Edge
-            {...edge}
-            className={'edge'}
-          />
-        )}
-        onLayoutChange={layout => console.log('Layout', layout)}
-        onMouseEnter={() => {
-          if (!isDroppable) {
-            console.log('setDroppable', true);
-            setDroppable(true);
-          }
-        }}
-        onMouseLeave={() => {
-          // console.log('setDroppable', false);
-          // setDroppable(false);
-        }}
-        onNodeLinkCheck={(from: BaseNodeData, to: BaseNodeData) => {
-          console.log('onNodeLinkCheck', 'will link?', !hasLink(edges, from, to));
-          return !hasLink(edges, from, to);
-        }}
-        onNodeLink={(from, to) => {
-          const id = `${from.id}-${to.id}`;
-          console.log('onNodeLink', id);
-
-          setEdges([
-            ...edges,
-            {
-              id,
-              from: from.id,
-              to: to.id,
-            },
-          ]);
-        }}
+      <CanvasContainer
+        canvasRef={canvasRef}
+        blocksContainerWidth={blocksContainerWidth}
+        isDraggedNodeClose={isDraggedNodeClose}
       />
     </div>
   );

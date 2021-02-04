@@ -16,7 +16,6 @@ import {
   CanvasRef,
   useProximity,
 } from 'reaflow';
-import { EdgeData } from 'reaflow/dist/types';
 import { useRecoilState } from 'recoil';
 import settings from '../../settings';
 import { edgesState } from '../../states/edgesState';
@@ -49,12 +48,8 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
 
   // Used to create a reference to the canvas so we can pass it to the hook so it has knowledge about the canvas
   const canvasRef = useRef<CanvasRef | null>(null);
-
-  // Used to determine if we can drop the element (onto the canvas)
-  const [isDroppable, setDroppable] = useState<boolean>(false);
-
-  // Used to know which node has been last entered, so that when the user ends the drag we can link the activeDraggedNode to it
-  const [enteredNode, setEnteredNode] = useState<BaseNodeData | undefined>(undefined);
+  const [isDroppable, setDroppable] = useRecoilState(isDraggedNodeDroppableState);
+  const [lastFocusedNode, setLastFocusedNode] = useRecoilState(lastFocusedNodeState);
 
   // Used to know which node is being dragged by the user, so that we can display a "dragging preview" and link it to the enteredNode when drag ends
   const [activeDraggedNode, setActiveDraggedNode] = useState<BaseNodeData | undefined>(undefined);
@@ -97,7 +92,7 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
       }
 
       // Now let's set the matched node
-      setEnteredNode(matchNode);
+      setLastFocusedNode(matchNode);
 
       // We set this separately from the enteredNode because
       // you might want to do some validation on whether you can drop or not
@@ -123,14 +118,14 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
 
     if (isDroppable) {
       console.log('activeDraggedBlock', activeDraggedNode);
-      console.log('enteredNode', enteredNode);
+      console.log('enteredNode', lastFocusedNode);
 
       const newNode: BaseNodeData = createNode(activeDraggedNode);
       const result = addNodeAndEdge(
         nodes,
         edges,
         newNode,
-        enteredNode,
+        lastFocusedNode,
       );
       setNodes(result.nodes);
       setEdges(result.edges);
@@ -138,7 +133,7 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
 
     setDroppable(false);
     setActiveDraggedNode(undefined);
-    setEnteredNode(undefined);
+    setLastFocusedNode(undefined);
   };
 
   console.log('EditorContainer renders', nodes);
@@ -191,10 +186,6 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         canvasRef={canvasRef}
         blocksContainerWidth={blocksContainerWidth}
         isDraggedNodeClose={isDraggedNodeClose}
-        isDroppable={isDroppable}
-        setDroppable={setDroppable}
-        enteredNode={enteredNode}
-        setEnteredNode={setEnteredNode}
       />
 
       <Portal>

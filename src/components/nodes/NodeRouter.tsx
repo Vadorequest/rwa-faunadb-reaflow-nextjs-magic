@@ -1,9 +1,9 @@
 import classnames from 'classnames';
 import React from 'react';
-import {
-  NodeData,
-  NodeProps,
-} from 'reaflow';
+import { NodeProps } from 'reaflow';
+import { useRecoilState } from 'recoil';
+import { isDraggedNodeDroppableState } from '../../states/isDraggedNodeDroppableState';
+import { lastFocusedNodeState } from '../../states/lastFocusedNodeState';
 import BaseNodeData from '../../types/BaseNodeData';
 import BaseNodeType from '../../types/BaseNodeType';
 import InformationNode from './InformationNode';
@@ -12,22 +12,20 @@ import QuestionNode from './QuestionNode';
 type Props = {
   node: NodeProps;
   updateCurrentNode: (nodeData: Partial<BaseNodeData>) => void;
-  isDroppable: boolean;
   isDraggedNodeClose: boolean;
-  enteredNode: BaseNodeData | undefined;
-  setEnteredNode: (node: NodeData | undefined) => void;
 }
 
 const NodeRouter: React.FunctionComponent<Props> = (props) => {
   const {
     node,
     updateCurrentNode,
-    isDroppable,
     isDraggedNodeClose,
-    enteredNode: previouslyEnteredNode,
-    setEnteredNode,
   } = props;
-  console.log('router nodes', props)
+  const [lastFocusedNode, setLastFocusedNode] = useRecoilState(lastFocusedNodeState);
+
+  const [isDroppable, setDroppable] = useRecoilState(isDraggedNodeDroppableState);
+
+  console.log('router nodes', props);
 
   const { properties } = node || {};
   const { data } = properties || {};
@@ -44,12 +42,12 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
   }
 
   const defaultStrokeWidth = 0;
-  const strokeWidth = previouslyEnteredNode?.id === node.id && isDroppable && isDraggedNodeClose ? 10 : defaultStrokeWidth;
+  const strokeWidth = lastFocusedNode?.id === node.id && isDroppable && isDraggedNodeClose ? 10 : defaultStrokeWidth;
 
   const commonBlockProps = {
     ...node,
     updateCurrentNode,
-    className: classnames({ 'dnd-closest': previouslyEnteredNode?.id === node.id }, `node node-${type}`),
+    className: classnames({ 'dnd-closest': lastFocusedNode?.id === node.id }, `node node-${type}`),
     style: {
       strokeWidth: strokeWidth,
       fill: 'white',
@@ -57,15 +55,15 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
     },
     onClick: () => console.log(`node clicked (${node?.properties?.text || node?.id})`, node),
     onEnter: (event: MouseEvent, node: BaseNodeData) => {
-      if (node?.id !== previouslyEnteredNode?.id) {
-        setEnteredNode(node);
-        console.log('setEnteredNode', node);
+      if (node?.id !== lastFocusedNode?.id) {
+        setLastFocusedNode(node);
+        console.log('setLastFocusedNode', node);
       }
     },
     onLeave: (event: MouseEvent, node: BaseNodeData) => {
-      if (previouslyEnteredNode !== undefined) {
-        setEnteredNode(undefined);
-        console.log('setEnteredNode', undefined);
+      if (lastFocusedNode !== undefined) {
+        setLastFocusedNode(undefined);
+        console.log('setLastFocusedNode', undefined);
       }
     },
   };
