@@ -33,6 +33,8 @@ export const createNodeFromDefaultProps = (defaultProps: BaseNodeDefaultProps): 
     height: defaultProps.defaultHeight,
     data: {
       type: defaultProps.type,
+      defaultWidth: defaultProps.defaultWidth,
+      defaultHeight: defaultProps.defaultHeight,
     },
   };
 
