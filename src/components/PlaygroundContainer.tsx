@@ -5,20 +5,22 @@ import {
   Edge,
   EdgeProps,
   hasLink,
-  NodeData,
   NodeProps,
 } from 'reaflow';
 import { EdgeData } from 'reaflow/dist/types';
+import BaseNodeData from '../types/BaseNodeData';
 import NodeRouter from './NodeRouter';
 
 type Props = {
   blocksContainerWidth: string;
-  nodes: NodeData[];
-  setNodes: (nodes: NodeData[]) => void;
+  nodes: BaseNodeData[];
+  setNodes: (nodes: BaseNodeData[]) => void;
   edges: EdgeData[];
   setEdges: (edges: EdgeData[]) => void;
+  isDroppable: boolean;
   setDroppable: (isDroppable: boolean) => void;
-  setEnteredNode: (node: NodeData | undefined) => void;
+  enteredNode: BaseNodeData | undefined;
+  setEnteredNode: (node: BaseNodeData | undefined) => void;
 }
 
 /**
@@ -31,7 +33,9 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
     edges,
     setNodes,
     setEdges,
+    isDroppable,
     setDroppable,
+    enteredNode,
     setEnteredNode,
   } = props;
 
@@ -81,6 +85,7 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
         node={(node: NodeProps) => (
           <NodeRouter
             node={node}
+            enteredNode={enteredNode}
             setEnteredNode={setEnteredNode}
           />
         )}
@@ -92,14 +97,16 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
         )}
         onLayoutChange={layout => console.log('Layout', layout)}
         onMouseEnter={() => {
-          console.log('setDroppable', true);
-          setDroppable(true);
+          if (!isDroppable) {
+            console.log('setDroppable', true);
+            setDroppable(true);
+          }
         }}
         onMouseLeave={() => {
           // console.log('setDroppable', false);
           // setDroppable(false);
         }}
-        onNodeLinkCheck={(from: NodeData, to: NodeData) => {
+        onNodeLinkCheck={(from: BaseNodeData, to: BaseNodeData) => {
           return !hasLink(edges, from, to);
         }}
         onNodeLink={(from, to) => {

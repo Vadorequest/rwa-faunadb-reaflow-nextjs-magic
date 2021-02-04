@@ -8,10 +8,7 @@ import {
 import { AnyPointerEvent } from 'framer-motion/types/gestures/PanSession';
 import { Portal } from 'rdk';
 import React, { useState } from 'react';
-import {
-  addNodeAndEdge,
-  NodeData,
-} from 'reaflow';
+import { addNodeAndEdge } from 'reaflow';
 import { EdgeData } from 'reaflow/dist/types';
 import { v1 as uuid } from 'uuid'; // XXX Use v1 for uniqueness - See https://www.sohamkamani.com/blog/2016/10/05/uuid1-vs-uuid4/
 import BaseNodeData from '../types/BaseNodeData';
@@ -45,9 +42,9 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const [edges, setEdges] = useState<EdgeData[]>([]);
 
   const dragControls = useDragControls();
-  const [enteredNode, setEnteredNode] = useState<NodeData | undefined>(undefined);
+  const [enteredNode, setEnteredNode] = useState<BaseNodeData | undefined>(undefined);
   const [activeDraggedBlock, setActiveDraggedBlock] = useState<BaseNodeData | undefined>(undefined);
-  const [droppable, setDroppable] = useState<boolean>(false);
+  const [isDroppable, setDroppable] = useState<boolean>(false);
 
   const onNodeDragStart = (event: AnyPointerEvent, node: BaseNodeData) => {
     console.log('Start of Dragging', event, node);
@@ -57,13 +54,13 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
 
   const onNodeDragEnd = (event: AnyPointerEvent, info: PanInfo) => {
     console.log('End of Dragging', event);
-    console.log('droppable', droppable);
+    console.log('droppable', isDroppable);
 
-    if (droppable) {
+    if (isDroppable) {
       console.log('activeDraggedBlock', activeDraggedBlock);
       console.log('enteredNode', enteredNode);
 
-      const newNode: NodeData = createNode(activeDraggedBlock);
+      const newNode: BaseNodeData = createNode(activeDraggedBlock);
       const result = addNodeAndEdge(
         nodes,
         edges,
@@ -79,7 +76,7 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     setEnteredNode(undefined);
   };
 
-  console.log('Editor renders');
+  console.log('EditorContainer renders');
 
   return (
     <div
@@ -129,7 +126,9 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         setNodes={setNodes}
         edges={edges}
         setEdges={setEdges}
+        isDroppable={isDroppable}
         setDroppable={setDroppable}
+        enteredNode={enteredNode}
         setEnteredNode={setEnteredNode}
       />
 

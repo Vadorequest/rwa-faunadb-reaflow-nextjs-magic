@@ -39,6 +39,8 @@ const NodesContainer: React.FunctionComponent<Props> = (props): JSX.Element | nu
     QuestionNode,
   ];
 
+  console.log('NodesContainer renders');
+
   return (
     <div
       className={'blocks-container'}

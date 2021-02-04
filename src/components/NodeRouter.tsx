@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Node,
   NodeData,
   NodeProps,
 } from 'reaflow';
@@ -11,12 +10,14 @@ import QuestionNode from './nodes/QuestionNode';
 
 type Props = {
   node: NodeProps;
+  enteredNode: BaseNodeData | undefined;
   setEnteredNode: (node: NodeData | undefined) => void;
 }
 
 const NodeRouter: React.FunctionComponent<Props> = (props) => {
   const {
     node,
+    enteredNode: previouslyEnteredNode,
     setEnteredNode,
   } = props;
 
@@ -38,8 +39,18 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
     ...node,
     className: `node node-${type}`,
     onClick: () => console.log(`node clicked (${node?.properties?.text || node?.id})`, node),
-    onEnter: (event: MouseEvent, node: BaseNodeData) => setEnteredNode(node),
-    onLeave: (event: MouseEvent, node: BaseNodeData) => setEnteredNode(undefined)
+    onEnter: (event: MouseEvent, node: BaseNodeData) => {
+      if (node?.id !== previouslyEnteredNode?.id) {
+        setEnteredNode(node);
+        console.log('setEnteredNode', node);
+      }
+    },
+    onLeave: (event: MouseEvent, node: BaseNodeData) => {
+      if (previouslyEnteredNode !== undefined) {
+        setEnteredNode(undefined);
+        console.log('setEnteredNode', undefined);
+      }
+    },
   };
 
   // console.log('rendering node of type: ', type, commonBlockProps)
