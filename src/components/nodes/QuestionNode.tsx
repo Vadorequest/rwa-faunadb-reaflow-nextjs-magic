@@ -36,7 +36,6 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
 };
 QuestionNode.getDefaultNodeProps = (): BaseNodeDefaultProps => {
   return {
-    previewText: 'Question',
     type: 'question',
     defaultWidth: defaultWidth,
     defaultHeight: defaultHeight,

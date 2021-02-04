@@ -104,7 +104,6 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
 };
 InformationNode.getDefaultNodeProps = (): BaseNodeDefaultProps => {
   return {
-    previewText: 'Information',
     type: 'information',
     defaultWidth: defaultWidth,
     defaultHeight: defaultHeight,

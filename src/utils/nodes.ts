@@ -28,7 +28,7 @@ export const createNode = (nodeData?: Partial<BaseNodeData>): BaseNodeData => {
 export const createNodeFromDefaultProps = (defaultProps: BaseNodeDefaultProps): BaseNodeData => {
   console.log('createNodeFromDefaultProps', defaultProps);
   const node = {
-    text: defaultProps.previewText,
+    text: undefined,
     width: defaultProps.defaultWidth,
     height: defaultProps.defaultHeight,
     data: {
