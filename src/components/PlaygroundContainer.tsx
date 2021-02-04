@@ -19,7 +19,7 @@ type Props = {
   setNodes: (nodes: BaseNodeData[]) => void;
   edges: EdgeData[];
   setEdges: (edges: EdgeData[]) => void;
-  distance: number | null;
+  isDraggedNodeClose: boolean;
   isDroppable: boolean;
   setDroppable: (isDroppable: boolean) => void;
   enteredNode: BaseNodeData | undefined;
@@ -37,7 +37,7 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
     edges,
     setNodes,
     setEdges,
-    distance,
+    isDraggedNodeClose,
     isDroppable,
     setDroppable,
     enteredNode,
@@ -93,7 +93,7 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
           <NodeRouter
             node={node}
             isDroppable={isDroppable}
-            distance={distance}
+            isDraggedNodeClose={isDraggedNodeClose}
             enteredNode={enteredNode}
             setEnteredNode={setEnteredNode}
           />

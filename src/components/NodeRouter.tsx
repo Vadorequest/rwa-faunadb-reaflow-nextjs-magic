@@ -12,7 +12,7 @@ import QuestionNode from './nodes/QuestionNode';
 type Props = {
   node: NodeProps;
   isDroppable: boolean;
-  distance: number | null;
+  isDraggedNodeClose: boolean;
   enteredNode: BaseNodeData | undefined;
   setEnteredNode: (node: NodeData | undefined) => void;
 }
@@ -21,7 +21,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
   const {
     node,
     isDroppable,
-    distance,
+    isDraggedNodeClose,
     enteredNode: previouslyEnteredNode,
     setEnteredNode,
   } = props;
@@ -41,7 +41,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
   }
 
   const defaultStrokeWidth = 0;
-  const strokeWidth = previouslyEnteredNode?.id === node.id && isDroppable && distance && distance < 40 ? 10 : defaultStrokeWidth;
+  const strokeWidth = previouslyEnteredNode?.id === node.id && isDroppable && isDraggedNodeClose ? 10 : defaultStrokeWidth;
 
   const commonBlockProps = {
     ...node,

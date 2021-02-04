@@ -59,17 +59,36 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   // Used to know which node is being dragged by the user, so that we can display a "dragging preview" and link it to the enteredNode when drag ends
   const [activeDraggedNode, setActiveDraggedNode] = useState<BaseNodeData | undefined>(undefined);
 
+  // Used to know whether the dragged node is close to another node
+  const [isDraggedNodeClose, setIsDraggedNodeClose] = useState<boolean>(false);
+
   const {
-    // The distance from the closest element
-    distance,
     // Drag event handlers we need to hook into our drag
     onDragStart: onProximityDragStart,
     onDrag: onProximityDrag,
     onDragEnd: onProximityDragEnd,
   } = useProximity({
-    // The ref we defined above
     canvasRef,
-    onMatchChange: (match: string | null) => {
+
+    onIntersects: (match: string | null) => {
+      console.info('Node Intersected', match);
+    },
+
+    onDistanceChange: (distance: number | null) => {
+      console.info('Distance Changed', distance);
+
+      if (distance && distance < 40 && !isDraggedNodeClose) {
+        console.info('setIsDraggedNodeClose', true);
+        setIsDraggedNodeClose(true);
+      } else if ((!distance || distance > 40) && isDraggedNodeClose) {
+        console.info('setIsDraggedNodeClose', false);
+        setIsDraggedNodeClose(false);
+      }
+    },
+
+    onMatchChange: (match: string | null, distance: number | null) => {
+      console.info('Match Changed!', match);
+
       // If there is a match, let's find the node in
       // our models here
       let matchNode: BaseNodeData | undefined = undefined;
@@ -177,7 +196,7 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         setNodes={setNodes}
         edges={edges}
         setEdges={setEdges}
-        distance={distance}
+        isDraggedNodeClose={isDraggedNodeClose}
         isDroppable={isDroppable}
         setDroppable={setDroppable}
         enteredNode={enteredNode}

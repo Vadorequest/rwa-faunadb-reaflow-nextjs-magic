@@ -17,7 +17,7 @@
     "rdk": "5.0.6",
     "react": "17.0.1",
     "react-dom": "17.0.1",
-    "reaflow": "2.7.0",
+    "reaflow": "3.0.2",
     "uuid": "8.3.2"
   },
   "devDependencies": {

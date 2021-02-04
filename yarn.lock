@@ -2186,10 +2186,10 @@ readdirp@~3.5.0:
   dependencies:
     picomatch "^2.2.1"
 
-reaflow@2.7.0:
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/reaflow/-/reaflow-2.7.0.tgz#b3709a1139dcf7cb0c85ae00557f7061663a886e"
-  integrity sha512-CvAEp8FTsh95z3ToqOOHvHnkeccmMDLSQ7/9OExY2uDuBw29wyGJIJ/MHWkgJD1flHdYWtFbkd66VLOKohZ/5w==
+reaflow@3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/reaflow/-/reaflow-3.0.2.tgz#38bb2d18fb5e04294930a7f0dcbf77035a409373"
+  integrity sha512-clwEUeSJOcRaGmQ+nSG2H8HjZ7JceDT7o9idpFl71jUNr32cuoJyOQcuF8swJ8sHa14xSTL3ykrnTcxODwyLrQ==
   dependencies:
     calculate-size "^1.1.1"
     classnames "^2.2.6"
