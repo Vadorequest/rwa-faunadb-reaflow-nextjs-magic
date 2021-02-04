@@ -45,8 +45,20 @@ const NodesContainer: React.FunctionComponent<Props> = (props): JSX.Element | nu
     <div
       className={'blocks-container'}
       css={css`
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        color: white;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
         width: ${blocksContainerWidth};
-        background-color: lightgrey;
+        background-color: #f5f5f5;
+
+        .node {
+          margin: 5px;
+        }
       `}
     >
       {

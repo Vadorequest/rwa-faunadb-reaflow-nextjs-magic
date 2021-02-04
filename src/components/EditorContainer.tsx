@@ -24,6 +24,7 @@ import {
   createNodeFromDefaultProps,
 } from '../utils/nodes';
 import BasePreviewBlock from './blocks/BasePreviewBlock';
+import ContainerSeparator from './ContainerSeparator';
 import InformationNode from './nodes/InformationNode';
 import NodesContainer from './NodesContainer';
 import PlaygroundContainer from './PlaygroundContainer';
@@ -37,7 +38,7 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   if (!isBrowser()) {
     return null;
   }
-  const blocksContainerWidth = '10vw';
+  const blocksContainerWidth = '150px';
 
   const [nodes, setNodes] = useState<BaseNodeData[]>([
     createNodeFromDefaultProps(InformationNode.getDefaultNodeProps()),
@@ -188,6 +189,8 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         setEdges={setEdges}
         onNodeDragStart={onNodeDragStart}
       />
+
+      <ContainerSeparator blocksContainerWidth={blocksContainerWidth}  />
 
       <PlaygroundContainer
         canvasRef={canvasRef}
