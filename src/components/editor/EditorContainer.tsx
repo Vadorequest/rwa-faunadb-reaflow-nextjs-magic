@@ -18,7 +18,9 @@ import {
 } from 'reaflow';
 import { useRecoilState } from 'recoil';
 import settings from '../../settings';
+import { activeDraggedNodeState } from '../../states/activeDraggedNodeState';
 import { edgesState } from '../../states/edgesState';
+import { isDraggedNodeCloseState } from '../../states/isDraggedNodeCloseState';
 import { isDraggedNodeDroppableState } from '../../states/isDraggedNodeDroppableState';
 import { lastFocusedNodeState } from '../../states/lastFocusedNodeState';
 import { nodesState } from '../../states/nodesState'; // XXX Use v1 for uniqueness - See https://www.sohamkamani.com/blog/2016/10/05/uuid1-vs-uuid4/
@@ -50,12 +52,8 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const canvasRef = useRef<CanvasRef | null>(null);
   const [isDroppable, setDroppable] = useRecoilState(isDraggedNodeDroppableState);
   const [lastFocusedNode, setLastFocusedNode] = useRecoilState(lastFocusedNodeState);
-
-  // Used to know which node is being dragged by the user, so that we can display a "dragging preview" and link it to the enteredNode when drag ends
-  const [activeDraggedNode, setActiveDraggedNode] = useState<BaseNodeData | undefined>(undefined);
-
-  // Used to know whether the dragged node is close to another node
-  const [isDraggedNodeClose, setIsDraggedNodeClose] = useState<boolean>(false);
+  const [activeDraggedNode, setActiveDraggedNode] = useRecoilState(activeDraggedNodeState);
+  const [isDraggedNodeClose, setIsDraggedNodeClose] = useRecoilState(isDraggedNodeCloseState);
 
   const {
     // Drag event handlers we need to hook into our drag
@@ -185,7 +183,6 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
       <PlaygroundContainer
         canvasRef={canvasRef}
         blocksContainerWidth={blocksContainerWidth}
-        isDraggedNodeClose={isDraggedNodeClose}
       />
 
       <Portal>

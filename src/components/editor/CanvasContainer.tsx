@@ -19,7 +19,6 @@ import NodeRouter from '../nodes/NodeRouter';
 type Props = {
   canvasRef: MutableRefObject<CanvasRef | null>;
   blocksContainerWidth: string;
-  isDraggedNodeClose: boolean;
 }
 
 /**
@@ -28,7 +27,6 @@ type Props = {
 const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | null => {
   const {
     canvasRef,
-    isDraggedNodeClose,
   } = props;
   const [nodes, setNodes] = useRecoilState(nodesState);
   const [edges, setEdges] = useRecoilState(edgesState);
@@ -92,7 +90,6 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
             <NodeRouter
               node={node}
               updateCurrentNode={updateCurrentNode}
-              isDraggedNodeClose={isDraggedNodeClose}
             />
           );
         }}

@@ -6,7 +6,6 @@ import CanvasContainer from './CanvasContainer';
 type Props = {
   canvasRef: MutableRefObject<CanvasRef | null>;
   blocksContainerWidth: string;
-  isDraggedNodeClose: boolean;
 }
 
 /**
@@ -16,7 +15,6 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
   const {
     canvasRef,
     blocksContainerWidth,
-    isDraggedNodeClose,
   } = props;
 
   return (
@@ -46,7 +44,6 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
       <CanvasContainer
         canvasRef={canvasRef}
         blocksContainerWidth={blocksContainerWidth}
-        isDraggedNodeClose={isDraggedNodeClose}
       />
     </div>
   );

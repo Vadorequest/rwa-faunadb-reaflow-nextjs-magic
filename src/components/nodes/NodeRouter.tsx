@@ -2,6 +2,7 @@ import classnames from 'classnames';
 import React from 'react';
 import { NodeProps } from 'reaflow';
 import { useRecoilState } from 'recoil';
+import { isDraggedNodeCloseState } from '../../states/isDraggedNodeCloseState';
 import { isDraggedNodeDroppableState } from '../../states/isDraggedNodeDroppableState';
 import { lastFocusedNodeState } from '../../states/lastFocusedNodeState';
 import BaseNodeData from '../../types/BaseNodeData';
@@ -12,18 +13,16 @@ import QuestionNode from './QuestionNode';
 type Props = {
   node: NodeProps;
   updateCurrentNode: (nodeData: Partial<BaseNodeData>) => void;
-  isDraggedNodeClose: boolean;
 }
 
 const NodeRouter: React.FunctionComponent<Props> = (props) => {
   const {
     node,
     updateCurrentNode,
-    isDraggedNodeClose,
   } = props;
   const [lastFocusedNode, setLastFocusedNode] = useRecoilState(lastFocusedNodeState);
-
   const [isDroppable, setDroppable] = useRecoilState(isDraggedNodeDroppableState);
+  const [isDraggedNodeClose, setIsDraggedNodeClose] = useRecoilState(isDraggedNodeCloseState);
 
   console.log('router nodes', props);
 
