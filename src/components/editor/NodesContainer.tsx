@@ -2,6 +2,7 @@ import { css } from '@emotion/react';
 import { motion } from 'framer-motion';
 import { AnyPointerEvent } from 'framer-motion/types/gestures/PanSession';
 import React from 'react';
+import settings from '../../settings';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import BaseNodeData from '../../types/BaseNodeData';
 import { createNodeFromDefaultProps } from '../../utils/nodes';
@@ -9,7 +10,6 @@ import InformationNode from '../nodes/InformationNode';
 import QuestionNode from '../nodes/QuestionNode';
 
 type Props = {
-  blocksContainerWidth: string;
   onNodeDragStart: (event: AnyPointerEvent, node: BaseNodeData) => void;
 }
 
@@ -20,7 +20,6 @@ type Props = {
  */
 const NodesContainer: React.FunctionComponent<Props> = (props): JSX.Element | null => {
   const {
-    blocksContainerWidth,
     onNodeDragStart,
   } = props;
 
@@ -28,6 +27,7 @@ const NodesContainer: React.FunctionComponent<Props> = (props): JSX.Element | nu
     InformationNode,
     QuestionNode,
   ];
+  const blocksContainerWidth = settings.blocksContainer.width;
 
   console.log('NodesContainer renders');
 

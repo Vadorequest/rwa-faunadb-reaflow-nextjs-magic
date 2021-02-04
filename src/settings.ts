@@ -1,4 +1,8 @@
 export const settings = {
+  blocksContainer: {
+    width: '150px',
+  },
+
   /**
    * Drag & Drop
    */

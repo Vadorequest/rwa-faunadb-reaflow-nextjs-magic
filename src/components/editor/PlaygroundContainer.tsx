@@ -1,11 +1,11 @@
 import { css } from '@emotion/react';
 import React, { MutableRefObject } from 'react';
 import { CanvasRef } from 'reaflow';
+import settings from '../../settings';
 import CanvasContainer from './CanvasContainer';
 
 type Props = {
   canvasRef: MutableRefObject<CanvasRef | null>;
-  blocksContainerWidth: string;
 }
 
 /**
@@ -14,8 +14,8 @@ type Props = {
 const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element | null => {
   const {
     canvasRef,
-    blocksContainerWidth,
   } = props;
+  const blocksContainerWidth = settings.blocksContainer.width;
 
   return (
     <div

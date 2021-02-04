@@ -1,12 +1,11 @@
 import { css } from '@emotion/react';
 import React from 'react';
+import settings from '../../settings';
 
-type Props = {
-  blocksContainerWidth: string;
-}
+type Props = {}
 
 const ContainerSeparator: React.FunctionComponent<Props> = (props) => {
-  const { blocksContainerWidth } = props;
+  const blocksContainerWidth = settings.blocksContainer.width;
 
   return (
     <div

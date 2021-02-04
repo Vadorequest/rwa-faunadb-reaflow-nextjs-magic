@@ -7,10 +7,7 @@ import {
 } from 'framer-motion';
 import { AnyPointerEvent } from 'framer-motion/types/gestures/PanSession';
 import { Portal } from 'rdk';
-import React, {
-  useRef,
-  useState,
-} from 'react';
+import React, { useRef } from 'react';
 import {
   addNodeAndEdge,
   CanvasRef,
@@ -40,20 +37,18 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   if (!isBrowser()) {
     return null;
   }
-  const blocksContainerWidth = '150px';
-
   const [nodes, setNodes] = useRecoilState(nodesState);
   const [edges, setEdges] = useRecoilState(edgesState);
-
-  // Controls from framer-motion for dragging
-  const dragControls = useDragControls();
-
-  // Used to create a reference to the canvas so we can pass it to the hook so it has knowledge about the canvas
-  const canvasRef = useRef<CanvasRef | null>(null);
   const [isDroppable, setDroppable] = useRecoilState(isDraggedNodeDroppableState);
   const [lastFocusedNode, setLastFocusedNode] = useRecoilState(lastFocusedNodeState);
   const [activeDraggedNode, setActiveDraggedNode] = useRecoilState(activeDraggedNodeState);
   const [isDraggedNodeClose, setIsDraggedNodeClose] = useRecoilState(isDraggedNodeCloseState);
+
+  // Used to create a reference to the canvas so we can pass it to the hook so it has knowledge about the canvas
+  const canvasRef = useRef<CanvasRef | null>(null);
+
+  // Controls from framer-motion for dragging
+  const dragControls = useDragControls();
 
   const {
     // Drag event handlers we need to hook into our drag
@@ -174,15 +169,13 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
       `}
     >
       <NodesContainer
-        blocksContainerWidth={blocksContainerWidth}
         onNodeDragStart={onNodeDragStart}
       />
 
-      <ContainerSeparator blocksContainerWidth={blocksContainerWidth} />
+      <ContainerSeparator />
 
       <PlaygroundContainer
         canvasRef={canvasRef}
-        blocksContainerWidth={blocksContainerWidth}
       />
 
       <Portal>
