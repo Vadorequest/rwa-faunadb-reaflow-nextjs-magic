@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import React from 'react';
 import TextareaAutosize, { TextareaAutosizeProps } from 'react-textarea-autosize';
 
@@ -20,6 +21,9 @@ export const Textarea: React.FunctionComponent<Props> = (props) => {
       minRows={minRows}
       maxRows={maxRows}
       {...rest}
+      css={css`
+        resize: none;
+      `}
     />
   );
 };
