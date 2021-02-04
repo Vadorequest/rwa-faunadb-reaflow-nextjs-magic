@@ -79,6 +79,8 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     setEnteredNode(undefined);
   };
 
+  console.log('Editor renders');
+
   return (
     <div
       className={'editor-container'}
