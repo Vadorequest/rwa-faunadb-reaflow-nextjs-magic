@@ -1,5 +1,7 @@
 import { css } from '@emotion/react';
-import React from 'react';
+import React, { useState } from 'react';
+import Select from 'react-select';
+import { OptionTypeBase } from 'react-select/src/types';
 import { TextareaHeightChangeMeta } from 'react-textarea-autosize/dist/declarations/src';
 import { Node } from 'reaflow';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
@@ -14,7 +16,7 @@ type Props = {
 } & BaseNodeProps;
 
 const defaultWidth = 200;
-const defaultHeight = 100;
+const defaultHeight = 400;
 
 const QuestionNode: BaseNodeComponent<Props> = (props) => {
   const {
@@ -43,6 +45,18 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
               width,
               height,
             } = event;
+
+            const choiceTypes = [
+              {
+                value: `text`,
+                label: `Text`,
+              },
+              {
+                value: `single-quick-reply`,
+                label: `Single quick reply`,
+              },
+            ];
+            const [selectedChoiceType, setSelectedChoiceType] = useState<OptionTypeBase | undefined>(undefined);
 
             /**
              * When textarea input height changes, we need to increase the height of the element accordingly.
@@ -87,12 +101,40 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                   >
                     Question
                   </div>
-                  <Textarea
-                    className={'question-text'}
-                    defaultValue={`Ask something here`}
-                    placeholder={'Ask something here'}
-                    onHeightChange={onHeightChange}
-                  />
+
+                  <div
+                    className={'question-text-contained'}
+                  >
+                    <Textarea
+                      className={'question-text'}
+                      defaultValue={`Ask something here`}
+                      placeholder={'Ask something here'}
+                      onHeightChange={onHeightChange}
+                    />
+                  </div>
+
+                  <div
+                    className={'choice-container'}
+                  >
+                    <div
+                      className={'choice-header'}
+                    >
+                      Choice
+                    </div>
+                    <div
+                      className={'choice-type-select'}
+                    >
+                      <Select
+                        className={'select select-simple'}
+                        isMulti={false}
+                        value={selectedChoiceType}
+                        options={choiceTypes}
+                        onChange={(selectedChoice: OptionTypeBase, action: { action: string }): void => {
+                          setSelectedChoiceType(selectedChoice);
+                        }}
+                      />
+                    </div>
+                  </div>
                 </div>
               </foreignObject>
             );

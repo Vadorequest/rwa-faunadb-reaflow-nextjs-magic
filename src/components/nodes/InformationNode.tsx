@@ -87,12 +87,17 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
                   >
                     Information
                   </div>
-                  <Textarea
-                    className={'information-text'}
-                    defaultValue={`Say something here`}
-                    placeholder={'Say something here'}
-                    onHeightChange={onHeightChange}
-                  />
+
+                  <div
+                    className={'question-text-contained'}
+                  >
+                    <Textarea
+                      className={'information-text'}
+                      defaultValue={`Say something here`}
+                      placeholder={'Say something here'}
+                      onHeightChange={onHeightChange}
+                    />
+                  </div>
                 </div>
               </foreignObject>
             );
