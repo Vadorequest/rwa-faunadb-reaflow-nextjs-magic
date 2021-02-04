@@ -27,12 +27,12 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
     return (
       <Node
         {...rest}
-        css={css`
-          width: ${minWidth}px;
-          height: ${minHeight}px;
-        `}
+        // css={css`
+        //   width: ${minWidth}px;
+        //   height: ${minHeight}px;
+        // `}
       >
-        {
+        {/*{
           (event) => {
             // console.log('event', event);
             return (
@@ -41,7 +41,7 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
               </foreignObject>
             );
           }
-        }
+        }*/}
       </Node>
     );
   }

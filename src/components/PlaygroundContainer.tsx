@@ -71,18 +71,11 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
           }
         }
       `}
-      onMouseEnter={() => {
-        console.log('setDroppable', true);
-        setDroppable(true);
-      }}
-      onMouseLeave={() => {
-        console.log('setDroppable', false);
-        setDroppable(false);
-      }}
     >
       <div className={'background'} />
       <Canvas
         className={'reaflow-canvas'}
+        direction={'RIGHT'}
         nodes={nodes}
         edges={edges}
         node={(node: NodeProps) => (
@@ -98,6 +91,14 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
           />
         )}
         onLayoutChange={layout => console.log('Layout', layout)}
+        onMouseEnter={() => {
+          console.log('setDroppable', true);
+          setDroppable(true);
+        }}
+        onMouseLeave={() => {
+          // console.log('setDroppable', false);
+          // setDroppable(false);
+        }}
         onNodeLinkCheck={(from: NodeData, to: NodeData) => {
           return !hasLink(edges, from, to);
         }}
