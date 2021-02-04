@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+import cloneDeep from 'lodash.clonedeep';
 import React, { MutableRefObject } from 'react';
 import {
   Canvas,
@@ -105,7 +106,7 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
             };
             console.log('updateCurrentNode updated node', nodeToUpdate);
 
-            const newNodes = nodes;
+            const newNodes = cloneDeep(nodes);
             newNodes[nodeToUpdateIndex] = nodeToUpdate;
             console.log('updateCurrentNode new nodes', newNodes);
 
