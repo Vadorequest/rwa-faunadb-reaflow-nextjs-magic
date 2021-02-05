@@ -64,8 +64,8 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         direction={'RIGHT'}
         nodes={nodes}
         edges={edges}
-        node={(node: NodeProps) => {
-          const id = node.id;
+        node={(nodeProps: NodeProps) => {
+          const id = nodeProps.id;
 
           const updateCurrentNode = (nodeData: Partial<BaseNodeData>): void => {
             console.log('Updating current node with', nodeData);
@@ -85,10 +85,10 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
             setNodes(newNodes);
           };
 
-          console.log('node in canvas', node, nodes);
+          console.log('node in canvas', nodeProps, nodes);
           return (
             <NodeRouter
-              node={node}
+              nodeProps={nodeProps}
               updateCurrentNode={updateCurrentNode}
             />
           );

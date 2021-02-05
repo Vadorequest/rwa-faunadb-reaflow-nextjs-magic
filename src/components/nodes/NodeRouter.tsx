@@ -1,6 +1,7 @@
 import classnames from 'classnames';
 import React from 'react';
 import { NodeProps } from 'reaflow';
+import { NodeData } from 'reaflow/dist/types';
 import { useRecoilState } from 'recoil';
 import { isDraggedNodeCloseState } from '../../states/isDraggedNodeCloseState';
 import { isDraggedNodeDroppableState } from '../../states/isDraggedNodeDroppableState';
@@ -13,13 +14,13 @@ import InformationNode from './InformationNode';
 import QuestionNode from './QuestionNode';
 
 type Props = {
-  node: NodeProps;
+  nodeProps: NodeProps;
   updateCurrentNode: (nodeData: Partial<BaseNodeData>) => void;
 }
 
 const NodeRouter: React.FunctionComponent<Props> = (props) => {
   const {
-    node,
+    nodeProps,
     updateCurrentNode,
   } = props;
   const [lastFocusedNode, setLastFocusedNode] = useRecoilState(lastFocusedNodeState);
@@ -29,7 +30,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
 
   console.log('router nodes', props);
 
-  const { properties } = node || {};
+  const { properties } = nodeProps || {};
   const { data } = properties || {};
   const { type }: { type: BaseNodeType } = data || {};
 
@@ -44,21 +45,20 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
   }
 
   const defaultStrokeWidth = 0;
-  const strokeWidth = lastFocusedNode?.id === node.id && isDroppable && isDraggedNodeClose ? 10 : defaultStrokeWidth;
+  const strokeWidth = lastFocusedNode?.id === nodeProps.id && isDroppable && isDraggedNodeClose ? 10 : defaultStrokeWidth;
 
   const commonBlockProps: Partial<BaseNodeProps> = {
-    ...node,
+    ...nodeProps,
     updateCurrentNode,
-    className: classnames({ 'dnd-closest': lastFocusedNode?.id === node.id }, `node node-${type}`),
+    className: classnames({ 'dnd-closest': lastFocusedNode?.id === nodeProps.id }, `node node-${type}`),
     style: {
       strokeWidth: strokeWidth,
       fill: 'white',
       color: 'black',
     },
-    onClick: () => {
-
-      console.log(`node clicked (${node?.properties?.text || node?.id})`, node)
-      // setSelectedNodes([node]);
+    onClick: (event: React.MouseEvent<SVGGElement, MouseEvent>, node: NodeData) => {
+      console.log(`node clicked (${nodeProps?.properties?.text || nodeProps?.id})`, nodeProps)
+      setSelectedNodes([node]);
     },
     onEnter: (event: React.MouseEvent<SVGGElement, MouseEvent>, node: BaseNodeData) => {
       if (node?.id !== lastFocusedNode?.id) {
