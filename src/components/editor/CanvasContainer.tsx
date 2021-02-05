@@ -1,5 +1,4 @@
 import { css } from '@emotion/react';
-import cloneDeep from 'lodash.clonedeep';
 import React, { MutableRefObject } from 'react';
 import {
   Canvas,
@@ -11,6 +10,7 @@ import {
 import { useRecoilState } from 'recoil';
 import { edgesState } from '../../states/edgesState';
 import { nodesState } from '../../states/nodesState';
+import { selectedNodesState } from '../../states/selectedNodesState';
 import BaseNodeData from '../../types/BaseNodeData';
 import BaseEdge from '../edges/BaseEdge';
 import NodeRouter from '../nodes/NodeRouter';
@@ -28,6 +28,8 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   } = props;
   const [nodes, setNodes] = useRecoilState(nodesState);
   const [edges, setEdges] = useRecoilState(edgesState);
+  const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);
+  const selections = selectedNodes.map((node) => node.id);
 
   return (
     <div
@@ -61,32 +63,11 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         direction={'RIGHT'}
         nodes={nodes}
         edges={edges}
+        selections={selections}
         node={(nodeProps: NodeProps) => {
-          const id = nodeProps.id;
-
-          const updateCurrentNode = (nodeData: Partial<BaseNodeData>): void => {
-            console.log('Updating current node with', nodeData);
-            const nodeToUpdateIndex = nodes.findIndex((node: BaseNodeData) => node.id === id);
-            console.log('updateCurrentNode nodeToUpdateIndex', nodeToUpdateIndex);
-            const nodeToUpdate = {
-              ...nodes[nodeToUpdateIndex],
-              ...nodeData,
-              id, // Force keep same id to avoid edge cases
-            };
-            console.log('updateCurrentNode updated node', nodeToUpdate);
-
-            const newNodes = cloneDeep(nodes);
-            newNodes[nodeToUpdateIndex] = nodeToUpdate;
-            console.log('updateCurrentNode new nodes', newNodes);
-
-            setNodes(newNodes);
-          };
-
-          // console.log('node in canvas', nodeProps, nodes);
           return (
             <NodeRouter
               nodeProps={nodeProps}
-              updateCurrentNode={updateCurrentNode}
             />
           );
         }}

@@ -1,8 +1,10 @@
 import classnames from 'classnames';
+import cloneDeep from 'lodash.clonedeep';
 import React from 'react';
 import { NodeProps } from 'reaflow';
 import { NodeData } from 'reaflow/dist/types';
 import { useRecoilState } from 'recoil';
+import { nodesState } from '../../states/nodesState';
 import { selectedNodesState } from '../../states/selectedNodesState';
 import BaseNodeData from '../../types/BaseNodeData';
 import BaseNodeProps from '../../types/BaseNodeProps';
@@ -12,14 +14,13 @@ import QuestionNode from './QuestionNode';
 
 type Props = {
   nodeProps: NodeProps;
-  updateCurrentNode: (nodeData: Partial<BaseNodeData>) => void;
 }
 
 const NodeRouter: React.FunctionComponent<Props> = (props) => {
   const {
     nodeProps,
-    updateCurrentNode,
   } = props;
+  const [nodes, setNodes] = useRecoilState(nodesState);
   const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);
 
   // console.log('router nodes', props);
@@ -37,6 +38,29 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
 
     return null;
   }
+
+  /**
+   * Updates the properties of the current node.
+   *
+   * @param nodeData
+   */
+  const updateCurrentNode = (nodeData: Partial<BaseNodeData>): void => {
+    console.log('Updating current node with', nodeData);
+    const nodeToUpdateIndex = nodes.findIndex((node: BaseNodeData) => node.id === nodeProps.id);
+    console.log('updateCurrentNode nodeToUpdateIndex', nodeToUpdateIndex);
+    const nodeToUpdate = {
+      ...nodes[nodeToUpdateIndex],
+      ...nodeData,
+      id: nodeProps.id, // Force keep same id to avoid edge cases
+    };
+    console.log('updateCurrentNode updated node', nodeToUpdate);
+
+    const newNodes = cloneDeep(nodes);
+    newNodes[nodeToUpdateIndex] = nodeToUpdate;
+    console.log('updateCurrentNode new nodes', newNodes);
+
+    setNodes(newNodes);
+  };
 
   /**
    * When clicking on a node.
