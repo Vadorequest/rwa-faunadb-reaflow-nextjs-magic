@@ -48,7 +48,6 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
           isDisplayed: !blockPickerMenu.isDisplayed, // Toggle on click
           onBlockClick,
         });
-
       }}
     />
   );
