@@ -2,6 +2,7 @@ import { css } from '@emotion/react';
 import React, { MutableRefObject } from 'react';
 import { CanvasRef } from 'reaflow';
 import settings from '../../settings';
+import BlockPickerMenu from '../blocks/BlockPickerMenu';
 import CanvasContainer from './CanvasContainer';
 
 type Props = {
@@ -15,7 +16,6 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
   const {
     canvasRef,
   } = props;
-  const blocksContainerWidth = settings.blocksContainer.width;
 
   return (
     <div
@@ -24,7 +24,7 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
         position: absolute;
         top: 0;
         bottom: 0;
-        left: ${blocksContainerWidth};
+        left: ${settings.containerSeparator.width};
         right: 0;
 
         .background {
@@ -43,8 +43,9 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
       <div className={'background'} />
       <CanvasContainer
         canvasRef={canvasRef}
-        blocksContainerWidth={blocksContainerWidth}
       />
+
+      <BlockPickerMenu />
     </div>
   );
 };

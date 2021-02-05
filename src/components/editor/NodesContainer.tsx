@@ -45,6 +45,7 @@ const NodesContainer: React.FunctionComponent<Props> = (props): JSX.Element | nu
         flex-direction: column;
         width: ${blocksContainerWidth};
         background-color: #f5f5f5;
+        z-index: 1;
 
         .node {
           margin: 5px;

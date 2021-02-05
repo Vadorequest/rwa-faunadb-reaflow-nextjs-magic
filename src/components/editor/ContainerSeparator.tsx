@@ -5,8 +5,6 @@ import settings from '../../settings';
 type Props = {}
 
 const ContainerSeparator: React.FunctionComponent<Props> = (props) => {
-  const blocksContainerWidth = settings.blocksContainer.width;
-
   return (
     <div
       className={'containers-separator'}
@@ -14,8 +12,8 @@ const ContainerSeparator: React.FunctionComponent<Props> = (props) => {
         position: absolute;
         top: 0;
         bottom: 0;
-        left: ${blocksContainerWidth};
-        width: 20px;
+        left: ${settings.blocksContainer.width};
+        width: ${settings.containerSeparator.width};
         margin: 0;
         background-color: white;
       `}

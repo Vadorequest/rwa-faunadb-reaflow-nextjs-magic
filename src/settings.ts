@@ -12,6 +12,10 @@ export const settings = {
     width: '150px',
   },
 
+  containerSeparator:{
+    width: '20px'
+  },
+
   /**
    * Drag & Drop
    */

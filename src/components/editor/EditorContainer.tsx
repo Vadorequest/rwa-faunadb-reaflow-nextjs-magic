@@ -16,10 +16,10 @@ import {
 import { useRecoilState } from 'recoil';
 import settings from '../../settings';
 import { activeDraggedNodeState } from '../../states/activeDraggedNodeState';
+import { currentDraggedNodeTargetState } from '../../states/currentDraggedNodeTargetState';
 import { edgesState } from '../../states/edgesState';
 import { isDraggedNodeCloseState } from '../../states/isDraggedNodeCloseState';
 import { isDraggedNodeDroppableState } from '../../states/isDraggedNodeDroppableState';
-import { currentDraggedNodeTargetState } from '../../states/currentDraggedNodeTargetState';
 import { nodesState } from '../../states/nodesState'; // XXX Use v1 for uniqueness - See https://www.sohamkamani.com/blog/2016/10/05/uuid1-vs-uuid4/
 import BaseNodeData from '../../types/BaseNodeData';
 import { createNode } from '../../utils/nodes';
