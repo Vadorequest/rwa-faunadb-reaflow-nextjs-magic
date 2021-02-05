@@ -85,7 +85,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
             setNodes(newNodes);
           };
 
-          console.log('node in canvas', nodeProps, nodes);
+          // console.log('node in canvas', nodeProps, nodes);
           return (
             <NodeRouter
               nodeProps={nodeProps}

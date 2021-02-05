@@ -39,8 +39,8 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
       >
         {
           (event) => {
-            console.log('event ...rest', rest);
-            console.log('event', event);
+            // console.log('event ...rest', rest);
+            // console.log('event', event);
 
             const {
               width,
@@ -72,6 +72,12 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
                 x={0}
                 y={0}
                 css={css`
+                  pointer-events: none;
+                  
+                  div {
+                    pointer-events: auto;
+                  }
+
                   .node {
                     margin: 5px;
                   }

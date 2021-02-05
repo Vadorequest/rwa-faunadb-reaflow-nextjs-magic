@@ -19,7 +19,7 @@ import { activeDraggedNodeState } from '../../states/activeDraggedNodeState';
 import { edgesState } from '../../states/edgesState';
 import { isDraggedNodeCloseState } from '../../states/isDraggedNodeCloseState';
 import { isDraggedNodeDroppableState } from '../../states/isDraggedNodeDroppableState';
-import { lastFocusedNodeState } from '../../states/lastFocusedNodeState';
+import { currentDraggedNodeTargetState } from '../../states/currentDraggedNodeTargetState';
 import { nodesState } from '../../states/nodesState'; // XXX Use v1 for uniqueness - See https://www.sohamkamani.com/blog/2016/10/05/uuid1-vs-uuid4/
 import BaseNodeData from '../../types/BaseNodeData';
 import { createNode } from '../../utils/nodes';
@@ -40,7 +40,7 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const [nodes, setNodes] = useRecoilState(nodesState);
   const [edges, setEdges] = useRecoilState(edgesState);
   const [isDroppable, setDroppable] = useRecoilState(isDraggedNodeDroppableState);
-  const [lastFocusedNode, setLastFocusedNode] = useRecoilState(lastFocusedNodeState);
+  const [currentDraggedNodeTarget, setCurrentDraggedNodeTarget] = useRecoilState(currentDraggedNodeTargetState);
   const [activeDraggedNode, setActiveDraggedNode] = useRecoilState(activeDraggedNodeState);
   const [isDraggedNodeClose, setIsDraggedNodeClose] = useRecoilState(isDraggedNodeCloseState);
 
@@ -85,7 +85,7 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
       }
 
       // Now let's set the matched node
-      setLastFocusedNode(matchNode);
+      setCurrentDraggedNodeTarget(matchNode);
 
       // We set this separately from the enteredNode because
       // you might want to do some validation on whether you can drop or not
@@ -111,14 +111,14 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
 
     if (isDroppable) {
       console.log('activeDraggedBlock', activeDraggedNode);
-      console.log('enteredNode', lastFocusedNode);
+      console.log('enteredNode', currentDraggedNodeTarget);
 
       const newNode: BaseNodeData = createNode(activeDraggedNode);
       const result = addNodeAndEdge(
         nodes,
         edges,
         newNode,
-        lastFocusedNode,
+        currentDraggedNodeTarget,
       );
       setNodes(result.nodes);
       setEdges(result.edges);
@@ -126,7 +126,7 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
 
     setDroppable(false);
     setActiveDraggedNode(undefined);
-    setLastFocusedNode(undefined);
+    setCurrentDraggedNodeTarget(undefined);
   };
 
   console.log('EditorContainer renders', nodes);

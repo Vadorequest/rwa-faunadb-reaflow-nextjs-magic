@@ -37,8 +37,8 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
       >
         {
           (event) => {
-            console.log('event ...rest', rest);
-            console.log('event', event);
+            // console.log('event ...rest', rest);
+            // console.log('event', event);
 
             const {
               width,
