@@ -3,12 +3,14 @@ import React from 'react';
 import {
   addNodeAndEdge,
   Port,
+  PortData,
 } from 'reaflow';
 import { PortProps } from 'reaflow/dist/symbols/Port/Port';
 import { useRecoilState } from 'recoil';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { edgesState } from '../../states/edgesState';
 import { nodesState } from '../../states/nodesState';
+import BaseNodeData from '../../types/BaseNodeData';
 import BaseNodeType from '../../types/BaseNodeType';
 import BlockPickerMenuState, { OnBlockClick } from '../../types/BlockPickerMenu';
 import { createNodeFromDefaultProps } from '../../utils/nodes';
@@ -20,27 +22,35 @@ type Props = {
 } & Partial<PortProps>;
 
 const BasePort: React.FunctionComponent<Props> = (props) => {
-  const { fromNodeId, ...rest } = props;
+  const {
+    fromNodeId,
+    ...rest
+  } = props;
 
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState<BlockPickerMenuState>(blockPickerMenuState);
   const [nodes, setNodes] = useRecoilState(nodesState);
   const [edges, setEdges] = useRecoilState(edgesState);
+  const node: BaseNodeData = nodes.find((node) => node.id === fromNodeId) as BaseNodeData;
 
   return (
     <Port
-      onClick={(e, node) => {
+      onClick={(event: React.MouseEvent<SVGGElement, MouseEvent>, port: PortData) => {
         const onBlockClick: OnBlockClick = (nodeType: BaseNodeType) => {
           console.log('onBlockClick', nodeType);
           const NodeComponent = nodeType === 'question' ? QuestionNode : InformationNode;
           const newNode = createNodeFromDefaultProps(NodeComponent.getDefaultNodeProps());
-          const results = addNodeAndEdge(cloneDeep(nodes), cloneDeep(edges), newNode, { id: fromNodeId as string });
+          const fromNode: BaseNodeData = port.side === 'EAST' ? newNode : node;
+          const toNode: BaseNodeData = port.side === 'EAST' ? node : newNode;
+          // TODO Doesn't work when selecting the left port - See https://github.com/reaviz/reaflow/issues/48
+          const results = addNodeAndEdge(cloneDeep(nodes), cloneDeep(edges), fromNode, toNode);
+          console.log('addNodeAndEdge fromNode', fromNode, 'toNode', toNode, 'results', results);
 
           setNodes(results.nodes);
           setEdges(results.edges);
         };
 
         setBlockPickerMenu({
-          isDisplayed: !blockPickerMenu.isDisplayed, // Toggle on click
+          isDisplayed: true, // Toggle on click XXX change later, should toggle but not easy to test when toggle is on
           onBlockClick,
         });
       }}

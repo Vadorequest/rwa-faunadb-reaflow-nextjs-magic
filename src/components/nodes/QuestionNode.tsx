@@ -2,12 +2,17 @@ import { css } from '@emotion/react';
 import React, { useState } from 'react';
 import { OptionTypeBase } from 'react-select/src/types';
 import { TextareaHeightChangeMeta } from 'react-textarea-autosize/dist/declarations/src';
-import { Node } from 'reaflow';
+import {
+  Node,
+  PortData,
+} from 'reaflow';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import BaseNodeData from '../../types/BaseNodeData';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
+import { createPort } from '../../utils/ports';
 import Textarea from '../plugins/Textarea';
+import InformationNode from './InformationNode';
 
 type Props = {
   updateCurrentNode?: (nodeData: Partial<BaseNodeData>) => void;
@@ -130,7 +135,25 @@ QuestionNode.getDefaultNodeProps = (): BaseNodeDefaultProps => {
     type: 'question',
     defaultWidth: defaultWidth,
     defaultHeight: defaultHeight,
+    // @ts-ignore
+    ports: InformationNode.getDefaultPorts(),
   };
+};
+QuestionNode.getDefaultPorts = (): PortData[] => {
+  return [
+    createPort({
+      height: 10,
+      width: 10,
+      alignment: 'CENTER',
+      side: 'EAST',
+    }),
+    createPort({
+      height: 10,
+      width: 10,
+      alignment: 'CENTER',
+      side: 'WEST',
+    }),
+  ];
 };
 
 export default QuestionNode;
