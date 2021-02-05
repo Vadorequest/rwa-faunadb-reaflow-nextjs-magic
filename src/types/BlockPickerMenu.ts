@@ -6,7 +6,7 @@ export type BlockPickerMenuTarget = {
   size?: number;
 };
 
-export type OnBlockClick = (nodeType: BaseNodeType) => void;
+export type OnBlockClick = (blockType: BaseNodeType) => void;
 
 export type BlockPickerMenu = {
   target?: BlockPickerMenuTarget;

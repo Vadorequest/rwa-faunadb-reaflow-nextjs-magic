@@ -5,7 +5,6 @@ import BaseNodeData from './BaseNodeData';
  * Props received by any node.
  */
 export type BaseNodeProps = {
-  isPreview?: boolean;
   updateCurrentNode?: (nodeData: Partial<BaseNodeData>) => void;
 } & Partial<NodeProps>;
 

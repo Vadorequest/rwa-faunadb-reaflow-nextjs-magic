@@ -3,12 +3,18 @@ import React from 'react';
 import { useRecoilState } from 'recoil';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import BlockPickerMenuState from '../../types/BlockPickerMenu';
+import InformationBlock from './InformationBlock';
+import QuestionBlock from './QuestionBlock';
 
 type Props = {};
 
 const BlockPickerMenu: React.FunctionComponent<Props> = (props) => {
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState<BlockPickerMenuState>(blockPickerMenuState);
-  const { onBlockClick, isDisplayed, target } = blockPickerMenu;
+  const {
+    onBlockClick,
+    isDisplayed,
+    target,
+  } = blockPickerMenu;
 
   if (!isDisplayed) {
     return null;
@@ -44,16 +50,14 @@ const BlockPickerMenu: React.FunctionComponent<Props> = (props) => {
       <div
         className={'blocks-picker'}
       >
-        <div
-          onClick={() => onBlockClick && onBlockClick('information')}
+        <InformationBlock
+          onClick={onBlockClick}
         >
           Information
-        </div>
-        <div
-          onClick={() => onBlockClick && onBlockClick('question')}
-        >
-          Question
-        </div>
+        </InformationBlock>
+        <QuestionBlock
+          onClick={onBlockClick}
+        />
       </div>
     </div>
 
