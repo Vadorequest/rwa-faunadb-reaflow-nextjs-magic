@@ -1,6 +1,7 @@
+import { Select as ChakraUISelect } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import React, { useState } from 'react';
-import Select from 'react-select';
+import ReactSelect from 'react-select';
 import { OptionTypeBase } from 'react-select/src/types';
 import { TextareaHeightChangeMeta } from 'react-textarea-autosize/dist/declarations/src';
 import { Node } from 'reaflow';
@@ -124,7 +125,9 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                     <div
                       className={'choice-type-select'}
                     >
-                      <Select
+                      Using React Select:
+                      <br />
+                      <ReactSelect
                         className={'select select-simple'}
                         isMulti={false}
                         value={selectedChoiceType}
@@ -133,6 +136,22 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                           setSelectedChoiceType(selectedChoice);
                         }}
                       />
+
+                      Using ChakraUI Select:
+                      <br />
+                      <ChakraUISelect placeholder="Select option">
+                        <option value="option1">Option 1</option>
+                        <option value="option2">Option 2</option>
+                        <option value="option3">Option 3</option>
+                      </ChakraUISelect>
+
+                      Using native HTML select element:
+                      <br />
+                      <select>
+                        <option value="option1">Option 1</option>
+                        <option value="option2">Option 2</option>
+                        <option value="option3">Option 3</option>
+                      </select>
                     </div>
                   </div>
                 </div>
