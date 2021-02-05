@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import React from 'react';
+import React, { MouseEventHandler } from 'react';
 import { TextareaHeightChangeMeta } from 'react-textarea-autosize/dist/declarations/src';
 import { Node } from 'reaflow';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
@@ -21,6 +21,9 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
     isPreview = false,
     updateCurrentNode,
     ...rest
+  } = props;
+  const {
+    onClick,
   } = props;
 
   if (isPreview) {
@@ -78,6 +81,7 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
                     background-color: #eaeaea;
                   }
                 `}
+                onClick={onClick as MouseEventHandler}
               >
                 <div
                   className={'information-node node'}
