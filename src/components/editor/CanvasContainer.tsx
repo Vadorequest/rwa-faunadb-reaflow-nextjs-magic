@@ -10,7 +10,6 @@ import {
 } from 'reaflow';
 import { useRecoilState } from 'recoil';
 import { edgesState } from '../../states/edgesState';
-import { isDraggedNodeDroppableState } from '../../states/isDraggedNodeDroppableState';
 import { nodesState } from '../../states/nodesState';
 import BaseNodeData from '../../types/BaseNodeData';
 import BaseEdge from '../edges/BaseEdge';
@@ -29,7 +28,6 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   } = props;
   const [nodes, setNodes] = useRecoilState(nodesState);
   const [edges, setEdges] = useRecoilState(edgesState);
-  const [isDroppable, setDroppable] = useRecoilState(isDraggedNodeDroppableState);
 
   return (
     <div
@@ -38,7 +36,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         position: absolute;
         top: 0;
         bottom: 0;
-        left: 150px;
+        left: 0;
         right: 0;
 
         .reaflow-canvas {
@@ -100,16 +98,6 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
           );
         }}
         onLayoutChange={layout => console.log('Layout', layout)}
-        onMouseEnter={() => {
-          if (!isDroppable) {
-            console.log('setDroppable', true);
-            setDroppable(true);
-          }
-        }}
-        onMouseLeave={() => {
-          // console.log('setDroppable', false);
-          // setDroppable(false);
-        }}
         onNodeLinkCheck={(from: BaseNodeData, to: BaseNodeData) => {
           console.log('onNodeLinkCheck', 'will link?', !hasLink(edges, from, to));
           return !hasLink(edges, from, to);

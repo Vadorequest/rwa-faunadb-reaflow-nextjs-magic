@@ -3,10 +3,6 @@ import React from 'react';
 import { NodeProps } from 'reaflow';
 import { NodeData } from 'reaflow/dist/types';
 import { useRecoilState } from 'recoil';
-import settings from '../../settings';
-import { isDraggedNodeCloseState } from '../../states/isDraggedNodeCloseState';
-import { isDraggedNodeDroppableState } from '../../states/isDraggedNodeDroppableState';
-import { currentDraggedNodeTargetState } from '../../states/currentDraggedNodeTargetState';
 import { selectedNodesState } from '../../states/selectedNodesState';
 import BaseNodeData from '../../types/BaseNodeData';
 import BaseNodeProps from '../../types/BaseNodeProps';
@@ -24,9 +20,6 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
     nodeProps,
     updateCurrentNode,
   } = props;
-  const [currentDraggedNodeTarget, setCurrentDraggedNodeTarget] = useRecoilState(currentDraggedNodeTargetState);
-  const [isDroppable, setDroppable] = useRecoilState(isDraggedNodeDroppableState);
-  const [isDraggedNodeClose, setIsDraggedNodeClose] = useRecoilState(isDraggedNodeCloseState);
   const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);
 
   // console.log('router nodes', props);
@@ -44,9 +37,6 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
 
     return null;
   }
-
-  const defaultStrokeWidth = 0;
-  const strokeWidth = currentDraggedNodeTarget?.id === nodeProps.id && isDroppable && isDraggedNodeClose ? settings.dnd.closeDistanceThreshold : defaultStrokeWidth;
 
   /**
    * When clicking on a node.
@@ -69,10 +59,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
    * @param node
    */
   const onNodeEnter = (event: React.MouseEvent<SVGGElement, MouseEvent>, node: BaseNodeData) => {
-    if (node?.id !== currentDraggedNodeTarget?.id) {
-      setCurrentDraggedNodeTarget(node);
-      console.log('setLastFocusedNode', node);
-    }
+
   };
 
   /**
@@ -84,10 +71,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
    * @param node
    */
   const onNodeLeave = (event: React.MouseEvent<SVGGElement, MouseEvent>, node: BaseNodeData) => {
-    if (currentDraggedNodeTarget?.id === node?.id) {
-      setCurrentDraggedNodeTarget(undefined);
-      console.log('setLastFocusedNode', undefined);
-    }
+
   };
 
   /**
@@ -98,12 +82,9 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
     updateCurrentNode,
     className: classnames(
       `node node-${type}`,
-      {
-        'dnd-closest': currentDraggedNodeTarget?.id === nodeProps.id
-      },
     ),
     style: {
-      strokeWidth: strokeWidth,
+      strokeWidth: 0,
       fill: 'white',
       color: 'black',
     },

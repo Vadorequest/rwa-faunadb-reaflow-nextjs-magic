@@ -27,7 +27,6 @@ const NodesContainer: React.FunctionComponent<Props> = (props): JSX.Element | nu
     InformationNode,
     QuestionNode,
   ];
-  const blocksContainerWidth = settings.blocksContainer.width;
 
   console.log('NodesContainer renders');
 
@@ -43,7 +42,7 @@ const NodesContainer: React.FunctionComponent<Props> = (props): JSX.Element | nu
         padding: 20px;
         display: flex;
         flex-direction: column;
-        width: ${blocksContainerWidth};
+        width: ${settings.blocksContainer.width};
         background-color: #f5f5f5;
         z-index: 1;
 
