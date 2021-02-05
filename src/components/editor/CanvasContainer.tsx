@@ -2,18 +2,22 @@ import { css } from '@emotion/react';
 import cloneDeep from 'lodash.clonedeep';
 import React, { MutableRefObject } from 'react';
 import {
+  Add,
   Canvas,
   CanvasRef,
   Edge,
   EdgeProps,
   hasLink,
   NodeProps,
+  upsertNode,
 } from 'reaflow';
 import { useRecoilState } from 'recoil';
 import { edgesState } from '../../states/edgesState';
 import { isDraggedNodeDroppableState } from '../../states/isDraggedNodeDroppableState';
 import { nodesState } from '../../states/nodesState';
 import BaseNodeData from '../../types/BaseNodeData';
+import { createNodeFromDefaultProps } from '../../utils/nodes';
+import InformationNode from '../nodes/InformationNode';
 import NodeRouter from '../nodes/NodeRouter';
 
 type Props = {
@@ -97,6 +101,14 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
           <Edge
             {...edge}
             className={'edge'}
+            add={<Add hidden={false} />}
+            onAdd={(event, edge) => {
+              const newNode = createNodeFromDefaultProps(InformationNode.getDefaultNodeProps());
+              const results = upsertNode(cloneDeep(nodes), cloneDeep(edges), edge, newNode);
+
+              setNodes(results.nodes);
+              setEdges(results.edges);
+            }}
           />
         )}
         onLayoutChange={layout => console.log('Layout', layout)}
