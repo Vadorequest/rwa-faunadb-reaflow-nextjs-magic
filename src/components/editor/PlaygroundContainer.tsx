@@ -42,7 +42,9 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
           const NodeComponent = nodeType === 'question' ? QuestionNode : InformationNode;
           const newNode = createNodeFromDefaultProps(NodeComponent.getDefaultNodeProps());
           const results = addNodeAndEdge(cloneDeep(nodes), cloneDeep(edges), newNode, nodes[0]);
+          console.log('results', results)
 
+          // TODO Awaiting feedback on https://github.com/reaviz/reaflow/issues/47 to decide whether go with a custom implementation for ports binding or await an official one
           setNodes(results.nodes);
           setEdges(results.edges);
         },

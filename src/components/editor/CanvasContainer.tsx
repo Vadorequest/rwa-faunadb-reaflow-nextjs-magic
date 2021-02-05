@@ -81,7 +81,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         }}
         onLayoutChange={layout => console.log('Layout', layout)}
         onNodeLinkCheck={(from: BaseNodeData, to: BaseNodeData) => {
-          console.log('onNodeLinkCheck', 'will link?', !hasLink(edges, from, to));
+          console.log('onNodeLinkCheck', 'will link?', !hasLink(edges, from, to), from, to);
           return !hasLink(edges, from, to);
         }}
         onNodeLink={(from, to) => {
