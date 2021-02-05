@@ -7,5 +7,3 @@ export const isDraggedNodeDroppableState = atom<boolean>({
   key: 'isDraggedNodeDroppableState',
   default: false,
 });
-
-

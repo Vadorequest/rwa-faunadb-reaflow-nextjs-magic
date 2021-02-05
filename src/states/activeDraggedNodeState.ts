@@ -8,5 +8,3 @@ export const activeDraggedNodeState = atom<BaseNodeData | undefined>({
   key: 'activeDraggedNodeState',
   default: undefined,
 });
-
-

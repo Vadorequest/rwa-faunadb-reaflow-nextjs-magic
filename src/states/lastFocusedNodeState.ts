@@ -8,5 +8,3 @@ export const lastFocusedNodeState = atom<BaseNodeData | undefined>({
   key: 'lastFocusedNodeState',
   default: undefined,
 });
-
-

@@ -7,5 +7,3 @@ export const edgesState = atom<EdgeData[]>({
   key: 'edgesState',
   default: initialEdges,
 });
-
-

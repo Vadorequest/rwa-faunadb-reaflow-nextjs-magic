@@ -11,5 +11,3 @@ export const nodesState = atom<BaseNodeData[]>({
   key: 'nodesState',
   default: initialNodes,
 });
-
-

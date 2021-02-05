@@ -7,5 +7,3 @@ export const isDraggedNodeCloseState = atom<boolean>({
   key: 'isDraggedNodeCloseState',
   default: false,
 });
-
-
