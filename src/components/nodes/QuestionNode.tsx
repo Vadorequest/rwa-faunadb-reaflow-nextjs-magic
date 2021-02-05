@@ -1,6 +1,5 @@
 import { css } from '@emotion/react';
 import React, { useState } from 'react';
-import Select from 'react-select';
 import { OptionTypeBase } from 'react-select/src/types';
 import { TextareaHeightChangeMeta } from 'react-textarea-autosize/dist/declarations/src';
 import { Node } from 'reaflow';
@@ -124,15 +123,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                     <div
                       className={'choice-type-select'}
                     >
-                      <Select
-                        className={'select select-simple'}
-                        isMulti={false}
-                        value={selectedChoiceType}
-                        options={choiceTypes}
-                        onChange={(selectedChoice: OptionTypeBase, action: { action: string }): void => {
-                          setSelectedChoiceType(selectedChoice);
-                        }}
-                      />
+                      TODO select
                     </div>
                   </div>
                 </div>
