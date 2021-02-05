@@ -29,6 +29,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const [nodes, setNodes] = useRecoilState(nodesState);
   const [edges, setEdges] = useRecoilState(edgesState);
   const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);
+  console.log('selectedNodes', selectedNodes)
   const selections = selectedNodes.map((node) => node.id);
 
   return (

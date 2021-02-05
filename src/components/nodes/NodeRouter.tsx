@@ -1,9 +1,13 @@
 import classnames from 'classnames';
 import cloneDeep from 'lodash.clonedeep';
 import React from 'react';
-import { NodeProps } from 'reaflow';
+import {
+  NodeProps,
+  removeAndUpsertNodes,
+} from 'reaflow';
 import { NodeData } from 'reaflow/dist/types';
 import { useRecoilState } from 'recoil';
+import { edgesState } from '../../states/edgesState';
 import { nodesState } from '../../states/nodesState';
 import { selectedNodesState } from '../../states/selectedNodesState';
 import BaseNodeData from '../../types/BaseNodeData';
@@ -21,6 +25,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
     nodeProps,
   } = props;
   const [nodes, setNodes] = useRecoilState(nodesState);
+  const [edges, setEdges] = useRecoilState(edgesState);
   const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);
 
   // console.log('router nodes', props);
@@ -63,15 +68,32 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
   };
 
   /**
-   * When clicking on a node.
+   * When clicking on the "x" remove button that appears when a node is selected.
    *
    * @param event
    * @param node
    */
-  const onNodeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, node: NodeData) => {
+  const onNodeRemove = (event: React.MouseEvent<SVGGElement, MouseEvent>, node: NodeData) => {
+    console.log('onNodeRemove', event, node);
+    const result = removeAndUpsertNodes(nodes, edges, node);
+    setNodes(result.nodes);
+    setEdges(result.edges);
+  };
+
+  /**
+   * When clicking on a node.
+   *
+   * XXX Resolving the node ourselves instead of relying on the 2nd argument (nodeData), which returns null.
+   *
+   * @param event
+   */
+  const onNodeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>) => {
+    const node: BaseNodeData = nodes.find((node: BaseNodeData) => node.id === nodeProps?.id) as BaseNodeData;
     console.log(`node clicked (${nodeProps?.properties?.text || nodeProps?.id})`, nodeProps);
     console.log(`node selected`, node);
-    setSelectedNodes([node]);
+    if (node?.id) {
+      setSelectedNodes([node]);
+    }
   };
 
   /**
@@ -115,6 +137,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
     onClick: onNodeClick,
     onEnter: onNodeEnter,
     onLeave: onNodeLeave,
+    onRemove: onNodeRemove,
   };
 
   // console.log('rendering node of type: ', type, commonBlockProps)
