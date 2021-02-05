@@ -1,27 +1,16 @@
 import { css } from '@emotion/react';
-import cloneDeep from 'lodash.clonedeep';
 import React, { MouseEventHandler } from 'react';
 import { TextareaHeightChangeMeta } from 'react-textarea-autosize/dist/declarations/src';
 import {
-  addNodeAndEdge,
   Node,
-  Port,
   PortData,
 } from 'reaflow';
-import { useRecoilState } from 'recoil';
-import { blockPickerMenuState } from '../../states/blockPickerMenuState';
-import { edgesState } from '../../states/edgesState';
-import { nodesState } from '../../states/nodesState';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import BaseNodeData from '../../types/BaseNodeData';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
-import BaseNodeType from '../../types/BaseNodeType';
-import BlockPickerMenuState, { OnBlockClick } from '../../types/BlockPickerMenu';
-import { createNodeFromDefaultProps } from '../../utils/nodes';
 import { createPort } from '../../utils/ports';
 import Textarea from '../plugins/Textarea';
-import QuestionNode from './QuestionNode';
 
 type Props = {
   updateCurrentNode?: (nodeData: Partial<BaseNodeData>) => void;
@@ -38,42 +27,10 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
   const {
     onClick,
   } = props;
-  const [blockPickerMenu, setBlockPickerMenu] = useRecoilState<BlockPickerMenuState>(blockPickerMenuState);
-  const [nodes, setNodes] = useRecoilState(nodesState);
-  const [edges, setEdges] = useRecoilState(edgesState);
 
   return (
     <Node
       {...rest}
-      port={
-        <Port
-          onClick={(e, node) => {
-            const onBlockClick: OnBlockClick = (nodeType: BaseNodeType) => {
-              console.log('onBlockClick', nodeType);
-              const NodeComponent = nodeType === 'question' ? QuestionNode : InformationNode;
-              const newNode = createNodeFromDefaultProps(NodeComponent.getDefaultNodeProps());
-              const results = addNodeAndEdge(cloneDeep(nodes), cloneDeep(edges), newNode, { id: props?.id as string });
-
-              setNodes(results.nodes);
-              setEdges(results.edges);
-            };
-
-            setBlockPickerMenu({
-              isDisplayed: !blockPickerMenu.isDisplayed, // Toggle on click
-              onBlockClick,
-            });
-          }}
-          onEnter={(e, node) => {
-            console.log('onEnter port: ', node);
-          }}
-          onLeave={(e, node) => {
-            console.log('onLeave port: ', node);
-          }}
-          style={{ fill: 'white', stroke: 'white' }}
-          rx={15}
-          ry={15}
-        />
-      }
     >
       {
         (event) => {

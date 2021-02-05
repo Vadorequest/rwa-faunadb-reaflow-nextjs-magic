@@ -13,6 +13,7 @@ import { selectedNodesState } from '../../states/selectedNodesState';
 import BaseNodeData from '../../types/BaseNodeData';
 import BaseNodeProps from '../../types/BaseNodeProps';
 import BaseNodeType from '../../types/BaseNodeType';
+import BasePort from '../ports/BasePort';
 import InformationNode from './InformationNode';
 import QuestionNode from './QuestionNode';
 
@@ -134,6 +135,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
       fill: 'white',
       color: 'black',
     },
+    port: <BasePort fromNodeId={nodeProps.id} />,
     onClick: onNodeClick,
     onEnter: onNodeEnter,
     onLeave: onNodeLeave,
