@@ -5,6 +5,9 @@
  * @readonly
  */
 export const settings = {
+  /**
+   * Left container of blocks.
+   */
   blocksContainer: {
     width: '150px',
   },
@@ -13,7 +16,15 @@ export const settings = {
    * Drag & Drop
    */
   dnd: {
+    /**
+     * Color applied to the "closest" element when dragging a block close to a node.
+     */
     colorClosest: '#002aff',
+
+    /**
+     * Minimum distance threshold to consider a dragged block to be close to a node.
+     */
+    closeDistanceThreshold: 10,
   },
 };
 

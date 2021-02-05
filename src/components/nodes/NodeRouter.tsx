@@ -3,6 +3,7 @@ import React from 'react';
 import { NodeProps } from 'reaflow';
 import { NodeData } from 'reaflow/dist/types';
 import { useRecoilState } from 'recoil';
+import settings from '../../settings';
 import { isDraggedNodeCloseState } from '../../states/isDraggedNodeCloseState';
 import { isDraggedNodeDroppableState } from '../../states/isDraggedNodeDroppableState';
 import { lastFocusedNodeState } from '../../states/lastFocusedNodeState';
@@ -45,33 +46,70 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
   }
 
   const defaultStrokeWidth = 0;
-  const strokeWidth = lastFocusedNode?.id === nodeProps.id && isDroppable && isDraggedNodeClose ? 10 : defaultStrokeWidth;
+  const strokeWidth = lastFocusedNode?.id === nodeProps.id && isDroppable && isDraggedNodeClose ? settings.dnd.closeDistanceThreshold : defaultStrokeWidth;
 
-  const commonBlockProps: Partial<BaseNodeProps> = {
+  /**
+   * When clicking on a node.
+   *
+   * @param event
+   * @param node
+   */
+  const onNodeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, node: NodeData) => {
+    console.log(`node clicked (${nodeProps?.properties?.text || nodeProps?.id})`, nodeProps);
+    console.log(`node selected`, node);
+    setSelectedNodes([node]);
+  };
+
+  /**
+   * When the mouse enters a node (on hover).
+   *
+   * XXX Does not work because `foreignObject` is displayed on top of the Node. See https://github.com/reaviz/reaflow/issues/45
+   *
+   * @param event
+   * @param node
+   */
+  const onNodeEnter = (event: React.MouseEvent<SVGGElement, MouseEvent>, node: BaseNodeData) => {
+    if (node?.id !== lastFocusedNode?.id) {
+      setLastFocusedNode(node);
+      console.log('setLastFocusedNode', node);
+    }
+  };
+
+  /**
+   * When the mouse leaves a node (leaves hover area).
+   *
+   * XXX Does not work because `foreignObject` is displayed on top of the Node. See https://github.com/reaviz/reaflow/issues/45
+   *
+   * @param event
+   * @param node
+   */
+  const onNodeLeave = (event: React.MouseEvent<SVGGElement, MouseEvent>, node: BaseNodeData) => {
+    if (lastFocusedNode?.id === node?.id) {
+      setLastFocusedNode(undefined);
+      console.log('setLastFocusedNode', undefined);
+    }
+  };
+
+  /**
+   * Node props applied to all nodes, no matter what type they are.
+   */
+  const commonNodeProps: Partial<BaseNodeProps> = {
     ...nodeProps,
     updateCurrentNode,
-    className: classnames({ 'dnd-closest': lastFocusedNode?.id === nodeProps.id }, `node node-${type}`),
+    className: classnames(
+      `node node-${type}`,
+      {
+        'dnd-closest': lastFocusedNode?.id === nodeProps.id
+      },
+    ),
     style: {
       strokeWidth: strokeWidth,
       fill: 'white',
       color: 'black',
     },
-    onClick: (event: React.MouseEvent<SVGGElement, MouseEvent>, node: NodeData) => {
-      console.log(`node clicked (${nodeProps?.properties?.text || nodeProps?.id})`, nodeProps)
-      setSelectedNodes([node]);
-    },
-    onEnter: (event: React.MouseEvent<SVGGElement, MouseEvent>, node: BaseNodeData) => {
-      if (node?.id !== lastFocusedNode?.id) {
-        setLastFocusedNode(node);
-        console.log('setLastFocusedNode', node);
-      }
-    },
-    onLeave: (event: React.MouseEvent<SVGGElement, MouseEvent>, node: BaseNodeData) => {
-      if (lastFocusedNode?.id === node?.id) {
-        setLastFocusedNode(undefined);
-        console.log('setLastFocusedNode', undefined);
-      }
-    },
+    onClick: onNodeClick,
+    onEnter: onNodeEnter,
+    onLeave: onNodeLeave,
   };
 
   // console.log('rendering node of type: ', type, commonBlockProps)
@@ -80,13 +118,13 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
     case 'information':
       return (
         <InformationNode
-          {...commonBlockProps}
+          {...commonNodeProps}
         />
       );
     case 'question':
       return (
         <QuestionNode
-          {...commonBlockProps}
+          {...commonNodeProps}
         />
       );
   }

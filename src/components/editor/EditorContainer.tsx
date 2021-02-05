@@ -65,10 +65,10 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     onDistanceChange: (distance: number | null) => {
       console.info('Distance Changed', distance);
 
-      if (distance && distance < 40 && !isDraggedNodeClose) {
+      if (distance && distance < settings.dnd.closeDistanceThreshold && !isDraggedNodeClose) {
         console.info('setIsDraggedNodeClose', true);
         setIsDraggedNodeClose(true);
-      } else if ((!distance || distance > 40) && isDraggedNodeClose) {
+      } else if ((!distance || distance > settings.dnd.closeDistanceThreshold) && isDraggedNodeClose) {
         console.info('setIsDraggedNodeClose', false);
         setIsDraggedNodeClose(false);
       }
