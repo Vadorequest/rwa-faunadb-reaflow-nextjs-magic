@@ -1,11 +1,16 @@
 import { css } from '@emotion/react';
 import React, { MouseEventHandler } from 'react';
 import { TextareaHeightChangeMeta } from 'react-textarea-autosize/dist/declarations/src';
-import { Node } from 'reaflow';
+import {
+  Node,
+  Port,
+  PortData,
+} from 'reaflow';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import BaseNodeData from '../../types/BaseNodeData';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
+import { createPort } from '../../utils/ports';
 import Textarea from '../plugins/Textarea';
 
 type Props = {
@@ -27,6 +32,22 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
   return (
     <Node
       {...rest}
+      port={
+        <Port
+          onClick={(e, node) => {
+            console.log('onClick port: ', node);
+          }}
+          onEnter={(e, node) => {
+            console.log('onEnter port: ', node);
+          }}
+          onLeave={(e, node) => {
+            console.log('onLeave port: ', node);
+          }}
+          style={{ fill: 'white', stroke: 'white' }}
+          rx={15}
+          ry={15}
+        />
+      }
     >
       {
         (event) => {
@@ -112,7 +133,25 @@ InformationNode.getDefaultNodeProps = (): BaseNodeDefaultProps => {
     type: 'information',
     defaultWidth: defaultWidth,
     defaultHeight: defaultHeight,
+    // @ts-ignore
+    ports: InformationNode.getDefaultPorts(),
   };
+};
+InformationNode.getDefaultPorts = (): PortData[] => {
+  return [
+    createPort({
+      height: 10,
+      width: 10,
+      alignment: 'CENTER',
+      side: 'EAST',
+    }),
+    createPort({
+      height: 10,
+      width: 10,
+      alignment: 'CENTER',
+      side: 'WEST',
+    }),
+  ];
 };
 
 export default InformationNode;

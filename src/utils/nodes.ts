@@ -36,6 +36,7 @@ export const createNodeFromDefaultProps = (defaultProps: BaseNodeDefaultProps): 
       defaultWidth: defaultProps.defaultWidth,
       defaultHeight: defaultProps.defaultHeight,
     },
+    ports: defaultProps.ports || [],
   };
 
   return createNode(node);
