@@ -60,8 +60,8 @@ export function addNodeAndEdgeThroughPorts(
   newNode: BaseNodeData,
   fromNode?: BaseNodeData,
 ) {
-  const fromPort: PortData | undefined = (fromNode?.ports?.find((port: PortData) => port?.side === 'EAST'));
-  const toPort: PortData | undefined = (newNode?.ports?.find((port: PortData) => port?.side === 'WEST'));
+  const fromPort: PortData | undefined = fromNode?.ports?.find((port: PortData) => port?.side === 'EAST');
+  const toPort: PortData | undefined = newNode?.ports?.find((port: PortData) => port?.side === 'WEST');
   const newEdge: BaseEdgeData = {
     id: `${fromNode?.id || uuid()}-${newNode.id}`,
     from: fromNode?.id,
@@ -95,3 +95,48 @@ export const filterNodeInArray = (nodes: BaseNodeData[], nodeToFilter: BaseNodeD
     return node?.id !== nodeToFilter.id;
   });
 };
+
+/**
+ * Helper function for upserting a node in a edge (split the edge in 2 and put the node in between), and automatically link their ports.
+ *
+ * Automatically connects the left edge to the newNode using it's WEST port (left side).
+ * Automatically connects the right edge to the newNode using it's EAST port (right side).
+ *
+ * Similar to reaflow.upsertNode utility.
+ */
+export function upsertNodeThroughPorts(
+  nodes: BaseNodeData[],
+  edges: BaseEdgeData[],
+  edge: BaseEdgeData,
+  newNode: BaseNodeData
+) {
+  const oldEdgeIndex = edges.findIndex(e => e.id === edge.id);
+  const edgeBeforeNewNode = {
+    ...edge,
+    id: `${edge.from}-${newNode.id}`,
+    to: newNode.id
+  };
+  const edgeAfterNewNode = {
+    ...edge,
+    id: `${newNode.id}-${edge.to}`,
+    from: newNode.id
+  };
+
+  if (edge.fromPort && edge.toPort) {
+    const fromLeftNodeToWestPort: PortData | undefined = newNode?.ports?.find((port: PortData) => port?.side === 'WEST');
+    const fromRightNodeToEastPort: PortData | undefined = newNode?.ports?.find((port: PortData) => port?.side === 'EAST');
+
+    edgeBeforeNewNode.fromPort = edge.fromPort;
+    edgeBeforeNewNode.toPort = fromLeftNodeToWestPort?.id || `${newNode.id}-to`;
+
+    edgeAfterNewNode.fromPort = fromRightNodeToEastPort?.id || `${newNode.id}-from`;
+    edgeAfterNewNode.toPort = edge.toPort;
+  }
+
+  edges.splice(oldEdgeIndex, 1, edgeBeforeNewNode, edgeAfterNewNode);
+
+  return {
+    nodes: [...nodes, newNode],
+    edges: [...edges]
+  };
+}
