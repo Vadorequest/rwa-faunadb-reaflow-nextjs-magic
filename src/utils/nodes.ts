@@ -1,3 +1,4 @@
+import filter from 'lodash.filter';
 import { PortData } from 'reaflow';
 import { v1 as uuid } from 'uuid';
 import BaseEdgeData from '../types/BaseEdgeData'; // XXX Use v1 for uniqueness - See https://www.sohamkamani.com/blog/2016/10/05/uuid1-vs-uuid4/
@@ -82,3 +83,15 @@ export function addNodeAndEdgeThroughPorts(
     ],
   };
 }
+
+/**
+ * Filter out a node from an array of nodes.
+ *
+ * @param nodes
+ * @param nodeToFilter
+ */
+export const filterNodeInArray = (nodes: BaseNodeData[], nodeToFilter: BaseNodeData) => {
+  return filter(nodes, (node: BaseNodeData) => {
+    return node?.id !== nodeToFilter.id;
+  });
+};

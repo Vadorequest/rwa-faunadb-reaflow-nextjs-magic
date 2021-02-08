@@ -42,7 +42,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
 
   const onPortClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, port: PortData) => {
     const onBlockClick: OnBlockClick = (nodeType: BaseNodeType) => {
-      console.log('onBlockClick', nodeType);
+      console.log('onBlockClick (from port)', nodeType);
       const NodeComponent = nodeType === 'question' ? QuestionNode : InformationNode;
       const newNode = createNodeFromDefaultProps(NodeComponent.getDefaultNodeProps());
       const results = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, node);
