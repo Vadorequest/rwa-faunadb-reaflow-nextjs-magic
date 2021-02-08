@@ -7,12 +7,14 @@ import {
 } from 'reaflow';
 import { NodeData } from 'reaflow/dist/types';
 import { useRecoilState } from 'recoil';
+import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { edgesState } from '../../states/edgesState';
 import { nodesState } from '../../states/nodesState';
 import { selectedNodesState } from '../../states/selectedNodesState';
 import BaseNodeData from '../../types/BaseNodeData';
 import BaseNodeProps from '../../types/BaseNodeProps';
 import BaseNodeType from '../../types/BaseNodeType';
+import BlockPickerMenuState from '../../types/BlockPickerMenu';
 import { filterNodeInArray } from '../../utils/nodes';
 import BasePort from '../ports/BasePort';
 import InformationNode from './InformationNode';
@@ -26,6 +28,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
   const {
     nodeProps,
   } = props;
+  const [blockPickerMenu, setBlockPickerMenu] = useRecoilState<BlockPickerMenuState>(blockPickerMenuState);
   const [nodes, setNodes] = useRecoilState(nodesState);
   const [edges, setEdges] = useRecoilState(edgesState);
   const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);
@@ -81,7 +84,15 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
 
     setNodes(result.nodes);
     setEdges(result.edges);
+
+    // Updates selected nodes to make sure we don't keep selected nodes that have been deleted
     setSelectedNodes(filterNodeInArray(selectedNodes, node));
+
+    // Hide the block picker menu.
+    // Forces to reset the function bound to onBlockClick. Necessary when there is one or none node left.
+    setBlockPickerMenu({
+      isDisplayed: false,
+    })
   };
 
   /**

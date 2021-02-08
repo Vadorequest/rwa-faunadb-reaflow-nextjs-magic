@@ -1,17 +1,17 @@
 import { css } from '@emotion/react';
 import cloneDeep from 'lodash.clonedeep';
 import React, { MutableRefObject } from 'react';
-import {
-  addNodeAndEdge,
-  CanvasRef,
-} from 'reaflow';
+import { CanvasRef } from 'reaflow';
 import { useRecoilState } from 'recoil';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { edgesState } from '../../states/edgesState';
 import { nodesState } from '../../states/nodesState';
 import BaseNodeType from '../../types/BaseNodeType';
 import BlockPickerMenuState from '../../types/BlockPickerMenu';
-import { createNodeFromDefaultProps } from '../../utils/nodes';
+import {
+  addNodeAndEdgeThroughPorts,
+  createNodeFromDefaultProps,
+} from '../../utils/nodes';
 import BlockPickerMenu from '../blocks/BlockPickerMenu';
 import InformationNode from '../nodes/InformationNode';
 import QuestionNode from '../nodes/QuestionNode';
@@ -32,37 +32,34 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
   const [nodes, setNodes] = useRecoilState(nodesState);
   const [edges, setEdges] = useRecoilState(edgesState);
 
+  console.log('nodes.length', nodes.length);
+  console.log('nodes', nodes);
   // Handle edge cases when there are 0 or 1 node (picker menu must always be displayed then)
   if (!blockPickerMenu.isDisplayed) {
-    if (nodes.length === 1) {
-      setBlockPickerMenu({
-        isDisplayed: true,
-        onBlockClick: (nodeType: BaseNodeType) => {
+    setBlockPickerMenu({
+      isDisplayed: true,
+      onBlockClick: (nodeType: BaseNodeType) => {
+        if (nodes.length === 1) {
           console.log('onBlockClick (1 node)', nodeType);
           const NodeComponent = nodeType === 'question' ? QuestionNode : InformationNode;
           const newNode = createNodeFromDefaultProps(NodeComponent.getDefaultNodeProps());
-          const results = addNodeAndEdge(cloneDeep(nodes), cloneDeep(edges), newNode, nodes[0]);
-          console.log('results', results)
+          const results = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, nodes[0]);
+          console.log('results', results);
 
           // TODO Awaiting feedback on https://github.com/reaviz/reaflow/issues/47 to decide whether go with a custom implementation for ports binding or await an official one
           setNodes(results.nodes);
           setEdges(results.edges);
-        },
-      });
-    } else if (nodes.length === 0) {
-      setBlockPickerMenu({
-        isDisplayed: true,
-        onBlockClick: (nodeType: BaseNodeType) => {
+
+        } else if (nodes.length === 0) {
           console.log('onBlockClick (0 nodes)', nodeType);
           const NodeComponent = nodeType === 'question' ? QuestionNode : InformationNode;
           const newNode = createNodeFromDefaultProps(NodeComponent.getDefaultNodeProps());
-          const results = addNodeAndEdge(cloneDeep(nodes), cloneDeep(edges), newNode);
 
-          setNodes(results.nodes);
-          setEdges(results.edges);
-        },
-      });
-    }
+          setNodes([newNode]);
+          setEdges([]);
+        }
+      },
+    });
   }
 
   console.log('Playground render', nodes, edges);
