@@ -1,5 +1,8 @@
 import { css } from '@emotion/react';
-import React, { useState } from 'react';
+import React, {
+  MouseEventHandler,
+  useState,
+} from 'react';
 import { OptionTypeBase } from 'react-select/src/types';
 import { TextareaHeightChangeMeta } from 'react-textarea-autosize/dist/declarations/src';
 import {
@@ -26,6 +29,9 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
   const {
     updateCurrentNode,
     ...rest
+  } = props;
+  const {
+    onClick,
   } = props;
 
   return (
@@ -78,6 +84,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
               height={height}
               x={0}
               y={0}
+              onClick={onClick as MouseEventHandler}
               css={css`
                 .node {
                   margin: 5px;
