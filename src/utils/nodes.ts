@@ -46,6 +46,18 @@ export const createNodeFromDefaultProps = (defaultProps: BaseNodeDefaultProps): 
 };
 
 /**
+ * Filter out a node from an array of nodes.
+ *
+ * @param nodes
+ * @param nodeToFilter
+ */
+export const filterNodeInArray = (nodes: BaseNodeData[], nodeToFilter: BaseNodeData) => {
+  return filter(nodes, (node: BaseNodeData) => {
+    return node?.id !== nodeToFilter.id;
+  });
+};
+
+/**
  * Add a node and optional edge, and automatically link their ports.
  *
  * Automatically connects the fromNode (left node) using its EAST port (right side) to the newNode (right node) using it's WEST port (left side).
@@ -83,18 +95,6 @@ export function addNodeAndEdgeThroughPorts(
     ],
   };
 }
-
-/**
- * Filter out a node from an array of nodes.
- *
- * @param nodes
- * @param nodeToFilter
- */
-export const filterNodeInArray = (nodes: BaseNodeData[], nodeToFilter: BaseNodeData) => {
-  return filter(nodes, (node: BaseNodeData) => {
-    return node?.id !== nodeToFilter.id;
-  });
-};
 
 /**
  * Helper function for upserting a node in a edge (split the edge in 2 and put the node in between), and automatically link their ports.
