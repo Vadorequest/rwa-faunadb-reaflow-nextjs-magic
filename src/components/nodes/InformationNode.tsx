@@ -5,6 +5,7 @@ import {
   Node,
   PortData,
 } from 'reaflow';
+import settings from '../../settings';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import BaseNodeData from '../../types/BaseNodeData';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
@@ -123,14 +124,14 @@ InformationNode.getDefaultNodeProps = (): BaseNodeDefaultProps => {
 InformationNode.getDefaultPorts = (): PortData[] => {
   return [
     createPort({
-      height: 10,
-      width: 10,
+      height: settings.canvas.ports.radius,
+      width: settings.canvas.ports.radius,
       alignment: 'CENTER',
       side: 'EAST',
     }),
     createPort({
-      height: 10,
-      width: 10,
+      height: settings.canvas.ports.radius,
+      width: settings.canvas.ports.radius,
       alignment: 'CENTER',
       side: 'WEST',
     }),

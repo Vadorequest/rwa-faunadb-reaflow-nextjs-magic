@@ -15,6 +15,15 @@ export const settings = {
   containerSeparator:{
     width: '20px'
   },
+
+  /**
+   * SVG Canvas where nodes and edges are drawn.
+   */
+  canvas: {
+    ports: {
+      radius: 15,
+    }
+  }
 };
 
 export default settings;
