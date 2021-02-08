@@ -8,6 +8,7 @@ import {
   NodeProps,
 } from 'reaflow';
 import { useRecoilState } from 'recoil';
+import settings from '../../settings';
 import { edgesState } from '../../states/edgesState';
 import { nodesState } from '../../states/nodesState';
 import { selectedNodesState } from '../../states/selectedNodesState';
@@ -61,7 +62,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
       <Canvas
         ref={canvasRef}
         className={'reaflow-canvas'}
-        direction={'RIGHT'}
+        direction={settings.canvas.direction}
         nodes={nodes}
         edges={edges}
         selections={selections}

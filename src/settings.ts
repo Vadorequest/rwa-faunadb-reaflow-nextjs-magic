@@ -1,3 +1,5 @@
+import { CanvasDirection } from 'reaflow/dist/layout';
+
 /**
  * Global settings for the app.
  *
@@ -20,6 +22,7 @@ export const settings = {
    * SVG Canvas where nodes and edges are drawn.
    */
   canvas: {
+    direction: 'RIGHT' as CanvasDirection,
     ports: {
       radius: 15,
     }
