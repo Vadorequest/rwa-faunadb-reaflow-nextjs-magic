@@ -1,9 +1,9 @@
-import { EdgeData } from 'reaflow/dist/types';
 import { atom } from 'recoil';
+import BaseEdgeData from '../types/BaseEdgeData';
 
-const initialEdges: EdgeData[] = [];
+const initialEdges: BaseEdgeData[] = [];
 
-export const edgesState = atom<EdgeData[]>({
+export const edgesState = atom<BaseEdgeData[]>({
   key: 'edgesState',
   default: initialEdges,
 });

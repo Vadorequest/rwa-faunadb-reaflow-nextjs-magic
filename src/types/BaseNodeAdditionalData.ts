@@ -1,7 +1,7 @@
 import BaseNodeType from './BaseNodeType';
 
 /**
- * Additional data properties specific to our application.
+ * Additional node data properties specific to our application.
  */
 export type BaseNodeAdditionalData = {
   type: BaseNodeType;
