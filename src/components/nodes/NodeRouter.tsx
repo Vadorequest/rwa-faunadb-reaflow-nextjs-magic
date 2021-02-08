@@ -3,7 +3,6 @@ import cloneDeep from 'lodash.clonedeep';
 import React from 'react';
 import {
   NodeProps,
-  removeAndUpsertNodes,
 } from 'reaflow';
 import { NodeData } from 'reaflow/dist/types';
 import { useRecoilState } from 'recoil';
@@ -15,7 +14,10 @@ import BaseNodeData from '../../types/BaseNodeData';
 import BaseNodeProps from '../../types/BaseNodeProps';
 import BaseNodeType from '../../types/BaseNodeType';
 import BlockPickerMenuState from '../../types/BlockPickerMenu';
-import { filterNodeInArray } from '../../utils/nodes';
+import {
+  filterNodeInArray,
+  removeAndUpsertNodesThroughPorts,
+} from '../../utils/nodes';
 import BasePort from '../ports/BasePort';
 import InformationNode from './InformationNode';
 import QuestionNode from './QuestionNode';
@@ -80,7 +82,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
    */
   const onNodeRemove = (event: React.MouseEvent<SVGGElement, MouseEvent>, node: NodeData) => {
     console.log('onNodeRemove', event, node);
-    const result = removeAndUpsertNodes(nodes, edges, node);
+    const result = removeAndUpsertNodesThroughPorts(nodes, edges, node);
 
     setNodes(result.nodes);
     setEdges(result.edges);
@@ -92,7 +94,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
     // Forces to reset the function bound to onBlockClick. Necessary when there is one or none node left.
     setBlockPickerMenu({
       isDisplayed: false,
-    })
+    });
   };
 
   /**

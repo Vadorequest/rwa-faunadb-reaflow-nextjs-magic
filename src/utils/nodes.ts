@@ -140,3 +140,71 @@ export function upsertNodeThroughPorts(
     edges: [...edges]
   };
 }
+
+/**
+ * Removes a node between two edges and merges the two edges into one, and automatically link their ports.
+ *
+ * Similar to reaflow.removeAndUpsertNodes utility.
+ */
+export function removeAndUpsertNodesThroughPorts(
+  nodes: BaseNodeData[],
+  edges: BaseEdgeData[],
+  removeNodes: BaseNodeData | BaseNodeData[],
+  onNodeLinkCheck?: (
+    newNodes: BaseNodeData[],
+    newEdges: BaseEdgeData[],
+    from: BaseNodeData,
+    to: BaseNodeData,
+    port?: PortData
+  ) => undefined | boolean
+) {
+  if (!Array.isArray(removeNodes)) {
+    removeNodes = [removeNodes];
+  }
+
+  const nodeIds = removeNodes.map((n) => n.id);
+  const newNodes = nodes.filter((n) => !nodeIds.includes(n.id));
+  const newEdges = edges.filter(
+    (e: BaseEdgeData) => !nodeIds.includes(e?.from as string) && !nodeIds.includes(e?.to as string)
+  );
+
+  for (const nodeId of nodeIds) {
+    const sourceEdges = edges.filter((e) => e.to === nodeId);
+    const targetEdges = edges.filter((e) => e.from === nodeId);
+
+    for (const sourceEdge of sourceEdges) {
+      for (const targetEdge of targetEdges) {
+        const sourceNode = nodes.find((n) => n.id === sourceEdge.from);
+        const targetNode = nodes.find((n) => n.id === targetEdge.to);
+
+        if (sourceNode && targetNode) {
+          const canLink = onNodeLinkCheck?.(
+            newNodes,
+            newEdges,
+            sourceNode,
+            targetNode
+          );
+
+          if (canLink === undefined || canLink) {
+            const fromPort: PortData | undefined = sourceNode?.ports?.find((port: PortData) => port?.side === 'EAST');
+            const toPort: PortData | undefined = targetNode?.ports?.find((port: PortData) => port?.side === 'WEST');
+
+            newEdges.push({
+              id: `${sourceNode.id}-${targetNode.id}`,
+              from: sourceNode.id,
+              to: targetNode.id,
+              parent: sourceNode?.parent,
+              fromPort: fromPort?.id,
+              toPort: toPort?.id,
+            });
+          }
+        }
+      }
+    }
+  }
+
+  return {
+    edges: newEdges,
+    nodes: newNodes
+  };
+}
