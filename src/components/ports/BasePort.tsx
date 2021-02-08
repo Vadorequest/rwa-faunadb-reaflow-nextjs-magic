@@ -1,7 +1,6 @@
 import cloneDeep from 'lodash.clonedeep';
 import React from 'react';
 import {
-  addNodeAndEdge,
   Port,
   PortData,
 } from 'reaflow';
@@ -14,7 +13,10 @@ import { nodesState } from '../../states/nodesState';
 import BaseNodeData from '../../types/BaseNodeData';
 import BaseNodeType from '../../types/BaseNodeType';
 import BlockPickerMenuState, { OnBlockClick } from '../../types/BlockPickerMenu';
-import { createNodeFromDefaultProps } from '../../utils/nodes';
+import {
+  addNodeAndEdgeThroughPorts,
+  createNodeFromDefaultProps,
+} from '../../utils/nodes';
 import InformationNode from '../nodes/InformationNode';
 import QuestionNode from '../nodes/QuestionNode';
 
@@ -43,11 +45,8 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
       console.log('onBlockClick', nodeType);
       const NodeComponent = nodeType === 'question' ? QuestionNode : InformationNode;
       const newNode = createNodeFromDefaultProps(NodeComponent.getDefaultNodeProps());
-      const fromNode: BaseNodeData = port.side === 'EAST' ? newNode : node;
-      const toNode: BaseNodeData = port.side === 'EAST' ? node : newNode;
-      // TODO Doesn't work when selecting the left port - See https://github.com/reaviz/reaflow/issues/48
-      const results = addNodeAndEdge(cloneDeep(nodes), cloneDeep(edges), fromNode, toNode);
-      console.log('addNodeAndEdge fromNode', fromNode, 'toNode', toNode, 'results', results);
+      const results = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, node);
+      console.log('addNodeAndEdge fromNode', newNode, 'toNode', node, 'results', results);
 
       setNodes(results.nodes);
       setEdges(results.edges);
