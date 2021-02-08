@@ -1,5 +1,6 @@
 import { css } from '@emotion/react';
 import React, {
+  KeyboardEventHandler,
   MouseEventHandler,
   useState,
 } from 'react';
@@ -32,6 +33,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
   } = props;
   const {
     onClick,
+    onKeyDown,
   } = props;
 
   return (
@@ -85,6 +87,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
               x={0}
               y={0}
               onClick={onClick as MouseEventHandler}
+              onKeyDown={onKeyDown as KeyboardEventHandler}
               css={css`
                 .node {
                   margin: 5px;

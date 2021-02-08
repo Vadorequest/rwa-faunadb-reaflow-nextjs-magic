@@ -9,12 +9,13 @@ import {
   EdgeProps,
   hasLink,
   NodeProps,
+  useSelection,
 } from 'reaflow';
 import { useRecoilState } from 'recoil';
 import settings from '../../settings';
 import { edgesState } from '../../states/edgesState';
 import { nodesState } from '../../states/nodesState';
-import { selectedNodesState } from '../../states/selectedNodesState';
+import BaseEdgeData from '../../types/BaseEdgeData';
 import BaseNodeData from '../../types/BaseNodeData';
 import BaseEdge from '../edges/BaseEdge';
 import NodeRouter from '../nodes/NodeRouter';
@@ -37,9 +38,23 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
 
   const [nodes, setNodes] = useRecoilState(nodesState);
   const [edges, setEdges] = useRecoilState(edgesState);
-  const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);
-  console.log('selectedNodes', selectedNodes)
-  const selections = selectedNodes.map((node) => node.id);
+  const {
+    selections,
+    onCanvasClick,
+    onClick: onSelectionClick,
+    onKeyDown: onSelectionKeyDown,
+  } = useSelection({
+    nodes,
+    edges,
+    onDataChange: (nodes: BaseNodeData[], edges: BaseEdgeData[]) => {
+      console.info('Data changed', nodes, edges);
+      setNodes(nodes);
+      setEdges(edges);
+    },
+    onSelection: (selectionIds: string[]) => {
+      console.info('onSelection Selected items', selectionIds);
+    },
+  });
 
   return (
     <div
@@ -78,6 +93,8 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
           return (
             <NodeRouter
               nodeProps={nodeProps}
+              onSelectionClick={onSelectionClick as (event: React.MouseEvent<SVGGElement, MouseEvent>, data: any) => void}
+              onSelectionKeyDown={onSelectionKeyDown as (event: React.KeyboardEvent<SVGGElement>) => void}
             />
           );
         }}
@@ -88,6 +105,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
             />
           );
         }}
+        onCanvasClick={onCanvasClick}
         onLayoutChange={layout => console.log('Layout', layout)}
         onNodeLinkCheck={(from: BaseNodeData, to: BaseNodeData) => {
           console.log('onNodeLinkCheck', 'will link?', !hasLink(edges, from, to), from, to);

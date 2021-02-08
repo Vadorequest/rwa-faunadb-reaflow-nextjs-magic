@@ -1,5 +1,8 @@
 import { css } from '@emotion/react';
-import React, { MouseEventHandler } from 'react';
+import React, {
+  KeyboardEventHandler,
+  MouseEventHandler,
+} from 'react';
 import { TextareaHeightChangeMeta } from 'react-textarea-autosize/dist/declarations/src';
 import {
   Node,
@@ -27,6 +30,7 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
   } = props;
   const {
     onClick,
+    onKeyDown,
   } = props;
 
   return (
@@ -67,6 +71,8 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
               height={height}
               x={0}
               y={0}
+              onClick={onClick as MouseEventHandler}
+              onKeyDown={onKeyDown as KeyboardEventHandler}
               css={css`
                 pointer-events: none;
 
@@ -83,7 +89,6 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
                   background-color: #eaeaea;
                 }
               `}
-              onClick={onClick as MouseEventHandler}
             >
               <div
                 className={'information-node node'}

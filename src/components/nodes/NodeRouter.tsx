@@ -10,28 +10,29 @@ import { useRecoilState } from 'recoil';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { edgesState } from '../../states/edgesState';
 import { nodesState } from '../../states/nodesState';
-import { selectedNodesState } from '../../states/selectedNodesState';
 import BaseNodeData from '../../types/BaseNodeData';
 import BaseNodeProps from '../../types/BaseNodeProps';
 import BaseNodeType from '../../types/BaseNodeType';
 import BlockPickerMenuState from '../../types/BlockPickerMenu';
-import { filterNodeInArray } from '../../utils/nodes';
 import BasePort from '../ports/BasePort';
 import InformationNode from './InformationNode';
 import QuestionNode from './QuestionNode';
 
 type Props = {
   nodeProps: NodeProps;
+  onSelectionClick: (event: React.MouseEvent<SVGGElement, MouseEvent>, data: BaseNodeData) => void;
+  onSelectionKeyDown: (event: React.KeyboardEvent<SVGGElement>) => void;
 }
 
 const NodeRouter: React.FunctionComponent<Props> = (props) => {
   const {
     nodeProps,
+    onSelectionClick,
+    onSelectionKeyDown,
   } = props;
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState<BlockPickerMenuState>(blockPickerMenuState);
   const [nodes, setNodes] = useRecoilState(nodesState);
   const [edges, setEdges] = useRecoilState(edgesState);
-  const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);
 
   // console.log('router nodes', props);
 
@@ -85,14 +86,11 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
     setNodes(result.nodes);
     setEdges(result.edges);
 
-    // Updates selected nodes to make sure we don't keep selected nodes that have been deleted
-    setSelectedNodes(filterNodeInArray(selectedNodes, node));
-
     // Hide the block picker menu.
     // Forces to reset the function bound to onBlockClick. Necessary when there is one or none node left.
     setBlockPickerMenu({
       isDisplayed: false,
-    })
+    });
   };
 
   /**
@@ -105,9 +103,9 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
   const onNodeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>) => {
     const node: BaseNodeData = nodes.find((node: BaseNodeData) => node.id === nodeProps?.id) as BaseNodeData;
     console.log(`node clicked (${nodeProps?.properties?.text || nodeProps?.id})`, nodeProps);
-    console.log(`node selected`, node);
-    if (node?.id) {
-      setSelectedNodes([node]);
+
+    if (onSelectionClick) {
+      onSelectionClick(event, node);
     }
   };
 
@@ -135,6 +133,11 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
 
   };
 
+  const onKeyDown = (event: React.KeyboardEvent<SVGGElement>) => {
+    console.log('onSelectionKeyDown', event);
+    onSelectionKeyDown(event);
+  };
+
   /**
    * Node props applied to all nodes, no matter what type they are.
    */
@@ -151,6 +154,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
     },
     port: <BasePort fromNodeId={nodeProps.id} />,
     onClick: onNodeClick,
+    onKeyDown: onKeyDown,
     onEnter: onNodeEnter,
     onLeave: onNodeLeave,
     onRemove: onNodeRemove,
