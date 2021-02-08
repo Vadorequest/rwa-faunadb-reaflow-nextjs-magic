@@ -1,5 +1,8 @@
 import { css } from '@emotion/react';
-import React, { MutableRefObject } from 'react';
+import React, {
+  MutableRefObject,
+  useEffect,
+} from 'react';
 import {
   Canvas,
   CanvasRef,
@@ -27,6 +30,11 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const {
     canvasRef,
   } = props;
+
+  useEffect(() => {
+    console.log('canvasRef', canvasRef);
+  }, [canvasRef]);
+
   const [nodes, setNodes] = useRecoilState(nodesState);
   const [edges, setEdges] = useRecoilState(edgesState);
   const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);

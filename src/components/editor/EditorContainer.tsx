@@ -1,6 +1,9 @@
 import { css } from '@emotion/react';
 import { isBrowser } from '@unly/utils';
-import React, { useRef } from 'react';
+import React, {
+  MutableRefObject,
+  useRef,
+} from 'react';
 import { CanvasRef } from 'reaflow';
 import PlaygroundContainer from './PlaygroundContainer';
 
@@ -15,7 +18,7 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   }
 
   // Used to create a reference to the canvas so we can pass it to the hook so it has knowledge about the canvas
-  const canvasRef = useRef<CanvasRef | null>(null);
+  const canvasRef: MutableRefObject<CanvasRef | null> = useRef<CanvasRef | null>(null);
 
   return (
     <div
