@@ -92,6 +92,8 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
             >
               <div
                 className={'information-node node'}
+                onClick={onClick as MouseEventHandler}
+                onKeyDown={onKeyDown as KeyboardEventHandler}
               >
                 <div
                   className={'node-header information-header'}

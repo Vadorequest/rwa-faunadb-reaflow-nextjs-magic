@@ -101,6 +101,8 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
             >
               <div
                 className={'question-node node'}
+                onClick={onClick as MouseEventHandler}
+                onKeyDown={onKeyDown as KeyboardEventHandler}
               >
                 <div
                   className={'node-header question-header'}
