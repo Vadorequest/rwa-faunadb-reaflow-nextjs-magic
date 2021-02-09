@@ -16,12 +16,10 @@ import {
 import { useRecoilState } from 'recoil';
 import settings from '../../settings';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
-import { draggedEdgeFromPortState } from '../../states/draggedEdgeFromPortState';
 import { edgesState } from '../../states/edgesState';
 import { nodesState } from '../../states/nodesState';
 import { selectedNodesState } from '../../states/selectedNodesState';
 import BaseNodeData from '../../types/BaseNodeData';
-import BlockPickerMenuState from '../../types/BlockPickerMenu';
 import BaseEdge from '../edges/BaseEdge';
 import NodeRouter from '../nodes/NodeRouter';
 
@@ -30,7 +28,15 @@ type Props = {
 }
 
 /**
+ * Canvas container.
+ *
+ * All nodes and edges are drawn within the <Canvas> element.
+ * Handles undo/redo.
+ *
+ * Positioned in absolute position
+ *
  * @see https://github.com/reaviz/reaflow
+ * @see https://reaflow.dev/?path=/story/docs-getting-started-basics--page
  */
 const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | null => {
   const {
@@ -71,10 +77,10 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
    */
   const onCanvasClick = () => {
     setSelectedNodes([]);
-    console.log('target', blockPickerMenu?.eventTarget)
+    console.log('target', blockPickerMenu?.eventTarget);
 
     let isBlockPickerMenuTargetingCanvas = false;
-    if(typeof blockPickerMenu?.eventTarget !== 'undefined'){
+    if (typeof blockPickerMenu?.eventTarget !== 'undefined') {
       isBlockPickerMenuTargetingCanvas = blockPickerMenu?.eventTarget === canvasRef?.current?.svgRef?.current;
     }
 

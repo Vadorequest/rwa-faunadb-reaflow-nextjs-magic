@@ -142,6 +142,13 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
     </Node>
   );
 };
+
+/**
+ * By default, a node has 2 ports, one on the east side (left) and one on the west side (right).
+ *
+ * XXX The height/width properties must be set here because they're used for calculations of the port's placement.
+ *  If we change them directly in the <Port|BasePort> component, the ports will be misaligned with the node.
+ */
 BaseNode.getDefaultPorts = (): PortData[] => {
   return [
     createPort({
@@ -158,6 +165,14 @@ BaseNode.getDefaultPorts = (): PortData[] => {
     }),
   ];
 };
+
+/**
+ * Builds the defaults properties of a node.
+ *
+ * Used when creating a new node.
+ *
+ * @param props
+ */
 BaseNode.getDefaultNodeProps = (props: GetBaseNodeDefaultPropsProps): BaseNodeDefaultProps => {
   const { type, defaultHeight, defaultWidth } = props;
 

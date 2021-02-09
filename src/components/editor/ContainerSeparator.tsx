@@ -4,6 +4,11 @@ import settings from '../../settings';
 
 type Props = {}
 
+/**
+ * Unused, kept for later maybe.
+ *
+ * @deprecated
+ */
 const ContainerSeparator: React.FunctionComponent<Props> = (props) => {
   return (
     <div

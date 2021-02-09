@@ -5,12 +5,18 @@ import React, {
   useRef,
 } from 'react';
 import { CanvasRef } from 'reaflow';
+import settings from '../../settings';
 import PlaygroundContainer from './PlaygroundContainer';
 
 type Props = {}
 
 /**
  * Displays the playground container.
+ *
+ * Only renders on the browser. XXX (but that doesn't seem necessary!)
+ *
+ * Use a relative position for the playground to use an absolute position based on this container relative position.
+ * Takes as much space as possible (full page width, full page height minus the height of header/footer components).
  */
 const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | null => {
   if (!isBrowser()) {
@@ -27,7 +33,7 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         display: flex;
         position: relative;
         width: 100vw;
-        height: calc(100vh - 120px);
+        height: calc(100vh - ${settings.layout.nav.height}px - ${settings.layout.footer.height}px);
       `}
     >
       <PlaygroundContainer

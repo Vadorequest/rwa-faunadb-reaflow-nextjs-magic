@@ -7,7 +7,6 @@ import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { edgesState } from '../../states/edgesState';
 import { nodesState } from '../../states/nodesState';
 import BaseNodeType from '../../types/BaseNodeType';
-import BlockPickerMenuState from '../../types/BlockPickerMenu';
 import {
   addNodeAndEdgeThroughPorts,
   createNodeFromDefaultProps,
