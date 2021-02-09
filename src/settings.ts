@@ -7,6 +7,15 @@ import { CanvasDirection } from 'reaflow/dist/layout';
  * @readonly
  */
 export const settings = {
+  layout: {
+    nav: {
+      height: 50,
+    },
+    footer: {
+      height: 50,
+    }
+  },
+
   /**
    * Left container of blocks.
    */
@@ -14,8 +23,8 @@ export const settings = {
     width: '150px',
   },
 
-  containerSeparator:{
-    width: '20px'
+  containerSeparator: {
+    width: '20px',
   },
 
   /**
@@ -25,8 +34,8 @@ export const settings = {
     direction: 'RIGHT' as CanvasDirection,
     ports: {
       radius: 15,
-    }
-  }
+    },
+  },
 };
 
 export default settings;

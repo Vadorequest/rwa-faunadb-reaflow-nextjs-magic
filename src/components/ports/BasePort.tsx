@@ -48,18 +48,25 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
     stroke: 'white',
   };
 
+  /**
+   * Creates a node based on the block that's been clicked within the BlockPickerMenu.
+   *
+   * Automatically creates the edge between the source node and the newly created node, and connects them through their ports.
+   *
+   * @param nodeType
+   */
+  const onBlockClick: OnBlockClick = (nodeType: BaseNodeType) => {
+    console.log('onBlockClick (from port)', nodeType);
+    const NodeComponent = nodeType === 'question' ? QuestionNode : InformationNode;
+    const newNode = createNodeFromDefaultProps(NodeComponent.getDefaultNodeProps());
+    const results = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, node);
+    console.log('addNodeAndEdge fromNode', newNode, 'toNode', node, 'results', results);
+
+    setNodes(results.nodes);
+    setEdges(results.edges);
+  };
+
   const onPortClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, port: PortData) => {
-    const onBlockClick: OnBlockClick = (nodeType: BaseNodeType) => {
-      console.log('onBlockClick (from port)', nodeType);
-      const NodeComponent = nodeType === 'question' ? QuestionNode : InformationNode;
-      const newNode = createNodeFromDefaultProps(NodeComponent.getDefaultNodeProps());
-      const results = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, node);
-      console.log('addNodeAndEdge fromNode', newNode, 'toNode', node, 'results', results);
-
-      setNodes(results.nodes);
-      setEdges(results.edges);
-    };
-
     setBlockPickerMenu({
       isDisplayed: true, // Toggle on click XXX change later, should toggle but not easy to test when toggle is on
       onBlockClick,
@@ -89,9 +96,10 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
     // Open the block picker menu below the clicked element
     setBlockPickerMenu({
       isDisplayed: true, // Toggle on click XXX change later, should toggle but not easy to test when toggle is on
-      onBlockClick: () => {console.log('todo implement')},
-      left: x,
-      top: y - 50, // XXX Chose 50 completely randomly because I felt like it and it doesn't look so bad ¯\_(ツ)_/¯
+      onBlockClick,
+      // Depending on the position of the canvas, you might need to deduce from x/y some delta
+      left: x, // No delta, because the canvas takes the full page width
+      top: y - settings.layout.nav.height, // Some delta, because the canvas is not at the top of the page, but below the header
     });
 
     if (onDragEndInternal) {

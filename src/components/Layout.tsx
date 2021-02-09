@@ -2,6 +2,7 @@ import { css } from '@emotion/react';
 import Head from 'next/head';
 import Link from 'next/link';
 import React, { ReactNode } from 'react';
+import settings from '../settings';
 
 type Props = {
   children?: ReactNode
@@ -18,11 +19,11 @@ const Layout: React.FunctionComponent<Props> = (props) => {
     <div
       css={css`
         .nav {
-          height: 50px;
+          height: ${settings.layout.nav.height}px;
         }
 
         .footer {
-          height: 50px;
+          height: ${settings.layout.footer.height}px;
         }
       `}
     >
