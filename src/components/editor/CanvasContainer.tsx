@@ -15,10 +15,12 @@ import {
 } from 'reaflow';
 import { useRecoilState } from 'recoil';
 import settings from '../../settings';
+import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { edgesState } from '../../states/edgesState';
 import { nodesState } from '../../states/nodesState';
 import { selectedNodesState } from '../../states/selectedNodesState';
 import BaseNodeData from '../../types/BaseNodeData';
+import BlockPickerMenuState from '../../types/BlockPickerMenu';
 import BaseEdge from '../edges/BaseEdge';
 import NodeRouter from '../nodes/NodeRouter';
 
@@ -38,6 +40,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     console.log('canvasRef', canvasRef);
   }, [canvasRef]);
 
+  const [blockPickerMenu, setBlockPickerMenu] = useRecoilState<BlockPickerMenuState>(blockPickerMenuState);
   const [nodes, setNodes] = useRecoilState(nodesState);
   const [edges, setEdges] = useRecoilState(edgesState);
   const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);
@@ -59,6 +62,13 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     },
     maxHistory: Infinity,
   });
+
+  const onCanvasClick = () => {
+    setSelectedNodes([]);
+    setBlockPickerMenu({
+      isDisplayed: false,
+    });
+  };
 
   return (
     <div
@@ -107,6 +117,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         ref={canvasRef}
         className={'reaflow-canvas'}
         direction={settings.canvas.direction}
+        onCanvasClick={onCanvasClick}
         nodes={nodes}
         edges={edges}
         selections={selections}
