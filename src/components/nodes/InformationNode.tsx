@@ -68,6 +68,7 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
               x={0}
               y={0}
               css={css`
+                position: relative;
                 pointer-events: none;
 
                 div {
@@ -88,6 +89,31 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
               <div
                 className={'information-node node'}
               >
+                <div
+                  className={'actions node-actions'}
+                  css={css`
+                    position: absolute;
+                    top: -15px;
+                    right: 5px;
+                    margin: 5px;
+                    padding: 5px;
+                    background-color: transparent;
+                    color: red;
+                    width: 5px;
+                    height: 5px;
+
+                    div {
+                      cursor: pointer;
+                    }
+                  `}
+                >
+                  <div
+                    className={'delete-action'}
+                  >
+                    x
+                  </div>
+                </div>
+
                 <div
                   className={'node-header information-header'}
                 >
