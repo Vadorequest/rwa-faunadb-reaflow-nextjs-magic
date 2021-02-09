@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import { TextareaHeightChangeMeta } from 'react-textarea-autosize/dist/declarations/src';
 import { NodeChildProps } from 'reaflow';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
+import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
 import BaseNodeType from '../../types/BaseNodeType';
 import Textarea from '../plugins/Textarea';
@@ -75,6 +76,15 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
       }
     </BaseNode>
   );
+};
+InformationNode.getDefaultNodeProps = (): BaseNodeDefaultProps => {
+  return {
+    type: nodeType,
+    defaultWidth: defaultWidth,
+    defaultHeight: defaultHeight,
+    // @ts-ignore
+    ports: BaseNode.getDefaultPorts(),
+  };
 };
 
 export default InformationNode;
