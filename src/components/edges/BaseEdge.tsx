@@ -10,11 +10,10 @@ import BaseNodeType from '../../types/BaseNodeType';
 import BlockPickerMenu, { OnBlockClick } from '../../types/BlockPickerMenu';
 import {
   createNodeFromDefaultProps,
+  getDefaultNodePropsWithFallback,
   upsertNodeThroughPorts,
 } from '../../utils/nodes';
 import AddBlockPicker from '../blocks/AddBlockPicker';
-import InformationNode from '../nodes/InformationNode';
-import QuestionNode from '../nodes/QuestionNode';
 
 type Props = {} & BaseEdgeProps;
 
@@ -38,8 +37,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
         console.log('onAdd edge', edge);
         const onBlockClick: OnBlockClick = (nodeType: BaseNodeType) => {
           console.log('onBlockClick', nodeType, edge);
-          const NodeComponent = nodeType === 'question' ? QuestionNode : InformationNode;
-          const newNode = createNodeFromDefaultProps(NodeComponent.getDefaultNodeProps());
+          const newNode = createNodeFromDefaultProps(getDefaultNodePropsWithFallback(nodeType));
           const results = upsertNodeThroughPorts(cloneDeep(nodes), cloneDeep(edges), edge, newNode);
 
           setNodes(results.nodes);

@@ -9,7 +9,7 @@ import { GetBaseNodeDefaultProps } from './GetBaseNodeDefaultProps';
  * Used by all node components.
  */
 export type BaseNodeComponent<Props extends GenericObject = BaseNodeProps> = FunctionComponent<Props> & {
-  getDefaultNodeProps: GetBaseNodeDefaultProps;
+  getDefaultNodeProps?: GetBaseNodeDefaultProps;
   getDefaultPorts?: () => PortData[];
 }
 

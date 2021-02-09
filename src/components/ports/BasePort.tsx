@@ -22,9 +22,8 @@ import BlockPickerMenuState, { OnBlockClick } from '../../types/BlockPickerMenu'
 import {
   addNodeAndEdgeThroughPorts,
   createNodeFromDefaultProps,
+  getDefaultNodePropsWithFallback,
 } from '../../utils/nodes';
-import InformationNode from '../nodes/InformationNode';
-import QuestionNode from '../nodes/QuestionNode';
 
 type Props = {
   fromNodeId: string;
@@ -57,8 +56,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
    */
   const onBlockClick: OnBlockClick = (nodeType: BaseNodeType) => {
     console.log('onBlockClick (from port)', nodeType);
-    const NodeComponent = nodeType === 'question' ? QuestionNode : InformationNode;
-    const newNode = createNodeFromDefaultProps(NodeComponent.getDefaultNodeProps());
+    const newNode = createNodeFromDefaultProps(getDefaultNodePropsWithFallback(nodeType));
     const results = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, node);
     console.log('addNodeAndEdge fromNode', newNode, 'toNode', node, 'results', results);
 

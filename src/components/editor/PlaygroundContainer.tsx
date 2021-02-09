@@ -11,10 +11,9 @@ import BlockPickerMenuState from '../../types/BlockPickerMenu';
 import {
   addNodeAndEdgeThroughPorts,
   createNodeFromDefaultProps,
+  getDefaultNodePropsWithFallback,
 } from '../../utils/nodes';
 import BlockPickerMenu from '../blocks/BlockPickerMenu';
-import InformationNode from '../nodes/InformationNode';
-import QuestionNode from '../nodes/QuestionNode';
 import CanvasContainer from './CanvasContainer';
 
 type Props = {
@@ -42,8 +41,7 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
       onBlockClick: (nodeType: BaseNodeType) => {
         if (nodes.length === 1) {
           console.log('onBlockClick (1 node)', nodeType);
-          const NodeComponent = nodeType === 'question' ? QuestionNode : InformationNode;
-          const newNode = createNodeFromDefaultProps(NodeComponent.getDefaultNodeProps());
+          const newNode = createNodeFromDefaultProps(getDefaultNodePropsWithFallback(nodeType));
           const results = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, nodes[0]);
           console.log('results', results);
 
@@ -53,8 +51,7 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
 
         } else if (nodes.length === 0) {
           console.log('onBlockClick (0 nodes)', nodeType);
-          const NodeComponent = nodeType === 'question' ? QuestionNode : InformationNode;
-          const newNode = createNodeFromDefaultProps(NodeComponent.getDefaultNodeProps());
+          const newNode = createNodeFromDefaultProps(getDefaultNodePropsWithFallback(nodeType));
 
           setNodes([newNode]);
           setEdges([]);

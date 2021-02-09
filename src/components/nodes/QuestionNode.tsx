@@ -1,27 +1,23 @@
-import { css } from '@emotion/react';
 import React, {
-  MouseEventHandler,
+  Fragment,
   useState,
 } from 'react';
 import { OptionTypeBase } from 'react-select/src/types';
 import { TextareaHeightChangeMeta } from 'react-textarea-autosize/dist/declarations/src';
 import {
   Node,
-  PortData,
+  NodeChildProps,
 } from 'reaflow';
-import settings from '../../settings';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
-import BaseNodeData from '../../types/BaseNodeData';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
-import { createPort } from '../../utils/ports';
+import BaseNodeType from '../../types/BaseNodeType';
 import Textarea from '../plugins/Textarea';
-import InformationNode from './InformationNode';
+import BaseNode from './BaseNode';
 
-type Props = {
-  updateCurrentNode?: (nodeData: Partial<BaseNodeData>) => void;
-} & BaseNodeProps;
+type Props = {} & BaseNodeProps;
 
+const nodeType: BaseNodeType = 'question';
 const defaultWidth = 200;
 const defaultHeight = 400;
 
@@ -35,11 +31,12 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
   } = props;
 
   return (
-    <Node
+    <BaseNode
+      nodeType={nodeType}
       {...rest}
     >
       {
-        (event) => {
+        (event: NodeChildProps) => {
           // console.log('event ...rest', rest);
           // console.log('event', event);
 
@@ -78,64 +75,43 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
           };
 
           return (
-            <foreignObject
-              className={'question-node-container node-container'}
-              width={width}
-              height={height}
-              x={0}
-              y={0}
-              onClick={onClick as MouseEventHandler}
-              css={css`
-                .node {
-                  margin: 5px;
-                }
-
-                .question-text {
-                  margin-top: 15px;
-                  background-color: #eaeaea;
-                }
-              `}
-            >
+            <Fragment>
               <div
-                className={'question-node node'}
+                className={'node-header question-header'}
+              >
+                Question
+              </div>
+
+              <div
+                className={'question-text-contained'}
+              >
+                <Textarea
+                  className={'textarea question-text'}
+                  defaultValue={`Ask something here`}
+                  placeholder={'Ask something here'}
+                  onHeightChange={onHeightChange}
+                />
+              </div>
+
+              <div
+                className={'choice-container'}
               >
                 <div
-                  className={'node-header question-header'}
+                  className={'choice-header'}
                 >
-                  Question
+                  Choice
                 </div>
-
                 <div
-                  className={'question-text-contained'}
+                  className={'choice-type-select'}
                 >
-                  <Textarea
-                    className={'question-text'}
-                    defaultValue={`Ask something here`}
-                    placeholder={'Ask something here'}
-                    onHeightChange={onHeightChange}
-                  />
-                </div>
-
-                <div
-                  className={'choice-container'}
-                >
-                  <div
-                    className={'choice-header'}
-                  >
-                    Choice
-                  </div>
-                  <div
-                    className={'choice-type-select'}
-                  >
-                    TODO select
-                  </div>
+                  TODO select
                 </div>
               </div>
-            </foreignObject>
+            </Fragment>
           );
         }
       }
-    </Node>
+    </BaseNode>
   );
 };
 QuestionNode.getDefaultNodeProps = (): BaseNodeDefaultProps => {
@@ -144,24 +120,8 @@ QuestionNode.getDefaultNodeProps = (): BaseNodeDefaultProps => {
     defaultWidth: defaultWidth,
     defaultHeight: defaultHeight,
     // @ts-ignore
-    ports: InformationNode.getDefaultPorts(),
+    ports: BaseNode.getDefaultPorts(),
   };
-};
-QuestionNode.getDefaultPorts = (): PortData[] => {
-  return [
-    createPort({
-      height: settings.canvas.ports.radius,
-      width: settings.canvas.ports.radius,
-      alignment: 'CENTER',
-      side: 'EAST',
-    }),
-    createPort({
-      height: settings.canvas.ports.radius,
-      width: settings.canvas.ports.radius,
-      alignment: 'CENTER',
-      side: 'WEST',
-    }),
-  ];
 };
 
 export default QuestionNode;

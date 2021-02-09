@@ -1,9 +1,14 @@
 import filter from 'lodash.filter';
 import { PortData } from 'reaflow';
 import { v1 as uuid } from 'uuid';
+import BaseNode from '../components/nodes/BaseNode';
+import InformationNode from '../components/nodes/InformationNode';
+import QuestionNode from '../components/nodes/QuestionNode';
 import BaseEdgeData from '../types/BaseEdgeData'; // XXX Use v1 for uniqueness - See https://www.sohamkamani.com/blog/2016/10/05/uuid1-vs-uuid4/
 import BaseNodeData from '../types/BaseNodeData';
 import { BaseNodeDefaultProps } from '../types/BaseNodeDefaultProps';
+import BaseNodeType from '../types/BaseNodeType';
+import { GetBaseNodeDefaultProps } from '../types/GetBaseNodeDefaultProps';
 
 /**
  * Creates a new node and returns it.
@@ -58,6 +63,23 @@ export const filterNodeInArray = (nodes: BaseNodeData[], nodeToFilter: BaseNodeD
 };
 
 /**
+ * Get default props from the Node component related to the nodeType.
+ *
+ * If the Node component doesn't expose "getDefaultNodeProps", fallbacks to the "getDefaultNodeProps" exposed in BaseNode component.
+ *
+ * @param nodeType
+ */
+export const getDefaultNodePropsWithFallback = (nodeType: BaseNodeType): BaseNodeDefaultProps => {
+  const NodeComponent = nodeType === 'question' ? QuestionNode : InformationNode;
+
+  if (typeof NodeComponent.getDefaultNodeProps !== 'undefined') {
+    return NodeComponent.getDefaultNodeProps({ type: nodeType });
+  } else {
+    return (BaseNode.getDefaultNodeProps as GetBaseNodeDefaultProps)({ type: nodeType });
+  }
+};
+
+/**
  * Add a node and optional edge, and automatically link their ports.
  *
  * Automatically connects the fromNode (left node) using its EAST port (right side) to the newNode (right node) using it's WEST port (left side).
@@ -108,18 +130,18 @@ export function upsertNodeThroughPorts(
   nodes: BaseNodeData[],
   edges: BaseEdgeData[],
   edge: BaseEdgeData,
-  newNode: BaseNodeData
+  newNode: BaseNodeData,
 ) {
   const oldEdgeIndex = edges.findIndex(e => e.id === edge.id);
   const edgeBeforeNewNode = {
     ...edge,
     id: `${edge.from}-${newNode.id}`,
-    to: newNode.id
+    to: newNode.id,
   };
   const edgeAfterNewNode = {
     ...edge,
     id: `${newNode.id}-${edge.to}`,
-    from: newNode.id
+    from: newNode.id,
   };
 
   if (edge.fromPort && edge.toPort) {
@@ -137,7 +159,7 @@ export function upsertNodeThroughPorts(
 
   return {
     nodes: [...nodes, newNode],
-    edges: [...edges]
+    edges: [...edges],
   };
 }
 
@@ -155,8 +177,8 @@ export function removeAndUpsertNodesThroughPorts(
     newEdges: BaseEdgeData[],
     from: BaseNodeData,
     to: BaseNodeData,
-    port?: PortData
-  ) => undefined | boolean
+    port?: PortData,
+  ) => undefined | boolean,
 ) {
   if (!Array.isArray(removeNodes)) {
     removeNodes = [removeNodes];
@@ -165,7 +187,7 @@ export function removeAndUpsertNodesThroughPorts(
   const nodeIds = removeNodes.map((n) => n.id);
   const newNodes = nodes.filter((n) => !nodeIds.includes(n.id));
   const newEdges = edges.filter(
-    (e: BaseEdgeData) => !nodeIds.includes(e?.from as string) && !nodeIds.includes(e?.to as string)
+    (e: BaseEdgeData) => !nodeIds.includes(e?.from as string) && !nodeIds.includes(e?.to as string),
   );
 
   for (const nodeId of nodeIds) {
@@ -182,7 +204,7 @@ export function removeAndUpsertNodesThroughPorts(
             newNodes,
             newEdges,
             sourceNode,
-            targetNode
+            targetNode,
           );
 
           if (canLink === undefined || canLink) {
@@ -205,6 +227,6 @@ export function removeAndUpsertNodesThroughPorts(
 
   return {
     edges: newEdges,
-    nodes: newNodes
+    nodes: newNodes,
   };
 }

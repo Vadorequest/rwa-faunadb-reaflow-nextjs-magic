@@ -1,10 +1,12 @@
 import { atom } from 'recoil';
-import InformationNode from '../components/nodes/InformationNode';
 import BaseNodeData from '../types/BaseNodeData';
-import { createNodeFromDefaultProps } from '../utils/nodes';
+import {
+  createNodeFromDefaultProps,
+  getDefaultNodePropsWithFallback,
+} from '../utils/nodes';
 
 const initialNodes: BaseNodeData[] = [
-  createNodeFromDefaultProps(InformationNode.getDefaultNodeProps()),
+  createNodeFromDefaultProps(getDefaultNodePropsWithFallback('information')),
 ];
 
 export const nodesState = atom<BaseNodeData[]>({
