@@ -44,7 +44,12 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   console.log('selectedNodes', selectedNodes);
   const selections = selectedNodes.map((node) => node.id);
 
-  const { undo, redo, canUndo, canRedo } = useUndo({
+  const {
+    undo,
+    redo,
+    canUndo,
+    canRedo,
+  } = useUndo({
     nodes,
     edges,
     onUndoRedo: (state: UndoRedoEvent) => {
@@ -52,6 +57,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
       setEdges(state?.edges || []);
       setNodes(state?.nodes || []);
     },
+    maxHistory: Infinity,
   });
 
   return (
