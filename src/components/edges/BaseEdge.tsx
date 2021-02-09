@@ -23,7 +23,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
   const [nodes, setNodes] = useRecoilState(nodesState);
   const [edges, setEdges] = useRecoilState(edgesState);
 
-  console.log('edgeProps', props);
+  // console.log('edgeProps', props);
 
   return (
     <Edge

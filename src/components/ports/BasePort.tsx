@@ -59,11 +59,11 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
   };
 
   const onPortEnter = (event: React.MouseEvent<SVGGElement, MouseEvent>, port: PortData) => {
-    console.log('onEnter port: ', node);
+    console.log('onEnter port: ', node, event);
   };
 
   const onPortLeave = (event: React.MouseEvent<SVGGElement, MouseEvent>, port: PortData) => {
-    console.log('onLeave port: ', node);
+    console.log('onLeave port: ', node, event);
   };
 
   return (
