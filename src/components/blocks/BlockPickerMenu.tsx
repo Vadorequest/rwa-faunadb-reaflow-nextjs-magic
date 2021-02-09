@@ -32,7 +32,9 @@ const BlockPickerMenu: React.FunctionComponent<Props> = (props) => {
         left: calc(50% - 100px);
         width: 200px;
         height: 50px;
-        background-color: whitesmoke;
+        background-color: white;
+        border-radius: 5px;
+        padding: 10px;
 
         .blocks-picker {
           display: flex;
