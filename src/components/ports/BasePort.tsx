@@ -78,12 +78,21 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
 
   const onDragEnd = (dragEvent: DragEvent, initial: Position, port: BasePortData, extra: any) => {
     const { xy, distance, event } = dragEvent;
+    const [x, y] = xy;
     // @ts-ignore
     const { target } = event;
     console.log('onDragEnd port: ', node, dragEvent, initial, port, extra);
     console.log('at position', xy);
     console.log('draggedEdgeFromPort', draggedEdgeFromPort);
     console.log('target', target);
+
+    // Open the block picker menu below the clicked element
+    setBlockPickerMenu({
+      isDisplayed: true, // Toggle on click XXX change later, should toggle but not easy to test when toggle is on
+      onBlockClick: () => {console.log('todo implement')},
+      left: x,
+      top: y - 50, // XXX Chose 50 completely randomly because I felt like it and it doesn't look so bad ¯\_(ツ)_/¯
+    });
 
     if (onDragEndInternal) {
       // Runs internal onDragEnd which removes the edge if it doesn't connect to anything

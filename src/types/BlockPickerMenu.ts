@@ -12,6 +12,8 @@ export type BlockPickerMenu = {
   target?: BlockPickerMenuTarget;
   onBlockClick?: OnBlockClick;
   isDisplayed: boolean;
+  top?: number;
+  left?: number;
 }
 
 export default BlockPickerMenu;

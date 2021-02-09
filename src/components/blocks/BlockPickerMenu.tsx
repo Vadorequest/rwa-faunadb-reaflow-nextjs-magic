@@ -14,6 +14,8 @@ const BlockPickerMenu: React.FunctionComponent<Props> = (props) => {
     onBlockClick,
     isDisplayed,
     target,
+    top,
+    left,
   } = blockPickerMenu;
 
   if (!isDisplayed) {
@@ -28,8 +30,9 @@ const BlockPickerMenu: React.FunctionComponent<Props> = (props) => {
       css={css`
         z-index: 5;
         position: absolute;
-        bottom: 0;
-        left: calc(50% - 100px);
+        top: ${typeof top !== 'undefined' ? `${top}px` : `initial`};
+        bottom: ${typeof top !== 'undefined' ? `initial` : `0`};
+        left: ${typeof left !== 'undefined' ? `${left}px` : `calc(50% - 100px)`};
         width: 200px;
         height: 50px;
         background-color: white;
@@ -62,7 +65,6 @@ const BlockPickerMenu: React.FunctionComponent<Props> = (props) => {
         />
       </div>
     </div>
-
   );
 };
 
