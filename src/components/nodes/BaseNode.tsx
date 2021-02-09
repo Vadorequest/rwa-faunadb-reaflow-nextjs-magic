@@ -79,9 +79,10 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                 
                 // Disable pointer-events for events to be forwarded to the underlying <rect>
                 pointer-events: none; 
-
-                div {
-                  //pointer-events: auto; // Re-apply pointer events to all children divs 
+                
+                .node, 
+                .node-header {
+                  pointer-events: none; 
                 }
 
                 .node {
