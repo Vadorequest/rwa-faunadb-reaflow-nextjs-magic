@@ -1,3 +1,4 @@
+import { Button } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import React, {
   MutableRefObject,
@@ -9,6 +10,8 @@ import {
   EdgeProps,
   hasLink,
   NodeProps,
+  UndoRedoEvent,
+  useUndo,
 } from 'reaflow';
 import { useRecoilState } from 'recoil';
 import settings from '../../settings';
@@ -38,8 +41,18 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const [nodes, setNodes] = useRecoilState(nodesState);
   const [edges, setEdges] = useRecoilState(edgesState);
   const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);
-  console.log('selectedNodes', selectedNodes)
+  console.log('selectedNodes', selectedNodes);
   const selections = selectedNodes.map((node) => node.id);
+
+  const { undo, redo, canUndo, canRedo } = useUndo({
+    nodes,
+    edges,
+    onUndoRedo: (state: UndoRedoEvent) => {
+      console.log('Undo / Redo', state);
+      setEdges(state?.edges || []);
+      setNodes(state?.nodes || []);
+    },
+  });
 
   return (
     <div
@@ -67,6 +80,23 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         }
       `}
     >
+      <div
+        style={{ position: 'absolute', top: 10, left: 20, zIndex: 999 }}
+      >
+        <Button
+          onClick={undo}
+          disabled={!canUndo}
+        >
+          Undo
+        </Button>
+        <Button
+          onClick={redo}
+          disabled={!canRedo}
+        >
+          Redo
+        </Button>
+      </div>
+
       <Canvas
         ref={canvasRef}
         className={'reaflow-canvas'}
