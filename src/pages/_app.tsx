@@ -2,6 +2,7 @@ import {
   ChakraProvider,
   extendTheme,
 } from '@chakra-ui/react';
+import 'animate.css/animate.min.css'; // Loads animate.css CSS file. See https://github.com/daneden/animate.css
 import React from 'react';
 import { RecoilRoot } from 'recoil';
 import '../utils/wdyr';

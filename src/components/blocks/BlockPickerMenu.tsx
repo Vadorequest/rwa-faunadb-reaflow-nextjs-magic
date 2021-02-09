@@ -1,5 +1,9 @@
 import { css } from '@emotion/react';
-import React from 'react';
+import classnames from 'classnames';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
 import { useRecoilState } from 'recoil';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import BlockPickerMenuState from '../../types/BlockPickerMenu';
@@ -13,9 +17,23 @@ const BlockPickerMenu: React.FunctionComponent<Props> = (props) => {
   const {
     onBlockClick,
     isDisplayed,
+    displayedFrom,
     top,
     left,
   } = blockPickerMenu;
+
+  const [repeatAnimation, setRepeatAnimation] = useState<boolean>(true);
+
+  /**
+   * When the source displaying the menu changes, replay the animations of the component.
+   *
+   * It toggles the CSS classes injected in the component to force replaying the animations.
+   * Uses a short timeout that isn't noticeable to the human eye, but is necessary for the toggle to work properly.
+   */
+  useEffect(() => {
+    setRepeatAnimation(false);
+    setTimeout(() => setRepeatAnimation(true), 1);
+  }, [displayedFrom]);
 
   if (!isDisplayed) {
     return null;
@@ -25,7 +43,10 @@ const BlockPickerMenu: React.FunctionComponent<Props> = (props) => {
 
   return (
     <div
-      className={'block-picker-menu'}
+      className={classnames('block-picker-menu', {
+        'animate__animated': repeatAnimation,
+        'animate__pulse': repeatAnimation,
+      })}
       css={css`
         z-index: 5;
         position: absolute;
@@ -37,16 +58,6 @@ const BlockPickerMenu: React.FunctionComponent<Props> = (props) => {
         background-color: white;
         border-radius: 5px;
         padding: 10px;
-        animation: fadeIn ease 0.5s;
-
-        @keyframes fadeIn {
-          0% {
-            opacity: 0;
-          }
-          100% {
-            opacity: 1;
-          }
-        }
 
         .blocks-picker {
           display: flex;
