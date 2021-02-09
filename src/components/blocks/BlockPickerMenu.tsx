@@ -13,7 +13,7 @@ import QuestionBlock from './QuestionBlock';
 type Props = {};
 
 const BlockPickerMenu: React.FunctionComponent<Props> = (props) => {
-  const [blockPickerMenu, setBlockPickerMenu] = useRecoilState<BlockPickerMenuState>(blockPickerMenuState);
+  const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuState);
   const {
     onBlockClick,
     isDisplayed,

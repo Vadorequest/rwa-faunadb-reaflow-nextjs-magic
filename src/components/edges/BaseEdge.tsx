@@ -49,6 +49,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
           // Toggles on click if the source is the same, otherwise update
           isDisplayed: displayedFrom === `edge-${edge.id}` ? !blockPickerMenu.isDisplayed : true,
           onBlockClick,
+          eventTarget: event.target,
         });
       }}
     />

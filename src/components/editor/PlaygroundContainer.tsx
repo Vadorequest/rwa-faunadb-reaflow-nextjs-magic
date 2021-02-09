@@ -27,7 +27,7 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
   const {
     canvasRef,
   } = props;
-  const [blockPickerMenu, setBlockPickerMenu] = useRecoilState<BlockPickerMenuState>(blockPickerMenuState);
+  const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuState);
   const [nodes, setNodes] = useRecoilState(nodesState);
   const [edges, setEdges] = useRecoilState(edgesState);
 

@@ -18,7 +18,7 @@ import { nodesState } from '../../states/nodesState';
 import BaseNodeData from '../../types/BaseNodeData';
 import BaseNodeType from '../../types/BaseNodeType';
 import BasePortData from '../../types/BasePortData';
-import BlockPickerMenuState, { OnBlockClick } from '../../types/BlockPickerMenu';
+import { OnBlockClick } from '../../types/BlockPickerMenu';
 import {
   addNodeAndEdgeThroughPorts,
   createNodeFromDefaultProps,
@@ -36,7 +36,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
     ...rest
   } = props;
 
-  const [blockPickerMenu, setBlockPickerMenu] = useRecoilState<BlockPickerMenuState>(blockPickerMenuState);
+  const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuState);
   const [nodes, setNodes] = useRecoilState(nodesState);
   const [edges, setEdges] = useRecoilState(edgesState);
   const [draggedEdgeFromPort, setDraggedEdgeFromPort] = useRecoilState(draggedEdgeFromPortState);
@@ -67,8 +67,9 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
   const onPortClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, port: PortData) => {
     setBlockPickerMenu({
       displayedFrom: `port-${port.id}`,
-      isDisplayed: true, // Toggle on click XXX change later, should toggle but not easy to test when toggle is on
+      isDisplayed: true,
       onBlockClick,
+      eventTarget: event.target,
     });
   };
 
@@ -87,10 +88,6 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
     const [x, y] = xy; // XXX Accommodates for zoom calculation by default, no need to calculate it!
     // @ts-ignore
     const { target } = event;
-    console.log('onDragEnd port: ', node, dragEvent, initial, port, extra);
-    console.log('at position', xy);
-    console.log('draggedEdgeFromPort', draggedEdgeFromPort);
-    console.log('target', target);
 
     // Open the block picker menu below the clicked element
     setBlockPickerMenu({
@@ -100,6 +97,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
       // Depending on the position of the canvas, you might need to deduce from x/y some delta
       left: x, // No delta, because the canvas takes the full page width
       top: y - settings.layout.nav.height, // Some delta, because the canvas is not at the top of the page, but below the header
+      eventTarget: target,
     });
 
     if (onDragEndInternal) {

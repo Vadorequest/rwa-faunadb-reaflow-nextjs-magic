@@ -16,6 +16,7 @@ import {
 import { useRecoilState } from 'recoil';
 import settings from '../../settings';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
+import { draggedEdgeFromPortState } from '../../states/draggedEdgeFromPortState';
 import { edgesState } from '../../states/edgesState';
 import { nodesState } from '../../states/nodesState';
 import { selectedNodesState } from '../../states/selectedNodesState';
@@ -40,11 +41,10 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     console.log('canvasRef', canvasRef);
   }, [canvasRef]);
 
-  const [blockPickerMenu, setBlockPickerMenu] = useRecoilState<BlockPickerMenuState>(blockPickerMenuState);
+  const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuState);
   const [nodes, setNodes] = useRecoilState(nodesState);
   const [edges, setEdges] = useRecoilState(edgesState);
   const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);
-  console.log('selectedNodes', selectedNodes);
   const selections = selectedNodes.map((node) => node.id);
 
   const {
@@ -63,11 +63,26 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     maxHistory: Infinity,
   });
 
+  /**
+   * When clicking on the canvas:
+   * - Unselect all elements (nodes, edges)
+   * - Hide the block menu picker, unless it was opened through targeting the canvas itself
+   *    (avoids closing the menu when dropping an edge on the canvas)
+   */
   const onCanvasClick = () => {
     setSelectedNodes([]);
-    setBlockPickerMenu({
-      isDisplayed: false,
-    });
+    console.log('target', blockPickerMenu?.eventTarget)
+
+    let isBlockPickerMenuTargetingCanvas = false;
+    if(typeof blockPickerMenu?.eventTarget !== 'undefined'){
+      isBlockPickerMenuTargetingCanvas = blockPickerMenu?.eventTarget === canvasRef?.current?.svgRef?.current;
+    }
+
+    if (blockPickerMenu?.isDisplayed && !isBlockPickerMenuTargetingCanvas) {
+      setBlockPickerMenu({
+        isDisplayed: false,
+      });
+    }
   };
 
   return (

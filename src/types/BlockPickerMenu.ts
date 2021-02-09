@@ -48,6 +48,11 @@ export type BlockPickerMenu = {
    * @default automatically calculated
    */
   left?: number;
+
+  /**
+   * When the menu was opened through a click, contains the event.target.
+   */
+  eventTarget?: EventTarget;
 }
 
 export default BlockPickerMenu;
