@@ -85,7 +85,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
 
   const onDragEnd = (dragEvent: DragEvent, initial: Position, port: BasePortData, extra: any) => {
     const { xy, distance, event } = dragEvent;
-    const [x, y] = xy;
+    const [x, y] = xy; // XXX Accommodates for zoom calculation by default, no need to calculate it!
     // @ts-ignore
     const { target } = event;
     console.log('onDragEnd port: ', node, dragEvent, initial, port, extra);
