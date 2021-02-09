@@ -68,6 +68,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
 
   const onPortClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, port: PortData) => {
     setBlockPickerMenu({
+      displayedFrom: `port-${port.id}`,
       isDisplayed: true, // Toggle on click XXX change later, should toggle but not easy to test when toggle is on
       onBlockClick,
     });
@@ -95,6 +96,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
 
     // Open the block picker menu below the clicked element
     setBlockPickerMenu({
+      displayedFrom: `port-${port.id}`,
       isDisplayed: true, // Toggle on click XXX change later, should toggle but not easy to test when toggle is on
       onBlockClick,
       // Depending on the position of the canvas, you might need to deduce from x/y some delta

@@ -13,7 +13,6 @@ const BlockPickerMenu: React.FunctionComponent<Props> = (props) => {
   const {
     onBlockClick,
     isDisplayed,
-    target,
     top,
     left,
   } = blockPickerMenu;
@@ -38,6 +37,16 @@ const BlockPickerMenu: React.FunctionComponent<Props> = (props) => {
         background-color: white;
         border-radius: 5px;
         padding: 10px;
+        animation: fadeIn ease 0.5s;
+
+        @keyframes fadeIn {
+          0% {
+            opacity: 0;
+          }
+          100% {
+            opacity: 1;
+          }
+        }
 
         .blocks-picker {
           display: flex;

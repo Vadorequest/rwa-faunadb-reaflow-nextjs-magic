@@ -23,6 +23,8 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
   const [nodes, setNodes] = useRecoilState(nodesState);
   const [edges, setEdges] = useRecoilState(edgesState);
 
+  const { displayedFrom } = blockPickerMenu;
+
   // console.log('edgeProps', props);
 
   return (
@@ -45,7 +47,9 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
         };
 
         setBlockPickerMenu({
-          isDisplayed: !blockPickerMenu.isDisplayed, // Toggle on click
+          displayedFrom: `edge-${edge.id}`,
+          // Toggles on click if the source is the same, otherwise update
+          isDisplayed: displayedFrom === `edge-${edge.id}` ? !blockPickerMenu.isDisplayed : true,
           onBlockClick,
         });
       }}

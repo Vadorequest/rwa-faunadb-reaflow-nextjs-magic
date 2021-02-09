@@ -37,6 +37,7 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
   // Handle edge cases when there are 0 or 1 node (picker menu must always be displayed then)
   if (!blockPickerMenu.isDisplayed && nodes.length < 2) {
     setBlockPickerMenu({
+      displayedFrom: nodes.length === 0 ? 'playground' : `node-${nodes[0].id}`,
       isDisplayed: true,
       onBlockClick: (nodeType: BaseNodeType) => {
         if (nodes.length === 1) {
