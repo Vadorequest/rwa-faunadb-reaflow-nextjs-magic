@@ -36,14 +36,14 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
       {...rest}
     >
       {
-        (event: NodeChildProps) => {
+        (nodeProps: NodeChildProps) => {
           // console.log('event ...rest', rest);
           // console.log('event', event);
 
           const {
             width,
             height,
-          } = event;
+          } = nodeProps;
 
           const choiceTypes = [
             {

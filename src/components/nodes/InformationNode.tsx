@@ -29,11 +29,11 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
       {...rest}
     >
       {
-        (event: NodeChildProps) => {
+        (nodeProps: NodeChildProps) => {
           const {
             width,
             height,
-          } = event;
+          } = nodeProps;
 
           /**
            * When textarea input height changes, we need to increase the height of the element accordingly.

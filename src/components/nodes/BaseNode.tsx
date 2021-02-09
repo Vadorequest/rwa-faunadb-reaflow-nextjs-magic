@@ -1,7 +1,11 @@
 import { css } from '@emotion/react';
-import React, { MouseEventHandler } from 'react';
+import React, {
+  MouseEventHandler,
+  ReactNode,
+} from 'react';
 import {
   Node,
+  NodeChildProps,
   PortData,
 } from 'reaflow';
 import settings from '../../settings';
@@ -19,6 +23,22 @@ type Props = BaseNodeProps & {
 const fallbackDefaultWidth = 200;
 const fallbackDefaultHeight = 100;
 
+/**
+ * Base node component.
+ *
+ * This component contains shared business logic common to all nodes.
+ * It renders a Reaflow <Node> component, which contains a <foreignObject> that allows us to write proper HTML/CSS within.
+ *
+ * The Node is rendered as SVG <rect> element.
+ * Beware the <foreignObject> will appear "on top" of the <Node>, and thus the Node will not receive some events because they're caught by the <foreignObject>.
+ *
+ * XXX If you want to change the behavior of all nodes while avoid code duplication, here's the place.
+ *
+ * @see https://github.com/reaviz/reaflow/issues/45 Using `foreignObject` "steals" all `Node` events (onEnter, etc.) - How to forward events when using foreignObject?
+ * @see https://github.com/reaviz/reaflow/issues/50 `useSelection` hook `onKeyDown` event doesn't work with `foreignObject` - Multiple selection doesn't work when using a `foreignObject
+ * @see https://github.com/reaviz/reaflow/issues/44 React select component displays/hides itself randomly (as `foreignObject`)
+ *
+ */
 const BaseNode: BaseNodeComponent<Props> = (props) => {
   const {
     nodeType,
@@ -34,12 +54,18 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
       {...rest}
     >
       {
-        (event) => {
+        /**
+         * Renders the foreignObject and common layout used by all nodes.
+         *
+         * XXX CSS styles applied here will be correctly applied to elements created in specialised node components.
+         *
+         * @param nodeProps
+         */
+        (nodeProps: NodeChildProps) => {
           const {
             width,
             height,
-          } = event;
-          console.log('event from baseNode', event);
+          } = nodeProps;
 
           return (
             <foreignObject
@@ -50,16 +76,19 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
               y={0}
               css={css`
                 position: relative;
-                pointer-events: none;
+                
+                // Disable pointer-events for events to be forwarded to the underlying <rect>
+                pointer-events: none; 
 
                 div {
-                  pointer-events: auto;
+                  //pointer-events: auto; // Re-apply pointer events to all children divs 
                 }
 
                 .node {
                   margin: 5px;
                 }
 
+                // Applied to all textarea for all nodes
                 .textarea {
                   margin-top: 15px;
                   background-color: #eaeaea;
@@ -99,8 +128,9 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                   className={`node-content ${nodeType}-content`}
                 >
                   {
+                    // Invoke the children as a function, or render the children as a component, if it's not a function
                     // @ts-ignore
-                    children(event)
+                    typeof children === 'function' ? (children(nodeProps) as (node: NodeChildProps) => ReactNode) : children
                   }
                 </div>
               </div>
