@@ -89,6 +89,12 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
               onClick={onClick as MouseEventHandler}
               onKeyDown={onKeyDown as KeyboardEventHandler}
               css={css`
+                pointer-events: none;
+
+                div:not(&.node) {
+                  pointer-events: auto;
+                }
+                
                 .node {
                   margin: 5px;
                 }

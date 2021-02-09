@@ -76,7 +76,7 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
               css={css`
                 pointer-events: none;
 
-                div {
+                div:not(&.node) {
                   pointer-events: auto;
                 }
 
