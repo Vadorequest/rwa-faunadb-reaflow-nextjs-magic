@@ -30,7 +30,6 @@ export const createNode = (nodeData?: Partial<BaseNodeData>): BaseNodeData => {
 /**
  * Creates a new node from the default props and returns it.
  *
- *
  * @param defaultProps
  */
 export const createNodeFromDefaultProps = (defaultProps: BaseNodeDefaultProps): BaseNodeData => {

@@ -7,7 +7,6 @@ import {
 import { Router } from 'next/router';
 import React from 'react';
 import { RecoilRoot } from 'recoil';
-import '../utils/wdyr';
 
 type Props = {
   Component: NextComponentType<NextPageContext>; // Page component, not provided if pageProps.statusCode is 3xx or 4xx
