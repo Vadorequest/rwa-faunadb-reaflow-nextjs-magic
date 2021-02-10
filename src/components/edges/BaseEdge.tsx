@@ -9,8 +9,9 @@ import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { edgesState } from '../../states/edgesState';
 import { nodesState } from '../../states/nodesState';
 import BaseEdgeProps from '../../types/BaseEdgeProps';
-import NodeType from '../../types/NodeType';
 import BlockPickerMenu, { OnBlockClick } from '../../types/BlockPickerMenu';
+import NodeType from '../../types/NodeType';
+import { translateXYToCanvasPosition } from '../../utils/canvas';
 import {
   createNodeFromDefaultProps,
   getDefaultNodePropsWithFallback,
@@ -51,7 +52,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
    * @param edge
    */
   const onAdd = (event: React.MouseEvent<SVGGElement, MouseEvent>, edge: EdgeData): void => {
-    console.log('onAdd edge', edge);
+    console.log('onAdd edge', edge, event);
     const onBlockClick: OnBlockClick = (nodeType: NodeType) => {
       console.log('onBlockClick', nodeType, edge);
       const newNode = createNodeFromDefaultProps(getDefaultNodePropsWithFallback(nodeType));
@@ -61,14 +62,19 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
       setEdges(results.edges);
     };
 
+    // Converts the x/y position to a Canvas position and apply some margin for the BlockPickerMenu to display on the right bottom of the cursor
+    const [x, y] = translateXYToCanvasPosition(event.clientX, event.clientY, { left: 15, top: 15 });
+
     setBlockPickerMenu({
       displayedFrom: `edge-${edge.id}`,
       // Toggles on click if the source is the same, otherwise update
       isDisplayed: displayedFrom === `edge-${edge.id}` ? !isDisplayed : true,
       onBlockClick,
       eventTarget: event.target,
+      top: y,
+      left: x,
     });
-  }
+  };
 
   return (
     <Edge

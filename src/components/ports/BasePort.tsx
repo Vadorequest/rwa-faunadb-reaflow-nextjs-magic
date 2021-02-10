@@ -16,9 +16,10 @@ import { draggedEdgeFromPortState } from '../../states/draggedEdgeFromPortState'
 import { edgesState } from '../../states/edgesState';
 import { nodesState } from '../../states/nodesState';
 import BaseNodeData from '../../types/BaseNodeData';
-import NodeType from '../../types/NodeType';
 import BasePortData from '../../types/BasePortData';
 import { OnBlockClick } from '../../types/BlockPickerMenu';
+import NodeType from '../../types/NodeType';
+import { translateXYToCanvasPosition } from '../../utils/canvas';
 import {
   addNodeAndEdgeThroughPorts,
   createNodeFromDefaultProps,
@@ -126,9 +127,11 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
    */
   const onPortDragEnd = (dragEvent: DragEvent, initial: Position, port: BasePortData, extra: any) => {
     const { xy, distance, event } = dragEvent;
-    const [x, y] = xy; // XXX Accommodates for zoom calculation by default, no need to calculate it!
     // @ts-ignore
     const { target } = event;
+
+    // Converts the x/y position to a Canvas position and apply some margin for the BlockPickerMenu to display on the right bottom of the cursor
+    const [x, y] = translateXYToCanvasPosition(...xy, { top: 60, left: 10 });
 
     // Open the block picker menu below the clicked element
     setBlockPickerMenu({
@@ -136,8 +139,8 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
       isDisplayed: true, // Toggle on click XXX change later, should toggle but not easy to test when toggle is on
       onBlockClick,
       // Depending on the position of the canvas, you might need to deduce from x/y some delta
-      left: x, // No delta, because the canvas takes the full page width
-      top: y - settings.layout.nav.height, // Some delta, because the canvas is not at the top of the page, but below the header
+      left: x,
+      top: y - settings.layout.nav.height,
       eventTarget: target,
     });
 
