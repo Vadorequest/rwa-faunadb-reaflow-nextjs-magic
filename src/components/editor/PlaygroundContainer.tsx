@@ -11,7 +11,7 @@ import { edgesState } from '../../states/edgesState';
 import { nodesState } from '../../states/nodesState';
 import BaseEdgeData from '../../types/BaseEdgeData';
 import BaseNodeData from '../../types/BaseNodeData';
-import BaseNodeType from '../../types/BaseNodeType';
+import NodeType from '../../types/NodeType';
 import {
   addNodeAndEdgeThroughPorts,
   createNodeFromDefaultProps,
@@ -60,7 +60,7 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
     setBlockPickerMenu({
       displayedFrom: nodes.length === 0 ? 'playground' : `node-${nodes[0].id}`,
       isDisplayed: true,
-      onBlockClick: (nodeType: BaseNodeType) => {
+      onBlockClick: (nodeType: NodeType) => {
         if (nodes.length === 1) {
           // Create a new node and link it to the existing node
           console.log('onBlockClick (1 node)', nodeType);

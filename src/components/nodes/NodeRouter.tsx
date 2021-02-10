@@ -10,7 +10,7 @@ import { nodesState } from '../../states/nodesState';
 import { selectedNodesState } from '../../states/selectedNodesState';
 import BaseNodeData from '../../types/BaseNodeData';
 import BaseNodeProps from '../../types/BaseNodeProps';
-import BaseNodeType from '../../types/BaseNodeType';
+import NodeType from '../../types/NodeType';
 import {
   filterNodeInArray,
   removeAndUpsertNodesThroughPorts,
@@ -41,7 +41,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
 
   const { properties } = nodeProps || {};
   const { data } = properties || {};
-  const { type }: { type: BaseNodeType } = data || {};
+  const { type }: { type: NodeType } = data || {};
 
   if (!type) {
     try {

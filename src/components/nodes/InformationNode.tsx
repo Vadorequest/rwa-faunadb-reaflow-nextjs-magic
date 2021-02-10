@@ -4,13 +4,13 @@ import { NodeChildProps } from 'reaflow';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
-import BaseNodeType from '../../types/BaseNodeType';
+import NodeType from '../../types/NodeType';
 import Textarea from '../plugins/Textarea';
 import BaseNode from './BaseNode';
 
 type Props = {} & BaseNodeProps;
 
-const nodeType: BaseNodeType = 'information';
+const nodeType: NodeType = 'information';
 const defaultWidth = 200;
 const defaultHeight = 100;
 

@@ -7,7 +7,7 @@ import QuestionNode from '../components/nodes/QuestionNode';
 import BaseEdgeData from '../types/BaseEdgeData'; // XXX Use v1 for uniqueness - See https://www.sohamkamani.com/blog/2016/10/05/uuid1-vs-uuid4/
 import BaseNodeData from '../types/BaseNodeData';
 import { BaseNodeDefaultProps } from '../types/BaseNodeDefaultProps';
-import BaseNodeType from '../types/BaseNodeType';
+import NodeType from '../types/NodeType';
 import { GetBaseNodeDefaultProps } from '../types/GetBaseNodeDefaultProps';
 
 /**
@@ -69,7 +69,7 @@ export const filterNodeInArray = (nodes: BaseNodeData[], nodeToFilter: BaseNodeD
  *
  * @param nodeType
  */
-export const getDefaultNodePropsWithFallback = (nodeType: BaseNodeType): BaseNodeDefaultProps => {
+export const getDefaultNodePropsWithFallback = (nodeType: NodeType): BaseNodeDefaultProps => {
   const NodeComponent = nodeType === 'question' ? QuestionNode : InformationNode;
 
   if (typeof NodeComponent.getDefaultNodeProps !== 'undefined') {

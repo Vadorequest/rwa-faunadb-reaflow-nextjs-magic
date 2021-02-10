@@ -9,7 +9,7 @@ import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { edgesState } from '../../states/edgesState';
 import { nodesState } from '../../states/nodesState';
 import BaseEdgeProps from '../../types/BaseEdgeProps';
-import BaseNodeType from '../../types/BaseNodeType';
+import NodeType from '../../types/NodeType';
 import BlockPickerMenu, { OnBlockClick } from '../../types/BlockPickerMenu';
 import {
   createNodeFromDefaultProps,
@@ -52,7 +52,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
    */
   const onAdd = (event: React.MouseEvent<SVGGElement, MouseEvent>, edge: EdgeData): void => {
     console.log('onAdd edge', edge);
-    const onBlockClick: OnBlockClick = (nodeType: BaseNodeType) => {
+    const onBlockClick: OnBlockClick = (nodeType: NodeType) => {
       console.log('onBlockClick', nodeType, edge);
       const newNode = createNodeFromDefaultProps(getDefaultNodePropsWithFallback(nodeType));
       const results = upsertNodeThroughPorts(cloneDeep(nodes), cloneDeep(edges), edge, newNode);

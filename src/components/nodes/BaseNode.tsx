@@ -12,12 +12,12 @@ import settings from '../../settings';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
-import BaseNodeType from '../../types/BaseNodeType';
+import NodeType from '../../types/NodeType';
 import { GetBaseNodeDefaultPropsProps } from '../../types/GetBaseNodeDefaultProps';
 import { createPort } from '../../utils/ports';
 
 type Props = BaseNodeProps & {
-  nodeType: BaseNodeType;
+  nodeType: NodeType;
 };
 
 const fallbackDefaultWidth = 200;

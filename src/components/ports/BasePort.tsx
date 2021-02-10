@@ -16,7 +16,7 @@ import { draggedEdgeFromPortState } from '../../states/draggedEdgeFromPortState'
 import { edgesState } from '../../states/edgesState';
 import { nodesState } from '../../states/nodesState';
 import BaseNodeData from '../../types/BaseNodeData';
-import BaseNodeType from '../../types/BaseNodeType';
+import NodeType from '../../types/NodeType';
 import BasePortData from '../../types/BasePortData';
 import { OnBlockClick } from '../../types/BlockPickerMenu';
 import {
@@ -65,7 +65,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
    *
    * @param nodeType
    */
-  const onBlockClick: OnBlockClick = (nodeType: BaseNodeType) => {
+  const onBlockClick: OnBlockClick = (nodeType: NodeType) => {
     console.log('onBlockClick (from port)', nodeType);
     const newNode = createNodeFromDefaultProps(getDefaultNodePropsWithFallback(nodeType));
     const results = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, node);

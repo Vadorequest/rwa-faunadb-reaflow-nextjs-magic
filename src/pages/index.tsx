@@ -7,6 +7,11 @@ import {
   getDefaultNodePropsWithFallback,
 } from '../utils/nodes';
 
+/**
+ * Index/home page.
+ *
+ * A simple page that does nothing more than displaying a layout and the Reaflow canvas (EditorContainer).
+ */
 const IndexPage = () => {
   const initialNodes: BaseNodeData[] = [
     createNodeFromDefaultProps(getDefaultNodePropsWithFallback('information')),

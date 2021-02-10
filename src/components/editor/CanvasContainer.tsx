@@ -45,7 +45,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   } = props;
 
   /**
-   * The canvas ref contains useful properties (xy, scroll, etc.) and methods (zoom, centerCanvas, etc.)
+   * The canvas ref contains useful properties (xy, scroll, etc.) and functions (zoom, centerCanvas, etc.)
    *
    * @see https://reaflow.dev/?path=/story/docs-advanced-refs--page
    */

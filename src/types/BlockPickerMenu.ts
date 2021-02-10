@@ -1,6 +1,6 @@
-import BaseNodeType from './BaseNodeType';
+import NodeType from './NodeType';
 
-export type OnBlockClick = (blockType: BaseNodeType) => void;
+export type OnBlockClick = (blockType: NodeType) => void;
 
 /**
  * The block picker menu is a (floating) menu displaying all available blocks.
