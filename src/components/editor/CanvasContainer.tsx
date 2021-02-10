@@ -22,6 +22,7 @@ import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { edgesState } from '../../states/edgesState';
 import { nodesState } from '../../states/nodesState';
 import { selectedNodesState } from '../../states/selectedNodesState';
+import { persistGraphDataInLS } from '../../utils/persistGraph';
 import BaseEdge from '../edges/BaseEdge';
 import NodeRouter from '../nodes/NodeRouter';
 
@@ -63,6 +64,15 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const [edges, setEdges] = useRecoilState(edgesState);
   const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);
   const selections = selectedNodes.map((node) => node.id);
+
+  /**
+   * When nodes or edges are modified, updates the persisted data in the local storage.
+   *
+   * Persisted data are automatically loaded upon page refresh.
+   */
+  useEffect(() => {
+    persistGraphDataInLS(nodes, edges);
+  }, [nodes, edges]);
 
   /**
    * Uses Reaflow Undo/Redo helpers.
