@@ -56,32 +56,34 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
    * Displays the blockPickerMenu when there are less than 2 nodes present.
    * Handle edge cases when there are 0 or 1 node (picker menu must always be displayed then, otherwise the editors can't create new nodes and they're stuck).
    */
-  if (!blockPickerMenu.isDisplayed && nodes.length < 2) {
-    setBlockPickerMenu({
-      displayedFrom: nodes.length === 0 ? 'playground' : `node-${nodes[0].id}`,
-      isDisplayed: true,
-      onBlockClick: (nodeType: NodeType) => {
-        if (nodes.length === 1) {
-          // Create a new node and link it to the existing node
-          console.log('onBlockClick (1 node)', nodeType);
-          const newNode = createNodeFromDefaultProps(getDefaultNodePropsWithFallback(nodeType));
-          const results = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, nodes[0]);
-          console.log('results', results);
+  useEffect(() => {
+    if (!blockPickerMenu.isDisplayed && nodes.length < 2) {
+      setBlockPickerMenu({
+        displayedFrom: nodes.length === 0 ? 'playground' : `node-${nodes[0].id}`,
+        isDisplayed: true,
+        onBlockClick: (nodeType: NodeType) => {
+          if (nodes.length === 1) {
+            // Create a new node and link it to the existing node
+            console.log('onBlockClick (1 node)', nodeType);
+            const newNode = createNodeFromDefaultProps(getDefaultNodePropsWithFallback(nodeType));
+            const results = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, nodes[0]);
+            console.log('results', results);
 
-          setNodes(results.nodes);
-          setEdges(results.edges);
+            setNodes(results.nodes);
+            setEdges(results.edges);
 
-        } else if (nodes.length === 0) {
-          // Simply create the node using its default properties, and reset all edges
-          console.log('onBlockClick (0 nodes)', nodeType);
-          const newNode = createNodeFromDefaultProps(getDefaultNodePropsWithFallback(nodeType));
+          } else if (nodes.length === 0) {
+            // Simply create the node using its default properties, and reset all edges
+            console.log('onBlockClick (0 nodes)', nodeType);
+            const newNode = createNodeFromDefaultProps(getDefaultNodePropsWithFallback(nodeType));
 
-          setNodes([newNode]);
-          setEdges([]);
-        }
-      },
-    });
-  }
+            setNodes([newNode]);
+            setEdges([]);
+          }
+        },
+      });
+    }
+  }, [nodes]);
 
   console.log('Playground render', nodes, edges);
 
