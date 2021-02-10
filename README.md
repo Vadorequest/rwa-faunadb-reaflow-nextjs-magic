@@ -38,3 +38,27 @@ Deploy the example using [Vercel](https://vercel.com):
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/Vadorequest/poc-nextjs-reaflow&project-name=poc-nextjs-reaflow&repository-name=poc-nextjs-reaflow)
 
+## Advanced - ELK
+
+ELKjs (and ELK) are used to draw the graph (nodes, edges). 
+It's what Reaflow uses in the background.
+ELK stands for **Eclipse Layout Kernel**.
+
+It seems to be one of the best Layout manager out there.
+
+Unfortunately, it is quite complicated and lacks a comprehensive documentation.
+
+You'll need to dig into the ELK documentation and issues if you're trying to change **how the graph's layout behaves**. 
+Here are some good places to start and useful links I've compiled for my own sake.
+
+- [ELKjs GitHub](https://github.com/kieler/elkjs)
+- [ELK official website](https://www.eclipse.org/elk/)
+- [ELK Demonstrators](https://rtsys.informatik.uni-kiel.de/elklive/index.html)
+  - [Tool to convert `elkt <=> json` both ways](https://rtsys.informatik.uni-kiel.de/elklive/conversion.html)
+  - [Tool to convert `elkt` to a graph](https://rtsys.informatik.uni-kiel.de/elklive/elkgraph.html)
+  - [ELK examples](https://rtsys.informatik.uni-kiel.de/elklive/examples.html)
+- [Issues opened by Austin](https://github.com/kieler/elkjs/issues?q=is%3Aissue+sort%3Aupdated-desc+author%3Aamcdnl)
+- [Issues opened by Vadorequest](https://github.com/kieler/elkjs/issues?q=is%3Aissue+sort%3Aupdated-desc+author%3Avadorequest)
+
+Known limitations:
+- [Tracking issue - Manually positioning the nodes ("Standalone Edge Routing")](https://github.com/eclipse/elk/issues/315)
