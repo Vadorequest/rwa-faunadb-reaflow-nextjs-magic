@@ -1,5 +1,6 @@
 import { Button } from '@chakra-ui/react';
 import { css } from '@emotion/react';
+import { isBrowser } from '@unly/utils';
 import React, {
   MutableRefObject,
   useEffect,
@@ -40,6 +41,10 @@ type Props = {
  * @see https://reaflow.dev/?path=/story/docs-getting-started-basics--page
  */
 const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | null => {
+  if (!isBrowser()) {
+    return null;
+  }
+
   const {
     canvasRef,
   } = props;
