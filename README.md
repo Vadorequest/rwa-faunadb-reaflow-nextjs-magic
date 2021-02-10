@@ -4,6 +4,12 @@
 
 It is a single-page application (using a static page) that aims at showing an **advanced use-case with Reaflow**.
 
+## Online demo
+
+[Demo](https://poc-nextjs-reaflow.vercel.app/) (automatically updated from the `master` branch).
+
+## Features
+
 It comes with the following features:
 - Source code heavily documented
 - Strong TS typings
@@ -25,10 +31,6 @@ Known limitations:
     - I don't plan on changing that at the moment
 
 > This POC can be used as a boilerplate to start your own project using Reaflow.
-
-## Online demo
-
-[Demo](https://poc-nextjs-reaflow.vercel.app/) (automatically updated from the `master` branch).
 
 ## Deploy your own
 
