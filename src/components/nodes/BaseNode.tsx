@@ -76,17 +76,26 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
               y={0}
               css={css`
                 position: relative;
-                
-                // Disable pointer-events for events to be forwarded to the underlying <rect>
-                pointer-events: none; 
-                
-                .node, 
+
+                // Disabling pointer-events on top-level containers, for events to be forwarded to the underlying <rect>
+                // Allows using events specific to the Reaflow <Node> component (onClick, onEnter, onLeave, etc.)
+                pointer-events: none;
+                .node,
                 .node-header {
-                  pointer-events: none; 
+                  pointer-events: none;
+                }
+
+                .node-action,
+                .node-content {
+                  pointer-events: auto;
                 }
 
                 .node {
                   margin: 5px;
+
+                  // Using "fixed" position solves the display of React Select and Chakra UI Select elements
+                  // See https://github.com/chakra-ui/chakra-ui/issues/3288#issuecomment-776316200
+                  position: fixed;
                 }
 
                 // Applied to all textarea for all nodes
@@ -101,7 +110,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                 className={`${nodeType}-node node`}
               >
                 <div
-                  className={'actions node-actions'}
+                  className={'node-actions-container'}
                   css={css`
                     position: absolute;
                     top: -15px;
@@ -119,14 +128,14 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                   `}
                 >
                   <div
-                    className={'delete-action'}
+                    className={'node-action delete-action'}
                   >
                     x
                   </div>
                 </div>
 
                 <div
-                  className={`node-content ${nodeType}-content`}
+                  className={`node-content-container ${nodeType}-content-container`}
                 >
                   {
                     // Invoke the children as a function, or render the children as a component, if it's not a function

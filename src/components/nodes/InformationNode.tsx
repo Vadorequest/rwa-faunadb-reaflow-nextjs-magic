@@ -55,16 +55,16 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
           return (
             <Fragment>
               <div
-                className={'node-header information-header'}
+                className={`node-header ${nodeType}-header`}
               >
                 Information
               </div>
 
               <div
-                className={'information-text-contained'}
+                className={`node-content ${nodeType}-content`}
               >
                 <Textarea
-                  className={'textarea information-text'}
+                  className={`textarea ${nodeType}-text`}
                   defaultValue={`Say something here`}
                   placeholder={'Say something here'}
                   onHeightChange={onHeightChange}

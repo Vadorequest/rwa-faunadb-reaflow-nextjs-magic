@@ -1,13 +1,12 @@
+import { Select as ChakraUISelect } from '@chakra-ui/react';
 import React, {
   Fragment,
   useState,
 } from 'react';
+import ReactSelect from 'react-select';
 import { OptionTypeBase } from 'react-select/src/types';
 import { TextareaHeightChangeMeta } from 'react-textarea-autosize/dist/declarations/src';
-import {
-  Node,
-  NodeChildProps,
-} from 'reaflow';
+import { NodeChildProps } from 'reaflow';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
@@ -37,9 +36,6 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
     >
       {
         (nodeProps: NodeChildProps) => {
-          // console.log('event ...rest', rest);
-          // console.log('event', event);
-
           const {
             width,
             height,
@@ -77,34 +73,52 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
           return (
             <Fragment>
               <div
-                className={'node-header question-header'}
+                className={`node-header ${nodeType}-header`}
               >
                 Question
               </div>
 
               <div
-                className={'question-text-contained'}
+                className={`node-content ${nodeType}-content`}
               >
                 <Textarea
-                  className={'textarea question-text'}
+                  className={`textarea ${nodeType}-text`}
                   defaultValue={`Ask something here`}
                   placeholder={'Ask something here'}
                   onHeightChange={onHeightChange}
                 />
-              </div>
 
-              <div
-                className={'choice-container'}
-              >
                 <div
-                  className={'choice-header'}
+                  className={'choice-container'}
                 >
-                  Choice
-                </div>
-                <div
-                  className={'choice-type-select'}
-                >
-                  TODO select
+                  <div
+                    className={'choice-header'}
+                  >
+                    Choice
+                  </div>
+                  <div
+                    className={'choice-type-select'}
+                  >
+                    <ReactSelect
+                      className={'select select-simple'}
+                      isMulti={false}
+                      value={selectedChoiceType}
+                      options={choiceTypes}
+                      onChange={(
+                        selectedChoice: OptionTypeBase,
+                        action: { action: string },
+                      ): void => {
+                        setSelectedChoiceType(selectedChoice);
+                      }}
+                    />
+                    Using ChakraUI Select:
+                    <br />
+                    <ChakraUISelect placeholder="Select option">
+                      <option value="option1">Option 1</option>
+                      <option value="option2">Option 2</option>
+                      <option value="option3">Option 3</option>
+                    </ChakraUISelect>
+                  </div>
                 </div>
               </div>
             </Fragment>
