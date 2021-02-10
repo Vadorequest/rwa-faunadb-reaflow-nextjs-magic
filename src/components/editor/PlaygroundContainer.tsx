@@ -1,11 +1,16 @@
 import { css } from '@emotion/react';
 import cloneDeep from 'lodash.clonedeep';
-import React, { MutableRefObject } from 'react';
+import React, {
+  MutableRefObject,
+  useEffect,
+} from 'react';
 import { CanvasRef } from 'reaflow';
 import { useRecoilState } from 'recoil';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { edgesState } from '../../states/edgesState';
 import { nodesState } from '../../states/nodesState';
+import BaseEdgeData from '../../types/BaseEdgeData';
+import BaseNodeData from '../../types/BaseNodeData';
 import BaseNodeType from '../../types/BaseNodeType';
 import {
   addNodeAndEdgeThroughPorts,
@@ -17,6 +22,8 @@ import CanvasContainer from './CanvasContainer';
 
 type Props = {
   canvasRef: MutableRefObject<CanvasRef | null>;
+  initialNodes: BaseNodeData[];
+  initialEdges: BaseEdgeData[];
 }
 
 /**
@@ -25,10 +32,17 @@ type Props = {
 const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element | null => {
   const {
     canvasRef,
+    initialNodes,
+    initialEdges,
   } = props;
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuState);
   const [nodes, setNodes] = useRecoilState(nodesState);
   const [edges, setEdges] = useRecoilState(edgesState);
+
+  useEffect(() => {
+    setNodes(initialNodes);
+    setEdges(initialEdges);
+  }, []);
 
   console.log('nodes.length', nodes.length);
   console.log('nodes', nodes);

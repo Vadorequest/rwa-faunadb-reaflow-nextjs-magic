@@ -6,9 +6,14 @@ import React, {
 } from 'react';
 import { CanvasRef } from 'reaflow';
 import settings from '../../settings';
+import BaseEdgeData from '../../types/BaseEdgeData';
+import BaseNodeData from '../../types/BaseNodeData';
 import PlaygroundContainer from './PlaygroundContainer';
 
-type Props = {}
+type Props = {
+  initialNodes: BaseNodeData[];
+  initialEdges: BaseEdgeData[];
+};
 
 /**
  * Displays the playground container.
@@ -22,6 +27,11 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   if (!isBrowser()) {
     return null;
   }
+
+  const {
+    initialNodes,
+    initialEdges,
+  } = props;
 
   // Used to create a reference to the canvas so we can pass it to the hook so it has knowledge about the canvas
   const canvasRef: MutableRefObject<CanvasRef | null> = useRef<CanvasRef | null>(null);
@@ -38,6 +48,8 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     >
       <PlaygroundContainer
         canvasRef={canvasRef}
+        initialNodes={initialNodes}
+        initialEdges={initialEdges}
       />
     </div>
   );
