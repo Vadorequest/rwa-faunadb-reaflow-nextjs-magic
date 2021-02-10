@@ -175,6 +175,20 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
             },
           ]);
         }}
+        // See https://www.eclipse.org/elk/reference.html
+        // See https://www.eclipse.org/elk/reference/options.html
+        // See https://github.com/reaviz/reaflow/blob/master/src/layout/elkLayout.ts
+        // Those options will be forwarded to elkLayout under the "options" property
+        layoutOptions={{
+          // See https://github.com/kieler/elkjs#example
+          'elk.algorithm': 'layered', // Values can be found at https://github.com/kieler/elkjs#api
+          // 'elk.layered.spacing.edgeEdgeBetweenLayers': '20',
+          // 'elk.layered.spacing.edgeNodeBetweenLayers': '20',
+          // 'elk.spacing.individual': '20',
+          // 'elk.graphviz.layerSpacingFactor': '3',
+          // 'elk.layered.layering.strategy': 'NETWORK_SIMPLEX',
+          // 'elk.layered.layering.strategy': 'LONGEST_PATH',
+        }}
       />
     </div>
   );

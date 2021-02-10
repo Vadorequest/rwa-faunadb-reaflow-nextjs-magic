@@ -1,4 +1,3 @@
-import { Select as ChakraUISelect } from '@chakra-ui/react';
 import React, {
   Fragment,
   useState,
@@ -108,16 +107,10 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                         selectedChoice: OptionTypeBase,
                         action: { action: string },
                       ): void => {
+                        console.log('setSelectedChoiceType', selectedChoice);
                         setSelectedChoiceType(selectedChoice);
                       }}
                     />
-                    Using ChakraUI Select:
-                    <br />
-                    <ChakraUISelect placeholder="Select option">
-                      <option value="option1">Option 1</option>
-                      <option value="option2">Option 2</option>
-                      <option value="option3">Option 3</option>
-                    </ChakraUISelect>
                   </div>
                 </div>
               </div>

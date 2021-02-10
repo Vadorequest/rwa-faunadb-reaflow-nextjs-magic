@@ -93,7 +93,9 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                 .node {
                   margin: 5px;
 
-                  // Using "fixed" position solves the display of React Select and Chakra UI Select elements
+                  // XXX Elements within a <foreignObject> that are using the CSS "position" attribute won't be shown properly, 
+                  //  unless they're wrapped into a container using a "fixed" position.
+                  //  Solves the display of React Select element.
                   // See https://github.com/chakra-ui/chakra-ui/issues/3288#issuecomment-776316200
                   position: fixed;
                 }
