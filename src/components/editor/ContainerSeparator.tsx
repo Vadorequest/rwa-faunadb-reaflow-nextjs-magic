@@ -18,7 +18,7 @@ const ContainerSeparator: React.FunctionComponent<Props> = (props) => {
         top: 0;
         bottom: 0;
         left: ${settings.blocksContainer.width};
-        width: ${settings.containerSeparator.width};
+        width: 20px; // {settings.containerSeparator.width};
         margin: 0;
         background-color: white;
       `}

@@ -9,7 +9,9 @@ import {
   CanvasRef,
   EdgeProps,
   hasLink,
+  NodeData,
   NodeProps,
+  PortData,
   UndoRedoEvent,
   useUndo,
 } from 'reaflow';
@@ -19,7 +21,6 @@ import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { edgesState } from '../../states/edgesState';
 import { nodesState } from '../../states/nodesState';
 import { selectedNodesState } from '../../states/selectedNodesState';
-import BaseNodeData from '../../types/BaseNodeData';
 import BaseEdge from '../edges/BaseEdge';
 import NodeRouter from '../nodes/NodeRouter';
 
@@ -33,7 +34,7 @@ type Props = {
  * All nodes and edges are drawn within the <Canvas> element.
  * Handles undo/redo.
  *
- * Positioned in absolute position
+ * Positioned in absolute position and takes all the spaces of its parent element (EditorContainer).
  *
  * @see https://github.com/reaviz/reaflow
  * @see https://reaflow.dev/?path=/story/docs-getting-started-basics--page
@@ -43,6 +44,11 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     canvasRef,
   } = props;
 
+  /**
+   * The canvas ref contains useful properties (xy, scroll, etc.) and methods (zoom, centerCanvas, etc.)
+   *
+   * @see https://reaflow.dev/?path=/story/docs-advanced-refs--page
+   */
   useEffect(() => {
     console.log('canvasRef', canvasRef);
   }, [canvasRef]);
@@ -91,6 +97,88 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     }
   };
 
+  /**
+   * Callback to check if a node is linkable or not.
+   *
+   * If it returns true, then "onNodeLink" will be invoked.
+   *
+   * @param from
+   * @param to
+   * @param port
+   */
+  const onNodeLinkCheck = (from: NodeData, to: NodeData, port?: PortData): undefined | boolean => {
+    // TODO ensure to/from are Ports
+    console.log('onNodeLinkCheck', 'will link?', !hasLink(edges, from, to), from, to);
+    return !hasLink(edges, from, to);
+  };
+
+  /**
+   * Callback when a node is linked.
+   *
+   * Invoked when "onNodeLinkCheck" returns true.
+   *
+   * @param from
+   * @param to
+   * @param port
+   */
+  const onNodeLink = (from: NodeData, to: NodeData, port?: PortData): void => {
+    console.log('onNodeLink', from, to);
+    const id = `${from.id}-${to.id}`;
+
+    setEdges([
+      ...edges,
+      {
+        id,
+        from: from.id,
+        to: to.id,
+      },
+    ]);
+  };
+
+  /**
+   * Node component. All nodes will render trough this component.
+   *
+   * Uses the NodeRouter component which will render the a different node layout, depending on the node "type".
+   */
+  const Node = (nodeProps: NodeProps) => {
+    return (
+      <NodeRouter
+        nodeProps={nodeProps}
+      />
+    );
+  };
+
+  /**
+   * Edge component. All edges will render trough this component.
+   *
+   * All edges render the same way, no matter to which node they're linked to.
+   */
+  const Edge = (edgeProps: EdgeProps) => {
+    return (
+      <BaseEdge
+        {...edgeProps}
+      />
+    );
+  };
+
+  /**
+   * Those options will be forwarded to elkLayout under the "options" property.
+   *
+   * @see https://www.eclipse.org/elk/reference.html
+   * @see https://www.eclipse.org/elk/reference/options.html
+   * @see https://github.com/reaviz/reaflow/blob/master/src/layout/elkLayout.ts
+   */
+  const elkLayoutOptions = {
+    // See https://github.com/kieler/elkjs#example
+    'elk.algorithm': 'layered', // Values can be found at https://github.com/kieler/elkjs#api
+    // 'elk.layered.spacing.edgeEdgeBetweenLayers': '20',
+    // 'elk.layered.spacing.edgeNodeBetweenLayers': '20',
+    // 'elk.spacing.individual': '20',
+    // 'elk.graphviz.layerSpacingFactor': '3',
+    // 'elk.layered.layering.strategy': 'NETWORK_SIMPLEX',
+    // 'elk.layered.layering.strategy': 'LONGEST_PATH',
+  };
+
   return (
     <div
       className={'canvas-container'}
@@ -101,7 +189,9 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         left: 0;
         right: 0;
 
+        // CSS rules applied to the whole <Canvas> (global rules, within the <Canvas>)
         .reaflow-canvas {
+          // Make all edges display an infinite dash animation
           .edge {
             stroke: #b1b1b7;
             stroke-dasharray: 5;
@@ -142,53 +232,12 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         nodes={nodes}
         edges={edges}
         selections={selections}
-        node={(nodeProps: NodeProps) => {
-          return (
-            <NodeRouter
-              nodeProps={nodeProps}
-            />
-          );
-        }}
-        edge={(edgeProps: EdgeProps) => {
-          return (
-            <BaseEdge
-              {...edgeProps}
-            />
-          );
-        }}
+        node={Node}
+        edge={Edge}
         onLayoutChange={layout => console.log('Layout', layout)}
-        onNodeLinkCheck={(from: BaseNodeData, to: BaseNodeData) => {
-          // TODO ensure to/from are Ports
-          console.log('onNodeLinkCheck', 'will link?', !hasLink(edges, from, to), from, to);
-          return !hasLink(edges, from, to);
-        }}
-        onNodeLink={(from, to) => {
-          console.log('onNodeLink', from, to);
-          const id = `${from.id}-${to.id}`;
-
-          setEdges([
-            ...edges,
-            {
-              id,
-              from: from.id,
-              to: to.id,
-            },
-          ]);
-        }}
-        // See https://www.eclipse.org/elk/reference.html
-        // See https://www.eclipse.org/elk/reference/options.html
-        // See https://github.com/reaviz/reaflow/blob/master/src/layout/elkLayout.ts
-        // Those options will be forwarded to elkLayout under the "options" property
-        layoutOptions={{
-          // See https://github.com/kieler/elkjs#example
-          'elk.algorithm': 'layered', // Values can be found at https://github.com/kieler/elkjs#api
-          // 'elk.layered.spacing.edgeEdgeBetweenLayers': '20',
-          // 'elk.layered.spacing.edgeNodeBetweenLayers': '20',
-          // 'elk.spacing.individual': '20',
-          // 'elk.graphviz.layerSpacingFactor': '3',
-          // 'elk.layered.layering.strategy': 'NETWORK_SIMPLEX',
-          // 'elk.layered.layering.strategy': 'LONGEST_PATH',
-        }}
+        onNodeLinkCheck={onNodeLinkCheck}
+        onNodeLink={onNodeLink}
+        layoutOptions={elkLayoutOptions}
       />
     </div>
   );

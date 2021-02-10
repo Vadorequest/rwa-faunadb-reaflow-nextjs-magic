@@ -7,6 +7,9 @@ import { CanvasDirection } from 'reaflow/dist/layout';
  * @readonly
  */
 export const settings = {
+  /**
+   * Common layout shared by all Next.js pages.
+   */
   layout: {
     nav: {
       height: 50,
@@ -23,15 +26,18 @@ export const settings = {
     width: '150px',
   },
 
-  containerSeparator: {
-    width: '20px',
-  },
-
   /**
    * SVG Canvas where nodes and edges are drawn.
    */
   canvas: {
+    /**
+     * Direction used by the canvas, used by ELKjs.
+     */
     direction: 'RIGHT' as CanvasDirection,
+
+    /**
+     * Edge's ports.
+     */
     ports: {
       radius: 15,
     },

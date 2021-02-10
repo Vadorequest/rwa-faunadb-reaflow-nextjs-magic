@@ -39,6 +39,11 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
   const [nodes, setNodes] = useRecoilState(nodesState);
   const [edges, setEdges] = useRecoilState(edgesState);
 
+  /**
+   * Initializes the nodes and edges.
+   *
+   * Only executed once, after component first rendering.
+   */
   useEffect(() => {
     setNodes(initialNodes);
     setEdges(initialEdges);
@@ -46,23 +51,28 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
 
   console.log('nodes.length', nodes.length);
   console.log('nodes', nodes);
-  // Handle edge cases when there are 0 or 1 node (picker menu must always be displayed then)
+
+  /**
+   * Displays the blockPickerMenu when there are less than 2 nodes present.
+   * Handle edge cases when there are 0 or 1 node (picker menu must always be displayed then, otherwise the editors can't create new nodes and they're stuck).
+   */
   if (!blockPickerMenu.isDisplayed && nodes.length < 2) {
     setBlockPickerMenu({
       displayedFrom: nodes.length === 0 ? 'playground' : `node-${nodes[0].id}`,
       isDisplayed: true,
       onBlockClick: (nodeType: BaseNodeType) => {
         if (nodes.length === 1) {
+          // Create a new node and link it to the existing node
           console.log('onBlockClick (1 node)', nodeType);
           const newNode = createNodeFromDefaultProps(getDefaultNodePropsWithFallback(nodeType));
           const results = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, nodes[0]);
           console.log('results', results);
 
-          // TODO Awaiting feedback on https://github.com/reaviz/reaflow/issues/47 to decide whether go with a custom implementation for ports binding or await an official one
           setNodes(results.nodes);
           setEdges(results.edges);
 
         } else if (nodes.length === 0) {
+          // Simply create the node using its default properties, and reset all edges
           console.log('onBlockClick (0 nodes)', nodeType);
           const newNode = createNodeFromDefaultProps(getDefaultNodePropsWithFallback(nodeType));
 
