@@ -1,47 +1,38 @@
 # POC Next.js + Reaflow
 
-Using [https://github.com/reaviz/reaflow](https://github.com/reaviz/reaflow), hosted on [Vercel at https://poc-nextjs-reaflow.vercel.app/](https://poc-nextjs-reaflow.vercel.app/).
+> This project is a POC of [Reaflow](https://github.com/reaviz/reaflow) used with the Next.js framework. It is hosted on Vercel.
 
----
+It is a single-page application (using a static page) that aims at showing an **advanced use-case with Reaflow**.
 
-# TypeScript Next.js example
+It comes with the following features:
+- Source code heavily documented
+- Strong TS typings
+- Different kinds of node (`information`, `question`) with different layouts for each type _(see [NodeRouter component](blob/main/src/components/nodes/NodeRouter.tsx))_
+- Nodes use `foreignObject`, which complicates things quite a bit (events, css), but it's the only way of writing HTML/CSS within a SVG `rect`
+- Advanced support for `foreignObject` and best-practices
+- Support for Emotion 11
+- Reaflow Nodes, Edges and Ports are properly extended (BaseNode component, BaseNodeData type, BaseEdge component, BaseEdgeData type, etc.), 
+  which makes it easy to quickly change the properties of all nodes, edges, ports, etc.
+- Creation of nodes through the `BlockPickerMenu` component, which displays either at the bottom of the canvas, or at the mouse pointer position (e.g: when dropping edges)
+- Undo/redo support (with shortcuts)
+- Node deletion
+- Selection of element (nodes, edges) _(**WIP**, implementation might be completely changed in the future)_
+- Uses `Recoil` for shared state management
+- Automatically re-calculate the height of nodes when jumping lines in `textarea`
 
-This is a really simple project that shows the usage of Next.js with TypeScript.
+Known limitations:
+- Editor direction is `RIGHT` (hardcoded) and adding nodes will add them to the right side, always (even if you change the direction)
+    - I don't plan on changing that at the moment
+
+> This POC can be used as a boilerplate to start your own project using Reaflow.
+
+## Online demo
+
+[Demo](https://poc-nextjs-reaflow.vercel.app/) (automatically updated from the `master` branch).
 
 ## Deploy your own
 
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example):
+Deploy the example using [Vercel](https://vercel.com):
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/vercel/next.js/tree/canary/examples/with-typescript&project-name=with-typescript&repository-name=with-typescript)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/Vadorequest/poc-nextjs-reaflow&project-name=poc-nextjs-reaflow&repository-name=poc-nextjs-reaflow)
 
-## How to use it?
-
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
-
-```bash
-npx create-next-app --example with-typescript with-typescript-app
-# or
-yarn create next-app --example with-typescript with-typescript-app
-```
-
-Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
-
-## Notes
-
-This example shows how to integrate the TypeScript type system into Next.js. Since TypeScript is supported out of the box with Next.js, all we have to do is to install TypeScript.
-
-```
-npm install --save-dev typescript
-```
-
-To enable TypeScript's features, we install the type declarations for React and Node.
-
-```
-npm install --save-dev @types/react @types/react-dom @types/node
-```
-
-When we run `next dev` the next time, Next.js will start looking for any `.ts` or `.tsx` files in our project and builds it. It even automatically creates a `tsconfig.json` file for our project with the recommended settings.
-
-Next.js has built-in TypeScript declarations, so we'll get autocompletion for Next.js' modules straight away.
-
-A `type-check` script is also added to `package.json`, which runs TypeScript's `tsc` CLI in `noEmit` mode to run type-checking separately. You can then include this, for example, in your `test` scripts.
