@@ -33,7 +33,11 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     initialEdges,
   } = props;
 
-  // Used to create a reference to the canvas so we can pass it to the hook so it has knowledge about the canvas
+  /**
+   * Used to create a reference to the canvas.
+   *
+   * XXX Unused in this file at the moment, but was necessary when using drag & drop features, so it was kept in case it'd be useful later.
+   */
   const canvasRef: MutableRefObject<CanvasRef | null> = useRef<CanvasRef | null>(null);
 
   return (

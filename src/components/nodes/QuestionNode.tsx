@@ -19,6 +19,20 @@ const nodeType: BaseNodeType = 'question';
 const defaultWidth = 200;
 const defaultHeight = 400;
 
+/**
+ * Question node.
+ *
+ * Used to display a information (as text) and its choices.
+ *
+ * Displays a multi lines text input. (textarea)
+ * Displays a "question type" select input. (React Select)
+ *  - If question type is "text", doesn't display anything more.
+ *  - If question type is "single-quick-reply", displays a list of manual entries below (ref, label), with ability to create new entries.
+ * Displays a "question ref" input at the node's bottom.
+ * Has one west port and one east port.
+ * The west port allows unlimited links to other nodes.
+ * The east port allows only one link to another node. (TODO not enforced yet)
+ */
 const QuestionNode: BaseNodeComponent<Props> = (props) => {
   const {
     updateCurrentNode,
@@ -53,7 +67,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
           const [selectedChoiceType, setSelectedChoiceType] = useState<OptionTypeBase | undefined>(undefined);
 
           /**
-           * When textarea input height changes, we need to increase the height of the element accordingly.
+           * When textarea input height changes, we need to increase the height of the whole node accordingly.
            *
            * @param height
            * @param meta

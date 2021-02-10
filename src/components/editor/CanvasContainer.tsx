@@ -138,7 +138,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   /**
    * Node component. All nodes will render trough this component.
    *
-   * Uses the NodeRouter component which will render the a different node layout, depending on the node "type".
+   * Uses the NodeRouter component which will render a different node layout, depending on the node "type".
    */
   const Node = (nodeProps: NodeProps) => {
     return (

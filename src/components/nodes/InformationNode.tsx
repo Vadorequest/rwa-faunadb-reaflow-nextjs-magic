@@ -14,6 +14,16 @@ const nodeType: BaseNodeType = 'information';
 const defaultWidth = 200;
 const defaultHeight = 100;
 
+/**
+ * Information node.
+ *
+ * Used to display an information (as text).
+ *
+ * Displays a multi lines text input. (textarea)
+ * Has one west port and one east port.
+ * The west port allows unlimited links to other nodes.
+ * The east port allows only one link to another node. (TODO not enforced yet)
+ */
 const InformationNode: BaseNodeComponent<Props> = (props) => {
   const {
     updateCurrentNode,
@@ -36,7 +46,7 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
           } = nodeProps;
 
           /**
-           * When textarea input height changes, we need to increase the height of the element accordingly.
+           * When textarea input height changes, we need to increase the height of the whole node accordingly.
            *
            * @param height
            * @param meta

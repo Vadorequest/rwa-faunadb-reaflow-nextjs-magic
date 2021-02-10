@@ -1,9 +1,7 @@
 import classnames from 'classnames';
 import cloneDeep from 'lodash.clonedeep';
 import React from 'react';
-import {
-  NodeProps,
-} from 'reaflow';
+import { NodeProps } from 'reaflow';
 import { NodeData } from 'reaflow/dist/types';
 import { useRecoilState } from 'recoil';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
@@ -13,7 +11,6 @@ import { selectedNodesState } from '../../states/selectedNodesState';
 import BaseNodeData from '../../types/BaseNodeData';
 import BaseNodeProps from '../../types/BaseNodeProps';
 import BaseNodeType from '../../types/BaseNodeType';
-import BlockPickerMenuState from '../../types/BlockPickerMenu';
 import {
   filterNodeInArray,
   removeAndUpsertNodesThroughPorts,
@@ -26,6 +23,11 @@ type Props = {
   nodeProps: NodeProps;
 }
 
+/**
+ * Node router.
+ *
+ * Acts as a router between node layouts, by rendering a different node layout, depending on the node "type".
+ */
 const NodeRouter: React.FunctionComponent<Props> = (props) => {
   const {
     nodeProps,
@@ -75,7 +77,11 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
   };
 
   /**
-   * When clicking on the "x" remove button that appears when a node is selected.
+   * Removes a node.
+   *
+   * Upsert its descendant if there were any. (auto-link all descendants to all its ascendants)
+   *
+   * Triggered when clicking on the "x" remove button that appears when a node is selected.
    *
    * @param event
    * @param node
@@ -98,13 +104,16 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
   };
 
   /**
-   * When clicking on a node.
+   * Selects the node when clicking on it.
    *
-   * XXX Resolving the node ourselves instead of relying on the 2nd argument (nodeData), which returns null.
+   * XXX We're resolving the "node" ourselves, instead of relying on the 2nd argument (nodeData),
+   *  which might return null depending on where in the node the click was performed.
    *
    * @param event
+   * @param data
    */
-  const onNodeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>) => {
+  const onNodeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, data: BaseNodeData) => {
+    console.log('onNodeClick data', data)
     const node: BaseNodeData = nodes.find((node: BaseNodeData) => node.id === nodeProps?.id) as BaseNodeData;
     console.log(`node clicked (${nodeProps?.properties?.text || nodeProps?.id})`, nodeProps);
     console.log(`node selected`, node);
@@ -116,7 +125,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
   /**
    * When the mouse enters a node (on hover).
    *
-   * XXX Does not work because `foreignObject` is displayed on top of the Node. See https://github.com/reaviz/reaflow/issues/45
+   * XXX Does not work well because `foreignObject` is displayed on top of the Node. See https://github.com/reaviz/reaflow/issues/45
    *
    * @param event
    * @param node
@@ -128,7 +137,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
   /**
    * When the mouse leaves a node (leaves hover area).
    *
-   * XXX Does not work because `foreignObject` is displayed on top of the Node. See https://github.com/reaviz/reaflow/issues/45
+   * XXX Does not work well because `foreignObject` is displayed on top of the Node. See https://github.com/reaviz/reaflow/issues/45
    *
    * @param event
    * @param node
@@ -140,18 +149,20 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
   /**
    * Node props applied to all nodes, no matter what type they are.
    */
-  const commonNodeProps: Partial<BaseNodeProps> = {
+  const baseNodeProps: Partial<BaseNodeProps> = {
     ...nodeProps,
     updateCurrentNode,
     className: classnames(
-      `node node-${type}`,
+      `node-svg-rect node-${type}-svg-rect`,
     ),
     style: {
       strokeWidth: 0,
       fill: 'white',
       color: 'black',
     },
-    port: <BasePort fromNodeId={nodeProps.id} />,
+    port: (
+      <BasePort fromNodeId={nodeProps.id} />
+    ),
     onClick: onNodeClick,
     onEnter: onNodeEnter,
     onLeave: onNodeLeave,
@@ -164,13 +175,13 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
     case 'information':
       return (
         <InformationNode
-          {...commonNodeProps}
+          {...baseNodeProps}
         />
       );
     case 'question':
       return (
         <QuestionNode
-          {...commonNodeProps}
+          {...baseNodeProps}
         />
       );
   }
