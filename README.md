@@ -25,6 +25,7 @@ It comes with the following features:
 - Selection of element (nodes, edges) _(**WIP**, implementation might be completely changed in the future)_
 - Uses `Recoil` for shared state management
 - Automatically re-calculate the height of nodes when jumping lines in `textarea`
+- Graph data (nodes, edges) are persisted in the browser localstorage and loaded upon page reload
 
 Known limitations:
 - Editor direction is `RIGHT` (hardcoded) and adding nodes will add them to the right side, always (even if you change the direction)
