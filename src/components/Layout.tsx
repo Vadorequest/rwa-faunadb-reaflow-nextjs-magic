@@ -9,6 +9,11 @@ type Props = {
   title?: string
 }
 
+/**
+ * Layout meant to be shared by all Next.js pages.
+ *
+ * Simply displays a header, footer, and the Next.js page in between.
+ */
 const Layout: React.FunctionComponent<Props> = (props) => {
   const {
     children,

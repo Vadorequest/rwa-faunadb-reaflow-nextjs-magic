@@ -59,6 +59,15 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);
   const selections = selectedNodes.map((node) => node.id);
 
+  /**
+   * Uses Reaflow Undo/Redo helpers.
+   *
+   * Automatically binds shortcuts (cmd+z/cmd+shift+z).
+   *
+   * TODO Doesn't handle massive undos very well - See https://github.com/reaviz/reaflow/issues/60
+   *
+   * @see https://reaflow.dev/?path=/story/demos-undo-redo
+   */
   const {
     undo,
     redo,

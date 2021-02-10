@@ -27,12 +27,14 @@ type Props = {} & BaseEdgeProps;
  * It renders a Reaflow <Edge> component.
  *
  * The Edge is rendered as SVG <g> wrapper, which contains the <path> that displays the link itself.
+ *
+ * @see https://reaflow.dev/?path=/story/demos-edges
  */
 const BaseEdge: React.FunctionComponent<Props> = (props) => {
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState<BlockPickerMenu>(blockPickerMenuState);
   const [nodes, setNodes] = useRecoilState(nodesState);
   const [edges, setEdges] = useRecoilState(edgesState);
-  const { displayedFrom } = blockPickerMenu;
+  const { displayedFrom, isDisplayed } = blockPickerMenu;
 
   // console.log('edgeProps', props);
 
@@ -40,6 +42,8 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
    * Invoked when clicking on the "+" of the edge.
    *
    * Displays the BlockPickerMenu, which can then be used to select which Block to add to the canvas.
+   * If the BlockPickerMenu was already displayed, hides it if it was opened from the same edge.
+   *
    * When a block is clicked, the "onBlockClick" function is invoked and creates (upserts) the node
    * by splitting the edge in two parts and adding the new node in between.
    *
@@ -60,7 +64,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
     setBlockPickerMenu({
       displayedFrom: `edge-${edge.id}`,
       // Toggles on click if the source is the same, otherwise update
-      isDisplayed: displayedFrom === `edge-${edge.id}` ? !blockPickerMenu.isDisplayed : true,
+      isDisplayed: displayedFrom === `edge-${edge.id}` ? !isDisplayed : true,
       onBlockClick,
       eventTarget: event.target,
     });

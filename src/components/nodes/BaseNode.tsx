@@ -34,10 +34,10 @@ const fallbackDefaultHeight = 100;
  *
  * XXX If you want to change the behavior of all nodes while avoid code duplication, here's the place.
  *
+ * @see https://reaflow.dev/?path=/story/demos-nodes
  * @see https://github.com/reaviz/reaflow/issues/45 Using `foreignObject` "steals" all `Node` events (onEnter, etc.) - How to forward events when using foreignObject?
  * @see https://github.com/reaviz/reaflow/issues/50 `useSelection` hook `onKeyDown` event doesn't work with `foreignObject` - Multiple selection doesn't work when using a `foreignObject
  * @see https://github.com/reaviz/reaflow/issues/44 React select component displays/hides itself randomly (as `foreignObject`)
- *
  */
 const BaseNode: BaseNodeComponent<Props> = (props) => {
   const {
