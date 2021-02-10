@@ -8,12 +8,14 @@ import {
   NodeChildProps,
   PortData,
 } from 'reaflow';
+import { useRecoilState } from 'recoil';
 import settings from '../../settings';
+import { lastCreatedNodeState } from '../../states/lastCreatedNodeState';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
-import NodeType from '../../types/NodeType';
 import { GetBaseNodeDefaultPropsProps } from '../../types/GetBaseNodeDefaultProps';
+import NodeType from '../../types/NodeType';
 import { createPort } from '../../utils/ports';
 
 type Props = BaseNodeProps & {
@@ -49,6 +51,9 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
     onClick,
   } = props;
 
+  const [lastCreatedNode] = useRecoilState(lastCreatedNodeState);
+  console.log('lastCreatedNode', lastCreatedNode);
+
   return (
     <Node
       {...rest}
@@ -80,6 +85,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                 // Disabling pointer-events on top-level containers, for events to be forwarded to the underlying <rect>
                 // Allows using events specific to the Reaflow <Node> component (onClick, onEnter, onLeave, etc.)
                 pointer-events: none;
+
                 .node,
                 .node-header {
                   pointer-events: none;
