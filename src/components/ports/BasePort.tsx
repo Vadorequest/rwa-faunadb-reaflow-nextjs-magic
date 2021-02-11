@@ -9,11 +9,16 @@ import {
   DragEvent,
   Position,
 } from 'reaflow/dist/utils/useNodeDrag';
-import { useRecoilState } from 'recoil';
+import {
+  SetterOrUpdater,
+  useRecoilState,
+  useSetRecoilState,
+} from 'recoil';
 import settings from '../../settings';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { draggedEdgeFromPortState } from '../../states/draggedEdgeFromPortState';
 import { edgesState } from '../../states/edgesState';
+import { lastCreatedNodeState } from '../../states/lastCreatedNodeState';
 import { nodesState } from '../../states/nodesState';
 import BaseNodeData from '../../types/BaseNodeData';
 import BasePortData from '../../types/BasePortData';
@@ -51,6 +56,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
   const [nodes, setNodes] = useRecoilState(nodesState);
   const [edges, setEdges] = useRecoilState(edgesState);
   const [draggedEdgeFromPort, setDraggedEdgeFromPort] = useRecoilState(draggedEdgeFromPortState);
+  const setLastUpdatedNode: SetterOrUpdater<BaseNodeData | undefined> = useSetRecoilState(lastCreatedNodeState);
   const node: BaseNodeData = nodes.find((node) => node.id === fromNodeId) as BaseNodeData;
   const { displayedFrom, isDisplayed } = blockPickerMenu;
 
@@ -74,6 +80,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
 
     setNodes(results.nodes);
     setEdges(results.edges);
+    setLastUpdatedNode(newNode);
   };
 
   /**

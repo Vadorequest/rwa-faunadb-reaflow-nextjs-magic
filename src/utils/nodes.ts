@@ -1,14 +1,9 @@
 import filter from 'lodash.filter';
 import { PortData } from 'reaflow';
-import {
-  SetterOrUpdater,
-  useSetRecoilState,
-} from 'recoil';
 import { v1 as uuid } from 'uuid';
 import BaseNode from '../components/nodes/BaseNode';
 import InformationNode from '../components/nodes/InformationNode';
 import QuestionNode from '../components/nodes/QuestionNode';
-import { lastCreatedNodeState } from '../states/lastCreatedNodeState';
 import BaseEdgeData from '../types/BaseEdgeData'; // XXX Use v1 for uniqueness - See https://www.sohamkamani.com/blog/2016/10/05/uuid1-vs-uuid4/
 import BaseNodeData from '../types/BaseNodeData';
 import { BaseNodeDefaultProps } from '../types/BaseNodeDefaultProps';
@@ -28,9 +23,6 @@ export const createNode = (nodeData?: Partial<BaseNodeData>): BaseNodeData => {
     id,
   };
   console.log('newNode', newNode);
-
-  const setLastUpdatedNode: SetterOrUpdater<BaseNodeData | undefined> = useSetRecoilState(lastCreatedNodeState);
-  setLastUpdatedNode(newNode);
 
   return newNode;
 };

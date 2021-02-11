@@ -4,11 +4,17 @@ import {
   Edge,
   EdgeData,
 } from 'reaflow';
-import { useRecoilState } from 'recoil';
+import {
+  SetterOrUpdater,
+  useRecoilState,
+  useSetRecoilState,
+} from 'recoil';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { edgesState } from '../../states/edgesState';
+import { lastCreatedNodeState } from '../../states/lastCreatedNodeState';
 import { nodesState } from '../../states/nodesState';
 import BaseEdgeProps from '../../types/BaseEdgeProps';
+import BaseNodeData from '../../types/BaseNodeData';
 import BlockPickerMenu, { OnBlockClick } from '../../types/BlockPickerMenu';
 import NodeType from '../../types/NodeType';
 import { translateXYToCanvasPosition } from '../../utils/canvas';
@@ -35,7 +41,9 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState<BlockPickerMenu>(blockPickerMenuState);
   const [nodes, setNodes] = useRecoilState(nodesState);
   const [edges, setEdges] = useRecoilState(edgesState);
+  const setLastUpdatedNode: SetterOrUpdater<BaseNodeData | undefined> = useSetRecoilState(lastCreatedNodeState);
   const { displayedFrom, isDisplayed } = blockPickerMenu;
+
 
   // console.log('edgeProps', props);
 
@@ -60,6 +68,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
 
       setNodes(results.nodes);
       setEdges(results.edges);
+      setLastUpdatedNode(newNode);
     };
 
     // Converts the x/y position to a Canvas position and apply some margin for the BlockPickerMenu to display on the right bottom of the cursor

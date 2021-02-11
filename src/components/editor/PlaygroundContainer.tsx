@@ -5,9 +5,14 @@ import React, {
   useEffect,
 } from 'react';
 import { CanvasRef } from 'reaflow';
-import { useRecoilState } from 'recoil';
+import {
+  SetterOrUpdater,
+  useRecoilState,
+  useSetRecoilState,
+} from 'recoil';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { edgesState } from '../../states/edgesState';
+import { lastCreatedNodeState } from '../../states/lastCreatedNodeState';
 import { nodesState } from '../../states/nodesState';
 import BaseEdgeData from '../../types/BaseEdgeData';
 import BaseNodeData from '../../types/BaseNodeData';
@@ -38,6 +43,7 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuState);
   const [nodes, setNodes] = useRecoilState(nodesState);
   const [edges, setEdges] = useRecoilState(edgesState);
+  const setLastUpdatedNode: SetterOrUpdater<BaseNodeData | undefined> = useSetRecoilState(lastCreatedNodeState);
 
   /**
    * Initializes the nodes and edges.
@@ -71,6 +77,7 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
 
             setNodes(results.nodes);
             setEdges(results.edges);
+            setLastUpdatedNode(newNode);
 
           } else if (nodes.length === 0) {
             // Simply create the node using its default properties, and reset all edges
@@ -79,6 +86,7 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
 
             setNodes([newNode]);
             setEdges([]);
+            setLastUpdatedNode(newNode);
           }
         },
       });
