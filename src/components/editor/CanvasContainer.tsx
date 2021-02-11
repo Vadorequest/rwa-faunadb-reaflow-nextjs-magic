@@ -20,6 +20,7 @@ import { useRecoilState } from 'recoil';
 import settings from '../../settings';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { edgesState } from '../../states/edgesState';
+import { lastCreatedNodeState } from '../../states/lastCreatedNodeState';
 import { nodesState } from '../../states/nodesState';
 import { selectedNodesState } from '../../states/selectedNodesState';
 import { persistGraphDataInLS } from '../../utils/persistGraph';
@@ -64,6 +65,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const [edges, setEdges] = useRecoilState(edgesState);
   const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);
   const selections = selectedNodes.map((node) => node.id);
+  const [lastCreatedNode] = useRecoilState(lastCreatedNodeState);
 
   /**
    * When nodes or edges are modified, updates the persisted data in the local storage.
@@ -168,6 +170,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     return (
       <NodeRouter
         nodeProps={nodeProps}
+        lastCreatedNode={lastCreatedNode}
       />
     );
   };

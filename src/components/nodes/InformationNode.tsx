@@ -30,7 +30,8 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
     ...rest
   } = props;
   const {
-    onClick,
+    id,
+    lastCreatedNode,
   } = props;
 
   return (
@@ -39,12 +40,7 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
       {...rest}
     >
       {
-        (nodeProps: NodeChildProps) => {
-          const {
-            width,
-            height,
-          } = nodeProps;
-
+        ({ nodeProps }: { nodeProps: NodeChildProps }) => {
           /**
            * When textarea input height changes, we need to increase the height of the whole node accordingly.
            *
@@ -78,6 +74,7 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
                   defaultValue={`Say something here`}
                   placeholder={'Say something here'}
                   onHeightChange={onHeightChange}
+                  autoFocus={lastCreatedNode?.id === id}
                 />
               </div>
             </Fragment>

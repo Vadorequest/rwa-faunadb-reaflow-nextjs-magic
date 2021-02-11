@@ -39,7 +39,8 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
     ...rest
   } = props;
   const {
-    onClick,
+    id,
+    lastCreatedNode,
   } = props;
 
   return (
@@ -48,12 +49,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
       {...rest}
     >
       {
-        (nodeProps: NodeChildProps) => {
-          const {
-            width,
-            height,
-          } = nodeProps;
-
+        ({ nodeProps }: { nodeProps: NodeChildProps }) => {
           const choiceTypes = [
             {
               value: `text`,
@@ -99,6 +95,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                   defaultValue={`Ask something here`}
                   placeholder={'Ask something here'}
                   onHeightChange={onHeightChange}
+                  autoFocus={lastCreatedNode?.id === id}
                 />
 
                 <div

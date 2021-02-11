@@ -11,6 +11,12 @@ export type BaseNodeProps = {
    * @param nodeData
    */
   updateCurrentNode?: (nodeData: Partial<BaseNodeData>) => void;
+
+  /**
+   * The last created node.
+   * Will be undefined if no node was created yet.
+   */
+  lastCreatedNode?: BaseNodeData | undefined;
 } & Partial<NodeProps>;
 
 export default BaseNodeProps;

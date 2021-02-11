@@ -21,6 +21,7 @@ import QuestionNode from './QuestionNode';
 
 type Props = {
   nodeProps: NodeProps;
+  lastCreatedNode: BaseNodeData | undefined;
 }
 
 /**
@@ -31,6 +32,7 @@ type Props = {
 const NodeRouter: React.FunctionComponent<Props> = (props) => {
   const {
     nodeProps,
+    lastCreatedNode,
   } = props;
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuState);
   const [nodes, setNodes] = useRecoilState(nodesState);
@@ -152,6 +154,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
   const baseNodeProps: Partial<BaseNodeProps> = {
     ...nodeProps,
     updateCurrentNode,
+    lastCreatedNode,
     className: classnames(
       `node-svg-rect node-${type}-svg-rect`,
     ),

@@ -51,9 +51,6 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
     onClick,
   } = props;
 
-  const [lastCreatedNode] = useRecoilState(lastCreatedNodeState);
-  console.log('lastCreatedNode', lastCreatedNode);
-
   return (
     <Node
       {...rest}
@@ -148,7 +145,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                   {
                     // Invoke the children as a function, or render the children as a component, if it's not a function
                     // @ts-ignore
-                    typeof children === 'function' ? (children(nodeProps) as (node: NodeChildProps) => ReactNode) : children
+                    typeof children === 'function' ? (children({ nodeProps }) as (node: NodeChildProps) => ReactNode) : children
                   }
                 </div>
               </div>
