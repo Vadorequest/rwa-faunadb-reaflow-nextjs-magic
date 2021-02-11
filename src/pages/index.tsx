@@ -15,10 +15,6 @@ import { getGraphDataFromLS } from '../utils/persistGraph';
  * A simple page that does nothing more than displaying a layout and the Reaflow canvas (EditorContainer).
  */
 const IndexPage = () => {
-  const fallbackInitialNodes: BaseNodeData[] = [
-    createNodeFromDefaultProps(getDefaultNodePropsWithFallback('information')),
-  ];
-  const fallbackInitialEdges: BaseEdgeData[] = [];
   let persistedNodes: BaseNodeData[] | undefined;
   let persistedEdges: BaseEdgeData[] | undefined;
 
@@ -32,8 +28,10 @@ const IndexPage = () => {
   return (
     <Layout>
       <EditorContainer
-        initialNodes={persistedNodes || fallbackInitialNodes}
-        initialEdges={persistedEdges || fallbackInitialEdges}
+        initialNodes={persistedNodes || [
+          createNodeFromDefaultProps(getDefaultNodePropsWithFallback('information')),
+        ]}
+        initialEdges={persistedEdges || []}
       />
     </Layout>
   );
