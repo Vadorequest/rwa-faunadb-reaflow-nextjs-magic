@@ -74,7 +74,7 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
                   defaultValue={`Say something here`}
                   placeholder={'Say something here'}
                   onHeightChange={onHeightChange}
-                  autoFocus={lastCreatedNode?.id === id}
+                  // autoFocus={lastCreatedNode?.id === id} // Autofocus works fine when the node is inside the viewport, but when it's created outside it moves the viewport back at the beginning
                 />
               </div>
             </Fragment>
