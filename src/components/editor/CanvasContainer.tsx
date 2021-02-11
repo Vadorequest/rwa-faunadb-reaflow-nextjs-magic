@@ -251,6 +251,21 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         </Button>
       </div>
 
+      <div
+        style={{ position: 'absolute', top: 10, right: 20, zIndex: 999 }}
+      >
+        <Button
+          onClick={() => {
+            if (confirm(`Remove all nodes and edges?`)) {
+              setNodes([]);
+              setEdges([]);
+            }
+          }}
+        >
+          Clear all
+        </Button>
+      </div>
+
       <Canvas
         ref={canvasRef}
         className={'reaflow-canvas'}
