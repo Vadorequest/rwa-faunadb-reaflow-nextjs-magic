@@ -7,7 +7,7 @@ import {
 import { Router } from 'next/router';
 import React from 'react';
 import { RecoilRoot } from 'recoil';
-import { RecoilUtilsComponent } from '../components/RecoilExternalStateUtils';
+import { RecoilExternalStatePortal } from '../components/RecoilExternalStatePortal';
 
 type Props = {
   Component: NextComponentType<NextPageContext>; // Page component, not provided if pageProps.statusCode is 3xx or 4xx
@@ -31,7 +31,7 @@ const App: React.FunctionComponent<Props> = (props): JSX.Element => {
     <ChakraProvider>
       <RecoilRoot>
         <Component {...pageProps} />
-        <RecoilUtilsComponent />
+        <RecoilExternalStatePortal />
       </RecoilRoot>
     </ChakraProvider>
   );
