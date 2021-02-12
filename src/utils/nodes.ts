@@ -21,6 +21,7 @@ export const createNode = (nodeData?: Partial<BaseNodeData>): BaseNodeData => {
   const newNode = {
     ...nodeData,
     id,
+    algorithm: 'fixed', // All nodes use a fixed algorithm position
   };
   console.log('newNode', newNode);
 
