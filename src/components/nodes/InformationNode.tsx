@@ -61,10 +61,9 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
           };
 
           const onTextInputValueChange = (event: TextareaChangeEventHandler) => {
+            console.log(node)
             patchCurrentNode({
-              ...node,
               data: {
-                ...node.data,
                 text: event.target.value,
               },
             } as InformationNodeData);

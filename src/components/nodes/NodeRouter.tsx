@@ -74,13 +74,16 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
     const nodeToUpdate = {
       ...existingNode,
       ...patch,
-      ...existingNode.data || {},
-      ...patch.data || {},
-      id: nodeProps.id, // Force keep same id to avoid edge cases
+      data: {
+        ...existingNode.data || {},
+        ...patch.data || {}
+      },
+      id: existingNode.id, // Force keep same id to avoid edge cases
     };
     console.log('patchCurrentNode before', existingNode, 'after:', nodeToUpdate, 'using patch:', patch);
 
     const newNodes = cloneDeep(nodes);
+    // @ts-ignore
     newNodes[nodeToUpdateIndex] = nodeToUpdate;
 
     setNodes(newNodes);
