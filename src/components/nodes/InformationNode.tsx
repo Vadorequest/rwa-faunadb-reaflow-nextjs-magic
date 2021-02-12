@@ -4,11 +4,13 @@ import { NodeChildProps } from 'reaflow';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
+import { TextareaChangeEventHandler } from '../../types/forms';
+import { InformationNodeAdditionalData } from '../../types/nodes/InformationNodeAdditionalData';
 import NodeType from '../../types/NodeType';
 import Textarea from '../plugins/Textarea';
 import BaseNode from './BaseNode';
 
-type Props = {} & BaseNodeProps;
+type Props = {} & BaseNodeProps<InformationNodeAdditionalData>;
 
 const nodeType: NodeType = 'information';
 const defaultWidth = 200;
@@ -29,7 +31,9 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
     updateCurrentNode,
     id,
     lastCreatedNode,
+    node,
   } = props;
+  console.log(node.data);
 
   return (
     <BaseNode
@@ -44,7 +48,7 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
            * @param height
            * @param meta
            */
-          const onHeightChange = (height: number, meta: TextareaHeightChangeMeta) => {
+          const onTextHeightChange = (height: number, meta: TextareaHeightChangeMeta) => {
             // Only consider additional height, by ignoring the height of the first row
             const additionalHeight = height - meta.rowHeight;
 
@@ -53,6 +57,16 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
                 height: defaultHeight + additionalHeight,
               });
             }
+          };
+
+          const onTextInputValueChange = (event: TextareaChangeEventHandler) => {
+            updateCurrentNode({
+              ...node,
+              data: {
+                ...node.data,
+                text: event.target.value,
+              },
+            });
           };
 
           return (
@@ -68,9 +82,9 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
               >
                 <Textarea
                   className={`textarea ${nodeType}-text`}
-                  defaultValue={`Say something here`}
                   placeholder={'Say something here'}
-                  onHeightChange={onHeightChange}
+                  onHeightChange={onTextHeightChange}
+                  onChange={onTextInputValueChange}
                   // autoFocus={lastCreatedNode?.id === id} // Autofocus works fine when the node is inside the viewport, but when it's created outside it moves the viewport back at the beginning
                 />
               </div>

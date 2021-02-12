@@ -1,7 +1,6 @@
 import { FunctionComponent } from 'react';
 import { PortData } from 'reaflow';
 import BaseNodeProps from './BaseNodeProps';
-import { GenericObject } from './GenericObject';
 import { GetBaseNodeDefaultProps } from './GetBaseNodeDefaultProps';
 
 /**
@@ -9,7 +8,7 @@ import { GetBaseNodeDefaultProps } from './GetBaseNodeDefaultProps';
  *
  * Used by all node components (BaseNode).
  */
-export type BaseNodeComponent<Props extends GenericObject = BaseNodeProps> = FunctionComponent<Props> & {
+export type BaseNodeComponent<Props extends BaseNodeProps = BaseNodeProps> = FunctionComponent<Props> & {
   /**
    * Function returning the default props of the node.
    *

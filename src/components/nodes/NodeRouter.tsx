@@ -41,8 +41,10 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
   const [nodes, setNodes] = useRecoilState(nodesState);
   const [edges, setEdges] = useRecoilState(edgesState);
   const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);
+  const node: BaseNodeData = nodes.find((node: BaseNodeData) => node.id === nodeProps.id) as BaseNodeData;
 
   // console.log('router nodes', props);
+  // console.log('node', node);
 
   const { properties } = nodeProps || {};
   const { data } = properties || {};
@@ -60,6 +62,8 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
 
   /**
    * Updates the properties of the current node.
+   *
+   * TODO rename patchCurrentNode
    *
    * @param nodeData
    */
@@ -156,6 +160,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
    */
   const baseNodeProps: BaseNodeProps = {
     ...nodeProps,
+    node,
     updateCurrentNode,
     lastCreatedNode,
     isSelected: false, // TODO implement

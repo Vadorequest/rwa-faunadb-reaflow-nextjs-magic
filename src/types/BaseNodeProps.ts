@@ -1,18 +1,23 @@
 import { NodeProps } from 'reaflow';
 import BaseNodeData from './BaseNodeData';
 
-export type UpdateCurrentNode = (nodeData: Partial<BaseNodeData>) => void;
+export type UpdateCurrentNode<NodeData extends Partial<BaseNodeData> = Partial<BaseNodeData>> = (nodeData: NodeData) => void;
 
 /**
  * Props received by any node.
  */
-export type BaseNodeProps = {
+export type BaseNodeProps<NodeData extends BaseNodeData = BaseNodeData> = {
+  /**
+   * Current node.
+   */
+  node: NodeData;
+
   /**
    * Updates the properties of the current node.
    *
    * @param nodeData
    */
-  updateCurrentNode: UpdateCurrentNode;
+  updateCurrentNode: any;
 
   /**
    * The last created node.

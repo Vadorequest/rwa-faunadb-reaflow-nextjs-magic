@@ -6,6 +6,6 @@ import BaseNodeAdditionalData from './BaseNodeAdditionalData';
  *
  * Extends the Reaflow.NodeData and add additional data to its "data" property.
  */
-export type BaseNodeData = NodeData<Required<BaseNodeAdditionalData>>;
+export type BaseNodeData<AdditionalData extends BaseNodeAdditionalData = BaseNodeAdditionalData> = NodeData<AdditionalData>;
 
 export default BaseNodeData;

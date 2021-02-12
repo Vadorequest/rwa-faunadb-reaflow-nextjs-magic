@@ -128,7 +128,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                     div {
                       cursor: pointer;
                     }
-                    
+
                     .delete-action {
                       display: none; // TODO implement
                     }
