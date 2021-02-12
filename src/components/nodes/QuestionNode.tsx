@@ -36,9 +36,6 @@ const defaultHeight = 400;
 const QuestionNode: BaseNodeComponent<Props> = (props) => {
   const {
     updateCurrentNode,
-    ...rest
-  } = props;
-  const {
     id,
     lastCreatedNode,
   } = props;
@@ -46,7 +43,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
   return (
     <BaseNode
       nodeType={nodeType}
-      {...rest}
+      {...props}
     >
       {
         ({ nodeProps }: { nodeProps: NodeChildProps }) => {

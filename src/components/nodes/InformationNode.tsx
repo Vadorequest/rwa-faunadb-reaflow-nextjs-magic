@@ -27,9 +27,6 @@ const defaultHeight = 100;
 const InformationNode: BaseNodeComponent<Props> = (props) => {
   const {
     updateCurrentNode,
-    ...rest
-  } = props;
-  const {
     id,
     lastCreatedNode,
   } = props;
@@ -37,7 +34,7 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
   return (
     <BaseNode
       nodeType={nodeType}
-      {...rest}
+      {...props}
     >
       {
         ({ nodeProps }: { nodeProps: NodeChildProps }) => {

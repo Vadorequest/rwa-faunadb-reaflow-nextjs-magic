@@ -8,9 +8,7 @@ import {
   NodeChildProps,
   PortData,
 } from 'reaflow';
-import { useRecoilState } from 'recoil';
 import settings from '../../settings';
-import { lastCreatedNodeState } from '../../states/lastCreatedNodeState';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';

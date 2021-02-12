@@ -1,7 +1,10 @@
 import classnames from 'classnames';
 import cloneDeep from 'lodash.clonedeep';
 import React from 'react';
-import { NodeProps } from 'reaflow';
+import {
+  NodeProps,
+  Remove,
+} from 'reaflow';
 import { NodeData } from 'reaflow/dist/types';
 import { useRecoilState } from 'recoil';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
@@ -9,7 +12,7 @@ import { edgesState } from '../../states/edgesState';
 import { nodesState } from '../../states/nodesState';
 import { selectedNodesState } from '../../states/selectedNodesState';
 import BaseNodeData from '../../types/BaseNodeData';
-import BaseNodeProps from '../../types/BaseNodeProps';
+import BaseNodeProps, { UpdateCurrentNode } from '../../types/BaseNodeProps';
 import NodeType from '../../types/NodeType';
 import {
   filterNodeInArray,
@@ -60,7 +63,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
    *
    * @param nodeData
    */
-  const updateCurrentNode = (nodeData: Partial<BaseNodeData>): void => {
+  const updateCurrentNode: UpdateCurrentNode = (nodeData: Partial<BaseNodeData>): void => {
     console.log('Updating current node with', nodeData);
     const nodeToUpdateIndex = nodes.findIndex((node: BaseNodeData) => node.id === nodeProps.id);
     console.log('updateCurrentNode nodeToUpdateIndex', nodeToUpdateIndex);
@@ -115,7 +118,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
    * @param data
    */
   const onNodeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, data: BaseNodeData) => {
-    console.log('onNodeClick data', data)
+    console.log('onNodeClick data', data);
     const node: BaseNodeData = nodes.find((node: BaseNodeData) => node.id === nodeProps?.id) as BaseNodeData;
     console.log(`node clicked (${nodeProps?.properties?.text || nodeProps?.id})`, nodeProps);
     console.log(`node selected`, node);
@@ -151,7 +154,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
   /**
    * Node props applied to all nodes, no matter what type they are.
    */
-  const baseNodeProps: Partial<BaseNodeProps> = {
+  const baseNodeProps: BaseNodeProps = {
     ...nodeProps,
     updateCurrentNode,
     lastCreatedNode,
@@ -170,6 +173,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
     onEnter: onNodeEnter,
     onLeave: onNodeLeave,
     onRemove: onNodeRemove,
+    remove: (<Remove hidden={true} />),
   };
 
   // console.log('rendering node of type: ', type, commonBlockProps)

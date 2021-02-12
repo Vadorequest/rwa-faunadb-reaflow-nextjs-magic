@@ -1,6 +1,8 @@
 import { NodeProps } from 'reaflow';
 import BaseNodeData from './BaseNodeData';
 
+export type UpdateCurrentNode = (nodeData: Partial<BaseNodeData>) => void;
+
 /**
  * Props received by any node.
  */
@@ -10,7 +12,7 @@ export type BaseNodeProps = {
    *
    * @param nodeData
    */
-  updateCurrentNode?: (nodeData: Partial<BaseNodeData>) => void;
+  updateCurrentNode: UpdateCurrentNode;
 
   /**
    * The last created node.
