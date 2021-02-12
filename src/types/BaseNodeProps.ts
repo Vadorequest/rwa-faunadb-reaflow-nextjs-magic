@@ -19,6 +19,11 @@ export type BaseNodeProps = {
    * Will be undefined if no node was created yet.
    */
   lastCreatedNode?: BaseNodeData | undefined;
+
+  /**
+   * Whether the node is being selected.
+   */
+  isSelected: boolean;
 } & Partial<NodeProps>;
 
 export default BaseNodeProps;

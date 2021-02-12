@@ -158,6 +158,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
     ...nodeProps,
     updateCurrentNode,
     lastCreatedNode,
+    isSelected: false, // TODO implement
     className: classnames(
       `node-svg-rect node-${type}-svg-rect`,
     ),
