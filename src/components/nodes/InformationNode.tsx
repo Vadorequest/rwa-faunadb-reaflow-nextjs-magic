@@ -33,7 +33,6 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
     lastCreatedNode,
     node,
   } = props;
-  console.log(node.data?.text);
 
   return (
     <BaseNode

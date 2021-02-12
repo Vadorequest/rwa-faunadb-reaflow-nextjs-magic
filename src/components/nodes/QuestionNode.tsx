@@ -9,11 +9,12 @@ import { NodeChildProps } from 'reaflow';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
+import { QuestionNodeData } from '../../types/nodes/QuestionNodeData';
 import NodeType from '../../types/NodeType';
 import Textarea from '../plugins/Textarea';
 import BaseNode from './BaseNode';
 
-type Props = {} & BaseNodeProps;
+type Props = {} & BaseNodeProps<QuestionNodeData>;
 
 const nodeType: NodeType = 'question';
 const defaultWidth = 200;
@@ -38,6 +39,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
     patchCurrentNode,
     id,
     lastCreatedNode,
+    node,
   } = props;
 
   return (
