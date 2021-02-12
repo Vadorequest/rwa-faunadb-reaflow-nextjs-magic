@@ -12,7 +12,7 @@ import { edgesState } from '../../states/edgesState';
 import { nodesState } from '../../states/nodesState';
 import { selectedNodesState } from '../../states/selectedNodesState';
 import BaseNodeData from '../../types/BaseNodeData';
-import BaseNodeProps, { UpdateCurrentNode } from '../../types/BaseNodeProps';
+import BaseNodeProps, { PatchCurrentNode } from '../../types/BaseNodeProps';
 import NodeType from '../../types/NodeType';
 import {
   filterNodeInArray,
@@ -61,24 +61,27 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
   }
 
   /**
-   * Updates the properties of the current node.
+   * Path the properties of the current node.
    *
-   * @param nodeData
+   * Only updates the provided properties, doesn't update other properties.
+   * Also merges the 'data' object, by keeping existing data and only overwriting those that are specified.
+   *
+   * @param patch
    */
-  const patchCurrentNode: UpdateCurrentNode = (nodeData: Partial<BaseNodeData>): void => {
-    console.log('Updating current node with', nodeData);
+  const patchCurrentNode: PatchCurrentNode = (patch: Partial<BaseNodeData>): void => {
     const nodeToUpdateIndex = nodes.findIndex((node: BaseNodeData) => node.id === nodeProps.id);
-    console.log('patchCurrentNode nodeToUpdateIndex', nodeToUpdateIndex);
+    const existingNode: BaseNodeData = nodes[nodeToUpdateIndex];
     const nodeToUpdate = {
-      ...nodes[nodeToUpdateIndex],
-      ...nodeData,
+      ...existingNode,
+      ...patch,
+      ...existingNode.data || {},
+      ...patch.data || {},
       id: nodeProps.id, // Force keep same id to avoid edge cases
     };
-    console.log('patchCurrentNode updated node', nodeToUpdate);
+    console.log('patchCurrentNode before', existingNode, 'after:', nodeToUpdate, 'using patch:', patch);
 
     const newNodes = cloneDeep(nodes);
     newNodes[nodeToUpdateIndex] = nodeToUpdate;
-    console.log('patchCurrentNode new nodes', newNodes);
 
     setNodes(newNodes);
   };
