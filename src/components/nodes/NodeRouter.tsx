@@ -63,24 +63,22 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
   /**
    * Updates the properties of the current node.
    *
-   * TODO rename patchCurrentNode
-   *
    * @param nodeData
    */
-  const updateCurrentNode: UpdateCurrentNode = (nodeData: Partial<BaseNodeData>): void => {
+  const patchCurrentNode: UpdateCurrentNode = (nodeData: Partial<BaseNodeData>): void => {
     console.log('Updating current node with', nodeData);
     const nodeToUpdateIndex = nodes.findIndex((node: BaseNodeData) => node.id === nodeProps.id);
-    console.log('updateCurrentNode nodeToUpdateIndex', nodeToUpdateIndex);
+    console.log('patchCurrentNode nodeToUpdateIndex', nodeToUpdateIndex);
     const nodeToUpdate = {
       ...nodes[nodeToUpdateIndex],
       ...nodeData,
       id: nodeProps.id, // Force keep same id to avoid edge cases
     };
-    console.log('updateCurrentNode updated node', nodeToUpdate);
+    console.log('patchCurrentNode updated node', nodeToUpdate);
 
     const newNodes = cloneDeep(nodes);
     newNodes[nodeToUpdateIndex] = nodeToUpdate;
-    console.log('updateCurrentNode new nodes', newNodes);
+    console.log('patchCurrentNode new nodes', newNodes);
 
     setNodes(newNodes);
   };
@@ -161,7 +159,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
   const baseNodeProps: BaseNodeProps = {
     ...nodeProps,
     node,
-    updateCurrentNode,
+    patchCurrentNode: patchCurrentNode,
     lastCreatedNode,
     isSelected: false, // TODO implement
     className: classnames(

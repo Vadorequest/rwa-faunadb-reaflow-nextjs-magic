@@ -35,7 +35,7 @@ const defaultHeight = 400;
  */
 const QuestionNode: BaseNodeComponent<Props> = (props) => {
   const {
-    updateCurrentNode,
+    patchCurrentNode,
     id,
     lastCreatedNode,
   } = props;
@@ -69,8 +69,8 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
             // Only consider additional height, by ignoring the height of the first row
             const additionalHeight = height - meta.rowHeight;
 
-            if (updateCurrentNode) {
-              updateCurrentNode({
+            if (patchCurrentNode) {
+              patchCurrentNode({
                 height: defaultHeight + additionalHeight,
               });
             }

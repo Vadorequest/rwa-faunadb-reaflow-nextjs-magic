@@ -5,12 +5,12 @@ import BaseNodeComponent from '../../types/BaseNodeComponent';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
 import { TextareaChangeEventHandler } from '../../types/forms';
-import { InformationNodeAdditionalData } from '../../types/nodes/InformationNodeAdditionalData';
+import { InformationNodeData } from '../../types/nodes/InformationNodeData';
 import NodeType from '../../types/NodeType';
 import Textarea from '../plugins/Textarea';
 import BaseNode from './BaseNode';
 
-type Props = {} & BaseNodeProps<InformationNodeAdditionalData>;
+type Props = {} & BaseNodeProps<InformationNodeData>;
 
 const nodeType: NodeType = 'information';
 const defaultWidth = 200;
@@ -28,12 +28,12 @@ const defaultHeight = 100;
  */
 const InformationNode: BaseNodeComponent<Props> = (props) => {
   const {
-    updateCurrentNode,
+    patchCurrentNode,
     id,
     lastCreatedNode,
     node,
   } = props;
-  console.log(node.data);
+  console.log(node.data?.text);
 
   return (
     <BaseNode
@@ -52,21 +52,21 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
             // Only consider additional height, by ignoring the height of the first row
             const additionalHeight = height - meta.rowHeight;
 
-            if (updateCurrentNode) {
-              updateCurrentNode({
+            if (patchCurrentNode) {
+              patchCurrentNode({
                 height: defaultHeight + additionalHeight,
               });
             }
           };
 
           const onTextInputValueChange = (event: TextareaChangeEventHandler) => {
-            updateCurrentNode({
+            patchCurrentNode({
               ...node,
               data: {
                 ...node.data,
                 text: event.target.value,
               },
-            });
+            } as InformationNodeData);
           };
 
           return (

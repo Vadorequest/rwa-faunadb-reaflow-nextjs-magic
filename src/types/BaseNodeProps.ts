@@ -13,11 +13,13 @@ export type BaseNodeProps<NodeData extends BaseNodeData = BaseNodeData> = {
   node: NodeData;
 
   /**
-   * Updates the properties of the current node.
+   * Path the properties of the current node.
+   *
+   * Only updates the provided properties, doesn't update other properties.
    *
    * @param nodeData
    */
-  updateCurrentNode: any;
+  patchCurrentNode: UpdateCurrentNode<Partial<NodeData>>;
 
   /**
    * The last created node.
