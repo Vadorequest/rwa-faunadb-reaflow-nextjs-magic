@@ -866,6 +866,13 @@
   dependencies:
     "@types/lodash" "*"
 
+"@types/lodash.debounce@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/@types/lodash.debounce/-/lodash.debounce-4.0.6.tgz#c5a2326cd3efc46566c47e4c0aa248dc0ee57d60"
+  integrity sha512-4WTmnnhCfDvvuLMaF3KV4Qfki93KebocUF45msxhYyjMttZDQYzHkO639ohhk8+oco2cluAFL3t5+Jn4mleylQ==
+  dependencies:
+    "@types/lodash" "*"
+
 "@types/lodash.filter@4.6.6":
   version "4.6.6"
   resolved "https://registry.yarnpkg.com/@types/lodash.filter/-/lodash.filter-4.6.6.tgz#34d93d3d40b2585384a12093eb4bdf2a26cbb829"
@@ -2224,6 +2231,11 @@ lodash.clonedeep@4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz#e23f3f9c4f8fbdde872529c1071857a086e5ccef"
   integrity sha1-4j8/nE+Pvd6HJSnBBxhXoIblzO8=
 
+lodash.debounce@4.0.8:
+  version "4.0.8"
+  resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
+  integrity sha1-gteb/zCmfEAF/9XiUVMArZyk168=
+
 lodash.filter@4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/lodash.filter/-/lodash.filter-4.6.0.tgz#668b1d4981603ae1cc5a6fa760143e480b4c4ace"
@@ -2967,10 +2979,10 @@ readdirp@~3.5.0:
   dependencies:
     picomatch "^2.2.1"
 
-reaflow@3.0.5:
-  version "3.0.5"
-  resolved "https://registry.yarnpkg.com/reaflow/-/reaflow-3.0.5.tgz#4fea8f39edb5a65cc25d2b01d53211f4a2b3fee4"
-  integrity sha512-nIBj7uaWkHrVkKaIvPx5C9AcYiNf5NuaM4TtwXIXG0UB8bW59nIWh0iuNZEmOaQ51A+/Sr0ZL17cw/L0sMgJjA==
+reaflow@3.0.13:
+  version "3.0.13"
+  resolved "https://registry.yarnpkg.com/reaflow/-/reaflow-3.0.13.tgz#7e1344cb011aeaf654502f40f80e8f648752b4e2"
+  integrity sha512-EEPq/4atEpL1RVJxTaLaN8Y3zhYHo2rpLnMbAX7DlI88emJJPqJpTwsH4q5jHspfo2tnatqEe8vmvxXGHLL0mQ==
   dependencies:
     calculate-size "^1.1.1"
     classnames "^2.2.6"

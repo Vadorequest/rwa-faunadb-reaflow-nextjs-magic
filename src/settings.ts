@@ -35,6 +35,15 @@ export const settings = {
      */
     direction: 'RIGHT' as CanvasDirection,
 
+    nodes: {
+      /**
+       * Default debounce to use when performing heavy-computing operations.
+       *
+       * Used for input "onChange" events, etc.
+       */
+      defaultDebounceFor: 250,
+    },
+
     /**
      * Edge's ports.
      */

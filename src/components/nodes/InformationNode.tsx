@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import { TextareaHeightChangeMeta } from 'react-textarea-autosize/dist/declarations/src';
 import { NodeChildProps } from 'reaflow';
+import settings from '../../settings';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
@@ -9,6 +10,7 @@ import { InformationNodeData } from '../../types/nodes/InformationNodeData';
 import NodeType from '../../types/NodeType';
 import Textarea from '../plugins/Textarea';
 import BaseNode from './BaseNode';
+import debounce from 'lodash.debounce';
 
 type Props = {} & BaseNodeProps<InformationNodeData>;
 
@@ -83,7 +85,7 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
                   className={`textarea ${nodeType}-text`}
                   placeholder={'Say something here'}
                   onHeightChange={onTextHeightChange}
-                  onChange={onTextInputValueChange}
+                  onChange={debounce(onTextInputValueChange, settings.canvas.nodes.defaultDebounceFor)}
                   // autoFocus={lastCreatedNode?.id === id} // Autofocus works fine when the node is inside the viewport, but when it's created outside it moves the viewport back at the beginning
                 />
               </div>
