@@ -24,6 +24,7 @@
     "next": "10.0.6",
     "rdk": "5.0.6",
     "react": "17.0.1",
+    "react-debounce-input": "3.2.3",
     "react-dom": "17.0.1",
     "react-select": "4.0.2",
     "react-textarea-autosize": "8.3.0",

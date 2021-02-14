@@ -1,16 +1,14 @@
 import React, { Fragment } from 'react';
+import { DebounceInput } from 'react-debounce-input';
 import { TextareaHeightChangeMeta } from 'react-textarea-autosize/dist/declarations/src';
 import { NodeChildProps } from 'reaflow';
-import settings from '../../settings';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
-import { TextareaChangeEventHandler } from '../../types/forms';
 import { InformationNodeData } from '../../types/nodes/InformationNodeData';
 import NodeType from '../../types/NodeType';
 import Textarea from '../plugins/Textarea';
 import BaseNode from './BaseNode';
-import debounce from 'lodash.debounce';
 
 type Props = {} & BaseNodeProps<InformationNodeData>;
 
@@ -60,11 +58,18 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
             }
           };
 
-          const onTextInputValueChange = (event: TextareaChangeEventHandler) => {
-            console.log(node)
+          /**
+           * Updates the current node "text" value.
+           *
+           * @param event
+           */
+          const onTextInputValueChange = (event: any) => {
+            const newValue = event.target.value;
+
+            // Updates the value in the Recoil store
             patchCurrentNode({
               data: {
-                text: event.target.value,
+                text: newValue,
               },
             } as InformationNodeData);
           };
@@ -80,12 +85,16 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
               <div
                 className={`node-content ${nodeType}-content`}
               >
-                <Textarea
+                <DebounceInput
+                  // @ts-ignore
+                  element={Textarea}
+                  debounceTimeout={500} // Avoids making the Canvas "lag" due to many unnecessary re-renders, by applying input changes in batches (one at most every 500ms)
                   className={`textarea ${nodeType}-text`}
                   placeholder={'Say something here'}
                   onHeightChange={onTextHeightChange}
-                  onChange={debounce(onTextInputValueChange, settings.canvas.nodes.defaultDebounceFor)}
-                  // autoFocus={lastCreatedNode?.id === id} // Autofocus works fine when the node is inside the viewport, but when it's created outside it moves the viewport back at the beginning
+                  onChange={onTextInputValueChange}
+                  value={node?.data?.text}
+                  autoFocus={lastCreatedNode?.id === id} // Autofocus works fine when the node is inside the viewport, but when it's created outside it moves the viewport back at the beginning
                 />
               </div>
             </Fragment>
