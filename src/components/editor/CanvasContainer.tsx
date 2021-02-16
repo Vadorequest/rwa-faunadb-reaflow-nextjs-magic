@@ -23,6 +23,11 @@ import { edgesState } from '../../states/edgesState';
 import { lastCreatedNodeState } from '../../states/lastCreatedNodeState';
 import { nodesState } from '../../states/nodesState';
 import { selectedNodesState } from '../../states/selectedNodesState';
+import BaseNodeData from '../../types/BaseNodeData';
+import {
+  createNodeFromDefaultProps,
+  getDefaultNodePropsWithFallback,
+} from '../../utils/nodes';
 import { persistGraphDataInLS } from '../../utils/persistGraph';
 import BaseEdge from '../edges/BaseEdge';
 import NodeRouter from '../nodes/NodeRouter';
@@ -75,6 +80,22 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   useEffect(() => {
     persistGraphDataInLS(nodes, edges);
   }, [nodes, edges]);
+
+  /**
+   * Ensures the start node is always present.
+   *
+   * Will automatically create the start node even if all the nodes are deleted.
+   */
+  useEffect(() => {
+    const startNode: BaseNodeData | undefined = nodes?.find((node: BaseNodeData) => node?.data?.type === 'start');
+
+    if (!startNode) {
+      setNodes([
+        ...nodes,
+        createNodeFromDefaultProps(getDefaultNodePropsWithFallback('start')),
+      ]);
+    }
+  }, [nodes]);
 
   /**
    * Uses Reaflow Undo/Redo helpers.

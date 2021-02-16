@@ -3,10 +3,6 @@ import EditorContainer from '../components/editor/EditorContainer';
 import Layout from '../components/Layout';
 import BaseEdgeData from '../types/BaseEdgeData';
 import BaseNodeData from '../types/BaseNodeData';
-import {
-  createNodeFromDefaultProps,
-  getDefaultNodePropsWithFallback,
-} from '../utils/nodes';
 import { getGraphDataFromLS } from '../utils/persistGraph';
 
 /**
@@ -28,9 +24,7 @@ const IndexPage = () => {
   return (
     <Layout>
       <EditorContainer
-        initialNodes={persistedNodes || [
-          createNodeFromDefaultProps(getDefaultNodePropsWithFallback('start')),
-        ]}
+        initialNodes={persistedNodes || []}
         initialEdges={persistedEdges || []}
       />
     </Layout>
