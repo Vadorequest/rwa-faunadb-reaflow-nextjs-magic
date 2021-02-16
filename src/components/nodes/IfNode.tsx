@@ -92,12 +92,14 @@ IfNode.getDefaultPorts = (): BasePortData[] => {
       width: settings.canvas.ports.radius,
       alignment: 'CENTER',
       side: 'EAST',
+      className: 'port-if-true'
     }),
     createPort({
       height: settings.canvas.ports.radius,
       width: settings.canvas.ports.radius,
       alignment: 'CENTER',
       side: 'EAST',
+      className: 'port-if-false'
     }),
   ];
 };

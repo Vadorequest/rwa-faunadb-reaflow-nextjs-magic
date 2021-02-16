@@ -252,6 +252,16 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
             animation: dashdraw .5s linear infinite;
             stroke-width: 1;
           }
+          
+          // Make all output ports used by IfNode display differently to distinguish them easily
+          .port-if {
+            &-true {
+              stroke: green !important;
+            }
+            &-false {
+              stroke: red !important;
+            }
+          }
 
           @keyframes dashdraw {
             0% {
