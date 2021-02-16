@@ -2,6 +2,7 @@ import React, {
   Fragment,
   useState,
 } from 'react';
+import { DebounceInput } from 'react-debounce-input';
 import ReactSelect from 'react-select';
 import { OptionTypeBase } from 'react-select/src/types';
 import { TextareaHeightChangeMeta } from 'react-textarea-autosize/dist/declarations/src';
@@ -67,7 +68,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
            * @param height
            * @param meta
            */
-          const onHeightChange = (height: number, meta: TextareaHeightChangeMeta) => {
+          const onTextHeightChange = (height: number, meta: TextareaHeightChangeMeta) => {
             // Only consider additional height, by ignoring the height of the first row
             const additionalHeight = height - meta.rowHeight;
 
@@ -76,6 +77,22 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                 height: defaultHeight + additionalHeight,
               });
             }
+          };
+
+          /**
+           * Updates the current node "text" value.
+           *
+           * @param event
+           */
+          const onTextInputValueChange = (event: any) => {
+            const newValue = event.target.value;
+
+            // Updates the value in the Recoil store
+            patchCurrentNode({
+              data: {
+                text: newValue,
+              },
+            } as QuestionNodeData);
           };
 
           return (
@@ -89,12 +106,16 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
               <div
                 className={`node-content ${nodeType}-content`}
               >
-                <Textarea
+                <DebounceInput
+                  // @ts-ignore
+                  element={Textarea}
+                  debounceTimeout={500} // Avoids making the Canvas "lag" due to many unnecessary re-renders, by applying input changes in batches (one at most every 500ms)
                   className={`textarea ${nodeType}-text`}
-                  defaultValue={`Ask something here`}
-                  placeholder={'Ask something here'}
-                  onHeightChange={onHeightChange}
-                  // autoFocus={lastCreatedNode?.id === id} // Autofocus works fine when the node is inside the viewport, but when it's created outside it moves the viewport back at the beginning
+                  placeholder={'Say something here'}
+                  onHeightChange={onTextHeightChange}
+                  onChange={onTextInputValueChange}
+                  value={node?.data?.text}
+                  autoFocus={lastCreatedNode?.id === id} // Autofocus works fine when the node is inside the viewport, but when it's created outside it moves the viewport back at the beginning
                 />
 
                 <div
