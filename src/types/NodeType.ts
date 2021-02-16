@@ -11,7 +11,8 @@
  * @example The `information` type has the associated InformationBlock and InformationNode components.
  */
 export type NodeType =
-  'information'
+  'start'
+  | 'information'
   | 'question'
 
 export default NodeType;

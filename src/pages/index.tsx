@@ -29,7 +29,7 @@ const IndexPage = () => {
     <Layout>
       <EditorContainer
         initialNodes={persistedNodes || [
-          createNodeFromDefaultProps(getDefaultNodePropsWithFallback('information')),
+          createNodeFromDefaultProps(getDefaultNodePropsWithFallback('start')),
         ]}
         initialEdges={persistedEdges || []}
       />

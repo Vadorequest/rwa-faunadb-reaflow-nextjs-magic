@@ -8,6 +8,7 @@ import { Router } from 'next/router';
 import React from 'react';
 import { RecoilRoot } from 'recoil';
 import { RecoilExternalStatePortal } from '../components/RecoilExternalStatePortal';
+import '../utils/fontAwesome';
 
 type Props = {
   Component: NextComponentType<NextPageContext>; // Page component, not provided if pageProps.statusCode is 3xx or 4xx
@@ -25,7 +26,7 @@ type Props = {
  * @see https://nextjs.org/docs/basic-features/typescript#custom-app TypeScript for _app
  */
 const App: React.FunctionComponent<Props> = (props): JSX.Element => {
-  const { Component, pageProps} = props;
+  const { Component, pageProps } = props;
 
   return (
     <ChakraProvider>

@@ -16,6 +16,7 @@ import BaseNodeProps, { PatchCurrentNode } from '../../types/BaseNodeProps';
 import NodeType from '../../types/NodeType';
 import {
   filterNodeInArray,
+  findNodeComponentByType,
   removeAndUpsertNodesThroughPorts,
 } from '../../utils/nodes';
 import BasePort from '../ports/BasePort';
@@ -187,23 +188,13 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
   };
 
   // console.log('rendering node of type: ', type, commonBlockProps)
+  const NodeComponent = findNodeComponentByType(type);
 
-  switch (type) {
-    case 'information':
-      return (
-        <InformationNode
-          {...baseNodeProps}
-        />
-      );
-    case 'question':
-      return (
-        <QuestionNode
-          {...baseNodeProps}
-        />
-      );
-  }
-
-  return null;
+  return (
+    <NodeComponent
+      {...baseNodeProps}
+    />
+  )
 };
 
 export default NodeRouter;

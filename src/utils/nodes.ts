@@ -4,7 +4,9 @@ import { v1 as uuid } from 'uuid';
 import BaseNode from '../components/nodes/BaseNode';
 import InformationNode from '../components/nodes/InformationNode';
 import QuestionNode from '../components/nodes/QuestionNode';
-import BaseEdgeData from '../types/BaseEdgeData'; // XXX Use v1 for uniqueness - See https://www.sohamkamani.com/blog/2016/10/05/uuid1-vs-uuid4/
+import StartNode from '../components/nodes/StartNode';
+import BaseEdgeData from '../types/BaseEdgeData';
+import BaseNodeComponent from '../types/BaseNodeComponent'; // XXX Use v1 for uniqueness - See https://www.sohamkamani.com/blog/2016/10/05/uuid1-vs-uuid4/
 import BaseNodeData from '../types/BaseNodeData';
 import { BaseNodeDefaultProps } from '../types/BaseNodeDefaultProps';
 import { GetBaseNodeDefaultProps } from '../types/GetBaseNodeDefaultProps';
@@ -21,7 +23,6 @@ export const createNode = (nodeData?: Partial<BaseNodeData>): BaseNodeData => {
   const newNode = {
     ...nodeData,
     id,
-    algorithm: 'fixed', // All nodes use a fixed algorithm position
   };
   console.log('newNode', newNode);
 
@@ -63,6 +64,24 @@ export const filterNodeInArray = (nodes: BaseNodeData[], nodeToFilter: BaseNodeD
 };
 
 /**
+ * Returns the Node Component associated to a given node type.
+ *
+ * @param nodeType
+ */
+export const findNodeComponentByType = (nodeType: NodeType): BaseNodeComponent => {
+  switch (nodeType) {
+    case 'start':
+      return StartNode;
+    case 'information':
+      return InformationNode;
+    case 'question':
+      return QuestionNode;
+    default:
+      throw new Error(`Couldn't find the Node Component to use, using "nodeType=${nodeType}"`);
+  }
+};
+
+/**
  * Get default props from the Node component related to the nodeType.
  *
  * If the Node component doesn't expose "getDefaultNodeProps", fallbacks to the "getDefaultNodeProps" exposed in BaseNode component.
@@ -70,7 +89,7 @@ export const filterNodeInArray = (nodes: BaseNodeData[], nodeToFilter: BaseNodeD
  * @param nodeType
  */
 export const getDefaultNodePropsWithFallback = (nodeType: NodeType): BaseNodeDefaultProps => {
-  const NodeComponent = nodeType === 'question' ? QuestionNode : InformationNode;
+  const NodeComponent = findNodeComponentByType(nodeType);
 
   if (typeof NodeComponent.getDefaultNodeProps !== 'undefined') {
     return NodeComponent.getDefaultNodeProps({ type: nodeType });
