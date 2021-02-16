@@ -32,7 +32,7 @@ export const nodesSelector = selector<BaseNodeData[]>({
    * @param reset
    * @param newValue
    */
-  set: ({ set, get, reset }, newValue) => {
+  set: ({ set, get, reset }, newValue): void => {
     const hasDuplicateNodes = hasDuplicates(newValue as BaseNodeData[], 'id');
 
     if (!hasDuplicateNodes) {

@@ -34,7 +34,7 @@ export const edgesSelector = selector<BaseEdgeData[]>({
    * @param reset
    * @param newValue
    */
-  set: ({ set, get, reset }, newValue) => {
+  set: ({ set, get, reset }, newValue): void => {
     const hasDuplicateEdges = hasDuplicates(newValue as BaseEdgeData[], 'id');
 
     if (!hasDuplicateEdges) {
