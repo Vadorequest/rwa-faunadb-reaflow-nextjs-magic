@@ -6,6 +6,7 @@ import React, {
 } from 'react';
 import { useRecoilState } from 'recoil';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
+import IfBlock from './IfBlock';
 import InformationBlock from './InformationBlock';
 import QuestionBlock from './QuestionBlock';
 
@@ -86,6 +87,10 @@ const BlockPickerMenu: React.FunctionComponent<Props> = (props) => {
           setBlockPickerMenu={setBlockPickerMenu}
         />
         <QuestionBlock
+          onBlockClick={onBlockClick}
+          setBlockPickerMenu={setBlockPickerMenu}
+        />
+        <IfBlock
           onBlockClick={onBlockClick}
           setBlockPickerMenu={setBlockPickerMenu}
         />

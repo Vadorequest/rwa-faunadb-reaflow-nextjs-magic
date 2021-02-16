@@ -171,13 +171,13 @@ BaseNode.getDefaultPorts = (): BasePortData[] => {
       height: settings.canvas.ports.radius,
       width: settings.canvas.ports.radius,
       alignment: 'CENTER',
-      side: 'EAST',
+      side: 'WEST',
     }),
     createPort({
       height: settings.canvas.ports.radius,
       width: settings.canvas.ports.radius,
       alignment: 'CENTER',
-      side: 'WEST',
+      side: 'EAST',
     }),
   ];
 };

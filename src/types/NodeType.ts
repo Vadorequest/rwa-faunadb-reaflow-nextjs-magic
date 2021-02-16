@@ -14,5 +14,6 @@ export type NodeType =
   'start'
   | 'information'
   | 'question'
+  | 'if'
 
 export default NodeType;

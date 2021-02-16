@@ -1,6 +1,7 @@
 import filter from 'lodash.filter';
 import { v1 as uuid } from 'uuid';
 import BaseNode from '../components/nodes/BaseNode';
+import IfNode from '../components/nodes/IfNode';
 import InformationNode from '../components/nodes/InformationNode';
 import QuestionNode from '../components/nodes/QuestionNode';
 import StartNode from '../components/nodes/StartNode';
@@ -77,6 +78,8 @@ export const findNodeComponentByType = (nodeType: NodeType): BaseNodeComponent =
       return InformationNode;
     case 'question':
       return QuestionNode;
+    case 'if':
+      return IfNode;
     default:
       throw new Error(`Couldn't find the Node Component to use, using "nodeType=${nodeType}"`);
   }
