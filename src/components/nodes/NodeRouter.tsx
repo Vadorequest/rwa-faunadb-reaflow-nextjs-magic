@@ -8,11 +8,12 @@ import {
 import { NodeData } from 'reaflow/dist/types';
 import { useRecoilState } from 'recoil';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
-import { edgesSelector } from '../../states/edgesState';
+import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
 import { nodesSelector } from '../../states/nodesState';
 import { selectedNodesState } from '../../states/selectedNodesState';
 import BaseNodeData from '../../types/BaseNodeData';
 import BaseNodeProps, { PatchCurrentNode } from '../../types/BaseNodeProps';
+import { CanvasDataset } from '../../types/CanvasDataset';
 import NodeType from '../../types/NodeType';
 import {
   filterNodeInArray,
@@ -38,7 +39,8 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
   } = props;
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuState);
   const [nodes, setNodes] = useRecoilState(nodesSelector);
-  const [edges, setEdges] = useRecoilState(edgesSelector);
+  const [canvasDataset, setCanvasDataset] = useRecoilState(canvasDatasetSelector);
+  const { edges } = canvasDataset;
   const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);
   const node: BaseNodeData = nodes.find((node: BaseNodeData) => node.id === nodeProps.id) as BaseNodeData;
 
@@ -100,10 +102,9 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
    */
   const onNodeRemove = (event: React.MouseEvent<SVGGElement, MouseEvent>, node: NodeData) => {
     console.log('onNodeRemove', event, node);
-    const result = removeAndUpsertNodesThroughPorts(nodes, edges, node);
+    const dataset: CanvasDataset = removeAndUpsertNodesThroughPorts(nodes, edges, node);
 
-    setNodes(result.nodes);
-    setEdges(result.edges);
+    setCanvasDataset(dataset);
 
     // Updates selected nodes to make sure we don't keep selected nodes that have been deleted
     setSelectedNodes(filterNodeInArray(selectedNodes, node));

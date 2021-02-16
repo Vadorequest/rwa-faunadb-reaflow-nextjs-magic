@@ -13,10 +13,9 @@ import {
 } from 'recoil';
 import settings from '../../settings';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
+import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
 import { draggedEdgeFromPortState } from '../../states/draggedEdgeFromPortState';
-import { edgesSelector } from '../../states/edgesState';
 import { lastCreatedNodeState } from '../../states/lastCreatedNodeState';
-import { nodesSelector } from '../../states/nodesState';
 import BaseNodeData from '../../types/BaseNodeData';
 import BasePortData from '../../types/BasePortData';
 import { OnBlockClick } from '../../types/BlockPickerMenu';
@@ -51,8 +50,8 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
   } = props;
 
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuState);
-  const [nodes, setNodes] = useRecoilState(nodesSelector);
-  const [edges, setEdges] = useRecoilState(edgesSelector);
+  const [canvasDataset, setCanvasDataset] = useRecoilState(canvasDatasetSelector);
+  const { nodes, edges } = canvasDataset;
   const [draggedEdgeFromPort, setDraggedEdgeFromPort] = useRecoilState(draggedEdgeFromPortState);
   const setLastUpdatedNode: SetterOrUpdater<BaseNodeData | undefined> = useSetRecoilState(lastCreatedNodeState);
   const node: BaseNodeData = nodes.find((node) => node.id === fromNodeId) as BaseNodeData;
@@ -73,22 +72,21 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
   const onBlockClick: OnBlockClick = (nodeType: NodeType) => {
     console.log('onBlockClick (from port)', nodeType, draggedEdgeFromPort);
     const newNode = createNodeFromDefaultProps(getDefaultNodePropsWithFallback(nodeType));
-    let results: CanvasDataset;
+    let dataset: CanvasDataset;
 
     if (draggedEdgeFromPort?.fromPort?.side === 'EAST') {
       // The drag started from an EAST port, so we must add the new node on the right of existing node
-      results = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, node);
+      dataset = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, node);
     } else {
       // The drag started from a WEST port, so we must add the new node on the left of the existing node
       const fromPort: BasePortData = newNode?.ports?.find((port: BasePortData) => port?.side === 'EAST') as BasePortData;
       const toPort: BasePortData = draggedEdgeFromPort?.fromPort as BasePortData;
 
-      results = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, newNode, node, fromPort, toPort);
+      dataset = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, newNode, node, fromPort, toPort);
     }
-    console.log('addNodeAndEdge fromNode', newNode, 'toNode', node, 'results', results);
+    console.log('addNodeAndEdge fromNode', newNode, 'toNode', node, 'dataset', dataset);
 
-    setNodes(results.nodes);
-    setEdges(results.edges);
+    setCanvasDataset(dataset);
     setLastUpdatedNode(newNode);
   };
 

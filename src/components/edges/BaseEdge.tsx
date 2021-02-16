@@ -10,9 +10,8 @@ import {
   useSetRecoilState,
 } from 'recoil';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
-import { edgesSelector } from '../../states/edgesState';
+import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
 import { lastCreatedNodeState } from '../../states/lastCreatedNodeState';
-import { nodesSelector } from '../../states/nodesState';
 import BaseEdgeProps from '../../types/BaseEdgeProps';
 import BaseNodeData from '../../types/BaseNodeData';
 import BlockPickerMenu, { OnBlockClick } from '../../types/BlockPickerMenu';
@@ -40,8 +39,8 @@ type Props = {} & BaseEdgeProps;
  */
 const BaseEdge: React.FunctionComponent<Props> = (props) => {
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState<BlockPickerMenu>(blockPickerMenuState);
-  const [nodes, setNodes] = useRecoilState(nodesSelector);
-  const [edges, setEdges] = useRecoilState(edgesSelector);
+  const [canvasDataset, setCanvasDataset] = useRecoilState(canvasDatasetSelector);
+  const { nodes, edges } = canvasDataset;
   const setLastUpdatedNode: SetterOrUpdater<BaseNodeData | undefined> = useSetRecoilState(lastCreatedNodeState);
   const { displayedFrom, isDisplayed } = blockPickerMenu;
 
@@ -66,8 +65,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
       const newNode: BaseNodeData = createNodeFromDefaultProps(getDefaultNodePropsWithFallback(nodeType));
       const newDataset: CanvasDataset = upsertNodeThroughPorts(cloneDeep(nodes), cloneDeep(edges), edge, newNode);
 
-      setNodes(newDataset.nodes);
-      setEdges(newDataset.edges);
+      setCanvasDataset(newDataset);
       setLastUpdatedNode(newNode);
     };
 

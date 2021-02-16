@@ -18,6 +18,7 @@ import {
 import { useRecoilState } from 'recoil';
 import settings from '../../settings';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
+import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
 import { edgesSelector } from '../../states/edgesState';
 import { lastCreatedNodeState } from '../../states/lastCreatedNodeState';
 import { nodesSelector } from '../../states/nodesState';
@@ -67,6 +68,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   }, [canvasRef]);
 
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuState);
+  const [canvasDataset, setCanvasDataset] = useRecoilState(canvasDatasetSelector);
   const [nodes, setNodes] = useRecoilState(nodesSelector);
   const [edges, setEdges] = useRecoilState(edgesSelector);
   const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);
@@ -117,8 +119,11 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     edges,
     onUndoRedo: (state: UndoRedoEvent) => {
       console.log('Undo / Redo', state);
-      setEdges(state?.edges || []);
-      setNodes(state?.nodes || []);
+
+      setCanvasDataset({
+        nodes: state?.edges || [],
+        edges: state?.nodes || [],
+      });
     },
     maxHistory: Infinity,
   });
@@ -279,8 +284,10 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         <Button
           onClick={() => {
             if (confirm(`Remove all nodes and edges?`)) {
-              setNodes([]);
-              setEdges([]);
+              setCanvasDataset({
+                nodes: [],
+                edges: [],
+              });
             }
           }}
         >
