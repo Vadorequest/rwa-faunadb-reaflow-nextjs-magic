@@ -1,5 +1,4 @@
 import filter from 'lodash.filter';
-import { PortData } from 'reaflow';
 import { v1 as uuid } from 'uuid';
 import BaseNode from '../components/nodes/BaseNode';
 import InformationNode from '../components/nodes/InformationNode';
@@ -9,6 +8,7 @@ import BaseEdgeData from '../types/BaseEdgeData';
 import BaseNodeComponent from '../types/BaseNodeComponent'; // XXX Use v1 for uniqueness - See https://www.sohamkamani.com/blog/2016/10/05/uuid1-vs-uuid4/
 import BaseNodeData from '../types/BaseNodeData';
 import { BaseNodeDefaultProps } from '../types/BaseNodeDefaultProps';
+import BasePortData from '../types/BasePortData';
 import { GetBaseNodeDefaultProps } from '../types/GetBaseNodeDefaultProps';
 import NodeType from '../types/NodeType';
 
@@ -113,8 +113,8 @@ export function addNodeAndEdgeThroughPorts(
   newNode: BaseNodeData,
   fromNode?: BaseNodeData,
 ) {
-  const fromPort: PortData | undefined = fromNode?.ports?.find((port: PortData) => port?.side === 'EAST');
-  const toPort: PortData | undefined = newNode?.ports?.find((port: PortData) => port?.side === 'WEST');
+  const fromPort: BasePortData | undefined = fromNode?.ports?.find((port: BasePortData) => port?.side === 'EAST');
+  const toPort: BasePortData | undefined = newNode?.ports?.find((port: BasePortData) => port?.side === 'WEST');
   const newEdge: BaseEdgeData = {
     id: `${fromNode?.id || uuid()}-${newNode.id}`,
     from: fromNode?.id,
@@ -164,8 +164,8 @@ export function upsertNodeThroughPorts(
   };
 
   if (edge.fromPort && edge.toPort) {
-    const fromLeftNodeToWestPort: PortData | undefined = newNode?.ports?.find((port: PortData) => port?.side === 'WEST');
-    const fromRightNodeToEastPort: PortData | undefined = newNode?.ports?.find((port: PortData) => port?.side === 'EAST');
+    const fromLeftNodeToWestPort: BasePortData | undefined = newNode?.ports?.find((port: BasePortData) => port?.side === 'WEST');
+    const fromRightNodeToEastPort: BasePortData | undefined = newNode?.ports?.find((port: BasePortData) => port?.side === 'EAST');
 
     edgeBeforeNewNode.fromPort = edge.fromPort;
     edgeBeforeNewNode.toPort = fromLeftNodeToWestPort?.id || `${newNode.id}-to`;
@@ -196,7 +196,7 @@ export function removeAndUpsertNodesThroughPorts(
     newEdges: BaseEdgeData[],
     from: BaseNodeData,
     to: BaseNodeData,
-    port?: PortData,
+    port?: BasePortData,
   ) => undefined | boolean,
 ) {
   if (!Array.isArray(removeNodes)) {
@@ -227,8 +227,8 @@ export function removeAndUpsertNodesThroughPorts(
           );
 
           if (canLink === undefined || canLink) {
-            const fromPort: PortData | undefined = sourceNode?.ports?.find((port: PortData) => port?.side === 'EAST');
-            const toPort: PortData | undefined = targetNode?.ports?.find((port: PortData) => port?.side === 'WEST');
+            const fromPort: BasePortData | undefined = sourceNode?.ports?.find((port: BasePortData) => port?.side === 'EAST');
+            const toPort: BasePortData | undefined = targetNode?.ports?.find((port: BasePortData) => port?.side === 'WEST');
 
             newEdges.push({
               id: `${sourceNode.id}-${targetNode.id}`,

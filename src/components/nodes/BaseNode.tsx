@@ -6,12 +6,12 @@ import React, {
 import {
   Node,
   NodeChildProps,
-  PortData,
 } from 'reaflow';
 import settings from '../../settings';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
+import BasePortData from '../../types/BasePortData';
 import { GetBaseNodeDefaultPropsProps } from '../../types/GetBaseNodeDefaultProps';
 import NodeType from '../../types/NodeType';
 import { createPort } from '../../utils/ports';
@@ -165,7 +165,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
  * XXX The height/width properties must be set here because they're used for calculations of the port's placement.
  *  If we change them directly in the <Port|BasePort> component, the ports will be misaligned with the node.
  */
-BaseNode.getDefaultPorts = (): PortData[] => {
+BaseNode.getDefaultPorts = (): BasePortData[] => {
   return [
     createPort({
       height: settings.canvas.ports.radius,

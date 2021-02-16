@@ -1,4 +1,4 @@
-import { PortData } from 'reaflow';
+import BasePortData from './BasePortData';
 import NodeType from './NodeType';
 
 /**
@@ -10,5 +10,5 @@ export type BaseNodeDefaultProps = {
   type: NodeType;
   defaultWidth: number;
   defaultHeight: number;
-  ports: PortData[];
+  ports: BasePortData[];
 }

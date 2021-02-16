@@ -12,7 +12,6 @@ import {
   hasLink,
   NodeData,
   NodeProps,
-  PortData,
   UndoRedoEvent,
   useUndo,
 } from 'reaflow';
@@ -24,6 +23,7 @@ import { lastCreatedNodeState } from '../../states/lastCreatedNodeState';
 import { nodesState } from '../../states/nodesState';
 import { selectedNodesState } from '../../states/selectedNodesState';
 import BaseNodeData from '../../types/BaseNodeData';
+import BasePortData from '../../types/BasePortData';
 import {
   createNodeFromDefaultProps,
   getDefaultNodePropsWithFallback,
@@ -154,7 +154,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
    * @param to
    * @param port
    */
-  const onNodeLinkCheck = (from: NodeData, to: NodeData, port?: PortData): undefined | boolean => {
+  const onNodeLinkCheck = (from: NodeData, to: NodeData, port?: BasePortData): undefined | boolean => {
     // TODO ensure to/from are Ports
     console.log('onNodeLinkCheck', 'will link?', !hasLink(edges, from, to), from, to);
     return !hasLink(edges, from, to);
@@ -169,7 +169,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
    * @param to
    * @param port
    */
-  const onNodeLink = (from: NodeData, to: NodeData, port?: PortData): void => {
+  const onNodeLink = (from: NodeData, to: NodeData, port?: BasePortData): void => {
     console.log('onNodeLink', from, to);
     const id = `${from.id}-${to.id}`;
 

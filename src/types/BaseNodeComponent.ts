@@ -1,6 +1,6 @@
 import { FunctionComponent } from 'react';
-import { PortData } from 'reaflow';
 import BaseNodeProps from './BaseNodeProps';
+import BasePortData from './BasePortData';
 import { GetBaseNodeDefaultProps } from './GetBaseNodeDefaultProps';
 
 /**
@@ -22,7 +22,7 @@ export type BaseNodeComponent<Props extends BaseNodeProps = BaseNodeProps> = Fun
    *
    * Invoked by getDefaultNodeProps.
    */
-  getDefaultPorts?: () => PortData[];
+  getDefaultPorts?: () => BasePortData[];
 }
 
 export default BaseNodeComponent;

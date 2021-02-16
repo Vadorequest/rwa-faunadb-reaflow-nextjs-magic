@@ -1,9 +1,6 @@
 import cloneDeep from 'lodash.clonedeep';
 import React from 'react';
-import {
-  Port,
-  PortData,
-} from 'reaflow';
+import { Port } from 'reaflow';
 import { PortProps } from 'reaflow/dist/symbols/Port/Port';
 import {
   DragEvent,
@@ -73,7 +70,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
    * @param nodeType
    */
   const onBlockClick: OnBlockClick = (nodeType: NodeType) => {
-    console.log('onBlockClick (from port)', nodeType);
+    console.log('onBlockClick (from port)', nodeType, draggedEdgeFromPort);
     const newNode = createNodeFromDefaultProps(getDefaultNodePropsWithFallback(nodeType));
     const results = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, node);
     console.log('addNodeAndEdge fromNode', newNode, 'toNode', node, 'results', results);
@@ -92,7 +89,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
    * @param event
    * @param port
    */
-  const onPortClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, port: PortData) => {
+  const onPortClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, port: BasePortData) => {
     setBlockPickerMenu({
       displayedFrom: `port-${port.id}`,
       isDisplayed: displayedFrom === `port-${port.id}` ? !isDisplayed : true,
@@ -166,7 +163,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
    * @param event
    * @param port
    */
-  const onPortEnter = (event: React.MouseEvent<SVGGElement, MouseEvent>, port: PortData) => {
+  const onPortEnter = (event: React.MouseEvent<SVGGElement, MouseEvent>, port: BasePortData) => {
     // console.log('onEnter port: ', node, event);
   };
 
@@ -176,7 +173,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
    * @param event
    * @param port
    */
-  const onPortLeave = (event: React.MouseEvent<SVGGElement, MouseEvent>, port: PortData) => {
+  const onPortLeave = (event: React.MouseEvent<SVGGElement, MouseEvent>, port: BasePortData) => {
     // console.log('onLeave port: ', node, event);
   };
 

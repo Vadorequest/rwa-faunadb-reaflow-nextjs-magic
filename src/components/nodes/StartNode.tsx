@@ -1,14 +1,12 @@
 import { css } from '@emotion/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { Fragment } from 'react';
-import {
-  NodeChildProps,
-  PortData,
-} from 'reaflow';
+import { NodeChildProps } from 'reaflow';
 import settings from '../../settings';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
+import BasePortData from '../../types/BasePortData';
 import { StartNodeData } from '../../types/nodes/StartNodeData';
 import NodeType from '../../types/NodeType';
 import { createPort } from '../../utils/ports';
@@ -63,7 +61,7 @@ const StartNode: BaseNodeComponent<Props> = (props) => {
   );
 };
 
-StartNode.getDefaultPorts = (): PortData[] => {
+StartNode.getDefaultPorts = (): BasePortData[] => {
   return [
     createPort({
       height: settings.canvas.ports.radius,
