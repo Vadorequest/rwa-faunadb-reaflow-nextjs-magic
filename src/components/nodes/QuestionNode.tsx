@@ -1,7 +1,4 @@
-import React, {
-  Fragment,
-  useState,
-} from 'react';
+import React, { Fragment } from 'react';
 import { DebounceInput } from 'react-debounce-input';
 import ReactSelect from 'react-select';
 import { OptionTypeBase } from 'react-select/src/types';
@@ -11,6 +8,7 @@ import settings from '../../settings';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
+import { QuestionChoiceType } from '../../types/nodes/QuestionChoiceType';
 import { QuestionChoiceTypeOption } from '../../types/nodes/QuestionChoiceTypeOption';
 import { QuestionNodeData } from '../../types/nodes/QuestionNodeData';
 import NodeType from '../../types/NodeType';
@@ -53,7 +51,6 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
       {
         ({ nodeProps }: { nodeProps: NodeChildProps }) => {
           const choiceTypes: QuestionChoiceTypeOption[] = settings.canvas.nodes.questionNode.choiceTypeOptions;
-          const [selectedChoiceType, setSelectedChoiceType] = useState<OptionTypeBase | undefined>(undefined);
 
           /**
            * When textarea input height changes, we need to increase the height of the whole node accordingly.
@@ -88,9 +85,34 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
             } as QuestionNodeData);
           };
 
+          /**
+           * Find the selected option in the question type select.
+           *
+           * Basically translates the QuestionChoiceType kept in the node "data" into one of the available QuestionChoiceType.
+           *
+           * @param selectedQuestionTypeValue
+           */
+          const findSelectedQuestionTypeOption = (selectedQuestionTypeValue: QuestionChoiceType | undefined): OptionTypeBase | undefined => {
+            return choiceTypes.find((choiceType: QuestionChoiceTypeOption) => choiceType?.value === selectedQuestionTypeValue);
+          };
+
+          /**
+           * Updates the current node "questionType" value.
+           *
+           * @param selectedChoice
+           * @param action
+           */
           const onSelectedChoiceTypeChange = (selectedChoice: OptionTypeBase, action: { action: string }): void => {
-            console.log('setSelectedChoiceType', selectedChoice);
-            setSelectedChoiceType(selectedChoice);
+            const selectedChoiceValue: QuestionChoiceType = selectedChoice?.value;
+
+            console.log('setSelectedChoiceType', selectedChoice, 'action:', action);
+
+            // Updates the value in the Recoil store
+            patchCurrentNode({
+              data: {
+                questionType: selectedChoiceValue,
+              },
+            } as QuestionNodeData);
           };
 
           return (
@@ -130,7 +152,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                     <ReactSelect
                       className={'select select-simple'}
                       isMulti={false}
-                      value={selectedChoiceType}
+                      value={findSelectedQuestionTypeOption(node?.data?.questionType)}
                       options={choiceTypes}
                       onChange={onSelectedChoiceTypeChange}
                     />
