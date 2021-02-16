@@ -121,8 +121,8 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
       console.log('Undo / Redo', state);
 
       setCanvasDataset({
-        nodes: state?.edges || [],
-        edges: state?.nodes || [],
+        nodes: state?.nodes || [],
+        edges: state?.edges || [],
       });
     },
     maxHistory: Infinity,
