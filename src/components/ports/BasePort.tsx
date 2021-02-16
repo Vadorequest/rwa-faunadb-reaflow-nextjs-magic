@@ -76,7 +76,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
 
     if (draggedEdgeFromPort?.fromPort?.side === 'EAST') {
       // The drag started from an EAST port, so we must add the new node on the right of existing node
-      dataset = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, node);
+      dataset = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, node, newNode, draggedEdgeFromPort?.fromPort);
     } else {
       // The drag started from a WEST port, so we must add the new node on the left of the existing node
       const fromPort: BasePortData = newNode?.ports?.find((port: BasePortData) => port?.side === 'EAST') as BasePortData;
