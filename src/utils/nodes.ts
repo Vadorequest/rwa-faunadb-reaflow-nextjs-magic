@@ -9,6 +9,7 @@ import BaseNodeComponent from '../types/BaseNodeComponent'; // XXX Use v1 for un
 import BaseNodeData from '../types/BaseNodeData';
 import { BaseNodeDefaultProps } from '../types/BaseNodeDefaultProps';
 import BasePortData from '../types/BasePortData';
+import { CanvasDataset } from '../types/CanvasDataset';
 import { GetBaseNodeDefaultProps } from '../types/GetBaseNodeDefaultProps';
 import NodeType from '../types/NodeType';
 
@@ -103,8 +104,6 @@ export const getDefaultNodePropsWithFallback = (nodeType: NodeType): BaseNodeDef
  *
  * Automatically connects the fromNode (left node) using its EAST port (right side) to the newNode (right node) using it's WEST port (left side).
  *
- * XXX Does not support adding a newNode as left node, it must be on the right side of the fromNode.
- *
  * Similar to reaflow.addNodeAndEdge utility.
  */
 export function addNodeAndEdgeThroughPorts(
@@ -112,14 +111,22 @@ export function addNodeAndEdgeThroughPorts(
   edges: BaseEdgeData[],
   newNode: BaseNodeData,
   fromNode?: BaseNodeData,
-) {
-  const fromPort: BasePortData | undefined = fromNode?.ports?.find((port: BasePortData) => port?.side === 'EAST');
-  const toPort: BasePortData | undefined = newNode?.ports?.find((port: BasePortData) => port?.side === 'WEST');
+  toNode?: BaseNodeData,
+  fromPort?: BasePortData,
+  toPort?: BasePortData,
+): CanvasDataset {
+  // The default destination node is the newly created node
+  toNode = toNode || newNode;
+
+  // Resolve default fromPort and toPort if they aren't provided
+  fromPort = fromPort || fromNode?.ports?.find((port: BasePortData) => port?.side === 'EAST');
+  toPort = toPort || newNode?.ports?.find((port: BasePortData) => port?.side === 'WEST');
+
   const newEdge: BaseEdgeData = {
-    id: `${fromNode?.id || uuid()}-${newNode.id}`,
+    id: `${fromNode?.id || uuid()}-${toNode.id}`,
     from: fromNode?.id,
-    to: newNode.id,
-    parent: newNode.parent,
+    to: toNode.id,
+    parent: toNode.parent,
     fromPort: fromPort?.id,
     toPort: toPort?.id,
   };
@@ -150,7 +157,7 @@ export function upsertNodeThroughPorts(
   edges: BaseEdgeData[],
   edge: BaseEdgeData,
   newNode: BaseNodeData,
-) {
+): CanvasDataset {
   const oldEdgeIndex = edges.findIndex(e => e.id === edge.id);
   const edgeBeforeNewNode = {
     ...edge,
@@ -198,7 +205,7 @@ export function removeAndUpsertNodesThroughPorts(
     to: BaseNodeData,
     port?: BasePortData,
   ) => undefined | boolean,
-) {
+): CanvasDataset {
   if (!Array.isArray(removeNodes)) {
     removeNodes = [removeNodes];
   }
