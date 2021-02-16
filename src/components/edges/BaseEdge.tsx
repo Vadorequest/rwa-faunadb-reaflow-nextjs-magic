@@ -86,8 +86,6 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
   return (
     <Edge
       {...props}
-      label={(<div>Test</div>)}
-      // labels={}
       className={'edge'}
       add={<AddBlockPicker />}
       onAdd={onAdd}
