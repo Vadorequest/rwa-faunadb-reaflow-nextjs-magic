@@ -1,56 +1,113 @@
-import { CanvasDirection } from 'reaflow/dist/layout';
+import { CanvasDirection } from 'reaflow';
+import { QuestionChoiceTypeOption } from './types/nodes/QuestionChoiceTypeOption';
 
 /**
- * Global settings for the app.
- *
- * Could also be stored as a React Context, but hardcoded settings are kinda similar.
  * @readonly
  */
-export const settings = {
-  /**
-   * Common layout shared by all Next.js pages.
-   */
+export const settings: Settings = {
   layout: {
     nav: {
       height: 50,
     },
     footer: {
       height: 50,
-    }
+    },
   },
-
-  /**
-   * Left container of blocks.
-   */
   blocksContainer: {
     width: '150px',
   },
-
-  /**
-   * SVG Canvas where nodes and edges are drawn.
-   */
   canvas: {
-    /**
-     * Direction used by the canvas, used by ELKjs.
-     */
-    direction: 'RIGHT' as CanvasDirection,
-
+    direction: 'RIGHT',
     nodes: {
-      /**
-       * Default debounce to use when performing heavy-computing operations.
-       *
-       * Used for input "onChange" events, etc.
-       */
       defaultDebounceFor: 250,
+      questionNode: {
+        choiceTypeOptions: [
+          {
+            value: `text`,
+            label: `Text`,
+          },
+          {
+            value: `single-quick-reply`,
+            label: `Single quick reply`,
+          },
+        ],
+      },
     },
-
-    /**
-     * Edge's ports.
-     */
     ports: {
       radius: 15,
     },
   },
 };
+
+// Make sure nothing can mutate the settings, as it shouldn't happen.
+Object.freeze(settings);
+
+/**
+ * Global settings for the app.
+ *
+ * Could also be stored as a React Context, but hardcoded settings are kinda similar.
+ */
+export type Settings = {
+  /**
+   * Common layout shared by all Next.js pages.
+   */
+  layout: LayoutSettings;
+
+  /**
+   * Left container of blocks.
+   */
+  blocksContainer: BlocksContainerSettings;
+
+  /**
+   * SVG Canvas where nodes and edges are drawn.
+   */
+  canvas: CanvasSettings;
+}
+
+export type LayoutSettings = {
+  nav: {
+    height: number;
+  },
+  footer: {
+    height: number;
+  }
+}
+
+export type BlocksContainerSettings = {
+  width: string;
+}
+
+export type CanvasSettings = {
+  /**
+   * Direction used by the canvas, used by ELKjs.
+   */
+  direction: CanvasDirection;
+
+  /**
+   * Configuration relative to the nodes.
+   */
+  nodes: {
+    /**
+     * Default debounce to use when performing heavy-computing operations.
+     *
+     * Used for input "onChange" events, etc.
+     */
+    defaultDebounceFor: number;
+
+    /**
+     * Configuration of the "Question" node.
+     */
+    questionNode: {
+      choiceTypeOptions: QuestionChoiceTypeOption[];
+    };
+  },
+
+  /**
+   * Edge's ports.
+   */
+  ports: {
+    radius: number;
+  }
+}
 
 export default settings;

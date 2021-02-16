@@ -7,6 +7,7 @@ import ReactSelect from 'react-select';
 import { OptionTypeBase } from 'react-select/src/types';
 import { TextareaHeightChangeMeta } from 'react-textarea-autosize/dist/declarations/src';
 import { NodeChildProps } from 'reaflow';
+import settings from '../../settings';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
@@ -51,16 +52,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
     >
       {
         ({ nodeProps }: { nodeProps: NodeChildProps }) => {
-          const choiceTypes = [
-            {
-              value: `text`,
-              label: `Text`,
-            },
-            {
-              value: `single-quick-reply`,
-              label: `Single quick reply`,
-            },
-          ];
+          const choiceTypes: QuestionChoiceTypeOption[] = settings.canvas.nodes.questionNode.choiceTypeOptions;
           const [selectedChoiceType, setSelectedChoiceType] = useState<OptionTypeBase | undefined>(undefined);
 
           /**
