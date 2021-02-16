@@ -63,6 +63,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
    */
   useEffect(() => {
     console.log('canvasRef', canvasRef);
+    canvasRef?.current?.fitCanvas?.();
   }, [canvasRef]);
 
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuState);
