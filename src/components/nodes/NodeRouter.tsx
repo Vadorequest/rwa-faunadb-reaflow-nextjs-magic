@@ -8,8 +8,8 @@ import {
 import { NodeData } from 'reaflow/dist/types';
 import { useRecoilState } from 'recoil';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
-import { edgesState } from '../../states/edgesState';
-import { nodesState } from '../../states/nodesState';
+import { edgesSelector } from '../../states/edgesState';
+import { nodesSelector } from '../../states/nodesState';
 import { selectedNodesState } from '../../states/selectedNodesState';
 import BaseNodeData from '../../types/BaseNodeData';
 import BaseNodeProps, { PatchCurrentNode } from '../../types/BaseNodeProps';
@@ -20,8 +20,6 @@ import {
   removeAndUpsertNodesThroughPorts,
 } from '../../utils/nodes';
 import BasePort from '../ports/BasePort';
-import InformationNode from './InformationNode';
-import QuestionNode from './QuestionNode';
 
 type Props = {
   nodeProps: NodeProps;
@@ -39,8 +37,8 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
     lastCreatedNode,
   } = props;
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuState);
-  const [nodes, setNodes] = useRecoilState(nodesState);
-  const [edges, setEdges] = useRecoilState(edgesState);
+  const [nodes, setNodes] = useRecoilState(nodesSelector);
+  const [edges, setEdges] = useRecoilState(edgesSelector);
   const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);
   const node: BaseNodeData = nodes.find((node: BaseNodeData) => node.id === nodeProps.id) as BaseNodeData;
 
@@ -77,7 +75,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
       ...patch,
       data: {
         ...existingNode.data || {},
-        ...patch.data || {}
+        ...patch.data || {},
       },
       id: existingNode.id, // Force keep same id to avoid edge cases
     };
@@ -194,7 +192,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
     <NodeComponent
       {...baseNodeProps}
     />
-  )
+  );
 };
 
 export default NodeRouter;

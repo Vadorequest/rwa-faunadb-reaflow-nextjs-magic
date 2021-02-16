@@ -10,12 +10,13 @@ import {
   useSetRecoilState,
 } from 'recoil';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
-import { edgesState } from '../../states/edgesState';
+import { edgesSelector } from '../../states/edgesState';
 import { lastCreatedNodeState } from '../../states/lastCreatedNodeState';
-import { nodesState } from '../../states/nodesState';
+import { nodesSelector } from '../../states/nodesState';
 import BaseEdgeProps from '../../types/BaseEdgeProps';
 import BaseNodeData from '../../types/BaseNodeData';
 import BlockPickerMenu, { OnBlockClick } from '../../types/BlockPickerMenu';
+import { CanvasDataset } from '../../types/CanvasDataset';
 import NodeType from '../../types/NodeType';
 import { translateXYToCanvasPosition } from '../../utils/canvas';
 import {
@@ -39,11 +40,10 @@ type Props = {} & BaseEdgeProps;
  */
 const BaseEdge: React.FunctionComponent<Props> = (props) => {
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState<BlockPickerMenu>(blockPickerMenuState);
-  const [nodes, setNodes] = useRecoilState(nodesState);
-  const [edges, setEdges] = useRecoilState(edgesState);
+  const [nodes, setNodes] = useRecoilState(nodesSelector);
+  const [edges, setEdges] = useRecoilState(edgesSelector);
   const setLastUpdatedNode: SetterOrUpdater<BaseNodeData | undefined> = useSetRecoilState(lastCreatedNodeState);
   const { displayedFrom, isDisplayed } = blockPickerMenu;
-
 
   // console.log('edgeProps', props);
 
@@ -63,11 +63,11 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
     console.log('onAdd edge', edge, event);
     const onBlockClick: OnBlockClick = (nodeType: NodeType) => {
       console.log('onBlockClick', nodeType, edge);
-      const newNode = createNodeFromDefaultProps(getDefaultNodePropsWithFallback(nodeType));
-      const results = upsertNodeThroughPorts(cloneDeep(nodes), cloneDeep(edges), edge, newNode);
+      const newNode: BaseNodeData = createNodeFromDefaultProps(getDefaultNodePropsWithFallback(nodeType));
+      const newDataset: CanvasDataset = upsertNodeThroughPorts(cloneDeep(nodes), cloneDeep(edges), edge, newNode);
 
-      setNodes(results.nodes);
-      setEdges(results.edges);
+      setNodes(newDataset.nodes);
+      setEdges(newDataset.edges);
       setLastUpdatedNode(newNode);
     };
 

@@ -18,9 +18,9 @@ import {
 import { useRecoilState } from 'recoil';
 import settings from '../../settings';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
-import { edgesState } from '../../states/edgesState';
+import { edgesSelector } from '../../states/edgesState';
 import { lastCreatedNodeState } from '../../states/lastCreatedNodeState';
-import { nodesState } from '../../states/nodesState';
+import { nodesSelector } from '../../states/nodesState';
 import { selectedNodesState } from '../../states/selectedNodesState';
 import BaseNodeData from '../../types/BaseNodeData';
 import BasePortData from '../../types/BasePortData';
@@ -67,8 +67,8 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   }, [canvasRef]);
 
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuState);
-  const [nodes, setNodes] = useRecoilState(nodesState);
-  const [edges, setEdges] = useRecoilState(edgesState);
+  const [nodes, setNodes] = useRecoilState(nodesSelector);
+  const [edges, setEdges] = useRecoilState(edgesSelector);
   const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);
   const selections = selectedNodes.map((node) => node.id);
   const [lastCreatedNode] = useRecoilState(lastCreatedNodeState);

@@ -5,8 +5,8 @@ import React, {
 } from 'react';
 import { CanvasRef } from 'reaflow';
 import { useRecoilState } from 'recoil';
-import { edgesState } from '../../states/edgesState';
-import { nodesState } from '../../states/nodesState';
+import { edgesSelector } from '../../states/edgesState';
+import { nodesSelector } from '../../states/nodesState';
 import BaseEdgeData from '../../types/BaseEdgeData';
 import BaseNodeData from '../../types/BaseNodeData';
 import BlockPickerMenu from '../blocks/BlockPickerMenu';
@@ -27,8 +27,8 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
     initialNodes,
     initialEdges,
   } = props;
-  const [nodes, setNodes] = useRecoilState(nodesState);
-  const [edges, setEdges] = useRecoilState(edgesState);
+  const [nodes, setNodes] = useRecoilState(nodesSelector);
+  const [edges, setEdges] = useRecoilState(edgesSelector);
 
   /**
    * Initializes the nodes and edges.

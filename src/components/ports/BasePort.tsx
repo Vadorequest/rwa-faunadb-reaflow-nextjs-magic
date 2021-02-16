@@ -14,9 +14,9 @@ import {
 import settings from '../../settings';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { draggedEdgeFromPortState } from '../../states/draggedEdgeFromPortState';
-import { edgesState } from '../../states/edgesState';
+import { edgesSelector } from '../../states/edgesState';
 import { lastCreatedNodeState } from '../../states/lastCreatedNodeState';
-import { nodesState } from '../../states/nodesState';
+import { nodesSelector } from '../../states/nodesState';
 import BaseNodeData from '../../types/BaseNodeData';
 import BasePortData from '../../types/BasePortData';
 import { OnBlockClick } from '../../types/BlockPickerMenu';
@@ -51,8 +51,8 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
   } = props;
 
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuState);
-  const [nodes, setNodes] = useRecoilState(nodesState);
-  const [edges, setEdges] = useRecoilState(edgesState);
+  const [nodes, setNodes] = useRecoilState(nodesSelector);
+  const [edges, setEdges] = useRecoilState(edgesSelector);
   const [draggedEdgeFromPort, setDraggedEdgeFromPort] = useRecoilState(draggedEdgeFromPortState);
   const setLastUpdatedNode: SetterOrUpdater<BaseNodeData | undefined> = useSetRecoilState(lastCreatedNodeState);
   const node: BaseNodeData = nodes.find((node) => node.id === fromNodeId) as BaseNodeData;
