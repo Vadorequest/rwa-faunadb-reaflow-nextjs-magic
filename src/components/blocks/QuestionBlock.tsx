@@ -16,7 +16,7 @@ const QuestionBlock: BaseBlockComponent<Props> = (props) => {
 
   const onClick = () => {
     if (onBlockClick) {
-      onBlockClick('information');
+      onBlockClick('question');
 
       // Automatically hide the block picker menu once a block has been picked
       setBlockPickerMenu({
