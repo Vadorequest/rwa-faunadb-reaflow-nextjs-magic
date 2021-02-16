@@ -11,6 +11,13 @@ import QuestionBlock from './QuestionBlock';
 
 type Props = {};
 
+/**
+ * Menu where the editor can select (pick) a block amongst a list of blocks.
+ *
+ * The menu is always displayed using an absolute position, on top of the canvas.
+ * It can be displayed either at the bottom of the canvas, or at a specific location.
+ * It is usually displayed at the drop location, when dropping an edge.
+ */
 const BlockPickerMenu: React.FunctionComponent<Props> = (props) => {
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuState);
   const {
@@ -38,7 +45,7 @@ const BlockPickerMenu: React.FunctionComponent<Props> = (props) => {
     return null;
   }
 
-  console.log('displaying BlockPickerMenu');
+  // console.log('displaying BlockPickerMenu');
 
   return (
     <div
@@ -77,9 +84,7 @@ const BlockPickerMenu: React.FunctionComponent<Props> = (props) => {
         <InformationBlock
           onBlockClick={onBlockClick}
           setBlockPickerMenu={setBlockPickerMenu}
-        >
-          Information
-        </InformationBlock>
+        />
         <QuestionBlock
           onBlockClick={onBlockClick}
           setBlockPickerMenu={setBlockPickerMenu}
