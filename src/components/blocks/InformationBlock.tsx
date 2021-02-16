@@ -1,17 +1,33 @@
 import React from 'react';
+import { SetterOrUpdater } from 'recoil';
 import BaseBlockComponent from '../../types/BaseBlockComponent';
-import { OnBlockClick } from '../../types/BlockPickerMenu';
+import BlockPickerMenu, { OnBlockClick } from '../../types/BlockPickerMenu';
 
 type Props = {
-  onClick?: OnBlockClick;
+  onBlockClick?: OnBlockClick;
+  setBlockPickerMenu: SetterOrUpdater<BlockPickerMenu>;
 };
 
 const InformationBlock: BaseBlockComponent<Props> = (props) => {
-  const { onClick } = props;
+  const {
+    onBlockClick,
+    setBlockPickerMenu,
+  } = props;
+
+  const onClick = () => {
+    if (onBlockClick) {
+      onBlockClick('information');
+
+      // Automatically hide the block picker menu once a block has been picked
+      setBlockPickerMenu({
+        isDisplayed: false,
+      });
+    }
+  };
 
   return (
     <div
-      onClick={() => onClick && onClick('information')}
+      onClick={onClick}
     >
       Information
     </div>
