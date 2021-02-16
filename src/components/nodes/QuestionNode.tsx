@@ -10,6 +10,7 @@ import { NodeChildProps } from 'reaflow';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
+import { QuestionChoiceTypeOption } from '../../types/nodes/QuestionChoiceTypeOption';
 import { QuestionNodeData } from '../../types/nodes/QuestionNodeData';
 import NodeType from '../../types/NodeType';
 import Textarea from '../plugins/Textarea';
@@ -95,6 +96,11 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
             } as QuestionNodeData);
           };
 
+          const onSelectedChoiceTypeChange = (selectedChoice: OptionTypeBase, action: { action: string }): void => {
+            console.log('setSelectedChoiceType', selectedChoice);
+            setSelectedChoiceType(selectedChoice);
+          };
+
           return (
             <Fragment>
               <div
@@ -134,13 +140,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                       isMulti={false}
                       value={selectedChoiceType}
                       options={choiceTypes}
-                      onChange={(
-                        selectedChoice: OptionTypeBase,
-                        action: { action: string },
-                      ): void => {
-                        console.log('setSelectedChoiceType', selectedChoice);
-                        setSelectedChoiceType(selectedChoice);
-                      }}
+                      onChange={onSelectedChoiceTypeChange}
                     />
                   </div>
                 </div>
