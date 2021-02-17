@@ -61,10 +61,12 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
           const onTextHeightChange = (height: number, meta: TextareaHeightChangeMeta) => {
             // Only consider additional height, by ignoring the height of the first row
             const additionalHeight = height - meta.rowHeight;
+            const newHeight: number = defaultHeight + additionalHeight;
 
-            if (patchCurrentNode) {
+            // Only update if the new height is different from the current height to avoid needless re-renders
+            if (node.height !== newHeight) {
               patchCurrentNode({
-                height: defaultHeight + additionalHeight,
+                height: newHeight,
               });
             }
           };
