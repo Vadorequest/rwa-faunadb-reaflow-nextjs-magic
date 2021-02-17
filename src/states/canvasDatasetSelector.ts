@@ -56,8 +56,8 @@ export const canvasDatasetSelector = selector<CanvasDataset>({
 
     if (!hasDuplicateNodes && !hasDuplicateEdges) {
       // console.log('setCanvasDatasetSelector', newValue);
-      set(nodesState, nodes);
-      set(edgesState, edges);
+      set(nodesSelector, nodes);
+      set(edgesSelector, edges);
     } else {
       const message = `Duplicate ids found in "${hasDuplicateNodes ? 'nodes' : ''}" "${hasDuplicateEdges ? 'edges' : ''}", the canvas dataset wasn't updated to avoid to corrupt the dataset.`;
       console.error(message, newValue);
