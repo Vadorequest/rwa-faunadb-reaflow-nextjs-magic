@@ -132,6 +132,7 @@ export function addNodeAndEdgeThroughPorts(
     parent: toNode.parent,
     fromPort: fromPort?.id,
     toPort: toPort?.id,
+    // text: 'test'
   };
 
   return {
