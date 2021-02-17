@@ -3,7 +3,7 @@ import EditorContainer from '../components/editor/EditorContainer';
 import Layout from '../components/Layout';
 import BaseEdgeData from '../types/BaseEdgeData';
 import BaseNodeData from '../types/BaseNodeData';
-import { getGraphDataFromLS } from '../utils/persistGraph';
+import { getCanvasDatasetFromLS } from '../utils/persistCanvasDataset';
 
 /**
  * Index/home page.
@@ -15,7 +15,7 @@ const IndexPage = () => {
   let persistedEdges: BaseEdgeData[] | undefined;
 
   if (isBrowser()) {
-    const persistedData = getGraphDataFromLS();
+    const persistedData = getCanvasDatasetFromLS();
 
     persistedNodes = persistedData?.nodes;
     persistedEdges = persistedData?.edges;

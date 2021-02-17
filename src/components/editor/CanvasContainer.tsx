@@ -29,7 +29,7 @@ import {
   createNodeFromDefaultProps,
   getDefaultNodePropsWithFallback,
 } from '../../utils/nodes';
-import { persistGraphDataInLS } from '../../utils/persistGraph';
+import { persistCanvasDatasetInLS } from '../../utils/persistCanvasDataset';
 import BaseEdge from '../edges/BaseEdge';
 import NodeRouter from '../nodes/NodeRouter';
 
@@ -81,7 +81,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
    * Persisted data are automatically loaded upon page refresh.
    */
   useEffect(() => {
-    persistGraphDataInLS(nodes, edges);
+    persistCanvasDatasetInLS({ nodes, edges});
   }, [nodes, edges]);
 
   /**
