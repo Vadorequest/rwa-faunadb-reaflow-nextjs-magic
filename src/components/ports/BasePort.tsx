@@ -73,21 +73,22 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
   const onBlockClick: OnBlockClick = (nodeType: NodeType) => {
     console.log('onBlockClick (from port)', nodeType, draggedEdgeFromPort);
     const newNode = createNodeFromDefaultProps(getDefaultNodePropsWithFallback(nodeType));
-    let dataset: CanvasDataset;
+    let newDataset: CanvasDataset;
 
     if (draggedEdgeFromPort?.fromPort?.side === 'EAST') {
       // The drag started from an EAST port, so we must add the new node on the right of existing node
-      dataset = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, node, newNode, draggedEdgeFromPort?.fromPort);
+      newDataset = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, node, newNode, draggedEdgeFromPort?.fromPort);
     } else {
       // The drag started from a WEST port, so we must add the new node on the left of the existing node
       const fromPort: BasePortData = newNode?.ports?.find((port: BasePortData) => port?.side === 'EAST') as BasePortData;
       const toPort: BasePortData = draggedEdgeFromPort?.fromPort as BasePortData;
 
-      dataset = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, newNode, node, fromPort, toPort);
+      newDataset = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, newNode, node, fromPort, toPort);
     }
-    console.log('addNodeAndEdge fromNode', newNode, 'toNode', node, 'dataset', dataset);
+    console.log('addNodeAndEdge fromNode', newNode, 'toNode', node, 'dataset', newDataset);
+    console.log('newDataset', newDataset)
 
-    setCanvasDataset(dataset);
+    setCanvasDataset(newDataset);
     setLastUpdatedNode(newNode);
   };
 

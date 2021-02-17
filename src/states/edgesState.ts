@@ -4,15 +4,14 @@ import {
 } from 'recoil';
 import BaseEdgeData from '../types/BaseEdgeData';
 import { hasDuplicates } from '../utils/array';
-
-const initialEdges: BaseEdgeData[] = [];
+import { getCanvasDatasetFromLS } from '../utils/persistCanvasDataset';
 
 /**
  * Used to know what are the edges currently displayed within the Canvas component.
  */
-export const edgesState = atom<BaseEdgeData[]>({
+export const edgesState = atom<BaseEdgeData[] | undefined>({
   key: 'edgesState',
-  default: initialEdges,
+  default: undefined,
 });
 
 /**
@@ -23,7 +22,13 @@ export const edgesState = atom<BaseEdgeData[]>({
 export const edgesSelector = selector<BaseEdgeData[]>({
   key: 'edgesSelector',
   get: ({ get }): BaseEdgeData[] => {
-    return get(edgesState) || [];
+    const currentEdges: BaseEdgeData[] | undefined = get(edgesState);
+
+    if (typeof currentEdges === 'undefined') {
+      return getCanvasDatasetFromLS()?.edges || [];
+    } else {
+      return currentEdges;
+    }
   },
 
   /**
@@ -38,6 +43,7 @@ export const edgesSelector = selector<BaseEdgeData[]>({
     const hasDuplicateEdges = hasDuplicates(newValue as BaseEdgeData[], 'id');
 
     if (!hasDuplicateEdges) {
+      // console.log('setEdgesSelector', newValue);
       set(edgesState, newValue);
     } else {
       const message = `Duplicate edge ids found, the edges weren't updated to avoid to corrupt the dataset.`;

@@ -1,19 +1,13 @@
 import { css } from '@emotion/react';
-import { isBrowser } from '@unly/utils';
 import React, {
   MutableRefObject,
   useRef,
 } from 'react';
 import { CanvasRef } from 'reaflow';
 import settings from '../../settings';
-import BaseEdgeData from '../../types/BaseEdgeData';
-import BaseNodeData from '../../types/BaseNodeData';
 import PlaygroundContainer from './PlaygroundContainer';
 
-type Props = {
-  initialNodes: BaseNodeData[];
-  initialEdges: BaseEdgeData[];
-};
+type Props = {};
 
 /**
  * Displays the playground container.
@@ -22,10 +16,6 @@ type Props = {
  * Takes as much space as possible (full page width, full page height minus the height of header/footer components).
  */
 const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | null => {
-  const {
-    initialNodes,
-    initialEdges,
-  } = props;
 
   /**
    * Used to create a reference to the canvas.
@@ -46,8 +36,6 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     >
       <PlaygroundContainer
         canvasRef={canvasRef}
-        initialNodes={initialNodes}
-        initialEdges={initialEdges}
       />
     </div>
   );

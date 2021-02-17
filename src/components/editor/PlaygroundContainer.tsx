@@ -1,20 +1,11 @@
 import { css } from '@emotion/react';
-import React, {
-  MutableRefObject,
-  useEffect,
-} from 'react';
+import React, { MutableRefObject } from 'react';
 import { CanvasRef } from 'reaflow';
-import { useRecoilState } from 'recoil';
-import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
-import BaseEdgeData from '../../types/BaseEdgeData';
-import BaseNodeData from '../../types/BaseNodeData';
 import BlockPickerMenu from '../blocks/BlockPickerMenu';
 import CanvasContainer from './CanvasContainer';
 
 type Props = {
   canvasRef: MutableRefObject<CanvasRef | null>;
-  initialNodes: BaseNodeData[];
-  initialEdges: BaseEdgeData[];
 }
 
 /**
@@ -23,22 +14,9 @@ type Props = {
 const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element | null => {
   const {
     canvasRef,
-    initialNodes,
-    initialEdges,
   } = props;
-  const [canvasDataset, setCanvasDataset] = useRecoilState(canvasDatasetSelector);
-  const { nodes, edges } = canvasDataset;
 
-  /**
-   * Initializes the nodes and edges.
-   *
-   * Only executed once, after component first rendering.
-   */
-  useEffect(() => {
-    setCanvasDataset({ nodes: initialNodes, edges: initialEdges });
-  }, []);
-
-  console.log('Playground render', nodes, edges);
+  console.log('Playground render');
 
   return (
     <div

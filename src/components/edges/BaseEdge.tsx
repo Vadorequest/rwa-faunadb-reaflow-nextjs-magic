@@ -61,7 +61,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
   const onAdd = (event: React.MouseEvent<SVGGElement, MouseEvent>, edge: EdgeData): void => {
     console.log('onAdd edge', edge, event);
     const onBlockClick: OnBlockClick = (nodeType: NodeType) => {
-      console.log('onBlockClick', nodeType, edge);
+      console.log('onBlockClick (from edge add)', nodeType, edge);
       const newNode: BaseNodeData = createNodeFromDefaultProps(getDefaultNodePropsWithFallback(nodeType));
       const newDataset: CanvasDataset = upsertNodeThroughPorts(cloneDeep(nodes), cloneDeep(edges), edge, newNode);
 

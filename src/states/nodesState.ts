@@ -4,13 +4,14 @@ import {
 } from 'recoil';
 import BaseNodeData from '../types/BaseNodeData';
 import { hasDuplicates } from '../utils/array';
+import { getCanvasDatasetFromLS } from '../utils/persistCanvasDataset';
 
 /**
  * Used to know what are the nodes currently displayed within the Canvas component.
  */
-export const nodesState = atom<BaseNodeData[]>({
+export const nodesState = atom<BaseNodeData[] | undefined>({
   key: 'nodesState',
-  default: [],
+  default: undefined,
 });
 
 /**
@@ -21,7 +22,13 @@ export const nodesState = atom<BaseNodeData[]>({
 export const nodesSelector = selector<BaseNodeData[]>({
   key: 'nodesSelector',
   get: ({ get }): BaseNodeData[] => {
-    return get(nodesState) || [];
+    const currentNodes: BaseNodeData[] | undefined = get(nodesState);
+
+    if (typeof currentNodes === 'undefined') {
+      return getCanvasDatasetFromLS()?.nodes || [];
+    } else {
+      return currentNodes;
+    }
   },
 
   /**
@@ -36,6 +43,7 @@ export const nodesSelector = selector<BaseNodeData[]>({
     const hasDuplicateNodes = hasDuplicates(newValue as BaseNodeData[], 'id');
 
     if (!hasDuplicateNodes) {
+      // console.log('setNodesSelector', newValue);
       set(nodesState, newValue);
     } else {
       const message = `Duplicate node ids found, the nodes weren't updated to avoid to corrupt the dataset.`;

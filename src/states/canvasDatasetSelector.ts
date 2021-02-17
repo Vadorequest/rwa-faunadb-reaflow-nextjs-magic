@@ -4,8 +4,14 @@ import {
 } from 'recoil';
 import { CanvasDataset } from '../types/CanvasDataset';
 import { hasDuplicates } from '../utils/array';
-import { edgesState } from './edgesState';
-import { nodesState } from './nodesState';
+import {
+  edgesSelector,
+  edgesState,
+} from './edgesState';
+import {
+  nodesSelector,
+  nodesState,
+} from './nodesState';
 
 /**
  * Custom selector for the atom.
@@ -14,10 +20,17 @@ import { nodesState } from './nodesState';
  */
 export const canvasDatasetSelector = selector<CanvasDataset>({
   key: 'canvasDatasetSelector',
+
+  /**
+   * Uses the nodes and edges selectors (and not their atoms!) to benefit from their "get" behavior.
+   * (which handles the default value)
+   *
+   * @param get
+   */
   get: ({ get }): CanvasDataset => {
     return {
-      nodes: get(nodesState) || [],
-      edges: get(edgesState) || [],
+      nodes: get(nodesSelector),
+      edges: get(edgesSelector),
     };
   },
 
@@ -42,6 +55,7 @@ export const canvasDatasetSelector = selector<CanvasDataset>({
     const hasDuplicateEdges = hasDuplicates(edges, 'id');
 
     if (!hasDuplicateNodes && !hasDuplicateEdges) {
+      // console.log('setCanvasDatasetSelector', newValue);
       set(nodesState, nodes);
       set(edgesState, edges);
     } else {
