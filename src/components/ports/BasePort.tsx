@@ -55,7 +55,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
   const [draggedEdgeFromPort, setDraggedEdgeFromPort] = useRecoilState(draggedEdgeFromPortState);
   const setLastUpdatedNode: SetterOrUpdater<BaseNodeData | undefined> = useSetRecoilState(lastCreatedNodeState);
   const node: BaseNodeData = nodes.find((node: BaseNodeData) => node.id === fromNodeId) as BaseNodeData;
-  const port: BasePortData = node.ports?.find((port: BasePortData) => port.id === id) as BasePortData;
+  const port: BasePortData = node?.ports?.find((port: BasePortData) => port.id === id) as BasePortData;
   const { displayedFrom, isDisplayed } = blockPickerMenu;
 
   const style = {

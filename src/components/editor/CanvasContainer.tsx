@@ -4,6 +4,7 @@ import { isBrowser } from '@unly/utils';
 import React, {
   MutableRefObject,
   useEffect,
+  useState,
 } from 'react';
 import {
   Canvas,
@@ -74,6 +75,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);
   const selections = selectedNodes.map((node) => node.id);
   const [lastCreatedNode] = useRecoilState(lastCreatedNodeState);
+  const [hasClearedUndoHistory, setHasClearedUndoHistory] = useState<boolean>(false);
 
   /**
    * When nodes or edges are modified, updates the persisted data in the local storage.
@@ -81,7 +83,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
    * Persisted data are automatically loaded upon page refresh.
    */
   useEffect(() => {
-    persistCanvasDatasetInLS({ nodes, edges});
+    persistCanvasDatasetInLS({ nodes, edges });
   }, [nodes, edges]);
 
   /**
@@ -122,16 +124,21 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     const startNode: BaseNodeData | undefined = nodes?.find((node: BaseNodeData) => node?.data?.type === 'start');
 
     if (!startNode) {
+      console.info(`No "start" node found. Creating one automatically.`, nodes);
       setNodes([
         ...nodes,
         createNodeFromDefaultProps(getDefaultNodePropsWithFallback('start')),
       ]);
 
-      console.info('Clearing undo/redo history to start from a clean state.');
       // Clearing the undo/redo history to avoid allowing the editor to "undo" the creation of the "start" node
       // If the "start" node creation step is "undoed" then it'd be re-created automatically, which would erase the whole history
       // See https://github.com/reaviz/reaflow/issues/60#issuecomment-780499761
-      clear();
+      // Doing it only once to avoid infinite loop rendering
+      if (!hasClearedUndoHistory) {
+        console.info('Clearing undo/redo history to start from a clean state.');
+        clear();
+        setHasClearedUndoHistory(true);
+      }
     }
   }, [nodes]);
 
