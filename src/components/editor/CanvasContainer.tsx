@@ -85,22 +85,6 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   }, [nodes, edges]);
 
   /**
-   * Ensures the start node is always present.
-   *
-   * Will automatically create the start node even if all the nodes are deleted.
-   */
-  useEffect(() => {
-    const startNode: BaseNodeData | undefined = nodes?.find((node: BaseNodeData) => node?.data?.type === 'start');
-
-    if (!startNode) {
-      setNodes([
-        ...nodes,
-        createNodeFromDefaultProps(getDefaultNodePropsWithFallback('start')),
-      ]);
-    }
-  }, [nodes]);
-
-  /**
    * Uses Reaflow Undo/Redo helpers.
    *
    * Automatically binds shortcuts (cmd+z/cmd+shift+z).
@@ -114,6 +98,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     redo,
     canUndo,
     canRedo,
+    clear,
   } = useUndo({
     nodes,
     edges,
@@ -127,6 +112,28 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     },
     maxHistory: Infinity,
   });
+
+  /**
+   * Ensures the start node is always present.
+   *
+   * Will automatically create the start node even if all the nodes are deleted.
+   */
+  useEffect(() => {
+    const startNode: BaseNodeData | undefined = nodes?.find((node: BaseNodeData) => node?.data?.type === 'start');
+
+    if (!startNode) {
+      setNodes([
+        ...nodes,
+        createNodeFromDefaultProps(getDefaultNodePropsWithFallback('start')),
+      ]);
+
+      console.info('Clearing undo/redo history to start from a clean state.');
+      // Clearing the undo/redo history to avoid allowing the editor to "undo" the creation of the "start" node
+      // If the "start" node creation step is "undoed" then it'd be re-created automatically, which would erase the whole history
+      // See https://github.com/reaviz/reaflow/issues/60#issuecomment-780499761
+      clear();
+    }
+  }, [nodes]);
 
   /**
    * When clicking on the canvas:
@@ -252,12 +259,13 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
             animation: dashdraw .5s linear infinite;
             stroke-width: 1;
           }
-          
+
           // Make all output ports used by IfNode display differently to distinguish them easily
           .port-if {
             &-true {
               stroke: green !important;
             }
+
             &-false {
               stroke: red !important;
             }
