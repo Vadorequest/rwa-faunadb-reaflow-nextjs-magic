@@ -2,6 +2,8 @@ import DisplayOnBrowserMount from '../components/DisplayOnBrowserMount';
 import EditorContainer from '../components/editor/EditorContainer';
 import Layout from '../components/Layout';
 import { CanvasDataset } from '../types/CanvasDataset';
+import { isBrowser } from '@unly/utils';
+import { getCanvasDatasetFromLS } from '../utils/persistCanvasDataset';
 
 export type Props = {
   canvasDataset: CanvasDataset | null;
@@ -28,6 +30,10 @@ export const getStaticProps = (): { props: Props } => {
  */
 const IndexPage = (props: any) => {
   const { canvasDataset: canvasDatasetFromServer } = props; // We don't use canvasDatasetFromServer in this demo, but localstorage instead
+
+  if(isBrowser()){
+    window.initialCanvasDataset = getCanvasDatasetFromLS();
+  }
 
   return (
     <Layout>

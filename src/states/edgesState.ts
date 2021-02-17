@@ -25,7 +25,7 @@ export const edgesSelector = selector<BaseEdgeData[]>({
     const currentEdges: BaseEdgeData[] | undefined = get(edgesState);
 
     if (typeof currentEdges === 'undefined') {
-      return getCanvasDatasetFromLS()?.edges || [];
+      return window.initialCanvasDataset?.edges || [];
     } else {
       return currentEdges;
     }

@@ -25,7 +25,7 @@ export const nodesSelector = selector<BaseNodeData[]>({
     const currentNodes: BaseNodeData[] | undefined = get(nodesState);
 
     if (typeof currentNodes === 'undefined') {
-      return getCanvasDatasetFromLS()?.nodes || [];
+      return window.initialCanvasDataset?.nodes || [];
     } else {
       return currentNodes;
     }
