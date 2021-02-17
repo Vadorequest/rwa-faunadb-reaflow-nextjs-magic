@@ -1,7 +1,6 @@
 import cloneDeep from 'lodash.clonedeep';
 import React from 'react';
 import { Port } from 'reaflow';
-import { PortProps } from 'reaflow/dist/symbols/Port/Port';
 import {
   DragEvent,
   Position,
@@ -18,6 +17,7 @@ import { draggedEdgeFromPortState } from '../../states/draggedEdgeFromPortState'
 import { lastCreatedNodeState } from '../../states/lastCreatedNodeState';
 import BaseNodeData from '../../types/BaseNodeData';
 import BasePortData from '../../types/BasePortData';
+import BasePortProps from '../../types/BasePortProps';
 import { OnBlockClick } from '../../types/BlockPickerMenu';
 import { CanvasDataset } from '../../types/CanvasDataset';
 import NodeType from '../../types/NodeType';
@@ -30,7 +30,7 @@ import {
 
 type Props = {
   fromNodeId: string;
-} & Partial<PortProps>;
+} & BasePortProps;
 
 /**
  * Base port component.
@@ -44,9 +44,9 @@ type Props = {
  */
 const BasePort: React.FunctionComponent<Props> = (props) => {
   const {
+    id,
     fromNodeId,
     onDragEnd: onDragEndInternal,
-    ...rest
   } = props;
 
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuState);
@@ -54,7 +54,8 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
   const { nodes, edges } = canvasDataset;
   const [draggedEdgeFromPort, setDraggedEdgeFromPort] = useRecoilState(draggedEdgeFromPortState);
   const setLastUpdatedNode: SetterOrUpdater<BaseNodeData | undefined> = useSetRecoilState(lastCreatedNodeState);
-  const node: BaseNodeData = nodes.find((node) => node.id === fromNodeId) as BaseNodeData;
+  const node: BaseNodeData = nodes.find((node: BaseNodeData) => node.id === fromNodeId) as BaseNodeData;
+  const port: BasePortData = node.ports?.find((port: BasePortData) => port.id === id) as BasePortData;
   const { displayedFrom, isDisplayed } = blockPickerMenu;
 
   const style = {
@@ -189,7 +190,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
 
   return (
     <Port
-      {...rest}
+      {...props}
       onClick={onPortClick}
       onDragStart={onPortDragStart}
       onDragEnd={onPortDragEnd}
