@@ -309,6 +309,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         <Button
           onClick={() => {
             if (confirm(`Remove all nodes and edges?`)) {
+              setHasClearedUndoHistory(false); // Reset to allow clearing history even if the option is used several times in the same session
               setCanvasDataset({
                 nodes: [],
                 edges: [],
