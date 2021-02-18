@@ -174,7 +174,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
     node,
     patchCurrentNode: patchCurrentNode,
     lastCreatedNode,
-    isSelected: false, // TODO implement
+    isSelected: !!selectedElements?.find((elementId: string) => elementId === node.id),
     className: classnames(
       `node-svg-rect node-${type}-svg-rect`,
     ),
