@@ -1,7 +1,7 @@
 import React from 'react';
 import BaseNodeData from '../types/BaseNodeData';
 
-export type SelectedContext = {
+export type SelectedElementsContext = {
   /**
    * Clear selections method.
    */
@@ -40,12 +40,12 @@ export type SelectedContext = {
  * Uses native React Context API
  *
  * @example Usage
- *  import selectedContext from './src/stores/selectedContext';
- *  const { setSelections }: SelectedContext = React.useContext(selectedContext);
+ *  import selectedElementsContext from './src/stores/selectedElementsContext';
+ *  const { setSelections }: SelectedElementsContext = React.useContext(selectedElementsContext);
  *
  * @see https://reactjs.org/docs/context.html
  * @see https://medium.com/better-programming/react-hooks-usecontext-30eb560999f for useContext hook example (open in anonymous browser #paywall)
  */
-export const selectedContext = React.createContext<Partial<SelectedContext>>({});
+export const selectedElementsContext = React.createContext<Partial<SelectedElementsContext>>({});
 
-export default selectedContext;
+export default selectedElementsContext;

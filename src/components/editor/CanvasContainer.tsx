@@ -18,14 +18,14 @@ import {
   useUndo,
 } from 'reaflow';
 import { useRecoilState } from 'recoil';
-import selectedContext from '../../contexts/selectedContext';
+import selectedElementsContext from '../../contexts/selectedElementsContext';
 import settings from '../../settings';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
 import { edgesSelector } from '../../states/edgesState';
 import { lastCreatedNodeState } from '../../states/lastCreatedNodeState';
 import { nodesSelector } from '../../states/nodesState';
-import { selectedState } from '../../states/selectedState';
+import { selectedElementsState } from '../../states/selectedElementsState';
 import BaseEdgeData from '../../types/BaseEdgeData';
 import BaseNodeData from '../../types/BaseNodeData';
 import BasePortData from '../../types/BasePortData';
@@ -75,7 +75,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const [canvasDataset, setCanvasDataset] = useRecoilState(canvasDatasetSelector);
   const [nodes, setNodes] = useRecoilState(nodesSelector);
   const [edges, setEdges] = useRecoilState(edgesSelector);
-  const [selected, setSelected] = useRecoilState(selectedState);
+  const [selectedElements, setSelectedElements] = useRecoilState(selectedElementsState);
   const [lastCreatedNode] = useRecoilState(lastCreatedNodeState);
   const [hasClearedUndoHistory, setHasClearedUndoHistory] = useState<boolean>(false);
 
@@ -135,19 +135,19 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
 
     },
     onSelection: (newSelected: string[]) => {
-      console.info('onSelection newSelected', newSelected);
-      setSelected(newSelected);
+      console.info('onSelection setSelectedElements from newSelected:', newSelected);
+      setSelectedElements(newSelected);
     },
   });
   console.log('selections', selections);
-  console.log('selected', selected);
+  console.log('selectedElements', selectedElements);
 
   /**
    * When the selection changes
    */
   useEffect(() => {
-    console.log('setSelected selections', selections);
-    setSelected(selections);
+    console.log('setSelectedElements from selections:', selections);
+    setSelectedElements(selections);
   }, [selections]);
 
   /**
@@ -356,7 +356,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         </Button>
       </div>
 
-      <selectedContext.Provider
+      <selectedElementsContext.Provider
         value={{
           setSelections,
           addSelection,
@@ -383,7 +383,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
           onNodeLink={onNodeLink}
           layoutOptions={elkLayoutOptions}
         />
-      </selectedContext.Provider>
+      </selectedElementsContext.Provider>
     </div>
   );
 };

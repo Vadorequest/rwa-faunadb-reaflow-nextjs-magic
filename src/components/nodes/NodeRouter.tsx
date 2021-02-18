@@ -8,11 +8,11 @@ import {
 } from 'reaflow';
 import { NodeData } from 'reaflow/dist/types';
 import { useRecoilState } from 'recoil';
-import useSelected from '../../hooks/useSelected';
+import useSelectedElements from '../../hooks/useSelectedElements';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
 import { nodesSelector } from '../../states/nodesState';
-import { selectedState } from '../../states/selectedState';
+import { selectedElementsState } from '../../states/selectedElementsState';
 import BaseNodeData from '../../types/BaseNodeData';
 import BaseNodeProps, { PatchCurrentNode } from '../../types/BaseNodeProps';
 import { CanvasDataset } from '../../types/CanvasDataset';
@@ -42,12 +42,12 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
   const [nodes, setNodes] = useRecoilState(nodesSelector);
   const [canvasDataset, setCanvasDataset] = useRecoilState(canvasDatasetSelector);
   const { edges } = canvasDataset;
-  const [selected] = useRecoilState(selectedState);
+  const [selectedElements] = useRecoilState(selectedElementsState);
   const {
     setSelections,
     onSelectionClick,
     onSelectionKeyDown,
-  } = useSelected();
+  } = useSelectedElements();
   const node: BaseNodeData = nodes.find((node: BaseNodeData) => node.id === nodeProps.id) as BaseNodeData;
 
   // console.log('router nodes', props);
@@ -109,7 +109,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
   const onNodeRemove = (event: React.MouseEvent<SVGGElement, MouseEvent>, node: NodeData) => {
     console.log('onNodeRemove', event, node);
     const dataset: CanvasDataset = removeAndUpsertNodesThroughPorts(nodes, edges, node);
-    const newSelected = remove(selected, node?.id);
+    const newSelected = remove(selectedElements, node?.id);
 
     setCanvasDataset(dataset);
 

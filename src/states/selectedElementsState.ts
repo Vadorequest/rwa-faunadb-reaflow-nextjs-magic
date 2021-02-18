@@ -5,7 +5,7 @@ import { atom } from 'recoil';
  *
  * Can be a single node/edges, several nodes/edges, or none of them.
  */
-export const selectedState = atom<string[]>({
-  key: 'selectedState',
+export const selectedElementsState = atom<string[]>({
+  key: 'selectedElementsState',
   default: [],
 });
