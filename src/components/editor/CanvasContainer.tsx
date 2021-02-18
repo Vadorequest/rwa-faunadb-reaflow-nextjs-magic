@@ -133,7 +133,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     edges,
     onDataChange: (nodes: BaseNodeData[], edges: BaseEdgeData[]) => {
       console.info('Data changed', nodes, edges);
-
+      setCanvasDataset({ nodes, edges });
     },
     onSelection: (newSelected: string[]) => {
       console.info('onSelection setSelectedElements from newSelected:', newSelected);
@@ -152,8 +152,8 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     if (diff?.length) {
       console.log('setSelectedElements from selections:', selections);
       setSelectedElements(selections);
-    }else {
-      console.log('setSelectedElements no change detected')
+    } else {
+      console.log('setSelectedElements no change detected');
     }
   }, [selections, selectedElements]);
 
