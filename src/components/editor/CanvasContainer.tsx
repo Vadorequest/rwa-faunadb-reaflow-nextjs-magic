@@ -83,8 +83,8 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
    * Persisted data are automatically loaded upon page refresh.
    */
   useEffect(() => {
-    persistCanvasDatasetInLS({ nodes, edges });
-  }, [nodes, edges]);
+    persistCanvasDatasetInLS(canvasDataset);
+  }, [canvasDataset]);
 
   /**
    * Uses Reaflow Undo/Redo helpers.
