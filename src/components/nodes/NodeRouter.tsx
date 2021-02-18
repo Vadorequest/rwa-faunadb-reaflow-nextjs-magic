@@ -50,6 +50,10 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
   } = useSelectedElements();
   const node: BaseNodeData = nodes.find((node: BaseNodeData) => node.id === nodeProps.id) as BaseNodeData;
 
+  if (!node) {
+    return null;
+  }
+
   // console.log('router nodes', props);
   // console.log('node', node);
 
