@@ -31,6 +31,14 @@ export const getStaticProps = (): { props: Props } => {
 const IndexPage = (props: any) => {
   const { canvasDataset: canvasDatasetFromServer } = props; // We don't use canvasDatasetFromServer in this demo, but localstorage instead
 
+  /**
+   * Gets the canvas dataset stored in the browser localstorage and makes it available in the global "window" object.
+   * The window.initialCanvasDataset will be used by the nodes/edges atom during their initialisation.
+   *
+   * XXX Doing it this way (instead of using a setState) ensures the Canvas is initially loaded with the proper dataset.
+   *  And it won't have multiple re-renders due to mutating state, which in turn avoids lagginess during init.
+   *  Also, it's a viable approach whether using the data from browser localstorage, or a real DB.
+   */
   if(isBrowser()){
     window.initialCanvasDataset = getCanvasDatasetFromLS();
   }
