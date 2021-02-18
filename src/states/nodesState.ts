@@ -4,7 +4,6 @@ import {
 } from 'recoil';
 import BaseNodeData from '../types/BaseNodeData';
 import { hasDuplicates } from '../utils/array';
-import { getCanvasDatasetFromLS } from '../utils/persistCanvasDataset';
 
 /**
  * Used to know what are the nodes currently displayed within the Canvas component.

@@ -4,14 +4,8 @@ import {
 } from 'recoil';
 import { CanvasDataset } from '../types/CanvasDataset';
 import { hasDuplicates } from '../utils/array';
-import {
-  edgesSelector,
-  edgesState,
-} from './edgesState';
-import {
-  nodesSelector,
-  nodesState,
-} from './nodesState';
+import { edgesSelector } from './edgesState';
+import { nodesSelector } from './nodesState';
 
 /**
  * Custom selector for the atom.

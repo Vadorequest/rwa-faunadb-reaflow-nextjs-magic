@@ -4,7 +4,6 @@ import {
 } from 'recoil';
 import BaseEdgeData from '../types/BaseEdgeData';
 import { hasDuplicates } from '../utils/array';
-import { getCanvasDatasetFromLS } from '../utils/persistCanvasDataset';
 
 /**
  * Used to know what are the edges currently displayed within the Canvas component.
