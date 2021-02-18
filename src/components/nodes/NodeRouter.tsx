@@ -1,5 +1,6 @@
 import classnames from 'classnames';
 import cloneDeep from 'lodash.clonedeep';
+import remove from 'lodash.remove';
 import React from 'react';
 import {
   NodeProps,
@@ -7,16 +8,16 @@ import {
 } from 'reaflow';
 import { NodeData } from 'reaflow/dist/types';
 import { useRecoilState } from 'recoil';
+import useSelected from '../../hooks/useSelected';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
 import { nodesSelector } from '../../states/nodesState';
-import { selectedNodesState } from '../../states/selectedNodesState';
+import { selectedState } from '../../states/selectedState';
 import BaseNodeData from '../../types/BaseNodeData';
 import BaseNodeProps, { PatchCurrentNode } from '../../types/BaseNodeProps';
 import { CanvasDataset } from '../../types/CanvasDataset';
 import NodeType from '../../types/NodeType';
 import {
-  filterNodeInArray,
   findNodeComponentByType,
   removeAndUpsertNodesThroughPorts,
 } from '../../utils/nodes';
@@ -41,7 +42,12 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
   const [nodes, setNodes] = useRecoilState(nodesSelector);
   const [canvasDataset, setCanvasDataset] = useRecoilState(canvasDatasetSelector);
   const { edges } = canvasDataset;
-  const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);
+  const [selected] = useRecoilState(selectedState);
+  const {
+    setSelections,
+    onSelectionClick,
+    onSelectionKeyDown,
+  } = useSelected();
   const node: BaseNodeData = nodes.find((node: BaseNodeData) => node.id === nodeProps.id) as BaseNodeData;
 
   // console.log('router nodes', props);
@@ -103,11 +109,13 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
   const onNodeRemove = (event: React.MouseEvent<SVGGElement, MouseEvent>, node: NodeData) => {
     console.log('onNodeRemove', event, node);
     const dataset: CanvasDataset = removeAndUpsertNodesThroughPorts(nodes, edges, node);
+    const newSelected = remove(selected, node?.id);
 
     setCanvasDataset(dataset);
 
+    console.log('onNodeRemove newSelected', newSelected);
     // Updates selected nodes to make sure we don't keep selected nodes that have been deleted
-    setSelectedNodes(filterNodeInArray(selectedNodes, node));
+    setSelections(newSelected);
 
     // Hide the block picker menu.
     // Forces to reset the function bound to onBlockClick. Necessary when there is one or none node left.
@@ -130,9 +138,8 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
     const node: BaseNodeData = nodes.find((node: BaseNodeData) => node.id === nodeProps?.id) as BaseNodeData;
     console.log(`node clicked (${nodeProps?.properties?.text || nodeProps?.id})`, nodeProps);
     console.log(`node selected`, node);
-    if (node?.id) {
-      setSelectedNodes([node]);
-    }
+
+    onSelectionClick(event, node);
   };
 
   /**
@@ -183,7 +190,8 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
     onEnter: onNodeEnter,
     onLeave: onNodeLeave,
     onRemove: onNodeRemove,
-    remove: (<Remove hidden={true} />),
+    onKeyDown: onSelectionKeyDown,
+    remove: (<Remove /*hidden={true}*/ />),
   };
 
   // console.log('rendering node of type: ', type, commonBlockProps)

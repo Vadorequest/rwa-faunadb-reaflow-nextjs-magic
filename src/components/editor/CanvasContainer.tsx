@@ -14,16 +14,19 @@ import {
   NodeData,
   NodeProps,
   UndoRedoEvent,
+  useSelection,
   useUndo,
 } from 'reaflow';
 import { useRecoilState } from 'recoil';
+import selectedContext from '../../contexts/selectedContext';
 import settings from '../../settings';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
 import { edgesSelector } from '../../states/edgesState';
 import { lastCreatedNodeState } from '../../states/lastCreatedNodeState';
 import { nodesSelector } from '../../states/nodesState';
-import { selectedNodesState } from '../../states/selectedNodesState';
+import { selectedState } from '../../states/selectedState';
+import BaseEdgeData from '../../types/BaseEdgeData';
 import BaseNodeData from '../../types/BaseNodeData';
 import BasePortData from '../../types/BasePortData';
 import {
@@ -72,8 +75,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const [canvasDataset, setCanvasDataset] = useRecoilState(canvasDatasetSelector);
   const [nodes, setNodes] = useRecoilState(nodesSelector);
   const [edges, setEdges] = useRecoilState(edgesSelector);
-  const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);
-  const selections = selectedNodes.map((node) => node.id);
+  const [selected, setSelected] = useRecoilState(selectedState);
   const [lastCreatedNode] = useRecoilState(lastCreatedNodeState);
   const [hasClearedUndoHistory, setHasClearedUndoHistory] = useState<boolean>(false);
 
@@ -115,6 +117,39 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     maxHistory: Infinity,
   });
 
+  const {
+    selections,
+    setSelections,
+    addSelection,
+    clearSelections,
+    removeSelection,
+    toggleSelection,
+    onClick: onSelectionClick,
+    onCanvasClick: onSelectionCanvasClick,
+    onKeyDown: onSelectionKeyDown,
+  } = useSelection({
+    nodes,
+    edges,
+    onDataChange: (nodes: BaseNodeData[], edges: BaseEdgeData[]) => {
+      console.info('Data changed', nodes, edges);
+
+    },
+    onSelection: (newSelected: string[]) => {
+      console.info('onSelection newSelected', newSelected);
+      setSelected(newSelected);
+    },
+  });
+  console.log('selections', selections);
+  console.log('selected', selected);
+
+  /**
+   * When the selection changes
+   */
+  useEffect(() => {
+    console.log('setSelected selections', selections);
+    setSelected(selections);
+  }, [selections]);
+
   /**
    * Ensures the start node is always present.
    *
@@ -149,7 +184,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
    *    (avoids closing the menu when dropping an edge on the canvas)
    */
   const onCanvasClick = () => {
-    setSelectedNodes([]);
+    setSelections([]);
     console.log('target', blockPickerMenu?.eventTarget);
 
     let isBlockPickerMenuTargetingCanvas = false;
@@ -321,21 +356,34 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         </Button>
       </div>
 
-      <Canvas
-        ref={canvasRef}
-        className={'reaflow-canvas'}
-        direction={settings.canvas.direction}
-        onCanvasClick={onCanvasClick}
-        nodes={nodes}
-        edges={edges}
-        selections={selections}
-        node={Node}
-        edge={Edge}
-        onLayoutChange={layout => console.log('Layout', layout)}
-        onNodeLinkCheck={onNodeLinkCheck}
-        onNodeLink={onNodeLink}
-        layoutOptions={elkLayoutOptions}
-      />
+      <selectedContext.Provider
+        value={{
+          setSelections,
+          addSelection,
+          clearSelections,
+          removeSelection,
+          toggleSelection,
+          onSelectionClick,
+          onSelectionCanvasClick,
+          onSelectionKeyDown,
+        }}
+      >
+        <Canvas
+          ref={canvasRef}
+          className={'reaflow-canvas'}
+          direction={settings.canvas.direction}
+          onCanvasClick={onCanvasClick}
+          nodes={nodes}
+          edges={edges}
+          selections={selections}
+          node={Node}
+          edge={Edge}
+          onLayoutChange={layout => console.log('Layout', layout)}
+          onNodeLinkCheck={onNodeLinkCheck}
+          onNodeLink={onNodeLink}
+          layoutOptions={elkLayoutOptions}
+        />
+      </selectedContext.Provider>
     </div>
   );
 };
