@@ -134,11 +134,11 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
    * @param data
    */
   const onNodeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, data: BaseNodeData) => {
-    console.log('onNodeClick data', data);
+    // console.log('onNodeClick data', data);
     const node: BaseNodeData = nodes.find((node: BaseNodeData) => node.id === nodeProps?.id) as BaseNodeData;
-    console.log(`node clicked (${nodeProps?.properties?.text || nodeProps?.id})`, nodeProps);
-    console.log(`node selected`, node);
+    // console.log(`node clicked (${nodeProps?.properties?.text || nodeProps?.id})`, nodeProps);
 
+    console.log(`onSelectionClick`, node);
     onSelectionClick(event, node);
   };
 

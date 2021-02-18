@@ -1,6 +1,7 @@
 import { Button } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { isBrowser } from '@unly/utils';
+import xor from 'lodash.xor';
 import React, {
   MutableRefObject,
   useEffect,
@@ -139,16 +140,22 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
       setSelectedElements(newSelected);
     },
   });
-  console.log('selections', selections);
+  console.log('selections (built-in)', selections);
   console.log('selectedElements', selectedElements);
 
   /**
-   * When the selection changes
+   * When the selection changes (from built-in Reaflow utilities), updates our shared stored (using Recoil).
    */
   useEffect(() => {
-    console.log('setSelectedElements from selections:', selections);
-    setSelectedElements(selections);
-  }, [selections]);
+    const diff: string[] = xor(selections, selectedElements);
+
+    if (diff?.length) {
+      console.log('setSelectedElements from selections:', selections);
+      setSelectedElements(selections);
+    }else {
+      console.log('setSelectedElements no change detected')
+    }
+  }, [selections, selectedElements]);
 
   /**
    * Ensures the start node is always present.
