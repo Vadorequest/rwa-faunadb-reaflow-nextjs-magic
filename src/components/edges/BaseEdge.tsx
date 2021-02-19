@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import cloneDeep from 'lodash.clonedeep';
 import React from 'react';
 import {
@@ -12,6 +13,7 @@ import {
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
 import { lastCreatedNodeState } from '../../states/lastCreatedNodeState';
+import { selectedEdgesSelector } from '../../states/selectedEdgesState';
 import BaseEdgeData from '../../types/BaseEdgeData';
 import BaseEdgeProps from '../../types/BaseEdgeProps';
 import BaseNodeData from '../../types/BaseNodeData';
@@ -50,6 +52,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
 
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState<BlockPickerMenu>(blockPickerMenuState);
   const [canvasDataset, setCanvasDataset] = useRecoilState(canvasDatasetSelector);
+  const [selectedEdges, setSelectedEdges] = useRecoilState(selectedEdgesSelector);
   const { nodes, edges } = canvasDataset;
   const setLastUpdatedNode: SetterOrUpdater<BaseNodeData | undefined> = useSetRecoilState(lastCreatedNodeState);
   const { displayedFrom, isDisplayed } = blockPickerMenu;
@@ -64,6 +67,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
   const sourcePort: BasePortData | undefined = sourceNode?.ports?.find((port: BasePortData) => port.id === sourcePortId);
   const targetNode: BaseNodeData | undefined = nodes.find((node: BaseNodeData) => node.id === targetNodeId);
   const targetPort: BasePortData | undefined = targetNode?.ports?.find((port: BasePortData) => port.id === targetPortId);
+  const isSelected = !!selectedEdges?.find((selectedEdge: string) => selectedEdge === edge.id);
 
   // console.log('edgeProps', props);
 
@@ -104,13 +108,50 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
     });
   };
 
+  /**
+   * Selects the edge when clicking on it.
+   *
+   * XXX We're resolving the "node" ourselves, instead of relying on the 2nd argument (nodeData),
+   *  which might return null depending on where in the node the click was performed (because of the <foreignObject>).
+   *
+   * @param event
+   * @param data_DO_NOT_USE
+   */
+  const onEdgeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, data_DO_NOT_USE: BaseEdgeData) => {
+    console.log('onEdgeClick', event, edge);
+    setSelectedEdges([edge.id]);
+  };
+
+  console.log('props', props)
+
   return (
     <Edge
       {...props}
       className={'edge'}
       add={<AddBlockPicker />}
       onAdd={onAdd}
+      onClick={onEdgeClick}
+      css={css`
+        
+      `}
     />
+
+    /*
+      <foreignObject
+        width={30}
+        height={30}
+        // x={1272}
+        // y={231}
+        css={css`
+          position: absolute;
+          //left: 1272px;
+          //top: 231px;
+          color: black;
+        `}
+      >
+        test
+      </foreignObject>
+    * */
   );
 };
 
