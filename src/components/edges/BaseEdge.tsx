@@ -4,6 +4,7 @@ import React from 'react';
 import {
   Edge,
   EdgeData,
+  Remove,
 } from 'reaflow';
 import {
   SetterOrUpdater,
@@ -12,6 +13,7 @@ import {
 } from 'recoil';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
+import { edgesSelector } from '../../states/edgesState';
 import { lastCreatedNodeState } from '../../states/lastCreatedNodeState';
 import { selectedEdgesSelector } from '../../states/selectedEdgesState';
 import BaseEdgeData from '../../types/BaseEdgeData';
@@ -52,8 +54,9 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
 
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState<BlockPickerMenu>(blockPickerMenuState);
   const [canvasDataset, setCanvasDataset] = useRecoilState(canvasDatasetSelector);
+  const [edges, setEdges] = useRecoilState(edgesSelector);
   const [selectedEdges, setSelectedEdges] = useRecoilState(selectedEdgesSelector);
-  const { nodes, edges } = canvasDataset;
+  const { nodes } = canvasDataset;
   const setLastUpdatedNode: SetterOrUpdater<BaseNodeData | undefined> = useSetRecoilState(lastCreatedNodeState);
   const { displayedFrom, isDisplayed } = blockPickerMenu;
   const edge: BaseEdgeData = edges.find((edge: BaseEdgeData) => edge?.id === id) as BaseEdgeData;
@@ -83,7 +86,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
    * @param event
    * @param edge
    */
-  const onAdd = (event: React.MouseEvent<SVGGElement, MouseEvent>, edge: EdgeData): void => {
+  const onAddIconClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, edge: EdgeData): void => {
     console.log('onAdd edge', edge, event);
     const onBlockClick: OnBlockClick = (nodeType: NodeType) => {
       console.log('onBlockClick (from edge add)', nodeType, edge);
@@ -108,6 +111,11 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
     });
   };
 
+  const onRemoveIconClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, edge: EdgeData): void => {
+    console.log('onRemoveIconClick', event, edge)
+    setEdges(edges.filter((edge: BaseEdgeData) => edge.id !== id));
+  }
+
   /**
    * Selects the edge when clicking on it.
    *
@@ -126,8 +134,10 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
     <Edge
       {...props}
       className={classnames(`edge`, { 'is-selected': isSelected })}
-      add={<AddBlockPicker hidden={!isSelected} />}
-      onAdd={onAdd}
+      // add={<AddBlockPicker hidden={!isSelected} />}
+      onAdd={onAddIconClick}
+      remove={<Remove hidden={!isSelected} />}
+      onRemove={onRemoveIconClick}
       onClick={onEdgeClick}
     />
     // Doesn't support children - See https://github.com/reaviz/reaflow/issues/67
