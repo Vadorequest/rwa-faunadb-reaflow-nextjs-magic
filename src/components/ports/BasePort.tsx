@@ -14,7 +14,9 @@ import settings from '../../settings';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
 import { draggedEdgeFromPortState } from '../../states/draggedEdgeFromPortState';
+import { edgesSelector } from '../../states/edgesState';
 import { lastCreatedNodeState } from '../../states/lastCreatedNodeState';
+import BaseEdgeData from '../../types/BaseEdgeData';
 import BaseNodeData from '../../types/BaseNodeData';
 import BasePortData from '../../types/BasePortData';
 import BasePortProps from '../../types/BasePortProps';
@@ -22,11 +24,13 @@ import { OnBlockClick } from '../../types/BlockPickerMenu';
 import { CanvasDataset } from '../../types/CanvasDataset';
 import NodeType from '../../types/NodeType';
 import { translateXYToCanvasPosition } from '../../utils/canvas';
+import { createEdge } from '../../utils/edges';
 import {
   addNodeAndEdgeThroughPorts,
   createNodeFromDefaultProps,
   getDefaultNodePropsWithFallback,
 } from '../../utils/nodes';
+import { getDefaultToPort } from '../../utils/ports';
 
 type Props = {
   fromNodeId: string;
@@ -51,7 +55,8 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
 
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuState);
   const [canvasDataset, setCanvasDataset] = useRecoilState(canvasDatasetSelector);
-  const { nodes, edges } = canvasDataset;
+  const [edges, setEdges] = useRecoilState(edgesSelector);
+  const { nodes } = canvasDataset;
   const [draggedEdgeFromPort, setDraggedEdgeFromPort] = useRecoilState(draggedEdgeFromPortState);
   const setLastUpdatedNode: SetterOrUpdater<BaseNodeData | undefined> = useSetRecoilState(lastCreatedNodeState);
   const node: BaseNodeData = nodes.find((node: BaseNodeData) => node.id === fromNodeId) as BaseNodeData;
@@ -86,7 +91,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
       newDataset = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, newNode, node, fromPort, toPort);
     }
     console.log('addNodeAndEdge fromNode', newNode, 'toNode', node, 'dataset', newDataset);
-    console.log('newDataset', newDataset)
+    console.log('newDataset', newDataset);
 
     setCanvasDataset(newDataset);
     setLastUpdatedNode(newNode);
@@ -117,15 +122,15 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
    *
    * @param event
    * @param fromPosition
-   * @param port
+   * @param fromPort
    * @param extra
    */
-  const onPortDragStart = (event: DragEvent, fromPosition: Position, port: BasePortData, extra: any) => {
-    console.log('onDragStart port: ', node, event, fromPosition, port, extra);
+  const onPortDragStart = (event: DragEvent, fromPosition: Position, fromPort: BasePortData, extra: any) => {
+    console.log('onDragStart port: ', node, event, fromPosition, fromPort, extra);
 
     setDraggedEdgeFromPort({
       fromNode: node,
-      fromPort: port,
+      fromPort: fromPort,
       fromPosition: fromPosition,
     });
   };
@@ -138,31 +143,58 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
    *
    * @param dragEvent
    * @param initial
-   * @param port
+   * @param fromPort
    * @param extra
    */
-  const onPortDragEnd = (dragEvent: DragEvent, initial: Position, port: BasePortData, extra: any) => {
+  const onPortDragEnd = (dragEvent: DragEvent, initial: Position, fromPort: BasePortData, extra: any) => {
+    console.log('onDragEnd port: ', node, dragEvent, dragEvent.event, initial, fromPort, extra);
     const { xy, distance, event } = dragEvent;
     // @ts-ignore
     const { target } = event;
+    const foreignObject: Element | undefined = target?.closest('g')?.previousElementSibling;
+    const foreignObjectId: string | undefined = foreignObject?.id;
+    const toNodeId: string | undefined = foreignObjectId?.replace('node-foreignObject-', '');
+    console.log('closest', foreignObject);
 
-    // Converts the x/y position to a Canvas position and apply some margin for the BlockPickerMenu to display on the right bottom of the cursor
-    const [x, y] = translateXYToCanvasPosition(...xy, { top: 60, left: 10 });
+    if (typeof toNodeId !== 'undefined') {
+      // The edge has been dropped into a port
+      console.log('found closest node id', toNodeId);
+      const {
+        fromNode,
+      } = draggedEdgeFromPort || {};
+      const toNode: BaseNodeData | undefined = nodes.find((node: BaseEdgeData) => node.id === toNodeId);
+      const newEdge: BaseEdgeData = createEdge(fromNode, toNode, fromPort, getDefaultToPort(toNode));
 
-    // Open the block picker menu below the clicked element
-    setBlockPickerMenu({
-      displayedFrom: `port-${port.id}`,
-      isDisplayed: true, // Toggle on click XXX change later, should toggle but not easy to test when toggle is on
-      onBlockClick,
-      // Depending on the position of the canvas, you might need to deduce from x/y some delta
-      left: x,
-      top: y - settings.layout.nav.height,
-      eventTarget: target,
-    });
+      console.log('Linking existing nodes through new edge', newEdge);
+      setEdges([
+        ...edges,
+        newEdge,
+      ]);
+
+      // Hides the block picker menu
+      setBlockPickerMenu({
+        isDisplayed: false,
+      });
+    } else {
+      // The edge hasn't been dropped into a port (canvas, etc.) - Doesn't matter, we display the block picker menu
+      // Converts the x/y position to a Canvas position and apply some margin for the BlockPickerMenu to display on the right bottom of the cursor
+      const [x, y] = translateXYToCanvasPosition(...xy, { top: 60, left: 10 });
+
+      // Opens the block picker menu below the clicked element
+      setBlockPickerMenu({
+        displayedFrom: `port-${fromPort.id}`,
+        isDisplayed: true, // Toggle on click XXX change later, should toggle but not easy to test when toggle is on
+        onBlockClick,
+        // Depending on the position of the canvas, you might need to deduce from x/y some delta
+        left: x,
+        top: y - settings.layout.nav.height,
+        eventTarget: target,
+      });
+    }
 
     if (onDragEndInternal) {
       // Runs internal onDragEnd which removes the edge if it doesn't connect to anything
-      onDragEndInternal(dragEvent, initial, port, extra);
+      onDragEndInternal(dragEvent, initial, fromPort, extra);
     }
 
     // Reset the edge being dragged
@@ -192,6 +224,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
   return (
     <Port
       {...props}
+      className={id}
       onClick={onPortClick}
       onDragStart={onPortDragStart}
       onDragEnd={onPortDragEnd}

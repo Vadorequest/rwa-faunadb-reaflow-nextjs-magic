@@ -156,6 +156,8 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
 
   };
 
+  // console.log('BaseNode nodeProps', nodeProps);
+
   return (
     <Node
       {...nodeProps}
@@ -196,6 +198,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
 
           return (
             <foreignObject
+              id={`node-foreignObject-${node.id}`} // Used during drag & drop of edges to resolve the destination node ("toNode")
               className={classnames(`${nodeType}-node-container node-container`, { 'is-selected': isSelected })}
               width={width}
               height={height}
