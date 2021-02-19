@@ -2,7 +2,6 @@ import {
   atom,
   selector,
 } from 'recoil';
-import { nodesState } from './nodesState';
 
 /**
  * Used to know which nodes (ids) are being selected by the user.

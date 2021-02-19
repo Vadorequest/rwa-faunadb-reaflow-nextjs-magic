@@ -21,9 +21,8 @@ import settings from '../../settings';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
 import { edgesSelector } from '../../states/edgesState';
-import { lastCreatedNodeState } from '../../states/lastCreatedNodeState';
 import { nodesSelector } from '../../states/nodesState';
-import { selectedNodesState } from '../../states/selectedNodesState';
+import { selectedNodesSelector } from '../../states/selectedNodesState';
 import BaseNodeData from '../../types/BaseNodeData';
 import BasePortData from '../../types/BasePortData';
 import {
@@ -72,7 +71,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const [canvasDataset, setCanvasDataset] = useRecoilState(canvasDatasetSelector);
   const [nodes, setNodes] = useRecoilState(nodesSelector);
   const [edges, setEdges] = useRecoilState(edgesSelector);
-  const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);
+  const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesSelector);
   const selections = selectedNodes; // TODO merge selected nodes and edges
   const [hasClearedUndoHistory, setHasClearedUndoHistory] = useState<boolean>(false);
 

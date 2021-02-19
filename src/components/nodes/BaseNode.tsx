@@ -15,7 +15,7 @@ import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
 import { lastCreatedNodeState } from '../../states/lastCreatedNodeState';
 import { nodesSelector } from '../../states/nodesState';
-import { selectedNodesState } from '../../states/selectedNodesState';
+import { selectedNodesSelector } from '../../states/selectedNodesState';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import BaseNodeData from '../../types/BaseNodeData';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
@@ -61,7 +61,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
   const [nodes, setNodes] = useRecoilState(nodesSelector);
   const [canvasDataset, setCanvasDataset] = useRecoilState(canvasDatasetSelector);
   const { edges } = canvasDataset;
-  const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);
+  const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesSelector);
   const isSelected = !!selectedNodes?.find((selectedNode: string) => selectedNode === node.id);
   const [lastCreatedNode] = useRecoilState(lastCreatedNodeState);
   const nodeType: NodeType = node?.data?.type as NodeType;
