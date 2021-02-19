@@ -133,7 +133,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
    */
   const onNodeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, data_DO_NOT_USE: BaseNodeData) => {
     const node: BaseNodeData | undefined = nodes.find((node: BaseNodeData) => node.id === nodeProps?.id);
-    console.log(`node clicked (${nodeProps?.properties?.text || nodeProps?.id}) nodeProps:`, nodeProps, 'node:', node);
+    console.log(`node clicked (${node?.data?.type})`, 'node:', node);
 
     if (node?.id) {
       setSelectedNodes([node.id]);
