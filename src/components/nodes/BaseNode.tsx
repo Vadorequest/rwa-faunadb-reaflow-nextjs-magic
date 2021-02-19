@@ -132,18 +132,12 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
    * @param data_DO_NOT_USE
    */
   const onNodeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, data_DO_NOT_USE: BaseNodeData) => {
-    const node: BaseNodeData | undefined = nodes.find((node: BaseNodeData) => node.id === nodeProps?.id);
     console.log(`node clicked (${node?.data?.type})`, 'node:', node);
-
-    if (node?.id) {
-      setSelectedNodes([node.id]);
-    }
+    setSelectedNodes([node.id]);
   };
 
   /**
    * When the mouse enters a node (on hover).
-   *
-   * XXX Does not work well because `foreignObject` is displayed on top of the Node. See https://github.com/reaviz/reaflow/issues/45
    *
    * @param event
    * @param node
@@ -154,8 +148,6 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
 
   /**
    * When the mouse leaves a node (leaves hover area).
-   *
-   * XXX Does not work well because `foreignObject` is displayed on top of the Node. See https://github.com/reaviz/reaflow/issues/45
    *
    * @param event
    * @param node
@@ -176,8 +168,8 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
         `node-svg-rect node-${nodeType}-svg-rect`,
       )}
       onClick={onNodeClick}
-      onEnter={onNodeEnter} // TODO forward to foreignObject
-      onLeave={onNodeLeave} // TODO forward to foreignObject
+      onEnter={onNodeEnter}
+      onLeave={onNodeLeave}
       onRemove={onNodeRemove}
       remove={(<Remove hidden={true} />)}
       port={(<BasePort fromNodeId={node.id} />)}
@@ -246,8 +238,10 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                   background-color: #eaeaea;
                 }
               `}
-              // Use the same onClick handler as the one used by the Node component, to yield the same behavior whether clicking on the <rect> or on the <foreignObject> element
+              // Use the same onClick/onMouseEnter/onMouseLeave handlers as the one used by the Node component, to yield the same behavior whether clicking on the <rect> or on the <foreignObject> element
               onClick={onNodeClick as MouseEventHandler}
+              onMouseEnter={onNodeEnter as MouseEventHandler}
+              onMouseLeave={onNodeLeave as MouseEventHandler}
             >
               <div
                 className={classnames(`${nodeType}-node node`)}
