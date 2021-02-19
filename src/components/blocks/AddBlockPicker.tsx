@@ -5,12 +5,11 @@ import { AddProps } from 'reaflow/dist/symbols/Add/Add';
 type Props = {} & Partial<AddProps>;
 
 const AddBlockPicker: React.FunctionComponent<Props> = (props) => {
-  const { hidden = false, ...rest } = props;
+  const { ...rest } = props;
 
   return (
     <Add
       {...rest}
-      hidden={false}
     />
   );
 };

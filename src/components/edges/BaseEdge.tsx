@@ -126,7 +126,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
     <Edge
       {...props}
       className={classnames(`edge`, { 'is-selected': isSelected })}
-      add={<AddBlockPicker />}
+      add={<AddBlockPicker hidden={!isSelected} />}
       onAdd={onAdd}
       onClick={onEdgeClick}
     />
