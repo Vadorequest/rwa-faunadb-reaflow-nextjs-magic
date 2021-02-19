@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+import classnames from 'classnames';
 import React, {
   MouseEventHandler,
   ReactNode,
@@ -43,15 +44,16 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
   const {
     nodeType,
     children,
-    ...rest
+    ...nodeProps // All props that are left will be forwarded to the Node component
   } = props;
-  const {
+  const { // Using another destructuring object for props we need to use in this component but also want to forward to the Node component
     onClick,
+    isSelected,
   } = props;
 
   return (
     <Node
-      {...rest}
+      {...nodeProps}
     >
       {
         /**
@@ -69,7 +71,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
 
           return (
             <foreignObject
-              className={`${nodeType}-node-container node-container`}
+              className={classnames(`${nodeType}-node-container node-container`, { 'is-selected': isSelected })}
               width={width}
               height={height}
               x={0}
@@ -80,6 +82,10 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                 // Disabling pointer-events on top-level containers, for events to be forwarded to the underlying <rect>
                 // Allows using events specific to the Reaflow <Node> component (onClick, onEnter, onLeave, etc.)
                 pointer-events: none;
+
+                &.is-selected {
+                  border: 2px dotted blue;
+                }
 
                 .node,
                 .node-header {
@@ -110,7 +116,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
               onClick={onClick as MouseEventHandler}
             >
               <div
-                className={`${nodeType}-node node`}
+                className={classnames(`${nodeType}-node node`)}
               >
                 <div
                   className={'node-actions-container'}
