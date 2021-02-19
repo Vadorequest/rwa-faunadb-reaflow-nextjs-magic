@@ -1,3 +1,5 @@
+import { ExternalLinkIcon } from '@chakra-ui/icons';
+import { Link as ChakraLink } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Head from 'next/head';
@@ -29,7 +31,7 @@ const Layout: React.FunctionComponent<Props> = (props) => {
           display: flex;
           align-items: center;
           justify-content: center;
-          
+
           a {
             margin-left: 10px;
             margin-right: 10px;
@@ -42,7 +44,7 @@ const Layout: React.FunctionComponent<Props> = (props) => {
           align-items: center;
           justify-content: center;
         }
-        
+
         .svg-inline--fa {
           margin-right: 5px;
         }
@@ -80,7 +82,22 @@ const Layout: React.FunctionComponent<Props> = (props) => {
           <FontAwesomeIcon
             icon={['fas', 'heart']}
           />
-          Made with <a href={'https://nextjs.org/'}>Next.js</a> and <a href={'https://github.com/reaviz/reaflow'}>Reaflow</a>
+          Made with
+          <ChakraLink
+            href={'https://nextjs.org/'}
+            isExternal
+          >
+            {' '}Next.js{' '}
+            <ExternalLinkIcon mx="2px" />
+          </ChakraLink>
+          {' '}and{' '}
+          <ChakraLink
+            href={'https://github.com/reaviz/reaflow'}
+            isExternal
+          >
+            {' '}Reaflow{' '}
+            <ExternalLinkIcon mx="2px" />
+          </ChakraLink>
         </div>
       </footer>
     </div>
