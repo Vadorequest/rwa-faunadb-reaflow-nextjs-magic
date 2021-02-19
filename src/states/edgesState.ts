@@ -42,7 +42,7 @@ export const edgesSelector = selector<BaseEdgeData[]>({
     const hasDuplicateEdges = hasDuplicates(newValue as BaseEdgeData[], 'id');
 
     if (!hasDuplicateEdges) {
-      // console.log('setEdgesSelector', newValue);
+      console.log('edgesSelector set', newValue);
       set(edgesState, newValue);
     } else {
       const message = `Duplicate edge ids found, the edges weren't updated to avoid to corrupt the dataset.`;

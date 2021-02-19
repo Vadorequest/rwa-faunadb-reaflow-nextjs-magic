@@ -49,7 +49,7 @@ export const canvasDatasetSelector = selector<CanvasDataset>({
     const hasDuplicateEdges = hasDuplicates(edges, 'id');
 
     if (!hasDuplicateNodes && !hasDuplicateEdges) {
-      // console.log('setCanvasDatasetSelector', newValue);
+      console.log('canvasDatasetSelector set', newValue);
       set(nodesSelector, nodes);
       set(edgesSelector, edges);
     } else {
