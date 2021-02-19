@@ -4,7 +4,6 @@ import React from 'react';
 import {
   Edge,
   EdgeData,
-  Remove,
 } from 'reaflow';
 import {
   SetterOrUpdater,
@@ -29,7 +28,7 @@ import {
   getDefaultNodePropsWithFallback,
   upsertNodeThroughPorts,
 } from '../../utils/nodes';
-import AddBlockPicker from '../blocks/AddBlockPicker';
+import EdgeActions from './EdgeActions';
 
 type Props = {} & BaseEdgeProps;
 
@@ -86,7 +85,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
    * @param event
    * @param edge
    */
-  const onAddIconClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, edge: EdgeData): void => {
+  const onAddIconClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, edge_DO_NOT_USE: EdgeData): void => {
     console.log('onAdd edge', edge, event);
     const onBlockClick: OnBlockClick = (nodeType: NodeType) => {
       console.log('onBlockClick (from edge add)', nodeType, edge);
@@ -112,9 +111,9 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
   };
 
   const onRemoveIconClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, edge: EdgeData): void => {
-    console.log('onRemoveIconClick', event, edge)
+    console.log('onRemoveIconClick', event, edge);
     setEdges(edges.filter((edge: BaseEdgeData) => edge.id !== id));
-  }
+  };
 
   /**
    * Selects the edge when clicking on it.
@@ -134,10 +133,13 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
     <Edge
       {...props}
       className={classnames(`edge`, { 'is-selected': isSelected })}
-      // add={<AddBlockPicker hidden={!isSelected} />}
-      onAdd={onAddIconClick}
-      remove={<Remove hidden={!isSelected} />}
-      onRemove={onRemoveIconClick}
+      add={(
+        <EdgeActions
+          hidden={!isSelected}
+          onAdd={onAddIconClick}
+          onRemove={onRemoveIconClick}
+        />
+      )}
       onClick={onEdgeClick}
     />
     // Doesn't support children - See https://github.com/reaviz/reaflow/issues/67
