@@ -13,6 +13,7 @@ import BasePortData from '../types/BasePortData';
 import { CanvasDataset } from '../types/CanvasDataset';
 import { GetBaseNodeDefaultProps } from '../types/GetBaseNodeDefaultProps';
 import NodeType from '../types/NodeType';
+import { createEdge } from './edges';
 
 /**
  * Creates a new node and returns it.
@@ -26,7 +27,7 @@ export const createNode = (nodeData?: Partial<BaseNodeData>): BaseNodeData => {
     ...nodeData,
     id,
   };
-  console.log('newNode', newNode);
+  console.log('createNode newNode', newNode);
 
   return newNode;
 };
@@ -125,15 +126,7 @@ export function addNodeAndEdgeThroughPorts(
   fromPort = fromPort || fromNode?.ports?.find((port: BasePortData) => port?.side === 'EAST');
   toPort = toPort || newNode?.ports?.find((port: BasePortData) => port?.side === 'WEST');
 
-  const newEdge: BaseEdgeData = {
-    id: `${fromNode?.id || uuid()}-${toNode.id}`,
-    from: fromNode?.id,
-    to: toNode.id,
-    parent: toNode.parent,
-    fromPort: fromPort?.id,
-    toPort: toPort?.id,
-    text: ' ' // Use a space to increase the distance between nodes, which ease edge's selection
-  };
+  const newEdge: BaseEdgeData = createEdge(fromNode, toNode, fromPort, toPort);
 
   return {
     nodes: [...nodes, newNode],
