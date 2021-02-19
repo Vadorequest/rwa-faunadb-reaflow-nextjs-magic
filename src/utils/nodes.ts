@@ -14,6 +14,10 @@ import { CanvasDataset } from '../types/CanvasDataset';
 import { GetBaseNodeDefaultProps } from '../types/GetBaseNodeDefaultProps';
 import NodeType from '../types/NodeType';
 import { createEdge } from './edges';
+import {
+  getDefaultFromPort,
+  getDefaultToPort,
+} from './ports';
 
 /**
  * Creates a new node and returns it.
@@ -122,11 +126,12 @@ export function addNodeAndEdgeThroughPorts(
   // The default destination node is the newly created node
   toNode = toNode || newNode;
 
-  // Resolve default fromPort and toPort if they aren't provided
-  fromPort = fromPort || fromNode?.ports?.find((port: BasePortData) => port?.side === 'EAST');
-  toPort = toPort || newNode?.ports?.find((port: BasePortData) => port?.side === 'WEST');
-
-  const newEdge: BaseEdgeData = createEdge(fromNode, toNode, fromPort, toPort);
+  const newEdge: BaseEdgeData = createEdge(
+    fromNode,
+    toNode,
+    getDefaultFromPort(fromNode, fromPort),
+    getDefaultToPort(toNode, toPort),
+  );
 
   return {
     nodes: [...nodes, newNode],
