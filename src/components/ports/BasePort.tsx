@@ -154,9 +154,9 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
     const foreignObject: Element | undefined = target?.closest('g')?.previousElementSibling;
     const foreignObjectId: string | undefined = foreignObject?.id;
     const toNodeId: string | undefined = foreignObjectId?.replace('node-foreignObject-', '');
-    console.log('closest', foreignObject);
+    console.log('closest foreignObject:', foreignObject, 'toNodeId:', toNodeId);
 
-    if (typeof toNodeId !== 'undefined') {
+    if (toNodeId) {
       // The edge has been dropped into a port
       console.log('found closest node id', toNodeId);
       const {
