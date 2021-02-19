@@ -223,6 +223,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
    * Edge component. All edges will render trough this component.
    *
    * All edges render the same way, no matter to which node they're linked to.
+   * (There is no "EdgeRouter", unlike with nodes)
    */
   const Edge = (edgeProps: EdgeProps) => {
     return (

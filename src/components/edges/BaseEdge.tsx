@@ -12,8 +12,10 @@ import {
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
 import { lastCreatedNodeState } from '../../states/lastCreatedNodeState';
+import BaseEdgeData from '../../types/BaseEdgeData';
 import BaseEdgeProps from '../../types/BaseEdgeProps';
 import BaseNodeData from '../../types/BaseNodeData';
+import BasePortData from '../../types/BasePortData';
 import BlockPickerMenu, { OnBlockClick } from '../../types/BlockPickerMenu';
 import { CanvasDataset } from '../../types/CanvasDataset';
 import NodeType from '../../types/NodeType';
@@ -38,11 +40,30 @@ type Props = {} & BaseEdgeProps;
  * @see https://reaflow.dev/?path=/story/demos-edges
  */
 const BaseEdge: React.FunctionComponent<Props> = (props) => {
+  const {
+    id,
+    source: sourceNodeId,
+    sourcePort: sourcePortId,
+    target: targetNodeId,
+    targetPort: targetPortId,
+  } = props;
+
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState<BlockPickerMenu>(blockPickerMenuState);
   const [canvasDataset, setCanvasDataset] = useRecoilState(canvasDatasetSelector);
   const { nodes, edges } = canvasDataset;
   const setLastUpdatedNode: SetterOrUpdater<BaseNodeData | undefined> = useSetRecoilState(lastCreatedNodeState);
   const { displayedFrom, isDisplayed } = blockPickerMenu;
+  const edge: BaseEdgeData = edges.find((edge: BaseEdgeData) => edge?.id === id) as BaseEdgeData;
+
+  if (typeof edge === 'undefined') {
+    return null;
+  }
+
+  // Resolve instances of connected nodes and ports
+  const sourceNode: BaseNodeData | undefined = nodes.find((node: BaseNodeData) => node.id === sourceNodeId);
+  const sourcePort: BasePortData | undefined = sourceNode?.ports?.find((port: BasePortData) => port.id === sourcePortId);
+  const targetNode: BaseNodeData | undefined = nodes.find((node: BaseNodeData) => node.id === targetNodeId);
+  const targetPort: BasePortData | undefined = targetNode?.ports?.find((port: BasePortData) => port.id === targetPortId);
 
   // console.log('edgeProps', props);
 
