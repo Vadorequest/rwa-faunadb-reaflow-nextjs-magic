@@ -132,7 +132,7 @@ export function addNodeAndEdgeThroughPorts(
     parent: toNode.parent,
     fromPort: fromPort?.id,
     toPort: toPort?.id,
-    // text: 'test'
+    text: ' ' // Use a space to increase the distance between nodes, which ease edge's selection
   };
 
   return {
