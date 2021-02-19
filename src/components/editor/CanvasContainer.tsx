@@ -24,13 +24,19 @@ import { edgesSelector } from '../../states/edgesState';
 import { nodesSelector } from '../../states/nodesState';
 import { selectedEdgesSelector } from '../../states/selectedEdgesState';
 import { selectedNodesSelector } from '../../states/selectedNodesState';
+import BaseEdgeData from '../../types/BaseEdgeData';
 import BaseNodeData from '../../types/BaseNodeData';
 import BasePortData from '../../types/BasePortData';
+import { createEdge } from '../../utils/edges';
 import {
   createNodeFromDefaultProps,
   getDefaultNodePropsWithFallback,
 } from '../../utils/nodes';
 import { persistCanvasDatasetInLS } from '../../utils/persistCanvasDataset';
+import {
+  getDefaultFromPort,
+  getDefaultToPort,
+} from '../../utils/ports';
 import BaseEdge from '../edges/BaseEdge';
 import NodeRouter from '../nodes/NodeRouter';
 
@@ -195,21 +201,23 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
    *
    * Invoked when "onNodeLinkCheck" returns true.
    *
-   * @param from
-   * @param to
-   * @param port
+   * @param fromNode
+   * @param toNode
+   * @param fromPort
    */
-  const onNodeLink = (from: NodeData, to: NodeData, port?: BasePortData): void => {
-    console.log('onNodeLink', from, to);
-    const id = `${from.id}-${to.id}`;
+  const onNodeLink = (fromNode: NodeData, toNode: NodeData, fromPort?: BasePortData): void => {
+    console.log('onNodeLink', fromNode, toNode);
+    const newEdge: BaseEdgeData = createEdge(
+      fromNode,
+      toNode,
+      getDefaultFromPort(fromNode, fromPort),
+      getDefaultToPort(toNode),
+    );
+    console.log('newEdge', newEdge);
 
     setEdges([
       ...edges,
-      {
-        id,
-        from: from.id,
-        to: to.id,
-      },
+      newEdge,
     ]);
   };
 
