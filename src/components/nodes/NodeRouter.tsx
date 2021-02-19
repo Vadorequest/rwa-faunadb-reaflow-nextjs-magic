@@ -39,6 +39,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
     return null;
   }
 
+  // Will render a specialized node (e.g: StartNode, etc.)
   const NodeComponent = findNodeComponentByType(nodeType);
 
   return (

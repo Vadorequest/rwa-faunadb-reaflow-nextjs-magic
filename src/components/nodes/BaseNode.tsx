@@ -56,9 +56,6 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
     node, // Don't forward, not expected
     ...nodeProps // All props that are left will be forwarded to the Node component
   } = props;
-  const { // Using another destructuring object for props we need to use in this component but should also be forwarded to the Node component
-    onClick, // TODO
-  } = props;
 
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuState);
   const [nodes, setNodes] = useRecoilState(nodesSelector);
@@ -129,7 +126,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
    * Selects the node when clicking on it.
    *
    * XXX We're resolving the "node" ourselves, instead of relying on the 2nd argument (nodeData),
-   *  which might return null depending on where in the node the click was performed.
+   *  which might return null depending on where in the node the click was performed (because of the <foreignObject>).
    *
    * @param event
    * @param data_DO_NOT_USE
@@ -179,11 +176,11 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
         `node-svg-rect node-${nodeType}-svg-rect`,
       )}
       onClick={onNodeClick}
-      onEnter={onNodeEnter}
-      onLeave={onNodeLeave}
+      onEnter={onNodeEnter} // TODO forward to foreignObject
+      onLeave={onNodeLeave} // TODO forward to foreignObject
       onRemove={onNodeRemove}
       remove={(<Remove hidden={true} />)}
-      port={(<BasePort fromNodeId={nodeProps.id as string} />)}
+      port={(<BasePort fromNodeId={node.id} />)}
     >
       {
         /**
@@ -210,8 +207,8 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
               className={classnames(`${nodeType}-node-container node-container`, { 'is-selected': isSelected })}
               width={width}
               height={height}
-              x={0}
-              y={0}
+              x={0} // Relative position from the parent Node component (aligned to top)
+              y={0} // Relative position from the parent Node component (aligned to left)
               css={css`
                 position: relative;
 
@@ -249,7 +246,8 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                   background-color: #eaeaea;
                 }
               `}
-              onClick={onClick as MouseEventHandler}
+              // Use the same onClick handler as the one used by the Node component, to yield the same behavior whether clicking on the <rect> or on the <foreignObject> element
+              onClick={onNodeClick as MouseEventHandler}
             >
               <div
                 className={classnames(`${nodeType}-node node`)}

@@ -76,8 +76,6 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const selections = selectedNodes; // TODO merge selected nodes and edges
   const [hasClearedUndoHistory, setHasClearedUndoHistory] = useState<boolean>(false);
 
-  console.log('selectedNodes', selectedNodes);
-
   /**
    * When nodes or edges are modified, updates the persisted data in the local storage.
    *
