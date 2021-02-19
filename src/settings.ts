@@ -20,6 +20,9 @@ export const settings: Settings = {
     direction: 'RIGHT',
     nodes: {
       defaultDebounceFor: 250,
+      selected: {
+        borderColor: 'blue',
+      },
       questionNode: {
         choiceTypeOptions: [
           {
@@ -31,6 +34,12 @@ export const settings: Settings = {
             label: `Single quick reply`,
           },
         ],
+      },
+    },
+    edges: {
+      strokeColor: '#b1b1b7',
+      selected: {
+        strokeColor: 'blue',
       },
     },
     ports: {
@@ -94,6 +103,13 @@ export type CanvasSettings = {
      */
     defaultDebounceFor: number;
 
+    selected: {
+      /**
+       * Border color when the node is selected.
+       */
+      borderColor: string;
+    }
+
     /**
      * Configuration of the "Question" node.
      */
@@ -101,6 +117,23 @@ export type CanvasSettings = {
       choiceTypeOptions: QuestionChoiceTypeOption[];
     };
   },
+
+  /**
+   * Configuration relative to the edges.
+   */
+  edges: {
+    /**
+     * Color of the edge. (stroke, because it's an SVG element)
+     */
+    strokeColor: string;
+
+    selected: {
+      /**
+       * Color when the edge is selected.
+       */
+      strokeColor: string;
+    }
+  }
 
   /**
    * Edge's ports.

@@ -272,13 +272,13 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         .reaflow-canvas {
           // Make all edges display an infinite dash animation
           .edge {
-            stroke: #b1b1b7;
+            stroke: ${settings.canvas.edges.strokeColor};
             stroke-dasharray: 5;
             animation: dashdraw .5s linear infinite;
             stroke-width: 1;
 
             &.is-selected {
-              stroke: blue;
+              stroke: ${settings.canvas.edges.selected.strokeColor};
               stroke-dasharray: 0;
               animation: none;
             }

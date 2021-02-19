@@ -209,7 +209,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                 pointer-events: none;
 
                 &.is-selected {
-                  border: 1px dashed blue;
+                  border: 1px dashed ${settings.canvas.nodes.selected.borderColor};
                 }
 
                 .node,
