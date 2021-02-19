@@ -1,21 +1,21 @@
 import React, { Fragment } from 'react';
 import {
   Add,
+  AddProps,
   Remove,
   RemoveProps,
 } from 'reaflow';
-import { AddProps } from 'reaflow/dist/symbols/Add/Add';
-import { EdgeData } from '../../../../unlyEd/reaflow/src';
+import BaseEdgeData from '../../types/BaseEdgeData';
 
 type Props = {
   hidden: boolean;
   onRemove?: (
     event: React.MouseEvent<SVGGElement, MouseEvent>,
-    edge: EdgeData,
+    edge: BaseEdgeData,
   ) => void;
   onAdd?: (
     event: React.MouseEvent<SVGGElement, MouseEvent>,
-    edge: EdgeData,
+    edge: BaseEdgeData,
   ) => void;
 } & Partial<AddProps | RemoveProps>;
 
