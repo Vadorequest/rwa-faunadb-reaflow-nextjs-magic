@@ -84,7 +84,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                 pointer-events: none;
 
                 &.is-selected {
-                  border: 2px dotted blue;
+                  border: 1px dashed blue;
                 }
 
                 .node,

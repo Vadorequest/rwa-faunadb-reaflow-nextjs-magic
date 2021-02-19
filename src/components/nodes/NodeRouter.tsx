@@ -43,7 +43,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
   const { edges } = canvasDataset;
   const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);
   const node: BaseNodeData = nodes.find((node: BaseNodeData) => node.id === nodeProps.id) as BaseNodeData;
-
+  console.log('NodeRouter')
   // If the node is not defined then we don't render the node component because it'll crash
   // XXX It can happen sometimes when removing nodes that are being displayed,
   //  the node itself still exist in the Canvas, but doesn't exist anymore in the "nodesState".
