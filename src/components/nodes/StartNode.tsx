@@ -1,12 +1,12 @@
 import { css } from '@emotion/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { Fragment } from 'react';
-import { NodeChildProps } from 'reaflow';
 import settings from '../../settings';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
 import BasePortData from '../../types/BasePortData';
+import { SpecializedNodeProps } from '../../types/nodes/SpecializedNodeProps';
 import { StartNodeData } from '../../types/nodes/StartNodeData';
 import NodeType from '../../types/NodeType';
 import { createPort } from '../../utils/ports';
@@ -34,8 +34,7 @@ const StartNode: BaseNodeComponent<Props> = (props) => {
       {...props}
     >
       {
-        ({ nodeProps }: { nodeProps: NodeChildProps }) => {
-
+        (nodeProps: SpecializedNodeProps<StartNodeData>) => {
           return (
             <Fragment>
               <div

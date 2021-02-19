@@ -1,30 +1,12 @@
-import classnames from 'classnames';
-import cloneDeep from 'lodash.clonedeep';
-import remove from 'lodash.remove';
 import React from 'react';
-import {
-  NodeProps,
-  Remove,
-} from 'reaflow';
-import { NodeData } from 'reaflow/dist/types';
+import { NodeProps } from 'reaflow';
 import { useRecoilState } from 'recoil';
-import { blockPickerMenuState } from '../../states/blockPickerMenuState';
-import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
 import { nodesSelector } from '../../states/nodesState';
-import { selectedNodesState } from '../../states/selectedNodesState';
 import BaseNodeData from '../../types/BaseNodeData';
-import BaseNodeProps, { PatchCurrentNode } from '../../types/BaseNodeProps';
-import { CanvasDataset } from '../../types/CanvasDataset';
-import NodeType from '../../types/NodeType';
-import {
-  findNodeComponentByType,
-  removeAndUpsertNodesThroughPorts,
-} from '../../utils/nodes';
-import BasePort from '../ports/BasePort';
+import { findNodeComponentByType } from '../../utils/nodes';
 
 type Props = {
   nodeProps: NodeProps;
-  lastCreatedNode: BaseNodeData | undefined;
 }
 
 /**
@@ -35,13 +17,9 @@ type Props = {
 const NodeRouter: React.FunctionComponent<Props> = (props) => {
   const {
     nodeProps,
-    lastCreatedNode,
   } = props;
-  const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuState);
+  const nodeType = nodeProps?.properties?.data?.type;
   const [nodes, setNodes] = useRecoilState(nodesSelector);
-  const [canvasDataset, setCanvasDataset] = useRecoilState(canvasDatasetSelector);
-  const { edges } = canvasDataset;
-  const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);
   const node: BaseNodeData = nodes.find((node: BaseNodeData) => node.id === nodeProps.id) as BaseNodeData;
 
   // If the node is not defined then we don't render the node component because it'll crash
@@ -51,154 +29,22 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
     return null;
   }
 
-  // console.log('router nodes', props);
-  // console.log('node', node);
-
-  const { properties } = nodeProps || {};
-  const { data } = properties || {};
-  const { type }: { type: NodeType } = data || {};
-
-  if (!type) {
+  if (!nodeType) {
     try {
-      console.error(`Node with type="${type}" couldn't be rendered. Properties: ${JSON.stringify(properties, null, 2)}`);
+      console.error(`Node with nodeType="${nodeType}" couldn't be rendered. Props: ${JSON.stringify(nodeProps, null, 2)}`);
     } catch (e) {
-      console.error(`Node with type="${type}" couldn't be rendered. Properties cannot be stringified.`);
+      console.error(`Node with nodeType="${nodeType}" couldn't be rendered. Props cannot be stringified.`);
     }
 
     return null;
   }
 
-  /**
-   * Path the properties of the current node.
-   *
-   * Only updates the provided properties, doesn't update other properties.
-   * Also merges the 'data' object, by keeping existing data and only overwriting those that are specified.
-   *
-   * @param patch
-   */
-  const patchCurrentNode: PatchCurrentNode = (patch: Partial<BaseNodeData>): void => {
-    const nodeToUpdateIndex = nodes.findIndex((node: BaseNodeData) => node.id === nodeProps.id);
-    const existingNode: BaseNodeData = nodes[nodeToUpdateIndex];
-    const nodeToUpdate = {
-      ...existingNode,
-      ...patch,
-      data: {
-        ...existingNode.data || {},
-        ...patch.data || {},
-      },
-      id: existingNode.id, // Force keep same id to avoid edge cases
-    };
-    console.log('patchCurrentNode before', existingNode, 'after:', nodeToUpdate, 'using patch:', patch);
-
-    const newNodes = cloneDeep(nodes);
-    // @ts-ignore
-    newNodes[nodeToUpdateIndex] = nodeToUpdate;
-
-    setNodes(newNodes);
-  };
-
-  /**
-   * Removes a node.
-   *
-   * Upsert its descendant if there were any. (auto-link all descendants to all its ascendants)
-   *
-   * Triggered when clicking on the "x" remove button that appears when a node is selected.
-   *
-   * @param event
-   * @param node
-   */
-  const onNodeRemove = (event: React.MouseEvent<SVGGElement, MouseEvent>, node: NodeData) => {
-    console.log('onNodeRemove', event, node);
-    const dataset: CanvasDataset = removeAndUpsertNodesThroughPorts(nodes, edges, node);
-    const newSelectedNodes = remove(selectedNodes, node?.id);
-
-    setCanvasDataset(dataset);
-
-    // Updates selected nodes to make sure we don't keep selected nodes that have been deleted
-    setSelectedNodes(newSelectedNodes);
-
-    // Hide the block picker menu.
-    // Forces to reset the function bound to onBlockClick. Necessary when there is one or none node left.
-    setBlockPickerMenu({
-      isDisplayed: false,
-    });
-  };
-
-  /**
-   * Selects the node when clicking on it.
-   *
-   * XXX We're resolving the "node" ourselves, instead of relying on the 2nd argument (nodeData),
-   *  which might return null depending on where in the node the click was performed.
-   *
-   * @param event
-   * @param data_DO_NOT_USE
-   */
-  const onNodeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, data_DO_NOT_USE: BaseNodeData) => {
-    const node: BaseNodeData | undefined = nodes.find((node: BaseNodeData) => node.id === nodeProps?.id);
-    console.log(`node clicked (${nodeProps?.properties?.text || nodeProps?.id}) nodeProps:`, nodeProps, 'node:', node);
-
-    if (node?.id) {
-      setSelectedNodes([node.id]);
-    }
-  };
-
-  /**
-   * When the mouse enters a node (on hover).
-   *
-   * XXX Does not work well because `foreignObject` is displayed on top of the Node. See https://github.com/reaviz/reaflow/issues/45
-   *
-   * @param event
-   * @param node
-   */
-  const onNodeEnter = (event: React.MouseEvent<SVGGElement, MouseEvent>, node: BaseNodeData) => {
-
-  };
-
-  /**
-   * When the mouse leaves a node (leaves hover area).
-   *
-   * XXX Does not work well because `foreignObject` is displayed on top of the Node. See https://github.com/reaviz/reaflow/issues/45
-   *
-   * @param event
-   * @param node
-   */
-  const onNodeLeave = (event: React.MouseEvent<SVGGElement, MouseEvent>, node: BaseNodeData) => {
-
-  };
-
-  /**
-   * Node props applied to all nodes, no matter what type they are.
-   */
-  const baseNodeProps: BaseNodeProps = {
-    ...nodeProps,
-    node,
-    patchCurrentNode: patchCurrentNode,
-    lastCreatedNode,
-    isSelected: !!selectedNodes?.find((selectedNode: string) => selectedNode === node.id),
-    className: classnames(
-      `node-svg-rect node-${type}-svg-rect`,
-    ),
-    style: {
-      strokeWidth: 0,
-      fill: 'white',
-      color: 'black',
-    },
-    port: (
-      <BasePort fromNodeId={nodeProps.id} />
-    ),
-    onClick: onNodeClick,
-    onEnter: onNodeEnter,
-    onLeave: onNodeLeave,
-    onRemove: onNodeRemove,
-    remove: (<Remove hidden={true} />),
-  };
-
-  // console.log('rendering node of type: ', type, commonBlockProps)
-  const NodeComponent = findNodeComponentByType(type);
+  const NodeComponent = findNodeComponentByType(nodeType);
 
   return (
     <NodeComponent
-      {...baseNodeProps}
+      {...nodeProps}
+      node={node}
     />
   );
 };

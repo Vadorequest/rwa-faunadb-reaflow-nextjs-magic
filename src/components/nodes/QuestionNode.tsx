@@ -3,7 +3,6 @@ import { DebounceInput } from 'react-debounce-input';
 import ReactSelect from 'react-select';
 import { OptionTypeBase } from 'react-select/src/types';
 import { TextareaHeightChangeMeta } from 'react-textarea-autosize/dist/declarations/src';
-import { NodeChildProps } from 'reaflow';
 import settings from '../../settings';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
@@ -11,6 +10,7 @@ import BaseNodeProps from '../../types/BaseNodeProps';
 import { QuestionChoiceType } from '../../types/nodes/QuestionChoiceType';
 import { QuestionChoiceTypeOption } from '../../types/nodes/QuestionChoiceTypeOption';
 import { QuestionNodeData } from '../../types/nodes/QuestionNodeData';
+import { SpecializedNodeProps } from '../../types/nodes/SpecializedNodeProps';
 import NodeType from '../../types/NodeType';
 import Textarea from '../plugins/Textarea';
 import BaseNode from './BaseNode';
@@ -36,20 +36,19 @@ const defaultHeight = 400;
  * The east port allows only one link to another node. (TODO not enforced yet)
  */
 const QuestionNode: BaseNodeComponent<Props> = (props) => {
-  const {
-    patchCurrentNode,
-    id,
-    lastCreatedNode,
-    node,
-  } = props;
-
   return (
     <BaseNode
       nodeType={nodeType}
       {...props}
     >
       {
-        ({ nodeProps }: { nodeProps: NodeChildProps }) => {
+        (nodeProps: SpecializedNodeProps<QuestionNodeData>) => {
+          const {
+            id,
+            node,
+            patchCurrentNode,
+            lastCreatedNode,
+          } = nodeProps;
           const choiceTypes: QuestionChoiceTypeOption[] = settings.canvas.nodes.questionNode.choiceTypeOptions;
 
           /**

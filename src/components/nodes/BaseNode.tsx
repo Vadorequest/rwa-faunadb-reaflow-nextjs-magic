@@ -1,21 +1,33 @@
 import { css } from '@emotion/react';
 import classnames from 'classnames';
-import React, {
-  MouseEventHandler,
-  ReactNode,
-} from 'react';
+import cloneDeep from 'lodash.clonedeep';
+import remove from 'lodash.remove';
+import React, { MouseEventHandler } from 'react';
 import {
   Node,
   NodeChildProps,
+  NodeData,
+  Remove,
 } from 'reaflow';
+import { useRecoilState } from 'recoil';
 import settings from '../../settings';
+import { blockPickerMenuState } from '../../states/blockPickerMenuState';
+import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
+import { lastCreatedNodeState } from '../../states/lastCreatedNodeState';
+import { nodesSelector } from '../../states/nodesState';
+import { selectedNodesState } from '../../states/selectedNodesState';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
+import BaseNodeData from '../../types/BaseNodeData';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
-import BaseNodeProps from '../../types/BaseNodeProps';
+import BaseNodeProps, { PatchCurrentNode } from '../../types/BaseNodeProps';
 import BasePortData from '../../types/BasePortData';
+import { CanvasDataset } from '../../types/CanvasDataset';
 import { GetBaseNodeDefaultPropsProps } from '../../types/GetBaseNodeDefaultProps';
+import { SpecializedNodeProps } from '../../types/nodes/SpecializedNodeProps';
 import NodeType from '../../types/NodeType';
+import { removeAndUpsertNodesThroughPorts } from '../../utils/nodes';
 import { createPort } from '../../utils/ports';
+import BasePort from '../ports/BasePort';
 
 type Props = BaseNodeProps & {
   nodeType: NodeType;
@@ -42,18 +54,138 @@ const fallbackDefaultHeight = 100;
  */
 const BaseNode: BaseNodeComponent<Props> = (props) => {
   const {
-    nodeType,
-    children,
+    nodeType, // Don't forward, not expected
+    children, // Don't forward, overridden in this file
+    node, // Don't forward, not expected
     ...nodeProps // All props that are left will be forwarded to the Node component
   } = props;
-  const { // Using another destructuring object for props we need to use in this component but also want to forward to the Node component
-    onClick,
-    isSelected,
+  const { // Using another destructuring object for props we need to use in this component but should also be forwarded to the Node component
+    onClick, // TODO
   } = props;
+
+  const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuState);
+  const [nodes, setNodes] = useRecoilState(nodesSelector);
+  const [canvasDataset, setCanvasDataset] = useRecoilState(canvasDatasetSelector);
+  const { edges } = canvasDataset;
+  const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);
+  const isSelected = !!selectedNodes?.find((selectedNode: string) => selectedNode === node.id);
+  const [lastCreatedNode] = useRecoilState(lastCreatedNodeState);
+
+  /**
+   * Path the properties of the current node.
+   *
+   * Only updates the provided properties, doesn't update other properties.
+   * Also merges the 'data' object, by keeping existing data and only overwriting those that are specified.
+   *
+   * @param patch
+   */
+  const patchCurrentNode: PatchCurrentNode = (patch: Partial<BaseNodeData>): void => {
+    const nodeToUpdateIndex = nodes.findIndex((node: BaseNodeData) => node.id === nodeProps.id);
+    const existingNode: BaseNodeData = nodes[nodeToUpdateIndex];
+    const nodeToUpdate = {
+      ...existingNode,
+      ...patch,
+      data: {
+        ...existingNode.data || {},
+        ...patch.data || {},
+      },
+      id: existingNode.id, // Force keep same id to avoid edge cases
+    };
+    console.log('patchCurrentNode before', existingNode, 'after:', nodeToUpdate, 'using patch:', patch);
+
+    const newNodes = cloneDeep(nodes);
+    // @ts-ignore
+    newNodes[nodeToUpdateIndex] = nodeToUpdate;
+
+    setNodes(newNodes);
+  };
+
+  /**
+   * Removes a node.
+   *
+   * Upsert its descendant if there were any. (auto-link all descendants to all its ascendants)
+   *
+   * Triggered when clicking on the "x" remove button that appears when a node is selected.
+   *
+   * @param event
+   * @param node
+   */
+  const onNodeRemove = (event: React.MouseEvent<SVGGElement, MouseEvent>, node: NodeData) => {
+    console.log('onNodeRemove', event, node);
+    const dataset: CanvasDataset = removeAndUpsertNodesThroughPorts(nodes, edges, node);
+    const newSelectedNodes = remove(selectedNodes, node?.id);
+
+    setCanvasDataset(dataset);
+
+    // Updates selected nodes to make sure we don't keep selected nodes that have been deleted
+    setSelectedNodes(newSelectedNodes);
+
+    // Hide the block picker menu.
+    // Forces to reset the function bound to onBlockClick. Necessary when there is one or none node left.
+    setBlockPickerMenu({
+      isDisplayed: false,
+    });
+  };
+
+  /**
+   * Selects the node when clicking on it.
+   *
+   * XXX We're resolving the "node" ourselves, instead of relying on the 2nd argument (nodeData),
+   *  which might return null depending on where in the node the click was performed.
+   *
+   * @param event
+   * @param data_DO_NOT_USE
+   */
+  const onNodeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, data_DO_NOT_USE: BaseNodeData) => {
+    const node: BaseNodeData | undefined = nodes.find((node: BaseNodeData) => node.id === nodeProps?.id);
+    console.log(`node clicked (${nodeProps?.properties?.text || nodeProps?.id}) nodeProps:`, nodeProps, 'node:', node);
+
+    if (node?.id) {
+      setSelectedNodes([node.id]);
+    }
+  };
+
+  /**
+   * When the mouse enters a node (on hover).
+   *
+   * XXX Does not work well because `foreignObject` is displayed on top of the Node. See https://github.com/reaviz/reaflow/issues/45
+   *
+   * @param event
+   * @param node
+   */
+  const onNodeEnter = (event: React.MouseEvent<SVGGElement, MouseEvent>, node: BaseNodeData) => {
+
+  };
+
+  /**
+   * When the mouse leaves a node (leaves hover area).
+   *
+   * XXX Does not work well because `foreignObject` is displayed on top of the Node. See https://github.com/reaviz/reaflow/issues/45
+   *
+   * @param event
+   * @param node
+   */
+  const onNodeLeave = (event: React.MouseEvent<SVGGElement, MouseEvent>, node: BaseNodeData) => {
+
+  };
 
   return (
     <Node
       {...nodeProps}
+      style={{
+        strokeWidth: 0,
+        fill: 'white',
+        color: 'black',
+      }}
+      className={classnames(
+        `node-svg-rect node-${nodeType}-svg-rect`,
+      )}
+      onClick={onNodeClick}
+      onEnter={onNodeEnter}
+      onLeave={onNodeLeave}
+      onRemove={onNodeRemove}
+      remove={(<Remove hidden={true} />)}
+      port={(<BasePort fromNodeId={nodeProps.id as string} />)}
     >
       {
         /**
@@ -68,6 +200,12 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
             width,
             height,
           } = nodeProps;
+          const specializedNodeProps: SpecializedNodeProps = {
+            ...nodeProps,
+            patchCurrentNode,
+            lastCreatedNode,
+            isSelected,
+          };
 
           return (
             <foreignObject
@@ -153,7 +291,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                   {
                     // Invoke the children as a function, or render the children as a component, if it's not a function
                     // @ts-ignore
-                    typeof children === 'function' ? (children({ nodeProps }) as (node: NodeChildProps) => ReactNode) : children
+                    typeof children === 'function' ? (children({ ...specializedNodeProps })) : children
                   }
                 </div>
               </div>

@@ -1,11 +1,11 @@
 import React, { Fragment } from 'react';
 import { DebounceInput } from 'react-debounce-input';
 import { TextareaHeightChangeMeta } from 'react-textarea-autosize/dist/declarations/src';
-import { NodeChildProps } from 'reaflow';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
 import { InformationNodeData } from '../../types/nodes/InformationNodeData';
+import { SpecializedNodeProps } from '../../types/nodes/SpecializedNodeProps';
 import NodeType from '../../types/NodeType';
 import Textarea from '../plugins/Textarea';
 import BaseNode from './BaseNode';
@@ -27,20 +27,20 @@ const defaultHeight = 100;
  * The east port allows only one link to another node. (TODO not enforced yet)
  */
 const InformationNode: BaseNodeComponent<Props> = (props) => {
-  const {
-    patchCurrentNode,
-    id,
-    lastCreatedNode,
-    node,
-  } = props;
-
   return (
     <BaseNode
       nodeType={nodeType}
       {...props}
     >
       {
-        ({ nodeProps }: { nodeProps: NodeChildProps }) => {
+        (nodeProps: SpecializedNodeProps<InformationNodeData>) => {
+          const {
+            id,
+            node,
+            patchCurrentNode,
+            lastCreatedNode,
+          } = nodeProps;
+
           /**
            * When textarea input height changes, we need to increase the height of the whole node accordingly.
            *

@@ -74,7 +74,6 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const [edges, setEdges] = useRecoilState(edgesSelector);
   const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);
   const selections = selectedNodes; // TODO merge selected nodes and edges
-  const [lastCreatedNode] = useRecoilState(lastCreatedNodeState);
   const [hasClearedUndoHistory, setHasClearedUndoHistory] = useState<boolean>(false);
 
   console.log('selectedNodes', selectedNodes);
@@ -219,7 +218,6 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     return (
       <NodeRouter
         nodeProps={nodeProps}
-        lastCreatedNode={lastCreatedNode}
       />
     );
   };

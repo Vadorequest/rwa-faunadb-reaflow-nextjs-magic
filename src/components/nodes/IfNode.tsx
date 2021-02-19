@@ -1,11 +1,11 @@
 import React, { Fragment } from 'react';
-import { NodeChildProps } from 'reaflow';
 import settings from '../../settings';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
 import BasePortData from '../../types/BasePortData';
 import { IfNodeData } from '../../types/nodes/IfNodeData';
+import { SpecializedNodeProps } from '../../types/nodes/SpecializedNodeProps';
 import NodeType from '../../types/NodeType';
 import { createPort } from '../../utils/ports';
 import BaseNode from './BaseNode';
@@ -27,20 +27,19 @@ const defaultHeight = 200;
  * The east port allows only one link to another node. (TODO not enforced yet)
  */
 const IfNode: BaseNodeComponent<Props> = (props) => {
-  const {
-    patchCurrentNode,
-    id,
-    lastCreatedNode,
-    node,
-  } = props;
-
   return (
     <BaseNode
       nodeType={nodeType}
       {...props}
     >
       {
-        ({ nodeProps }: { nodeProps: NodeChildProps }) => {
+        (nodeProps: SpecializedNodeProps<IfNodeData>) => {
+          const {
+            id,
+            node,
+            patchCurrentNode,
+            lastCreatedNode,
+          } = nodeProps;
 
           /**
            * Updates the current node "variable1" value.
@@ -92,14 +91,14 @@ IfNode.getDefaultPorts = (): BasePortData[] => {
       width: settings.canvas.ports.radius,
       alignment: 'CENTER',
       side: 'EAST',
-      className: 'port-if-true'
+      className: 'port-if-true',
     }),
     createPort({
       height: settings.canvas.ports.radius,
       width: settings.canvas.ports.radius,
       alignment: 'CENTER',
       side: 'EAST',
-      className: 'port-if-false'
+      className: 'port-if-false',
     }),
   ];
 };
