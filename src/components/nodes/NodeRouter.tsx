@@ -130,11 +130,10 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
    *  which might return null depending on where in the node the click was performed.
    *
    * @param event
-   * @param data
+   * @param data_DO_NOT_USE
    */
-  const onNodeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, data: BaseNodeData) => {
-    console.log('onNodeClick data', data);
-    const node: BaseNodeData = nodes.find((node: BaseNodeData) => node.id === nodeProps?.id) as BaseNodeData;
+  const onNodeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, data_DO_NOT_USE: BaseNodeData) => {
+    const node: BaseNodeData | undefined = nodes.find((node: BaseNodeData) => node.id === nodeProps?.id);
     console.log(`node clicked (${nodeProps?.properties?.text || nodeProps?.id})`, nodeProps);
     console.log(`node selected`, node);
     if (node?.id) {
