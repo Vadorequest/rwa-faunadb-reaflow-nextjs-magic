@@ -22,6 +22,7 @@ import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
 import { edgesSelector } from '../../states/edgesState';
 import { nodesSelector } from '../../states/nodesState';
+import { selectedEdgesSelector } from '../../states/selectedEdgesState';
 import { selectedNodesSelector } from '../../states/selectedNodesState';
 import BaseNodeData from '../../types/BaseNodeData';
 import BasePortData from '../../types/BasePortData';
@@ -72,6 +73,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const [nodes, setNodes] = useRecoilState(nodesSelector);
   const [edges, setEdges] = useRecoilState(edgesSelector);
   const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesSelector);
+  const [selectedEdges, setSelectedEdges] = useRecoilState(selectedEdgesSelector);
   const selections = selectedNodes; // TODO merge selected nodes and edges
   const [hasClearedUndoHistory, setHasClearedUndoHistory] = useState<boolean>(false);
 
@@ -152,7 +154,12 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const onCanvasClick = (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
     if (event.target === canvasRef?.current?.svgRef?.current) {
       // Unselecting all selected elements (nodes, edges)
-      setSelectedNodes([]);
+      if (selectedNodes?.length > 0) {
+        setSelectedNodes([]);
+      }
+      if (selectedEdges?.length > 0) {
+        setSelectedEdges([]);
+      }
       console.log('onCanvasClick event', event);
 
       let isBlockPickerMenuTargetingCanvas = false;

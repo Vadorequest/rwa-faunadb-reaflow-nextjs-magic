@@ -122,8 +122,6 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
     setSelectedEdges([edge.id]);
   };
 
-  console.log('props', props);
-
   return (
     <Edge
       {...props}
