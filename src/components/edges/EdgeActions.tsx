@@ -35,7 +35,7 @@ const EdgeActions: React.FunctionComponent<Props> = (props) => {
   const aboveLineY = (y || 0) - 20;
   const removeX = (x || 0) + 20;
 
-  console.log('EdgeActions props', props);
+  // console.log('EdgeActions props', props);
 
   return (
     <Fragment>
