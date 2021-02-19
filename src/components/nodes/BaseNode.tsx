@@ -29,9 +29,7 @@ import { removeAndUpsertNodesThroughPorts } from '../../utils/nodes';
 import { createPort } from '../../utils/ports';
 import BasePort from '../ports/BasePort';
 
-type Props = BaseNodeProps & {
-  nodeType: NodeType;
-};
+type Props = BaseNodeProps & {};
 
 const fallbackDefaultWidth = 200;
 const fallbackDefaultHeight = 100;
@@ -54,7 +52,6 @@ const fallbackDefaultHeight = 100;
  */
 const BaseNode: BaseNodeComponent<Props> = (props) => {
   const {
-    nodeType, // Don't forward, not expected
     children, // Don't forward, overridden in this file
     node, // Don't forward, not expected
     ...nodeProps // All props that are left will be forwarded to the Node component
@@ -70,6 +67,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
   const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);
   const isSelected = !!selectedNodes?.find((selectedNode: string) => selectedNode === node.id);
   const [lastCreatedNode] = useRecoilState(lastCreatedNodeState);
+  const nodeType: NodeType = node?.data?.type as NodeType;
 
   /**
    * Path the properties of the current node.

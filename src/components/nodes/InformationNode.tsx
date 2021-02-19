@@ -29,7 +29,6 @@ const defaultHeight = 100;
 const InformationNode: BaseNodeComponent<Props> = (props) => {
   return (
     <BaseNode
-      nodeType={nodeType}
       {...props}
     >
       {

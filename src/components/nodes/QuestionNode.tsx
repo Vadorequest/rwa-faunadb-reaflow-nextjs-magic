@@ -38,7 +38,6 @@ const defaultHeight = 400;
 const QuestionNode: BaseNodeComponent<Props> = (props) => {
   return (
     <BaseNode
-      nodeType={nodeType}
       {...props}
     >
       {

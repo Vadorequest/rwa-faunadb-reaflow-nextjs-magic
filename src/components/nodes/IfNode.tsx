@@ -29,7 +29,6 @@ const defaultHeight = 200;
 const IfNode: BaseNodeComponent<Props> = (props) => {
   return (
     <BaseNode
-      nodeType={nodeType}
       {...props}
     >
       {
