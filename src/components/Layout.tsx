@@ -58,20 +58,17 @@ const Layout: React.FunctionComponent<Props> = (props) => {
 
       <header>
         <nav className={'nav'}>
-          <Link href="/">
-            <a>
-              <FontAwesomeIcon
-                icon={['fas', 'home']}
-              />
-              Home
-            </a>
-          </Link>
-          <a href={'https://github.com/Vadorequest/poc-nextjs-reaflow'}>
+          <ChakraLink
+            href={'https://github.com/Vadorequest/poc-nextjs-reaflow'}
+            isExternal
+            color="teal.500"
+          >
             <FontAwesomeIcon
               icon={['fab', 'github']}
             />
             GitHub
-          </a>
+            <ExternalLinkIcon mx="2px" />
+          </ChakraLink>
         </nav>
       </header>
 
@@ -86,6 +83,7 @@ const Layout: React.FunctionComponent<Props> = (props) => {
           <ChakraLink
             href={'https://nextjs.org/'}
             isExternal
+            color="teal.500"
           >
             {' '}Next.js{' '}
             <ExternalLinkIcon mx="2px" />
@@ -94,6 +92,7 @@ const Layout: React.FunctionComponent<Props> = (props) => {
           <ChakraLink
             href={'https://github.com/reaviz/reaflow'}
             isExternal
+            color="teal.500"
           >
             {' '}Reaflow{' '}
             <ExternalLinkIcon mx="2px" />
