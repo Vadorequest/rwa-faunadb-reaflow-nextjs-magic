@@ -1,4 +1,4 @@
-import { css } from '@emotion/react';
+import classnames from 'classnames';
 import cloneDeep from 'lodash.clonedeep';
 import React from 'react';
 import {
@@ -111,8 +111,8 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
   /**
    * Selects the edge when clicking on it.
    *
-   * XXX We're resolving the "node" ourselves, instead of relying on the 2nd argument (nodeData),
-   *  which might return null depending on where in the node the click was performed (because of the <foreignObject>).
+   * XXX We're resolving the "edge" ourselves, instead of relying on the 2nd argument (edgeData),
+   *  which doesn't contain all the expected properties. It is more reliable to use the current edge, which already known.
    *
    * @param event
    * @param data_DO_NOT_USE
@@ -122,20 +122,18 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
     setSelectedEdges([edge.id]);
   };
 
-  console.log('props', props)
+  console.log('props', props);
 
   return (
     <Edge
       {...props}
-      className={'edge'}
+      className={classnames(`edge`, { 'is-selected': isSelected })}
       add={<AddBlockPicker />}
       onAdd={onAdd}
       onClick={onEdgeClick}
-      css={css`
-        
-      `}
     />
-
+    // Doesn't support children - See https://github.com/reaviz/reaflow/issues/67
+    // Possible to use a custom children to achieve this, but not great DX because of manual x/y placement
     /*
       <foreignObject
         width={30}

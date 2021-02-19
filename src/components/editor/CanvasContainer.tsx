@@ -269,6 +269,12 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
             stroke-dasharray: 5;
             animation: dashdraw .5s linear infinite;
             stroke-width: 1;
+
+            &.is-selected {
+              stroke: blue;
+              stroke-dasharray: 0;
+              animation: none;
+            }
           }
 
           // Make all output ports used by IfNode display differently to distinguish them easily
