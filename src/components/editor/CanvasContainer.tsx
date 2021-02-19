@@ -149,20 +149,26 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
    * - Unselect all elements (nodes, edges)
    * - Hide the block menu picker, unless it was opened through targeting the canvas itself
    *    (avoids closing the menu when dropping an edge on the canvas)
+   *
+   * XXX Sometimes, it is triggered even though the click doesn't target the canvas itself specifically.
+   *  For instance, it might be triggered when clicking on an SVG displayed within a <foreignObject>.
    */
-  const onCanvasClick = () => {
-    setSelectedNodes([]);
-    console.log('target', blockPickerMenu?.eventTarget);
+  const onCanvasClick = (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
+    if (event.target === canvasRef?.current?.svgRef?.current) {
+      // Unselecting all selected elements (nodes, edges)
+      setSelectedNodes([]);
+      console.log('onCanvasClick event', event);
 
-    let isBlockPickerMenuTargetingCanvas = false;
-    if (typeof blockPickerMenu?.eventTarget !== 'undefined') {
-      isBlockPickerMenuTargetingCanvas = blockPickerMenu?.eventTarget === canvasRef?.current?.svgRef?.current;
-    }
+      let isBlockPickerMenuTargetingCanvas = false;
+      if (typeof blockPickerMenu?.eventTarget !== 'undefined') {
+        isBlockPickerMenuTargetingCanvas = blockPickerMenu?.eventTarget === canvasRef?.current?.svgRef?.current;
+      }
 
-    if (blockPickerMenu?.isDisplayed && !isBlockPickerMenuTargetingCanvas) {
-      setBlockPickerMenu({
-        isDisplayed: false,
-      });
+      if (blockPickerMenu?.isDisplayed && !isBlockPickerMenuTargetingCanvas) {
+        setBlockPickerMenu({
+          isDisplayed: false,
+        });
+      }
     }
   };
 
