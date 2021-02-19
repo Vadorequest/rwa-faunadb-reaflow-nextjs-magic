@@ -3,8 +3,11 @@ import {
   library,
 } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import {
-  faPlay
+  faHeart,
+  faHome,
+  faPlay,
 } from '@fortawesome/free-solid-svg-icons';
 
 // See https://github.com/FortAwesome/react-fontawesome#integrating-with-other-tools-and-frameworks
@@ -25,5 +28,12 @@ config.autoAddCss = false; // Tell Font Awesome to skip adding the CSS automatic
 
 // Import @fortawesome/free-solid-svg-icons
 library.add(
+  faHeart,
+  faHome,
   faPlay,
+);
+
+// Import @fortawesome/free-brands-svg-icons
+library.add(
+  faGithub,
 );
