@@ -73,9 +73,11 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const [nodes, setNodes] = useRecoilState(nodesSelector);
   const [edges, setEdges] = useRecoilState(edgesSelector);
   const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesState);
-  const selections = selectedNodes.map((node) => node.id);
+  const selections = selectedNodes; // TODO merge selected nodes and edges
   const [lastCreatedNode] = useRecoilState(lastCreatedNodeState);
   const [hasClearedUndoHistory, setHasClearedUndoHistory] = useState<boolean>(false);
+
+  console.log('selectedNodes', selectedNodes);
 
   /**
    * When nodes or edges are modified, updates the persisted data in the local storage.

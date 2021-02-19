@@ -1,5 +1,6 @@
 import classnames from 'classnames';
 import cloneDeep from 'lodash.clonedeep';
+import remove from 'lodash.remove';
 import React from 'react';
 import {
   NodeProps,
@@ -16,7 +17,6 @@ import BaseNodeProps, { PatchCurrentNode } from '../../types/BaseNodeProps';
 import { CanvasDataset } from '../../types/CanvasDataset';
 import NodeType from '../../types/NodeType';
 import {
-  filterNodeInArray,
   findNodeComponentByType,
   removeAndUpsertNodesThroughPorts,
 } from '../../utils/nodes';
@@ -110,11 +110,12 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
   const onNodeRemove = (event: React.MouseEvent<SVGGElement, MouseEvent>, node: NodeData) => {
     console.log('onNodeRemove', event, node);
     const dataset: CanvasDataset = removeAndUpsertNodesThroughPorts(nodes, edges, node);
+    const newSelectedNodes = remove(selectedNodes, node?.id);
 
     setCanvasDataset(dataset);
 
     // Updates selected nodes to make sure we don't keep selected nodes that have been deleted
-    setSelectedNodes(filterNodeInArray(selectedNodes, node));
+    setSelectedNodes(newSelectedNodes);
 
     // Hide the block picker menu.
     // Forces to reset the function bound to onBlockClick. Necessary when there is one or none node left.
@@ -134,10 +135,10 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
    */
   const onNodeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, data_DO_NOT_USE: BaseNodeData) => {
     const node: BaseNodeData | undefined = nodes.find((node: BaseNodeData) => node.id === nodeProps?.id);
-    console.log(`node clicked (${nodeProps?.properties?.text || nodeProps?.id})`, nodeProps);
-    console.log(`node selected`, node);
+    console.log(`node clicked (${nodeProps?.properties?.text || nodeProps?.id}) nodeProps:`, nodeProps, 'node:', node);
+
     if (node?.id) {
-      setSelectedNodes([node]);
+      setSelectedNodes([node.id]);
     }
   };
 
@@ -173,7 +174,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
     node,
     patchCurrentNode: patchCurrentNode,
     lastCreatedNode,
-    isSelected: !!selectedNodes?.find((selectedNode: BaseNodeData) => selectedNode.id === node.id),
+    isSelected: !!selectedNodes?.find((selectedNode: string) => selectedNode === node.id),
     className: classnames(
       `node-svg-rect node-${type}-svg-rect`,
     ),
