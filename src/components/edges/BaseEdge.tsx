@@ -110,6 +110,14 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
     });
   };
 
+  /**
+   * Invoked when clicking on the "-" of the edge.
+   *
+   * Removes the selected edge.
+   *
+   * @param event
+   * @param edge
+   */
   const onRemoveIconClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, edge: EdgeData): void => {
     console.log('onRemoveIconClick', event, edge);
     setEdges(edges.filter((edge: BaseEdgeData) => edge.id !== id));
