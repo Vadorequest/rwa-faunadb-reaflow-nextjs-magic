@@ -149,10 +149,10 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
   const onPortDragEnd = (dragEvent: DragEvent, initial: Position, fromPort: BasePortData, extra: any) => {
     console.log('onDragEnd port: ', node, dragEvent, dragEvent.event, initial, fromPort, extra);
     const { xy, distance, event } = dragEvent;
-    // @ts-ignore
-    const { target } = event;
-    // TODO use onEnter/onLeave of the port/node to know which node is being targeted instead of relying on the DOM
-    const foreignObject: Element | undefined = target?.closest('g')?.previousElementSibling;
+    const target = event?.target as Element;
+
+    // Look up in the DOM to find the closest <foreignObject> element that contains the node's id
+    const foreignObject: Element | null | undefined = target?.closest?.('g')?.previousElementSibling;
     const foreignObjectId: string | undefined = foreignObject?.id;
     const toNodeId: string | undefined = foreignObjectId?.replace('node-foreignObject-', '');
     console.log('closest foreignObject:', foreignObject, 'toNodeId:', toNodeId);
@@ -209,8 +209,8 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
    * @param port
    */
   const onPortEnter = (event: React.MouseEvent<SVGGElement, MouseEvent>, port: BasePortData) => {
-     // console.log('onPortEnter', event.target)
- };
+    // console.log('onPortEnter', event.target)
+  };
 
   /**
    * Invoked when the mouse is leaves a port (hover stops).
@@ -219,8 +219,8 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
    * @param port
    */
   const onPortLeave = (event: React.MouseEvent<SVGGElement, MouseEvent>, port: BasePortData) => {
-     // console.log('onPortLeave', event.target)
- };
+    // console.log('onPortLeave', event.target)
+  };
 
   return (
     <Port
