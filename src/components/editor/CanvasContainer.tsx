@@ -37,6 +37,7 @@ import {
   getDefaultFromPort,
   getDefaultToPort,
 } from '../../utils/ports';
+import canvasUtilsContext from '../context/canvasUtilsContext';
 import BaseEdge from '../edges/BaseEdge';
 import NodeRouter from '../nodes/NodeRouter';
 
@@ -346,21 +347,29 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         </Button>
       </div>
 
-      <Canvas
-        ref={canvasRef}
-        className={'reaflow-canvas'}
-        direction={settings.canvas.direction}
-        onCanvasClick={onCanvasClick}
-        nodes={nodes}
-        edges={edges}
-        selections={selections}
-        node={Node}
-        edge={Edge}
-        onLayoutChange={layout => console.log('Layout', layout)}
-        onNodeLinkCheck={onNodeLinkCheck}
-        onNodeLink={onNodeLink}
-        layoutOptions={elkLayoutOptions}
-      />
+      <canvasUtilsContext.Provider
+        value={{
+          containerRef: canvasRef?.current?.containerRef,
+          centerCanvas: canvasRef?.current?.centerCanvas,
+          fitCanvas: canvasRef?.current?.fitCanvas,
+        }}
+      >
+        <Canvas
+          ref={canvasRef}
+          className={'reaflow-canvas'}
+          direction={settings.canvas.direction}
+          onCanvasClick={onCanvasClick}
+          nodes={nodes}
+          edges={edges}
+          selections={selections}
+          node={Node}
+          edge={Edge}
+          onLayoutChange={layout => console.log('Layout', layout)}
+          onNodeLinkCheck={onNodeLinkCheck}
+          onNodeLink={onNodeLink}
+          layoutOptions={elkLayoutOptions}
+        />
+      </canvasUtilsContext.Provider>
     </div>
   );
 };
