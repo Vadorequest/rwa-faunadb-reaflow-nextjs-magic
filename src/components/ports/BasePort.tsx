@@ -151,6 +151,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
     const { xy, distance, event } = dragEvent;
     // @ts-ignore
     const { target } = event;
+    // TODO use onEnter/onLeave of the port/node to know which node is being targeted instead of relying on the DOM
     const foreignObject: Element | undefined = target?.closest('g')?.previousElementSibling;
     const foreignObjectId: string | undefined = foreignObject?.id;
     const toNodeId: string | undefined = foreignObjectId?.replace('node-foreignObject-', '');
@@ -209,7 +210,8 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
    */
   const onPortEnter = (event: React.MouseEvent<SVGGElement, MouseEvent>, port: BasePortData) => {
     // console.log('onEnter port: ', node, event);
-  };
+     console.log('onPortEnter', event.target)
+ };
 
   /**
    * Invoked when the mouse is leaves a port (hover stops).
@@ -219,7 +221,8 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
    */
   const onPortLeave = (event: React.MouseEvent<SVGGElement, MouseEvent>, port: BasePortData) => {
     // console.log('onLeave port: ', node, event);
-  };
+     console.log('onPortLeave', event.target)
+ };
 
   return (
     <Port

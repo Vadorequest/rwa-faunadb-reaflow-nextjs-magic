@@ -143,7 +143,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
    * @param node
    */
   const onNodeEnter = (event: React.MouseEvent<SVGGElement, MouseEvent>, node: BaseNodeData) => {
-
+    console.log('onNodeEnter', event.target)
   };
 
   /**
@@ -153,6 +153,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
    * @param node
    */
   const onNodeLeave = (event: React.MouseEvent<SVGGElement, MouseEvent>, node: BaseNodeData) => {
+    console.log('onNodeLeave', event.target)
 
   };
 
