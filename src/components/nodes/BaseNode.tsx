@@ -139,22 +139,50 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
   /**
    * When the mouse enters a node (on hover).
    *
+   * XXX Tried to detect when entering/leaving a node, but it's hard because of foreignObject which yields a lot of false positive events
+   *  I couldn't reliably tell whether we're actually entering/leaving a node
+   *  The goal was to to update mouseEnteredState accordingly, to know which node/port are currently being hovered/entered
+   *  to bind node/ports in a reliable way when dropping an edge onto a node/port.
+   *  But, our current implementation inf "BasePort.onPortDragEnd" (which relies on the DOM) is much more reliable.
+   *
    * @param event
    * @param node
    */
   const onNodeEnter = (event: React.MouseEvent<SVGGElement, MouseEvent>, node: BaseNodeData) => {
-    console.log('onNodeEnter', event.target)
+    // console.log('onNodeEnter', event.target);
+
+    // @ts-ignore
+    // const isNode = event.target?.classList?.contains('node-svg-rect');
+    // if (isNode) {
+    //   // console.log('Entering node')
+    // }
   };
 
   /**
    * When the mouse leaves a node (leaves hover area).
    *
+   * XXX Tried to detect when entering/leaving a node, but it's hard because of foreignObject which yields a lot of false positive events
+   *  I couldn't reliably tell whether we're actually entering/leaving a node
+   *  The goal was to to update mouseEnteredState accordingly, to know which node/port are currently being hovered/entered
+   *  to bind node/ports in a reliable way when dropping an edge onto a node/port.
+   *  But, our current implementation inf "BasePort.onPortDragEnd" (which relies on the DOM) is much more reliable.
+   *
    * @param event
    * @param node
    */
   const onNodeLeave = (event: React.MouseEvent<SVGGElement, MouseEvent>, node: BaseNodeData) => {
-    console.log('onNodeLeave', event.target)
+    // console.log('onNodeLeave', event.target);
+    // console.log('containerRef?.current', containerRef?.current)
 
+    // // @ts-ignore
+    // const isChildrenOfNodeContainer = event.target?.closest('.node-container');
+    // // @ts-ignore
+    // const isChildrenOfNodeRect = event.target?.closest('.node-svg-rect');
+    // const isNode = isChildrenOfNodeContainer || isChildrenOfNodeRect;
+    //
+    // if (isNode) {
+    //   console.log('Hovering node')
+    // }
   };
 
   // console.log('BaseNode nodeProps', nodeProps);

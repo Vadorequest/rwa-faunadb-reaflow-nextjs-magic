@@ -209,8 +209,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
    * @param port
    */
   const onPortEnter = (event: React.MouseEvent<SVGGElement, MouseEvent>, port: BasePortData) => {
-    // console.log('onEnter port: ', node, event);
-     console.log('onPortEnter', event.target)
+     // console.log('onPortEnter', event.target)
  };
 
   /**
@@ -220,8 +219,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
    * @param port
    */
   const onPortLeave = (event: React.MouseEvent<SVGGElement, MouseEvent>, port: BasePortData) => {
-    // console.log('onLeave port: ', node, event);
-     console.log('onPortLeave', event.target)
+     // console.log('onPortLeave', event.target)
  };
 
   return (
