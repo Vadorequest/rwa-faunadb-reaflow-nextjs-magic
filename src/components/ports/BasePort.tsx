@@ -1,3 +1,4 @@
+import classnames from 'classnames';
 import cloneDeep from 'lodash.clonedeep';
 import React from 'react';
 import { Port } from 'reaflow';
@@ -49,6 +50,7 @@ type Props = {
 const BasePort: React.FunctionComponent<Props> = (props) => {
   const {
     id,
+    properties,
     fromNodeId,
     onDragEnd: onDragEndInternal,
   } = props;
@@ -62,6 +64,9 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
   const node: BaseNodeData = nodes.find((node: BaseNodeData) => node.id === fromNodeId) as BaseNodeData;
   const port: BasePortData = node?.ports?.find((port: BasePortData) => port.id === id) as BasePortData;
   const { displayedFrom, isDisplayed } = blockPickerMenu;
+
+  // Highlight the current port if there is an edge being dragged of another port's side
+  const isHighlighted = draggedEdgeFromPort?.fromNode?.id !== fromNodeId && draggedEdgeFromPort?.fromPort && draggedEdgeFromPort?.fromPort?.side !== properties?.side;
 
   const style = {
     fill: 'white',
@@ -225,7 +230,9 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
   return (
     <Port
       {...props}
-      className={id}
+      className={classnames(id, 'port', {
+        'is-highlighted': isHighlighted,
+      })}
       onClick={onPortClick}
       onDragStart={onPortDragStart}
       onDragEnd={onPortDragEnd}

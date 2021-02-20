@@ -293,14 +293,20 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
             }
           }
 
-          // Make all output ports used by IfNode display differently to distinguish them easily
-          .port-if {
-            &-true {
-              stroke: green !important;
+          .port {
+            &.is-highlighted {
+              stroke: blue !important;
             }
 
-            &-false {
-              stroke: red !important;
+            // Make all output ports used by IfNode display differently to distinguish them easily
+            &.port-if {
+              &-true {
+                stroke: green !important;
+              }
+
+              &-false {
+                stroke: red !important;
+              }
             }
           }
 
