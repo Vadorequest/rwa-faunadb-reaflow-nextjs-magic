@@ -47,10 +47,11 @@ export const getDefaultToPort = (toNode?: BaseNodeData, toPort?: Partial<BasePor
 /**
  * Whether a port should be highlighted.
  *
- * Shouldn't highlight when:
- * - The port is the same. (don't allow recursive link to itself)
- * - The port source is on WEST side. (don't allow to go from right to left)
- * - The destination port's side is the same as the source port's side. (force left to right workflow)
+ * Should highlight when:
+ * - The destination node is different. (don't allow recursive link to itself)
+ * - The port source is on EAST side. (don't allow to go from right to left)
+ * - The destination port's side is not the same as the source port's side. (forces left to right workflow)
+ * - TODO There isn't already a connection to the destination port. (avoids duplicated edges)
  *
  * @param fromNode
  * @param fromPort
@@ -58,5 +59,9 @@ export const getDefaultToPort = (toNode?: BaseNodeData, toPort?: Partial<BasePor
  * @param fromSide
  */
 export const shouldBeHighlighted = (fromNode?: BaseNodeData, fromPort?: BasePortData, currentNodeId?: string, fromSide?: PortSide): boolean => {
-  return !!(fromNode?.id !== currentNodeId && fromPort && fromPort?.side !== fromSide && fromPort?.side === 'EAST');
-}
+  const areSourceAndDestinationPortsDifferent = fromNode?.id !== currentNodeId;
+  const arePortsOnDifferentSides = fromPort?.side !== fromSide;
+  const isSourcePortFromEastSide = fromPort?.side === 'EAST';
+
+  return !!(fromPort && areSourceAndDestinationPortsDifferent && arePortsOnDifferentSides && isSourcePortFromEastSide);
+};
