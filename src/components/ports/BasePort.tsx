@@ -31,7 +31,10 @@ import {
   createNodeFromDefaultProps,
   getDefaultNodePropsWithFallback,
 } from '../../utils/nodes';
-import { getDefaultToPort } from '../../utils/ports';
+import {
+  getDefaultToPort,
+  shouldBeHighlighted,
+} from '../../utils/ports';
 
 type Props = {
   fromNodeId: string;
@@ -66,7 +69,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
   const { displayedFrom, isDisplayed } = blockPickerMenu;
 
   // Highlight the current port if there is an edge being dragged of another port's side
-  const isHighlighted = draggedEdgeFromPort?.fromNode?.id !== fromNodeId && draggedEdgeFromPort?.fromPort && draggedEdgeFromPort?.fromPort?.side !== properties?.side;
+  const isHighlighted = shouldBeHighlighted(draggedEdgeFromPort?.fromNode, draggedEdgeFromPort?.fromPort, fromNodeId, properties?.side);
 
   const style = {
     fill: 'white',
