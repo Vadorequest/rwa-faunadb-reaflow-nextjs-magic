@@ -63,7 +63,6 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
   const { edges } = canvasDataset;
   const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesSelector);
   const isSelected = !!selectedNodes?.find((selectedNode: string) => selectedNode === node.id);
-  const [lastCreatedNode] = useRecoilState(lastCreatedNodeState);
   const nodeType: NodeType = node?.data?.type as NodeType;
 
   /**
@@ -221,7 +220,6 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
           const specializedNodeProps: SpecializedNodeProps = {
             ...nodeProps,
             patchCurrentNode,
-            lastCreatedNode,
             isSelected,
           };
 
@@ -231,8 +229,8 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
               className={classnames(`${nodeType}-node-container node-container`, { 'is-selected': isSelected })}
               width={width}
               height={height}
-              x={0} // Relative position from the parent Node component (aligned to top)
-              y={0} // Relative position from the parent Node component (aligned to left)
+              // x={0} // Relative position from the parent Node component (aligned to top)
+              // y={0} // Relative position from the parent Node component (aligned to left)
               css={css`
                 position: relative;
 

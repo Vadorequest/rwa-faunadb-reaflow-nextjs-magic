@@ -37,7 +37,6 @@ const IfNode: BaseNodeComponent<Props> = (props) => {
             id,
             node,
             patchCurrentNode,
-            lastCreatedNode,
           } = nodeProps;
 
           /**

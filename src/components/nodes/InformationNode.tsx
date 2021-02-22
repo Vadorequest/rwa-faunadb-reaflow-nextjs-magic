@@ -1,6 +1,8 @@
 import React, { Fragment } from 'react';
 import { DebounceInput } from 'react-debounce-input';
 import { TextareaHeightChangeMeta } from 'react-textarea-autosize/dist/declarations/src';
+import { useRecoilState } from 'recoil';
+import { lastCreatedNodeState } from '../../states/lastCreatedNodeState';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
@@ -37,8 +39,8 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
             id,
             node,
             patchCurrentNode,
-            lastCreatedNode,
           } = nodeProps;
+          const [lastCreatedNode] = useRecoilState(lastCreatedNodeState);
 
           /**
            * When textarea input height changes, we need to increase the height of the whole node accordingly.

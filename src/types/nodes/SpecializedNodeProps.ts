@@ -13,12 +13,6 @@ export type SpecializedNodeProps<NodeData extends BaseNodeData = BaseNodeData> =
   patchCurrentNode: PatchCurrentNode<Partial<NodeData>>;
 
   /**
-   * The last created node.
-   * Will be undefined if no node was created yet.
-   */
-  lastCreatedNode?: BaseNodeData | undefined;
-
-  /**
    * Whether the node is being selected.
    */
   isSelected: boolean;
