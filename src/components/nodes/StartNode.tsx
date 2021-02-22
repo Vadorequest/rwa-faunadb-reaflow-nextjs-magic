@@ -30,6 +30,8 @@ const defaultHeight = 100;
 const StartNode: BaseNodeComponent<Props> = (props) => {
   return (
     <BaseNode
+      hasCloneAction={false}
+      hasDeleteAction={false}
       {...props}
     >
       {

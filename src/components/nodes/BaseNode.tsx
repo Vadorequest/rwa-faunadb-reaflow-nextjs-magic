@@ -31,7 +31,10 @@ import {
 import { createPort } from '../../utils/ports';
 import BasePort from '../ports/BasePort';
 
-type Props = BaseNodeProps & {};
+type Props = BaseNodeProps & {
+  hasCloneAction?: boolean;
+  hasDeleteAction?: boolean;
+};
 
 const fallbackDefaultWidth = 200;
 const fallbackDefaultHeight = 100;
@@ -56,6 +59,8 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
   const {
     children, // Don't forward, overridden in this file
     node, // Don't forward, not expected
+    hasCloneAction = true, // Don't forward, not expected
+    hasDeleteAction = true, // Don't forward, not expected
     ...nodeProps // All props that are left will be forwarded to the Node component
   } = props;
 
@@ -299,7 +304,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                     position: absolute;
                     display: ${isSelected ? 'flex' : 'none'};
                     top: -15px;
-                    right: 25px; // Depends on how many actions needs to be displayed, currently hardcoded
+                    right: ${(hasCloneAction ? 13 : 0) + (hasDeleteAction ? 13 : 0)}px; // Depends on how many actions needs to be displayed, currently hardcoded
                     margin: 5px;
                     padding: 5px;
                     background-color: transparent;
@@ -312,18 +317,27 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                     }
                   `}
                 >
-                  <div
-                    className={'node-action delete-action'}
-                    onClick={onNodeClone as MouseEventHandler}
-                  >
-                    <FontAwesomeIcon icon={['fas', 'clone']} />
-                  </div>
-                  <div
-                    className={'node-action delete-action'}
-                    onClick={onNodeRemove as MouseEventHandler}
-                  >
-                    <FontAwesomeIcon icon={['fas', 'trash-alt']} />
-                  </div>
+                  {
+                    hasCloneAction && (
+                      <div
+                        className={'node-action delete-action'}
+                        onClick={onNodeClone as MouseEventHandler}
+                      >
+                        <FontAwesomeIcon icon={['fas', 'clone']} />
+                      </div>
+                    )
+                  }
+
+                  {
+                    hasDeleteAction && (
+                      <div
+                        className={'node-action delete-action'}
+                        onClick={onNodeRemove as MouseEventHandler}
+                      >
+                        <FontAwesomeIcon icon={['fas', 'trash-alt']} />
+                      </div>
+                    )
+                  }
                 </div>
 
                 <div
