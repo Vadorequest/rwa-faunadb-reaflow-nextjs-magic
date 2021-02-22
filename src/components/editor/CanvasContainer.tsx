@@ -75,6 +75,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const [selectedEdges, setSelectedEdges] = useRecoilState(selectedEdgesSelector);
   const selections = selectedNodes; // TODO merge selected nodes and edges
   const [hasClearedUndoHistory, setHasClearedUndoHistory] = useState<boolean>(false);
+  const [cursorXY, setCursorXY] = useState<[number, number]>([0, 0])
 
   /**
    * When nodes or edges are modified, updates the persisted data in the local storage.
@@ -171,6 +172,8 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
           isDisplayed: false,
         });
       }
+
+      setCursorXY([event?.clientX, event?.clientY]);
     }
   };
 
@@ -332,6 +335,12 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
             icon={['fas', 'compress-arrows-alt']}
           />
         </Button>
+      </div>
+
+      <div
+        style={{ position: 'absolute', bottom: 10, left: 20, zIndex: 999 }}
+      >
+        X: {cursorXY?.[0]} | Y: {cursorXY?.[1]}
       </div>
 
       <canvasUtilsContext.Provider
