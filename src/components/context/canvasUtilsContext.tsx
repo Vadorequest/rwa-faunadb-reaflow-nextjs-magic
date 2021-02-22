@@ -2,6 +2,8 @@ import React, { RefObject } from 'react';
 
 /**
  * Contains utilities exposed by the Canvas ref.
+ *
+ * Contains utilities from both LayoutResult and ZoomResult. (built-in in Reaflow)
  */
 export type CanvasUtilsContext = {
 
@@ -19,6 +21,21 @@ export type CanvasUtilsContext = {
    * Fit the canvas to the viewport.
    */
   fitCanvas?: () => void;
+
+  /**
+   * Set a zoom factor of the canvas.
+   */
+  setZoom?: (factor: number) => void;
+
+  /**
+   * Zoom in on the canvas.
+   */
+  zoomIn?: () => void;
+
+  /**
+   * Zoom out on the canvas.
+   */
+  zoomOut?: () => void;
 }
 
 /**

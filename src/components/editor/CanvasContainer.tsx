@@ -1,5 +1,6 @@
 import { Button } from '@chakra-ui/react';
 import { css } from '@emotion/react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { isBrowser } from '@unly/utils';
 import React, {
   MutableRefObject,
@@ -300,11 +301,47 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         </Button>
       </div>
 
+      <div
+        style={{ position: 'absolute', bottom: 10, right: 20, zIndex: 999 }}
+      >
+        <Button
+          onClick={canvasRef?.current?.zoomOut}
+        >
+          <FontAwesomeIcon
+            icon={['fas', 'search-minus']}
+          />
+        </Button>
+        <Button
+          onClick={canvasRef?.current?.zoomIn}
+        >
+          <FontAwesomeIcon
+            icon={['fas', 'search-plus']}
+          />
+        </Button>
+        <Button
+          onClick={canvasRef?.current?.centerCanvas}
+        >
+          <FontAwesomeIcon
+            icon={['fas', 'bullseye']}
+          />
+        </Button>
+        <Button
+          onClick={canvasRef?.current?.fitCanvas}
+        >
+          <FontAwesomeIcon
+            icon={['fas', 'compress-arrows-alt']}
+          />
+        </Button>
+      </div>
+
       <canvasUtilsContext.Provider
         value={{
           containerRef: canvasRef?.current?.containerRef,
           centerCanvas: canvasRef?.current?.centerCanvas,
           fitCanvas: canvasRef?.current?.fitCanvas,
+          setZoom: canvasRef?.current?.setZoom,
+          zoomIn: canvasRef?.current?.zoomIn,
+          zoomOut: canvasRef?.current?.zoomOut,
         }}
       >
         <Canvas

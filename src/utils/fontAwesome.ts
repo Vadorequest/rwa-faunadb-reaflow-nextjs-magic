@@ -5,11 +5,15 @@ import {
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import {
+  faBullseye,
   faClone,
+  faCompressArrowsAlt,
   faExclamationTriangle,
   faHeart,
   faHome,
   faPlay,
+  faSearchMinus,
+  faSearchPlus,
   faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -31,11 +35,15 @@ config.autoAddCss = false; // Tell Font Awesome to skip adding the CSS automatic
 
 // Import @fortawesome/free-solid-svg-icons
 library.add(
+  faBullseye,
   faClone,
+  faCompressArrowsAlt,
   faExclamationTriangle,
   faHeart,
   faHome,
   faPlay,
+  faSearchMinus,
+  faSearchPlus,
   faTrashAlt,
 );
 
