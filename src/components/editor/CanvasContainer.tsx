@@ -89,7 +89,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
    *
    * Automatically binds shortcuts (cmd+z/cmd+shift+z).
    *
-   * TODO Doesn't handle massive undos very well - See https://github.com/reaviz/reaflow/issues/60
+   * TODO Doesn't handle massive undos through shortcut (cmd+z) very well - See https://github.com/reaviz/reaflow/issues/60
    *
    * @see https://reaflow.dev/?path=/story/demos-undo-redo
    */
@@ -131,7 +131,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
       // Clearing the undo/redo history to avoid allowing the editor to "undo" the creation of the "start" node
       // If the "start" node creation step is "undoed" then it'd be re-created automatically, which would erase the whole history
       // See https://github.com/reaviz/reaflow/issues/60#issuecomment-780499761
-      // Doing it only once to avoid infinite loop rendering
+      // Doing it only once after a reset to avoid infinite loop rendering
       if (!hasClearedUndoHistory) {
         console.info('Clearing undo/redo history to start from a clean state.');
         clear();
