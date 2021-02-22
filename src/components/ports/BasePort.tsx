@@ -57,6 +57,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
     id,
     properties,
     fromNodeId,
+    onDragStart: onDragStartInternal,
     onDragEnd: onDragEndInternal,
   } = props;
 
@@ -138,6 +139,11 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
   const onPortDragStart = (event: DragEvent, fromPosition: Position, fromPort: BasePortData, extra: any) => {
     console.log('onDragStart port: ', node, event, fromPosition, fromPort, extra);
 
+    if (typeof onDragStartInternal === 'function') {
+      // Runs internal onDragStart (built-in from Reaflow) which does stuff I'm not aware about
+      onDragStartInternal(event, fromPosition, fromPort, extra);
+    }
+
     setDraggedEdgeFromPort({
       fromNode: node,
       fromPort: fromPort,
@@ -210,8 +216,8 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
       });
     }
 
-    if (onDragEndInternal) {
-      // Runs internal onDragEnd which removes the edge if it doesn't connect to anything
+    if (typeof onDragEndInternal === 'function') {
+      // Runs internal onDragEnd (built-in from Reaflow) which removes the edge if it doesn't connect to anything
       onDragEndInternal(dragEvent, initial, fromPort, extra);
     }
 
