@@ -37,7 +37,6 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
       {
         (nodeProps: SpecializedNodeProps<InformationNodeData>) => {
           const {
-            id,
             node,
             patchCurrentNode,
           } = nodeProps;

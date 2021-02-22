@@ -34,7 +34,6 @@ const IfNode: BaseNodeComponent<Props> = (props) => {
       {
         (nodeProps: SpecializedNodeProps<IfNodeData>) => {
           const {
-            id,
             node,
             patchCurrentNode,
           } = nodeProps;

@@ -1,7 +1,13 @@
+import { NodeChildProps } from 'reaflow';
 import BaseNodeData from '../BaseNodeData';
-import BaseNodeProps, { PatchCurrentNode } from '../BaseNodeProps';
+import { PatchCurrentNode } from '../BaseNodeProps';
 
-export type SpecializedNodeProps<NodeData extends BaseNodeData = BaseNodeData> = BaseNodeProps<NodeData> & {
+export type SpecializedNodeProps<NodeData extends BaseNodeData = BaseNodeData> = Omit<NodeChildProps, 'node'> & {
+  /**
+   * Current node data.
+   */
+  node: NodeData;
+
   /**
    * Path the properties of the current node.
    *
