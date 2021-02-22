@@ -10,6 +10,7 @@ import BaseNodeProps from '../../types/BaseNodeProps';
 import { InformationNodeData } from '../../types/nodes/InformationNodeData';
 import { SpecializedNodeProps } from '../../types/nodes/SpecializedNodeProps';
 import NodeType from '../../types/NodeType';
+import useCanvasUtils from '../hooks/useCanvasUtils';
 import Textarea from '../plugins/Textarea';
 import BaseNode from './BaseNode';
 
@@ -39,13 +40,24 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
           const {
             node,
             patchCurrentNode,
+            x,
+            y,
           } = nodeProps;
+          console.log(props)
+          const { setScrollXY } = useCanvasUtils();
           const [lastCreated] = useRecoilState(lastCreatedState);
           const lastCreatedNode = lastCreated?.node;
           const lastCreatedAt = lastCreated?.at;
 
           // Autofocus works fine when the node is inside the viewport, but when it's created outside it moves the viewport back at the beginning
           const shouldAutofocus = lastCreatedNode?.id === node.id && ((lastCreatedAt || 0) + 1000 > now());
+          window.setScrollXY = setScrollXY;
+
+          if (shouldAutofocus && typeof setScrollXY === 'function') {
+            console.log('autocenter', x, y);
+            // @ts-ignore
+            // setScrollXY([x, y]);
+          }
 
           /**
            * When textarea input height changes, we need to increase the height of the whole node accordingly.

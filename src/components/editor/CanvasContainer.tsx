@@ -339,6 +339,8 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
           containerRef: canvasRef?.current?.containerRef,
           centerCanvas: canvasRef?.current?.centerCanvas,
           fitCanvas: canvasRef?.current?.fitCanvas,
+          setCanvasXY: canvasRef?.current?.setCanvasXY,
+          setScrollXY: canvasRef?.current?.setScrollXY,
           setZoom: canvasRef?.current?.setZoom,
           zoomIn: canvasRef?.current?.zoomIn,
           zoomOut: canvasRef?.current?.zoomOut,

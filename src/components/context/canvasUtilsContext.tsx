@@ -1,4 +1,8 @@
-import React, { RefObject } from 'react';
+import React, {
+  Dispatch,
+  RefObject,
+  SetStateAction,
+} from 'react';
 
 /**
  * Contains utilities exposed by the Canvas ref.
@@ -21,6 +25,16 @@ export type CanvasUtilsContext = {
    * Fit the canvas to the viewport.
    */
   fitCanvas?: () => void;
+
+  /**
+   * Change the X/Y of the canvas.
+   */
+  setCanvasXY?: (XY: Dispatch<SetStateAction<[x: number, y: number]>>) => void;
+
+  /**
+   * Change scroll X/Y of the canvas.
+   */
+  setScrollXY?: (XY: Dispatch<SetStateAction<[x: number, y: number]>>) => void;
 
   /**
    * Set a zoom factor of the canvas.
