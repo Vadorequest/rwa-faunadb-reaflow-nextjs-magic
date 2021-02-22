@@ -294,7 +294,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
           }
 
           .port {
-            // Ports are being highlighted during edge dragging, to make it obvious what are the possible destinatoin ports
+            // Ports are being highlighted during edge dragging, to make it obvious what are the possible destination ports
             &.is-highlighted {
               stroke: blue !important;
             }

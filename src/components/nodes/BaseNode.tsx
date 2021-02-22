@@ -101,9 +101,9 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
    * Triggered when clicking on the "x" remove button that appears when a node is selected.
    *
    * @param event
-   * @param node
+   * @param node_DO_NOT_USE
    */
-  const onNodeRemove = (event: React.MouseEvent<SVGGElement, MouseEvent>, node: NodeData) => {
+  const onNodeRemove = (event: React.MouseEvent<SVGGElement, MouseEvent>, node_DO_NOT_USE: NodeData) => {
     console.log('onNodeRemove', event, node);
     const dataset: CanvasDataset = removeAndUpsertNodesThroughPorts(nodes, edges, node);
     const newSelectedNodes = remove(selectedNodes, node?.id);
@@ -192,6 +192,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
         strokeWidth: 0,
         fill: 'white',
         color: 'black',
+        cursor: 'auto'
       }}
       className={classnames(
         `node-svg-rect node-${nodeType}-svg-rect`,
@@ -252,7 +253,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                 }
 
                 .node {
-                  margin: 5px;
+                  margin: 15px;
 
                   // XXX Elements within a <foreignObject> that are using the CSS "position" attribute won't be shown properly, 
                   //  unless they're wrapped into a container using a "fixed" position.
@@ -279,6 +280,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                   className={'node-actions-container'}
                   css={css`
                     position: absolute;
+                    display: ${isSelected ? 'block' : 'none'};
                     top: -15px;
                     right: 5px;
                     margin: 5px;
@@ -287,18 +289,15 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                     color: red;
                     width: 5px;
                     height: 5px;
-
-                    div {
+                    
+                    .node-action {
                       cursor: pointer;
-                    }
-
-                    .delete-action {
-                      display: none; // TODO implement
                     }
                   `}
                 >
                   <div
                     className={'node-action delete-action'}
+                    onClick={onNodeRemove as MouseEventHandler}
                   >
                     x
                   </div>
