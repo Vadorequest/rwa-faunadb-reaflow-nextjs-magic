@@ -32,8 +32,8 @@ import {
   getDefaultNodePropsWithFallback,
 } from '../../utils/nodes';
 import {
-  getDefaultToPort,
   canConnectToDestinationPort,
+  getDefaultToPort,
 } from '../../utils/ports';
 
 type Props = {
@@ -69,7 +69,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
   const { displayedFrom, isDisplayed } = blockPickerMenu;
 
   // Highlight the current port if there is an edge being dragged from another port and if it can connect to the current port
-  const isHighlighted = canConnectToDestinationPort(draggedEdgeFromPort?.fromNode, draggedEdgeFromPort?.fromPort, node, port, edges);
+  const isHighlighted = canConnectToDestinationPort(edges, draggedEdgeFromPort?.fromNode, draggedEdgeFromPort?.fromPort, node, port);
 
   const style = {
     fill: 'white',
@@ -172,15 +172,22 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
         fromNode,
       } = draggedEdgeFromPort || {};
       const toNode: BaseNodeData | undefined = nodes.find((node: BaseEdgeData) => node.id === toNodeId);
-      const newEdge: BaseEdgeData = createEdge(fromNode, toNode, fromPort, getDefaultToPort(toNode));
+      const toPort: BasePortData = getDefaultToPort(toNode) as BasePortData;
 
-      console.log('Linking existing nodes through new edge', newEdge);
-      setEdges([
-        ...edges,
-        newEdge,
-      ]);
+      if (canConnectToDestinationPort(edges, fromNode, fromPort, toNode, toPort)) {
+        const newEdge: BaseEdgeData = createEdge(fromNode, toNode, fromPort, toPort);
 
-      // Hides the block picker menu
+        console.log('Linking existing nodes through new edge', newEdge);
+        setEdges([
+          ...edges,
+          newEdge,
+        ]);
+      } else {
+        console.error(`You cannot connect the link to that port.`);
+        alert(`You cannot connect the link to that port.`);
+      }
+
+      // Hides the block picker menu (it might have been opened before)
       setBlockPickerMenu({
         isDisplayed: false,
       });

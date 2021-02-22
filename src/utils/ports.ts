@@ -54,17 +54,21 @@ export const getDefaultToPort = (toNode?: BaseNodeData, toPort?: Partial<BasePor
  * - The destination port's side is not the same as the source port's side. (forces left to right workflow)
  * - There isn't already a connection to the destination port. (avoids duplicated edges)
  *
+ * @param edges
  * @param fromNode
  * @param fromPort
  * @param toNode
  * @param toPort
- * @param edges
  */
-export const canConnectToDestinationPort = (fromNode?: BaseNodeData, fromPort?: BasePortData, toNode?: BaseNodeData, toPort?: BasePortData, edges?: BaseEdgeData[]): boolean => {
+export const canConnectToDestinationPort = (edges: BaseEdgeData[], fromNode?: BaseNodeData, fromPort?: BasePortData, toNode?: BaseNodeData, toPort?: BasePortData): boolean => {
+  if(!fromNode || !fromPort || !toNode || !toPort){
+    return false;
+  }
+
   const areSourceAndDestinationPortsDifferent = fromNode?.id !== toNode?.id;
   const arePortsOnDifferentSides = fromPort?.side !== toPort?.side;
   const isSourcePortFromEastSide = fromPort?.side === 'EAST';
   const isLinked = !!edges?.find((edge: BaseEdgeData) => edge.from === fromNode?.id && edge?.to === toNode?.id);
 
-  return !!(fromPort && areSourceAndDestinationPortsDifferent && arePortsOnDifferentSides && isSourcePortFromEastSide && !isLinked);
+  return areSourceAndDestinationPortsDifferent && arePortsOnDifferentSides && isSourcePortFromEastSide && !isLinked;
 };
