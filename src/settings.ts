@@ -18,6 +18,8 @@ export const settings: Settings = {
   },
   canvas: {
     direction: 'RIGHT',
+    maxWidth: 10000, // 10k should handle about 50 horizontal nodes
+    maxHeight: 2000,
     nodes: {
       defaultDebounceFor: 250,
       selected: {
@@ -91,6 +93,20 @@ export type CanvasSettings = {
    * Direction used by the canvas, used by ELKjs.
    */
   direction: CanvasDirection;
+
+  /**
+   * Maximal width of the canvas.
+   *
+   * XXX Awaiting https://github.com/reaviz/reaflow/discussions/51 for auto-grow
+   */
+  maxWidth: number;
+
+  /**
+   * Maximal height of the canvas.
+   *
+   * XXX Awaiting https://github.com/reaviz/reaflow/discussions/51 for auto-grow
+   */
+  maxHeight: number;
 
   /**
    * Configuration relative to the nodes.

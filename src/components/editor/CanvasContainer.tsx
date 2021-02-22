@@ -216,6 +216,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     <div
       className={'canvas-container'}
       css={css`
+        // Positioned in absolute position and takes all the spaces of its parent element (EditorContainer)
         position: absolute;
         top: 0;
         bottom: 0;
@@ -311,8 +312,8 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
           className={'reaflow-canvas'}
           direction={settings.canvas.direction}
           onCanvasClick={onCanvasClick}
-          maxHeight={2000}
-          maxWidth={6000}
+          maxWidth={settings.canvas.maxWidth}
+          maxHeight={settings.canvas.maxHeight}
           nodes={nodes}
           edges={edges}
           selections={selections}
