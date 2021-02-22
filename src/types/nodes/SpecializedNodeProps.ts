@@ -22,4 +22,9 @@ export type SpecializedNodeProps<NodeData extends BaseNodeData = BaseNodeData> =
    * Whether the node is being selected.
    */
   isSelected: boolean;
+
+  /**
+   * Whether the node can be reached.
+   */
+  isReachable: boolean;
 }

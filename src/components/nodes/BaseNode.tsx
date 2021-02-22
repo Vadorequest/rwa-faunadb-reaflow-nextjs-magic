@@ -26,6 +26,7 @@ import { SpecializedNodeProps } from '../../types/nodes/SpecializedNodeProps';
 import NodeType from '../../types/NodeType';
 import {
   cloneNode,
+  isNodeReachable,
   removeAndUpsertNodesThroughPorts,
 } from '../../utils/nodes';
 import { createPort } from '../../utils/ports';
@@ -71,6 +72,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
   const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesSelector);
   const isSelected = !!selectedNodes?.find((selectedNode: string) => selectedNode === node.id);
   const nodeType: NodeType = node?.data?.type as NodeType;
+  const isReachable = isNodeReachable(node, edges);
 
   /**
    * Path the properties of the current node.
@@ -243,12 +245,15 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
             ...nodeProps,
             patchCurrentNode,
             isSelected,
+            isReachable,
           };
 
           return (
             <foreignObject
               id={`node-foreignObject-${node.id}`} // Used during drag & drop of edges to resolve the destination node ("toNode")
-              className={classnames(`${nodeType}-node-container node-container`, { 'is-selected': isSelected })}
+              className={classnames(`${nodeType}-node-container node-container`, {
+                'is-selected': isSelected,
+              })}
               width={width}
               height={height}
               // x={0} // Relative position from the parent Node component (aligned to top)
@@ -282,6 +287,13 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                   //  Solves the display of React Select element.
                   // See https://github.com/chakra-ui/chakra-ui/issues/3288#issuecomment-776316200
                   position: fixed;
+                }
+
+                .is-unreachable-warning {
+                  pointer-events: auto;
+                  color: orange;
+                  float: left;
+                  cursor: help;
                 }
 
                 // Applied to all textarea for all nodes
@@ -343,6 +355,20 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                 <div
                   className={`node-content-container ${nodeType}-content-container`}
                 >
+                  {
+                    // Displays a warning icon at the left of the node's title (using css float to avoid break line)
+                    !isReachable && (
+                      <span
+                        className={'is-unreachable-warning'}
+                      >
+                        <FontAwesomeIcon
+                          icon={['fas', 'exclamation-triangle']}
+                          onClick={() => alert(`This node is not reachable because there are no edge connected to its entry port.`)}
+                        />
+                      </span>
+                    )
+                  }
+
                   {
                     // Invoke the children as a function, or render the children as a component, if it's not a function
                     // @ts-ignore

@@ -128,6 +128,25 @@ export const getDefaultNodePropsWithFallback = (nodeType: NodeType): BaseNodeDef
 };
 
 /**
+ * Detects whether a node is reachable.
+ *
+ * A node that isn't reachable doesn't have any edge coming through its WEST port (left).
+ * Except for "start" node which is the entry point, and thus always reachable.
+ *
+ * @param node
+ * @param edges
+ */
+export const isNodeReachable = (node: BaseNodeData, edges: BaseEdgeData[]) => {
+  if (node?.data?.type === 'start') {
+    return true;
+  }
+
+  const westPort: BasePortData | undefined = node?.ports?.find((port: BasePortData) => port?.side === 'WEST');
+
+  return !!edges?.find((edge: BaseEdgeData) => edge?.toPort === westPort?.id);
+};
+
+/**
  * Add a node and optional edge, and automatically link their ports.
  *
  * Automatically connects the fromNode (left node) using its EAST port (right side) to the newNode (right node) using it's WEST port (left side).

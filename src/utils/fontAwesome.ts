@@ -6,6 +6,7 @@ import '@fortawesome/fontawesome-svg-core/styles.css';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import {
   faClone,
+  faExclamationTriangle,
   faHeart,
   faHome,
   faPlay,
@@ -31,6 +32,7 @@ config.autoAddCss = false; // Tell Font Awesome to skip adding the CSS automatic
 // Import @fortawesome/free-solid-svg-icons
 library.add(
   faClone,
+  faExclamationTriangle,
   faHeart,
   faHome,
   faPlay,
