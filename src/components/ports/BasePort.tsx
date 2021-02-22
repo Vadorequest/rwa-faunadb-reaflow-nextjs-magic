@@ -33,7 +33,7 @@ import {
 } from '../../utils/nodes';
 import {
   getDefaultToPort,
-  shouldBeHighlighted,
+  canConnectToDestinationPort,
 } from '../../utils/ports';
 
 type Props = {
@@ -68,8 +68,8 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
   const port: BasePortData = node?.ports?.find((port: BasePortData) => port.id === id) as BasePortData;
   const { displayedFrom, isDisplayed } = blockPickerMenu;
 
-  // Highlight the current port if there is an edge being dragged of another port's side
-  const isHighlighted = shouldBeHighlighted(draggedEdgeFromPort?.fromNode, draggedEdgeFromPort?.fromPort, fromNodeId, properties?.side);
+  // Highlight the current port if there is an edge being dragged from another port and if it can connect to the current port
+  const isHighlighted = canConnectToDestinationPort(draggedEdgeFromPort?.fromNode, draggedEdgeFromPort?.fromPort, node, port, edges);
 
   const style = {
     fill: 'white',
