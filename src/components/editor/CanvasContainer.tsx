@@ -10,8 +10,6 @@ import {
   Canvas,
   CanvasRef,
   EdgeProps,
-  hasLink,
-  NodeData,
   NodeProps,
   UndoRedoEvent,
   useUndo,
@@ -24,19 +22,12 @@ import { edgesSelector } from '../../states/edgesState';
 import { nodesSelector } from '../../states/nodesState';
 import { selectedEdgesSelector } from '../../states/selectedEdgesState';
 import { selectedNodesSelector } from '../../states/selectedNodesState';
-import BaseEdgeData from '../../types/BaseEdgeData';
 import BaseNodeData from '../../types/BaseNodeData';
-import BasePortData from '../../types/BasePortData';
-import { createEdge } from '../../utils/edges';
 import {
   createNodeFromDefaultProps,
   getDefaultNodePropsWithFallback,
 } from '../../utils/nodes';
 import { persistCanvasDatasetInLS } from '../../utils/persistCanvasDataset';
-import {
-  getDefaultFromPort,
-  getDefaultToPort,
-} from '../../utils/ports';
 import canvasUtilsContext from '../context/canvasUtilsContext';
 import BaseEdge from '../edges/BaseEdge';
 import NodeRouter from '../nodes/NodeRouter';
@@ -183,46 +174,6 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   };
 
   /**
-   * Callback to check if a node is linkable or not.
-   *
-   * If it returns true, then "onNodeLink" will be invoked.
-   *
-   * @param from
-   * @param to
-   * @param port
-   */
-  const onNodeLinkCheck = (from: NodeData, to: NodeData, port?: BasePortData): undefined | boolean => {
-    // TODO ensure to/from are Ports
-    console.log('onNodeLinkCheck', 'will link?', !hasLink(edges, from, to), from, to);
-    return !hasLink(edges, from, to);
-  };
-
-  /**
-   * Callback when a node is linked.
-   *
-   * Invoked when "onNodeLinkCheck" returns true.
-   *
-   * @param fromNode
-   * @param toNode
-   * @param fromPort
-   */
-  const onNodeLink = (fromNode: NodeData, toNode: NodeData, fromPort?: BasePortData): void => {
-    console.log('onNodeLink', fromNode, toNode);
-    const newEdge: BaseEdgeData = createEdge(
-      fromNode,
-      toNode,
-      getDefaultFromPort(fromNode, fromPort),
-      getDefaultToPort(toNode),
-    );
-    console.log('newEdge', newEdge);
-
-    setEdges([
-      ...edges,
-      newEdge,
-    ]);
-  };
-
-  /**
    * Node component. All nodes will render trough this component.
    *
    * Uses the NodeRouter component which will render a different node layout, depending on the node "type".
@@ -252,19 +203,13 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   /**
    * Those options will be forwarded to elkLayout under the "options" property.
    *
+   * @see https://github.com/reaviz/reaflow/blob/master/src/layout/elkLayout.ts Default values applied by Reaflow
+   * @see https://github.com/kieler/elkjs#api
    * @see https://www.eclipse.org/elk/reference.html
    * @see https://www.eclipse.org/elk/reference/options.html
-   * @see https://github.com/reaviz/reaflow/blob/master/src/layout/elkLayout.ts
    */
   const elkLayoutOptions = {
-    // See https://github.com/kieler/elkjs#example
-    'elk.algorithm': 'layered', // Values can be found at https://github.com/kieler/elkjs#api
-    // 'elk.layered.spacing.edgeEdgeBetweenLayers': '20',
-    // 'elk.layered.spacing.edgeNodeBetweenLayers': '20',
-    // 'elk.spacing.individual': '20',
-    // 'elk.graphviz.layerSpacingFactor': '3',
-    // 'elk.layered.layering.strategy': 'NETWORK_SIMPLEX',
-    // 'elk.layered.layering.strategy': 'LONGEST_PATH',
+    'elk.algorithm': 'layered',
   };
 
   return (
@@ -374,8 +319,6 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
           node={Node}
           edge={Edge}
           onLayoutChange={layout => console.log('Layout', layout)}
-          onNodeLinkCheck={onNodeLinkCheck}
-          onNodeLink={onNodeLink}
           layoutOptions={elkLayoutOptions}
         />
       </canvasUtilsContext.Provider>
