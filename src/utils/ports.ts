@@ -1,5 +1,4 @@
 import { v1 as uuid } from 'uuid';
-import { PortSide } from '../../../unlyEd/reaflow/src';
 import BaseEdgeData from '../types/BaseEdgeData';
 import BaseNodeData from '../types/BaseNodeData'; // XXX Use v1 for uniqueness - See https://www.sohamkamani.com/blog/2016/10/05/uuid1-vs-uuid4/
 import BasePortData from '../types/BasePortData';
@@ -61,7 +60,7 @@ export const getDefaultToPort = (toNode?: BaseNodeData, toPort?: Partial<BasePor
  * @param toPort
  */
 export const canConnectToDestinationPort = (edges: BaseEdgeData[], fromNode?: BaseNodeData, fromPort?: BasePortData, toNode?: BaseNodeData, toPort?: BasePortData): boolean => {
-  if(!fromNode || !fromPort || !toNode || !toPort){
+  if (!fromNode || !fromPort || !toNode || !toPort) {
     return false;
   }
 
