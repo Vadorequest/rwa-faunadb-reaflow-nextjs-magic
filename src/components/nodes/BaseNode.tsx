@@ -13,7 +13,6 @@ import { useRecoilState } from 'recoil';
 import settings from '../../settings';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
-import { lastCreatedNodeState } from '../../states/lastCreatedNodeState';
 import { nodesSelector } from '../../states/nodesState';
 import { selectedNodesSelector } from '../../states/selectedNodesState';
 import BaseNodeComponent from '../../types/BaseNodeComponent';

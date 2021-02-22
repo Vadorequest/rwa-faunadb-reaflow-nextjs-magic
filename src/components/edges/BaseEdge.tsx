@@ -1,5 +1,6 @@
 import classnames from 'classnames';
 import cloneDeep from 'lodash.clonedeep';
+import now from 'lodash.now';
 import React from 'react';
 import {
   Edge,
@@ -13,7 +14,7 @@ import {
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
 import { edgesSelector } from '../../states/edgesState';
-import { lastCreatedNodeState } from '../../states/lastCreatedNodeState';
+import { lastCreatedState } from '../../states/lastCreatedState';
 import { selectedEdgesSelector } from '../../states/selectedEdgesState';
 import BaseEdgeData from '../../types/BaseEdgeData';
 import BaseEdgeProps from '../../types/BaseEdgeProps';
@@ -21,6 +22,7 @@ import BaseNodeData from '../../types/BaseNodeData';
 import BasePortData from '../../types/BasePortData';
 import BlockPickerMenu, { OnBlockClick } from '../../types/BlockPickerMenu';
 import { CanvasDataset } from '../../types/CanvasDataset';
+import { LastCreated } from '../../types/LastCreated';
 import NodeType from '../../types/NodeType';
 import { translateXYToCanvasPosition } from '../../utils/canvas';
 import {
@@ -56,7 +58,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
   const [edges, setEdges] = useRecoilState(edgesSelector);
   const [selectedEdges, setSelectedEdges] = useRecoilState(selectedEdgesSelector);
   const { nodes } = canvasDataset;
-  const setLastUpdatedNode: SetterOrUpdater<BaseNodeData | undefined> = useSetRecoilState(lastCreatedNodeState);
+  const setLastCreatedNode: SetterOrUpdater<LastCreated | undefined> = useSetRecoilState(lastCreatedState);
   const { displayedFrom, isDisplayed } = blockPickerMenu;
   const edge: BaseEdgeData = edges.find((edge: BaseEdgeData) => edge?.id === id) as BaseEdgeData;
 
@@ -83,7 +85,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
    * by splitting the edge in two parts and adding the new node in between.
    *
    * @param event
-   * @param edge
+   * @param edge_DO_NOT_USE
    */
   const onAddIconClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, edge_DO_NOT_USE: EdgeData): void => {
     console.log('onAdd edge', edge, event);
@@ -93,7 +95,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
       const newDataset: CanvasDataset = upsertNodeThroughPorts(cloneDeep(nodes), cloneDeep(edges), edge, newNode);
 
       setCanvasDataset(newDataset);
-      setLastUpdatedNode(newNode);
+      setLastCreatedNode({ node: newNode, at: now() });
     };
 
     // Converts the x/y position to a Canvas position and apply some margin for the BlockPickerMenu to display on the right bottom of the cursor

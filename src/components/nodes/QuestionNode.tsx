@@ -1,11 +1,12 @@
 import React, { Fragment } from 'react';
 import { DebounceInput } from 'react-debounce-input';
 import ReactSelect from 'react-select';
+import now from 'lodash.now';
 import { OptionTypeBase } from 'react-select/src/types';
 import { TextareaHeightChangeMeta } from 'react-textarea-autosize/dist/declarations/src';
 import { useRecoilState } from 'recoil';
 import settings from '../../settings';
-import { lastCreatedNodeState } from '../../states/lastCreatedNodeState';
+import { lastCreatedState } from '../../states/lastCreatedState';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
@@ -45,12 +46,16 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
       {
         (nodeProps: SpecializedNodeProps<QuestionNodeData>) => {
           const {
-            id,
             node,
             patchCurrentNode,
           } = nodeProps;
           const choiceTypes: QuestionChoiceTypeOption[] = settings.canvas.nodes.questionNode.choiceTypeOptions;
-          const [lastCreatedNode] = useRecoilState(lastCreatedNodeState);
+          const [lastCreated] = useRecoilState(lastCreatedState);
+          const lastCreatedNode = lastCreated?.node;
+          const lastCreatedAt = lastCreated?.at;
+
+          // Autofocus works fine when the node is inside the viewport, but when it's created outside it moves the viewport back at the beginning
+          const shouldAutofocus = lastCreatedNode?.id === node.id && ((lastCreatedAt || 0) + 1000 > now());
 
           /**
            * When textarea input height changes, we need to increase the height of the whole node accordingly.
@@ -137,7 +142,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                   onHeightChange={onTextHeightChange}
                   onChange={onTextInputValueChange}
                   value={node?.data?.text}
-                  autoFocus={lastCreatedNode?.id === id} // Autofocus works fine when the node is inside the viewport, but when it's created outside it moves the viewport back at the beginning
+                  autoFocus={shouldAutofocus}
                 />
 
                 <div

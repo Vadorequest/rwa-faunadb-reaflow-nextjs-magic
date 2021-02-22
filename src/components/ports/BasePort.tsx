@@ -1,5 +1,6 @@
 import classnames from 'classnames';
 import cloneDeep from 'lodash.clonedeep';
+import now from 'lodash.now';
 import React from 'react';
 import { Port } from 'reaflow';
 import {
@@ -16,13 +17,14 @@ import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
 import { draggedEdgeFromPortState } from '../../states/draggedEdgeFromPortState';
 import { edgesSelector } from '../../states/edgesState';
-import { lastCreatedNodeState } from '../../states/lastCreatedNodeState';
+import { lastCreatedState } from '../../states/lastCreatedState';
 import BaseEdgeData from '../../types/BaseEdgeData';
 import BaseNodeData from '../../types/BaseNodeData';
 import BasePortData from '../../types/BasePortData';
 import BasePortProps from '../../types/BasePortProps';
 import { OnBlockClick } from '../../types/BlockPickerMenu';
 import { CanvasDataset } from '../../types/CanvasDataset';
+import { LastCreated } from '../../types/LastCreated';
 import NodeType from '../../types/NodeType';
 import { translateXYToCanvasPosition } from '../../utils/canvas';
 import { createEdge } from '../../utils/edges';
@@ -63,7 +65,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
   const [edges, setEdges] = useRecoilState(edgesSelector);
   const { nodes } = canvasDataset;
   const [draggedEdgeFromPort, setDraggedEdgeFromPort] = useRecoilState(draggedEdgeFromPortState);
-  const setLastUpdatedNode: SetterOrUpdater<BaseNodeData | undefined> = useSetRecoilState(lastCreatedNodeState);
+  const setLastCreatedNode: SetterOrUpdater<LastCreated | undefined> = useSetRecoilState(lastCreatedState);
   const node: BaseNodeData = nodes.find((node: BaseNodeData) => node.id === fromNodeId) as BaseNodeData;
   const port: BasePortData = node?.ports?.find((port: BasePortData) => port.id === id) as BasePortData;
   const { displayedFrom, isDisplayed } = blockPickerMenu;
@@ -102,7 +104,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
     console.log('newDataset', newDataset);
 
     setCanvasDataset(newDataset);
-    setLastUpdatedNode(newNode);
+    setLastCreatedNode({ node: newNode, at: now() });
   };
 
   /**
