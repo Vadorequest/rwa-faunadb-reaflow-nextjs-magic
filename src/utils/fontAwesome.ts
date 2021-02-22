@@ -5,9 +5,11 @@ import {
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import {
+  faClone,
   faHeart,
   faHome,
   faPlay,
+  faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons';
 
 // See https://github.com/FortAwesome/react-fontawesome#integrating-with-other-tools-and-frameworks
@@ -28,9 +30,11 @@ config.autoAddCss = false; // Tell Font Awesome to skip adding the CSS automatic
 
 // Import @fortawesome/free-solid-svg-icons
 library.add(
+  faClone,
   faHeart,
   faHome,
   faPlay,
+  faTrashAlt,
 );
 
 // Import @fortawesome/free-brands-svg-icons

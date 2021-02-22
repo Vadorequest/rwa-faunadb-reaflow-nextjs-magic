@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classnames from 'classnames';
 import cloneDeep from 'lodash.clonedeep';
 import remove from 'lodash.remove';
@@ -6,7 +7,6 @@ import React, { MouseEventHandler } from 'react';
 import {
   Node,
   NodeChildProps,
-  NodeData,
   Remove,
 } from 'reaflow';
 import { useRecoilState } from 'recoil';
@@ -24,7 +24,10 @@ import { CanvasDataset } from '../../types/CanvasDataset';
 import { GetBaseNodeDefaultPropsProps } from '../../types/GetBaseNodeDefaultProps';
 import { SpecializedNodeProps } from '../../types/nodes/SpecializedNodeProps';
 import NodeType from '../../types/NodeType';
-import { removeAndUpsertNodesThroughPorts } from '../../utils/nodes';
+import {
+  cloneNode,
+  removeAndUpsertNodesThroughPorts,
+} from '../../utils/nodes';
 import { createPort } from '../../utils/ports';
 import BasePort from '../ports/BasePort';
 
@@ -94,16 +97,30 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
   };
 
   /**
-   * Removes a node.
+   * Clones the current node.
+   *
+   * @param event
+   */
+  const onNodeClone = (event: React.MouseEvent<SVGGElement, MouseEvent>) => {
+    const clonedNode: BaseNodeData = cloneNode(node);
+    console.log('clonedNode', clonedNode, nodes);
+
+    setNodes([
+      ...nodes,
+      clonedNode,
+    ]);
+  };
+
+  /**
+   * Removes the current node.
    *
    * Upsert its descendant if there were any. (auto-link all descendants to all its ascendants)
    *
    * Triggered when clicking on the "x" remove button that appears when a node is selected.
    *
    * @param event
-   * @param node_DO_NOT_USE
    */
-  const onNodeRemove = (event: React.MouseEvent<SVGGElement, MouseEvent>, node_DO_NOT_USE: NodeData) => {
+  const onNodeRemove = (event: React.MouseEvent<SVGGElement, MouseEvent>) => {
     console.log('onNodeRemove', event, node);
     const dataset: CanvasDataset = removeAndUpsertNodesThroughPorts(nodes, edges, node);
     const newSelectedNodes = remove(selectedNodes, node?.id);
@@ -121,15 +138,15 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
   };
 
   /**
-   * Selects the node when clicking on it.
+   * Selects the current node when clicking on it.
    *
    * XXX We're resolving the "node" ourselves, instead of relying on the 2nd argument (nodeData),
-   *  which might return null depending on where in the node the click was performed (because of the <foreignObject>).
+   *  which might return null depending on where in the node the click was performed
+   *  (because of the <foreignObject> which is displayed on top of the <rect> element and might hijack mouse events).
    *
    * @param event
-   * @param data_DO_NOT_USE
    */
-  const onNodeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, data_DO_NOT_USE: BaseNodeData) => {
+  const onNodeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>) => {
     console.log(`node clicked (${node?.data?.type})`, 'node:', node);
     setSelectedNodes([node.id]);
   };
@@ -192,7 +209,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
         strokeWidth: 0,
         fill: 'white',
         color: 'black',
-        cursor: 'auto'
+        cursor: 'auto',
       }}
       className={classnames(
         `node-svg-rect node-${nodeType}-svg-rect`,
@@ -280,16 +297,16 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                   className={'node-actions-container'}
                   css={css`
                     position: absolute;
-                    display: ${isSelected ? 'block' : 'none'};
+                    display: ${isSelected ? 'flex' : 'none'};
                     top: -15px;
-                    right: 5px;
+                    right: 25px; // Depends on how many actions needs to be displayed, currently hardcoded
                     margin: 5px;
                     padding: 5px;
                     background-color: transparent;
                     color: red;
                     width: 5px;
                     height: 5px;
-                    
+
                     .node-action {
                       cursor: pointer;
                     }
@@ -297,9 +314,15 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                 >
                   <div
                     className={'node-action delete-action'}
+                    onClick={onNodeClone as MouseEventHandler}
+                  >
+                    <FontAwesomeIcon icon={['fas', 'clone']} />
+                  </div>
+                  <div
+                    className={'node-action delete-action'}
                     onClick={onNodeRemove as MouseEventHandler}
                   >
-                    x
+                    <FontAwesomeIcon icon={['fas', 'trash-alt']} />
                   </div>
                 </div>
 

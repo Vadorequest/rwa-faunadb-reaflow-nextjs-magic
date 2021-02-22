@@ -1,3 +1,4 @@
+import cloneDeep from 'lodash.clonedeep';
 import filter from 'lodash.filter';
 import { v1 as uuid } from 'uuid';
 import BaseNode from '../components/nodes/BaseNode';
@@ -56,6 +57,25 @@ export const createNodeFromDefaultProps = (defaultProps: BaseNodeDefaultProps): 
   };
 
   return createNode(node);
+};
+
+/**
+ * Clone an existing node.
+ *
+ * Keeps all properties, except for the id which is regenerated.
+ *
+ * @param node
+ */
+export const cloneNode = (node: BaseNodeData): BaseNodeData => {
+  const newNode = cloneDeep(node);
+  newNode.id = uuid(); // Force generating a new id for the cloned node
+
+  // Generate new ids for ports (or it'll completely break ELK when it tries to link existing edges to ports)
+  newNode?.ports?.map((port: BasePortData) => port.id = uuid());
+
+  return {
+    ...createNode(newNode),
+  };
 };
 
 /**
