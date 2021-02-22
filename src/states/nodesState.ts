@@ -3,7 +3,7 @@ import {
   selector,
 } from 'recoil';
 import BaseNodeData from '../types/BaseNodeData';
-import { hasDuplicates } from '../utils/array';
+import { hasDuplicatedObjects } from '../utils/array';
 
 /**
  * Used to know what are the nodes currently displayed within the Canvas component.
@@ -39,7 +39,7 @@ export const nodesSelector = selector<BaseNodeData[]>({
    * @param newValue
    */
   set: ({ set, get, reset }, newValue): void => {
-    const hasDuplicateNodes = hasDuplicates(newValue as BaseNodeData[], 'id');
+    const hasDuplicateNodes = hasDuplicatedObjects(newValue as BaseNodeData[], 'id');
 
     if (!hasDuplicateNodes) {
       console.log('nodesSelector set', newValue);

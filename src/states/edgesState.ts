@@ -3,7 +3,7 @@ import {
   selector,
 } from 'recoil';
 import BaseEdgeData from '../types/BaseEdgeData';
-import { hasDuplicates } from '../utils/array';
+import { hasDuplicatedObjects } from '../utils/array';
 
 /**
  * Used to know what are the edges currently displayed within the Canvas component.
@@ -39,7 +39,7 @@ export const edgesSelector = selector<BaseEdgeData[]>({
    * @param newValue
    */
   set: ({ set, get, reset }, newValue): void => {
-    const hasDuplicateEdges = hasDuplicates(newValue as BaseEdgeData[], 'id');
+    const hasDuplicateEdges = hasDuplicatedObjects(newValue as BaseEdgeData[], 'id');
 
     if (!hasDuplicateEdges) {
       console.log('edgesSelector set', newValue);

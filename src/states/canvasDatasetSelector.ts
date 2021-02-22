@@ -3,7 +3,7 @@ import {
   selector,
 } from 'recoil';
 import { CanvasDataset } from '../types/CanvasDataset';
-import { hasDuplicates } from '../utils/array';
+import { hasDuplicatedObjects } from '../utils/array';
 import { edgesSelector } from './edgesState';
 import { nodesSelector } from './nodesState';
 
@@ -45,8 +45,8 @@ export const canvasDatasetSelector = selector<CanvasDataset>({
   set: ({ set, get, reset }, newValue: DefaultValue | CanvasDataset): void => {
     const nodes = (newValue as CanvasDataset)?.nodes || [];
     const edges = (newValue as CanvasDataset)?.edges || [];
-    const hasDuplicateNodes = hasDuplicates(nodes, 'id');
-    const hasDuplicateEdges = hasDuplicates(edges, 'id');
+    const hasDuplicateNodes = hasDuplicatedObjects(nodes, 'id');
+    const hasDuplicateEdges = hasDuplicatedObjects(edges, 'id');
 
     if (!hasDuplicateNodes && !hasDuplicateEdges) {
       console.log('canvasDatasetSelector set', newValue);
