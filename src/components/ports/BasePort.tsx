@@ -114,7 +114,10 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
     console.log('createNodeOnSide', createNodeOnSide);
     if (createNodeOnSide === 'EAST') {
       // The drag started from an EAST port, so we must add the new node on the right of existing node
-      newDataset = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, node, newNode, draggedEdgeFromPort?.fromPort);
+      // The from port is either the port where the node was dragged from, or the port that was clicked on
+      const fromPort: BasePortData = (draggedEdgeFromPort?.fromPort || blockPickerMenu?.fromPort) as BasePortData;
+
+      newDataset = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, node, newNode, fromPort);
     } else {
       // The drag started from a WEST port, so we must add the new node on the left of the existing node
       const fromPort: BasePortData = newNode?.ports?.find((port: BasePortData) => port?.side === 'EAST') as BasePortData;
