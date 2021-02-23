@@ -6,6 +6,8 @@ import React, {
 } from 'react';
 import { useRecoilState } from 'recoil';
 import { blockPickerMenuSelector } from '../../states/blockPickerMenuState';
+import { OnBlockClick } from '../../types/BlockPickerMenu';
+import NodeType from '../../types/NodeType';
 import IfBlock from './IfBlock';
 import InformationBlock from './InformationBlock';
 import QuestionBlock from './QuestionBlock';
@@ -48,6 +50,26 @@ const BlockPickerMenu: React.FunctionComponent<Props> = (props) => {
 
   // console.log('displaying BlockPickerMenu');
 
+  /**
+   * Called by the specialized blocks upon click.
+   *
+   * Contains "onClick" business logic that is shared by all blocks.
+   *
+   * @param nodeType
+   */
+  const onSpecializedBlockClick: OnBlockClick = (nodeType: NodeType) => {
+    if (onBlockClick) {
+      // We provide the "blockPickerMenu" so that it is always up-to-date
+      // Otherwise, it would be out-of-date when relying on the blockPickerMenu that was bound when creating the onBlockClick function
+      onBlockClick(nodeType, blockPickerMenu);
+
+      // Automatically hide the block picker menu once a block has been picked
+      setBlockPickerMenu({
+        isDisplayed: false,
+      });
+    }
+  };
+
   return (
     <div
       className={classnames('block-picker-menu', {
@@ -83,16 +105,13 @@ const BlockPickerMenu: React.FunctionComponent<Props> = (props) => {
         className={'blocks-picker'}
       >
         <InformationBlock
-          onBlockClick={onBlockClick}
-          setBlockPickerMenu={setBlockPickerMenu}
+          onBlockClick={onSpecializedBlockClick}
         />
         <QuestionBlock
-          onBlockClick={onBlockClick}
-          setBlockPickerMenu={setBlockPickerMenu}
+          onBlockClick={onSpecializedBlockClick}
         />
         <IfBlock
-          onBlockClick={onBlockClick}
-          setBlockPickerMenu={setBlockPickerMenu}
+          onBlockClick={onSpecializedBlockClick}
         />
       </div>
     </div>

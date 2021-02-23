@@ -25,7 +25,7 @@ import BaseEdgeData from '../../types/BaseEdgeData';
 import BaseNodeData from '../../types/BaseNodeData';
 import BasePortData from '../../types/BasePortData';
 import BasePortProps from '../../types/BasePortProps';
-import { OnBlockClick } from '../../types/BlockPickerMenu';
+import BlockPickerMenu, { OnBlockClick } from '../../types/BlockPickerMenu';
 import { CanvasDataset } from '../../types/CanvasDataset';
 import { LastCreated } from '../../types/LastCreated';
 import NodeType from '../../types/NodeType';
@@ -88,26 +88,30 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
    * Automatically creates the edge between the source node and the newly created node, and connects them through their ports.
    *
    * @param nodeType
+   * @param blockPickerMenu
    */
-  const onBlockClick: OnBlockClick = (nodeType: NodeType) => {
-    console.log('onBlockClick (from port)', nodeType, draggedEdgeFromPort);
+  const onBlockClick: OnBlockClick = (nodeType: NodeType, blockPickerMenu: BlockPickerMenu | undefined) => {
+    console.log('onBlockClick (from port)', nodeType, draggedEdgeFromPort, blockPickerMenu);
     const newNode = createNodeFromDefaultProps(getDefaultNodePropsWithFallback(nodeType));
     let newDataset: CanvasDataset;
-    let createNodeOnSide: PortSide = 'WEST';
+    let createNodeOnSide: PortSide | undefined;
 
     if (typeof draggedEdgeFromPort === 'undefined') {
+      console.log(`typeof draggedEdgeFromPort === 'undefined'`);
       // It was a click on a port which opened the BlockPickerMenu, not a drag from a port
       if (blockPickerMenu?.fromPort?.side) {
         createNodeOnSide = blockPickerMenu?.fromPort?.side;
       }
 
     } else {
+      console.log(`typeof draggedEdgeFromPort !== 'undefined'`);
       // It was a drag from a port which opened the BlockPickerMenu, not a click on a port
-      if (draggedEdgeFromPort?.fromPort?.side === 'EAST') {
-        createNodeOnSide = 'EAST';
+      if (draggedEdgeFromPort?.fromPort?.side) {
+        createNodeOnSide = draggedEdgeFromPort?.fromPort?.side;
       }
     }
 
+    console.log('createNodeOnSide', createNodeOnSide);
     if (createNodeOnSide === 'EAST') {
       // The drag started from an EAST port, so we must add the new node on the right of existing node
       newDataset = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, node, newNode, draggedEdgeFromPort?.fromPort);
@@ -129,7 +133,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
    * Invoked when clicking on a port.
    *
    * Displays the BlockPickerMenu, which can then be used to select which Block to add to the canvas.
-   * If the BlockPickerMenu was already displayed, hides it if it was opened from the same port.
+   * If the BlockPickerMenu was already displayed by clicking on the same port, then hides it instead.
    *
    * @param event
    * @param port

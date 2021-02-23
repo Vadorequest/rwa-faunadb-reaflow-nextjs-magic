@@ -1,7 +1,13 @@
 import BasePortData from './BasePortData';
 import NodeType from './NodeType';
 
-export type OnBlockClick = (blockType: NodeType) => void;
+/**
+ * Type of the onBlockClick function.
+ *
+ * @param blockType
+ * @param blockPickerMenu Necessary to ensure we're always manipulating an up-to-date "blockPickerMenu" within the "onBlockClick" function
+ */
+export type OnBlockClick = (blockType: NodeType, blockPickerMenu?: BlockPickerMenu) => void;
 
 /**
  * The block picker menu is a (floating) menu displaying all available blocks.

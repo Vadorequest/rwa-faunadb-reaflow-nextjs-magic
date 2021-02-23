@@ -1,9 +1,10 @@
+import isEqual from 'lodash.isequal';
+import merge from 'lodash.merge';
 import {
   atom,
   selector,
 } from 'recoil';
 import BlockPickerMenu from '../types/BlockPickerMenu';
-import merge from 'lodash.merge';
 
 /**
  * Used to know the state of the block picker menu, whether it's displayed, where, etc..
@@ -30,19 +31,23 @@ export const blockPickerMenuSelector = selector<BlockPickerMenu>({
    * XXX This way, when only setting "isDisplayed", it'll keep the other properties intact (e.g: fromPort)
    *  which will allow us to know from which port it was initially opened even if it has been closed since.
    *
-   * Avoids needless updates. (TODO)
+   * Avoids needless updates.
    *
    * @param set
    * @param get
    * @param reset
-   * @param newValue
+   * @param patch
    */
-  set: ({ set, get, reset }, newValue): void => {
-    const existingValue: BlockPickerMenu = get(blockPickerMenuState);
-    const patchedValue = {};
-    merge(patchedValue, existingValue, newValue);
+  set: ({ set, get, reset }, patch): void => {
+    const currentValue: BlockPickerMenu = get(blockPickerMenuState);
+    const newValue = {};
+    merge(newValue, currentValue, patch);
 
-    console.log('blockPickerMenuSelector set', patchedValue);
-    set(blockPickerMenuState, patchedValue as BlockPickerMenu);
+    if (!isEqual(currentValue, newValue)) {
+      console.log('blockPickerMenuSelector set', newValue, 'patch:', patch);
+      set(blockPickerMenuState, newValue as BlockPickerMenu);
+    } else {
+      console.log('blockPickerMenuSelector identical to current value (not set)', newValue);
+    }
   },
 });
