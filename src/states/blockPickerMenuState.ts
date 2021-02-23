@@ -1,5 +1,6 @@
 import isEqual from 'lodash.isequal';
 import merge from 'lodash.merge';
+import now from 'lodash.now';
 import {
   atom,
   selector,
@@ -40,10 +41,11 @@ export const blockPickerMenuSelector = selector<BlockPickerMenu>({
    */
   set: ({ set, get, reset }, patch): void => {
     const currentValue: BlockPickerMenu = get(blockPickerMenuState);
-    const newValue = {};
+    const newValue: Partial<BlockPickerMenu> = {};
     merge(newValue, currentValue, patch);
 
     if (!isEqual(currentValue, newValue)) {
+      newValue.at = now(); // Automatically update the timestamp of creation
       console.log('blockPickerMenuSelector set', newValue, 'patch:', patch);
       set(blockPickerMenuState, newValue as BlockPickerMenu);
     } else {

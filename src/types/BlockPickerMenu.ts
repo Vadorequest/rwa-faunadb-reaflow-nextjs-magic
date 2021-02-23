@@ -65,6 +65,11 @@ export type BlockPickerMenu = {
    * When the menu was opened through a click on a port, contains the port that was clicked on.
    */
   fromPort?: BasePortData;
+
+  /**
+   * Timestamp of creation. (should use lodash.now())
+   */
+  at?: number;
 }
 
 export default BlockPickerMenu;

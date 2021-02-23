@@ -24,6 +24,7 @@ import { nodesSelector } from '../../states/nodesState';
 import { selectedEdgesSelector } from '../../states/selectedEdgesState';
 import { selectedNodesSelector } from '../../states/selectedNodesState';
 import BaseNodeData from '../../types/BaseNodeData';
+import { isOlderThan } from '../../utils/date';
 import {
   createNodeFromDefaultProps,
   getDefaultNodePropsWithFallback,
@@ -167,7 +168,10 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         isBlockPickerMenuTargetingCanvas = blockPickerMenu?.eventTarget === canvasRef?.current?.svgRef?.current;
       }
 
-      if (blockPickerMenu?.isDisplayed && !isBlockPickerMenuTargetingCanvas) {
+      // Automatically hide the blockPickerMenu when clicking on the canvas, if it is displayed and was created more than a second ago
+      // Using a delay is a workaround, because when dropping the edge onto the canvas, it counts as a click
+      // If we weren't using a delay, the blockPickerMenu would be displayed and then automatically hidden
+      if (blockPickerMenu?.isDisplayed && (!isBlockPickerMenuTargetingCanvas || isOlderThan(blockPickerMenu?.at, 1000))) {
         setBlockPickerMenu({
           isDisplayed: false,
         });
