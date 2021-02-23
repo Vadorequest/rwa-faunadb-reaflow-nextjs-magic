@@ -322,6 +322,10 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                   //  Solves the display of React Select element.
                   // See https://github.com/chakra-ui/chakra-ui/issues/3288#issuecomment-776316200
                   position: fixed;
+                  
+                  // Take full size of its parent, minus the margins (left/right)
+                  width: calc(100% - 30px); // Depends on above "margin" value
+                  height: calc(100% - 30px); // Depends on above "margin" value
                 }
 
                 .is-unreachable-warning {
