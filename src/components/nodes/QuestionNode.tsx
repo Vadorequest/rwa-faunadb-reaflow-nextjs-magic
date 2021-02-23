@@ -15,6 +15,7 @@ import { QuestionChoiceTypeOption } from '../../types/nodes/QuestionChoiceTypeOp
 import { QuestionNodeData } from '../../types/nodes/QuestionNodeData';
 import { SpecializedNodeProps } from '../../types/nodes/SpecializedNodeProps';
 import NodeType from '../../types/NodeType';
+import { isYoungerThan } from '../../utils/date';
 import Textarea from '../plugins/Textarea';
 import BaseNode from './BaseNode';
 
@@ -55,7 +56,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
           const lastCreatedAt = lastCreated?.at;
 
           // Autofocus works fine when the node is inside the viewport, but when it's created outside it moves the viewport back at the beginning
-          const shouldAutofocus = lastCreatedNode?.id === node.id && ((lastCreatedAt || 0) + 1000 > now());
+          const shouldAutofocus = lastCreatedNode?.id === node.id && isYoungerThan(lastCreatedAt, 1000);
 
           /**
            * When textarea input height changes, we need to increase the height of the whole node accordingly.
