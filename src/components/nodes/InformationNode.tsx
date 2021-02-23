@@ -1,9 +1,6 @@
-import now from 'lodash.now';
 import React, { Fragment } from 'react';
 import { DebounceInput } from 'react-debounce-input';
 import { TextareaHeightChangeMeta } from 'react-textarea-autosize/dist/declarations/src';
-import { useRecoilState } from 'recoil';
-import { lastCreatedState } from '../../states/lastCreatedState';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
@@ -39,9 +36,9 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
         (nodeProps: SpecializedNodeProps<InformationNodeData>) => {
           const {
             node,
+            lastCreated,
             patchCurrentNode,
           } = nodeProps;
-          const [lastCreated] = useRecoilState(lastCreatedState);
           const lastCreatedNode = lastCreated?.node;
           const lastCreatedAt = lastCreated?.at;
 

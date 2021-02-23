@@ -1,6 +1,7 @@
 import { NodeChildProps } from 'reaflow';
 import BaseNodeData from '../BaseNodeData';
 import { PatchCurrentNode } from '../BaseNodeProps';
+import { LastCreated } from '../LastCreated';
 
 export type SpecializedNodeProps<NodeData extends BaseNodeData = BaseNodeData> = Omit<NodeChildProps, 'node'> & {
   /**
@@ -17,6 +18,12 @@ export type SpecializedNodeProps<NodeData extends BaseNodeData = BaseNodeData> =
    * @param nodeData
    */
   patchCurrentNode: PatchCurrentNode<Partial<NodeData>>;
+
+  /**
+   * The last created node and its time of creation.
+   * Will be undefined if no node was created yet.
+   */
+  lastCreated?: LastCreated | undefined;
 
   /**
    * Whether the node is being selected.

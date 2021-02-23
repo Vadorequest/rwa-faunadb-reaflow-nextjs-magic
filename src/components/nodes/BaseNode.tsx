@@ -3,7 +3,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classnames from 'classnames';
 import cloneDeep from 'lodash.clonedeep';
 import remove from 'lodash.remove';
-import React, { MouseEventHandler } from 'react';
+import React, {
+  MouseEventHandler,
+  useEffect,
+  useState,
+} from 'react';
 import {
   Node,
   NodeChildProps,
@@ -13,6 +17,7 @@ import { useRecoilState } from 'recoil';
 import settings from '../../settings';
 import { blockPickerMenuState } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
+import { lastCreatedState } from '../../states/lastCreatedState';
 import { nodesSelector } from '../../states/nodesState';
 import { selectedNodesSelector } from '../../states/selectedNodesState';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
@@ -24,6 +29,7 @@ import { CanvasDataset } from '../../types/CanvasDataset';
 import { GetBaseNodeDefaultPropsProps } from '../../types/GetBaseNodeDefaultProps';
 import { SpecializedNodeProps } from '../../types/nodes/SpecializedNodeProps';
 import NodeType from '../../types/NodeType';
+import { isYoungerThan } from '../../utils/date';
 import {
   cloneNode,
   isNodeReachable,
@@ -73,6 +79,19 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
   const isSelected = !!selectedNodes?.find((selectedNode: string) => selectedNode === node.id);
   const nodeType: NodeType = node?.data?.type as NodeType;
   const isReachable = isNodeReachable(node, edges);
+  const [lastCreated] = useRecoilState(lastCreatedState);
+  const lastCreatedNode = lastCreated?.node;
+  const lastCreatedAt = lastCreated?.at;
+  const isLastCreatedNode = lastCreated?.node?.id === node?.id;
+
+  const recentlyCreatedMaxAge = 2000;
+  const [isRecentlyCreated, setIsRecentlyCreated] = useState<boolean>(isYoungerThan(lastCreatedAt, recentlyCreatedMaxAge));
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsRecentlyCreated(false);
+    }, recentlyCreatedMaxAge + 1);
+  }, []);
 
   /**
    * Path the properties of the current node.
@@ -243,9 +262,10 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
           } = nodeProps;
           const specializedNodeProps: SpecializedNodeProps = {
             ...nodeProps,
-            patchCurrentNode,
             isSelected,
             isReachable,
+            lastCreated,
+            patchCurrentNode,
           };
 
           return (
@@ -253,6 +273,8 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
               id={`node-foreignObject-${node.id}`} // Used during drag & drop of edges to resolve the destination node ("toNode")
               className={classnames(`${nodeType}-node-container node-container`, {
                 'is-selected': isSelected,
+                'is-last-created': isLastCreatedNode,
+                'is-recently-created animate__animated animate__pulse': isRecentlyCreated, // Vado's having fun with CSS animations (not so pretty, though)
               })}
               width={width}
               height={height}
@@ -261,13 +283,20 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
               css={css`
                 position: relative;
 
-                // Disabling pointer-events on top-level containers, for events to be forwarded to the underlying <rect>
-                // Allows using events specific to the Reaflow <Node> component (onClick, onEnter, onLeave, etc.)
-                pointer-events: none;
-
+                // Highlights the node when it's being selected
                 &.is-selected {
                   border: 1px dashed ${settings.canvas.nodes.selected.borderColor};
                 }
+
+                // Highlights the node when it's the last created node
+                &.is-recently-created {
+                  box-shadow: 0px 0px 10px 0px blue;
+                  animation-duration: 1s;
+                }
+
+                // Disabling pointer-events on top-level containers, for events to be forwarded to the underlying <rect>
+                // Allows using events specific to the Reaflow <Node> component (onClick, onEnter, onLeave, etc.)
+                pointer-events: none;
 
                 .node,
                 .node-header {

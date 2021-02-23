@@ -1,12 +1,9 @@
 import React, { Fragment } from 'react';
 import { DebounceInput } from 'react-debounce-input';
 import ReactSelect from 'react-select';
-import now from 'lodash.now';
 import { OptionTypeBase } from 'react-select/src/types';
 import { TextareaHeightChangeMeta } from 'react-textarea-autosize/dist/declarations/src';
-import { useRecoilState } from 'recoil';
 import settings from '../../settings';
-import { lastCreatedState } from '../../states/lastCreatedState';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
@@ -48,10 +45,10 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
         (nodeProps: SpecializedNodeProps<QuestionNodeData>) => {
           const {
             node,
+            lastCreated,
             patchCurrentNode,
           } = nodeProps;
           const choiceTypes: QuestionChoiceTypeOption[] = settings.canvas.nodes.questionNode.choiceTypeOptions;
-          const [lastCreated] = useRecoilState(lastCreatedState);
           const lastCreatedNode = lastCreated?.node;
           const lastCreatedAt = lastCreated?.at;
 
