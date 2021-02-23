@@ -2,7 +2,10 @@ import classnames from 'classnames';
 import cloneDeep from 'lodash.clonedeep';
 import now from 'lodash.now';
 import React from 'react';
-import { Port } from 'reaflow';
+import {
+  Port,
+  PortSide,
+} from 'reaflow';
 import {
   DragEvent,
   Position,
@@ -13,7 +16,7 @@ import {
   useSetRecoilState,
 } from 'recoil';
 import settings from '../../settings';
-import { blockPickerMenuState } from '../../states/blockPickerMenuState';
+import { blockPickerMenuSelector } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
 import { draggedEdgeFromPortState } from '../../states/draggedEdgeFromPortState';
 import { edgesSelector } from '../../states/edgesState';
@@ -61,7 +64,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
     onDragEnd: onDragEndInternal,
   } = props;
 
-  const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuState);
+  const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuSelector);
   const [canvasDataset, setCanvasDataset] = useRecoilState(canvasDatasetSelector);
   const [edges, setEdges] = useRecoilState(edgesSelector);
   const { nodes } = canvasDataset;
@@ -90,8 +93,22 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
     console.log('onBlockClick (from port)', nodeType, draggedEdgeFromPort);
     const newNode = createNodeFromDefaultProps(getDefaultNodePropsWithFallback(nodeType));
     let newDataset: CanvasDataset;
+    let createNodeOnSide: PortSide = 'WEST';
 
-    if (draggedEdgeFromPort?.fromPort?.side === 'EAST') {
+    if (typeof draggedEdgeFromPort === 'undefined') {
+      // It was a click on a port which opened the BlockPickerMenu, not a drag from a port
+      if (blockPickerMenu?.fromPort?.side) {
+        createNodeOnSide = blockPickerMenu?.fromPort?.side;
+      }
+
+    } else {
+      // It was a drag from a port which opened the BlockPickerMenu, not a click on a port
+      if (draggedEdgeFromPort?.fromPort?.side === 'EAST') {
+        createNodeOnSide = 'EAST';
+      }
+    }
+
+    if (createNodeOnSide === 'EAST') {
       // The drag started from an EAST port, so we must add the new node on the right of existing node
       newDataset = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, node, newNode, draggedEdgeFromPort?.fromPort);
     } else {
@@ -118,11 +135,13 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
    * @param port
    */
   const onPortClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, port: BasePortData) => {
+    console.log('onPortClick', port);
     setBlockPickerMenu({
       displayedFrom: `port-${port.id}`,
       isDisplayed: displayedFrom === `port-${port.id}` ? !isDisplayed : true,
       onBlockClick,
       eventTarget: event.target,
+      fromPort: port,
     });
   };
 

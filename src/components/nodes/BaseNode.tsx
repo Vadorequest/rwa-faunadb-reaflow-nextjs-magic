@@ -15,7 +15,7 @@ import {
 } from 'reaflow';
 import { useRecoilState } from 'recoil';
 import settings from '../../settings';
-import { blockPickerMenuState } from '../../states/blockPickerMenuState';
+import { blockPickerMenuSelector } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
 import { lastCreatedState } from '../../states/lastCreatedState';
 import { nodesSelector } from '../../states/nodesState';
@@ -71,7 +71,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
     ...nodeProps // All props that are left will be forwarded to the Node component
   } = props;
 
-  const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuState);
+  const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuSelector);
   const [nodes, setNodes] = useRecoilState(nodesSelector);
   const [canvasDataset, setCanvasDataset] = useRecoilState(canvasDatasetSelector);
   const { edges } = canvasDataset;

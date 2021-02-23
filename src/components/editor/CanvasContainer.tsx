@@ -17,7 +17,7 @@ import {
 } from 'reaflow';
 import { useRecoilState } from 'recoil';
 import settings from '../../settings';
-import { blockPickerMenuState } from '../../states/blockPickerMenuState';
+import { blockPickerMenuSelector } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
 import { edgesSelector } from '../../states/edgesState';
 import { nodesSelector } from '../../states/nodesState';
@@ -67,7 +67,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     canvasRef?.current?.fitCanvas?.();
   }, [canvasRef]);
 
-  const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuState);
+  const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuSelector);
   const [canvasDataset, setCanvasDataset] = useRecoilState(canvasDatasetSelector);
   const [nodes, setNodes] = useRecoilState(nodesSelector);
   const [edges, setEdges] = useRecoilState(edgesSelector);
@@ -75,7 +75,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const [selectedEdges, setSelectedEdges] = useRecoilState(selectedEdgesSelector);
   const selections = selectedNodes; // TODO merge selected nodes and edges
   const [hasClearedUndoHistory, setHasClearedUndoHistory] = useState<boolean>(false);
-  const [cursorXY, setCursorXY] = useState<[number, number]>([0, 0])
+  const [cursorXY, setCursorXY] = useState<[number, number]>([0, 0]);
 
   /**
    * When nodes or edges are modified, updates the persisted data in the local storage.

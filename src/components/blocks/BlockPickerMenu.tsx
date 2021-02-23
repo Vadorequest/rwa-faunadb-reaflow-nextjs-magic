@@ -5,7 +5,7 @@ import React, {
   useState,
 } from 'react';
 import { useRecoilState } from 'recoil';
-import { blockPickerMenuState } from '../../states/blockPickerMenuState';
+import { blockPickerMenuSelector } from '../../states/blockPickerMenuState';
 import IfBlock from './IfBlock';
 import InformationBlock from './InformationBlock';
 import QuestionBlock from './QuestionBlock';
@@ -20,7 +20,7 @@ type Props = {};
  * It is usually displayed at the drop location, when dropping an edge.
  */
 const BlockPickerMenu: React.FunctionComponent<Props> = (props) => {
-  const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuState);
+  const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuSelector);
   const {
     onBlockClick,
     isDisplayed,

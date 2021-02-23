@@ -11,7 +11,7 @@ import {
   useRecoilState,
   useSetRecoilState,
 } from 'recoil';
-import { blockPickerMenuState } from '../../states/blockPickerMenuState';
+import { blockPickerMenuSelector } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
 import { edgesSelector } from '../../states/edgesState';
 import { lastCreatedState } from '../../states/lastCreatedState';
@@ -53,7 +53,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
     targetPort: targetPortId,
   } = props;
 
-  const [blockPickerMenu, setBlockPickerMenu] = useRecoilState<BlockPickerMenu>(blockPickerMenuState);
+  const [blockPickerMenu, setBlockPickerMenu] = useRecoilState<BlockPickerMenu>(blockPickerMenuSelector);
   const [canvasDataset, setCanvasDataset] = useRecoilState(canvasDatasetSelector);
   const [edges, setEdges] = useRecoilState(edgesSelector);
   const [selectedEdges, setSelectedEdges] = useRecoilState(selectedEdgesSelector);

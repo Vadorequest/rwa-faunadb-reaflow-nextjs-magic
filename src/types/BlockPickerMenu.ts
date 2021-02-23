@@ -1,3 +1,4 @@
+import BasePortData from './BasePortData';
 import NodeType from './NodeType';
 
 export type OnBlockClick = (blockType: NodeType) => void;
@@ -53,6 +54,11 @@ export type BlockPickerMenu = {
    * When the menu was opened through a click, contains the event.target.
    */
   eventTarget?: EventTarget;
+
+  /**
+   * When the menu was opened through a click on a port, contains the port that was clicked on.
+   */
+  fromPort?: BasePortData;
 }
 
 export default BlockPickerMenu;
