@@ -46,7 +46,7 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
           const lastCreatedAt = lastCreated?.at;
 
           // Autofocus works fine when the node is inside the viewport, but when it's created outside it moves the viewport back at the beginning
-          const shouldAutofocus = lastCreatedNode?.id === node.id && isYoungerThan(lastCreatedAt, 1000);
+          const shouldAutofocus = false && lastCreatedNode?.id === node.id && isYoungerThan(lastCreatedAt, 1000);
 
           /**
            * When textarea input height changes, we need to increase the height of the whole node accordingly.
