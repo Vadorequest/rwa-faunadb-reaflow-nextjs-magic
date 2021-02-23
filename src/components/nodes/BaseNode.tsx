@@ -84,13 +84,20 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
   const lastCreatedAt = lastCreated?.at;
   const isLastCreatedNode = lastCreated?.node?.id === node?.id;
 
-  const recentlyCreatedMaxAge = 2000;
+  const recentlyCreatedMaxAge = 5000; // TODO convert to settings
+  // Used to highlight the last created node for a few seconds after it's been created, to make it easier to understand where it's located
+  // Particularly useful to the editor when ELK changes the nodes position to avoid losing track of the node that was just created
   const [isRecentlyCreated, setIsRecentlyCreated] = useState<boolean>(isYoungerThan(lastCreatedAt, recentlyCreatedMaxAge));
 
+  /**
+   * Stops the highlight of the last created node when the node's age has reached max age.
+   */
   useEffect(() => {
-    setTimeout(() => {
-      setIsRecentlyCreated(false);
-    }, recentlyCreatedMaxAge + 1);
+    if (isRecentlyCreated) {
+      setTimeout(() => {
+        setIsRecentlyCreated(false);
+      }, recentlyCreatedMaxAge + 1);
+    }
   }, []);
 
   /**
@@ -233,7 +240,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
       {...nodeProps}
       style={{
         strokeWidth: 0,
-        fill: 'white',
+        fill: isReachable ? 'white' : 'lightgray',
         color: 'black',
         cursor: 'auto',
       }}
@@ -274,7 +281,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
               className={classnames(`${nodeType}-node-container node-container`, {
                 'is-selected': isSelected,
                 'is-last-created': isLastCreatedNode,
-                'is-recently-created animate__animated animate__pulse': isRecentlyCreated, // Vado's having fun with CSS animations (not so pretty, though)
+                'is-recently-created': isRecentlyCreated,
               })}
               width={width}
               height={height}
@@ -291,7 +298,6 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                 // Highlights the node when it's the last created node
                 &.is-recently-created {
                   box-shadow: 0px 0px 10px 0px blue;
-                  animation-duration: 1s;
                 }
 
                 // Disabling pointer-events on top-level containers, for events to be forwarded to the underlying <rect>
