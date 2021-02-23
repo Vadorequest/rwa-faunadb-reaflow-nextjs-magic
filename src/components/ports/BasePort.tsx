@@ -21,6 +21,8 @@ import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
 import { draggedEdgeFromPortState } from '../../states/draggedEdgeFromPortState';
 import { edgesSelector } from '../../states/edgesState';
 import { lastCreatedState } from '../../states/lastCreatedState';
+import { selectedEdgesSelector } from '../../states/selectedEdgesState';
+import { selectedNodesSelector } from '../../states/selectedNodesState';
 import BaseEdgeData from '../../types/BaseEdgeData';
 import BaseNodeData from '../../types/BaseNodeData';
 import BasePortData from '../../types/BasePortData';
@@ -73,6 +75,8 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
   const node: BaseNodeData = nodes.find((node: BaseNodeData) => node.id === fromNodeId) as BaseNodeData;
   const port: BasePortData = node?.ports?.find((port: BasePortData) => port.id === id) as BasePortData;
   const { displayedFrom, isDisplayed } = blockPickerMenu;
+  const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesSelector);
+  const [selectedEdges, setSelectedEdges] = useRecoilState(selectedEdgesSelector);
 
   // Highlight the current port if there is an edge being dragged from another port and if it can connect to the current port
   const isHighlighted = canConnectToDestinationPort(edges, draggedEdgeFromPort?.fromNode, draggedEdgeFromPort?.fromPort, node, port);
@@ -130,6 +134,8 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
 
     setCanvasDataset(newDataset);
     setLastCreatedNode({ node: newNode, at: now() });
+    setSelectedNodes([newNode?.id]);
+    setSelectedEdges([]);
   };
 
   /**

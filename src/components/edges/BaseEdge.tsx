@@ -16,6 +16,7 @@ import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
 import { edgesSelector } from '../../states/edgesState';
 import { lastCreatedState } from '../../states/lastCreatedState';
 import { selectedEdgesSelector } from '../../states/selectedEdgesState';
+import { selectedNodesSelector } from '../../states/selectedNodesState';
 import BaseEdgeData from '../../types/BaseEdgeData';
 import BaseEdgeProps from '../../types/BaseEdgeProps';
 import BaseNodeData from '../../types/BaseNodeData';
@@ -56,11 +57,12 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState<BlockPickerMenu>(blockPickerMenuSelector);
   const [canvasDataset, setCanvasDataset] = useRecoilState(canvasDatasetSelector);
   const [edges, setEdges] = useRecoilState(edgesSelector);
-  const [selectedEdges, setSelectedEdges] = useRecoilState(selectedEdgesSelector);
   const { nodes } = canvasDataset;
   const setLastCreatedNode: SetterOrUpdater<LastCreated | undefined> = useSetRecoilState(lastCreatedState);
   const { displayedFrom, isDisplayed } = blockPickerMenu;
   const edge: BaseEdgeData = edges.find((edge: BaseEdgeData) => edge?.id === id) as BaseEdgeData;
+  const [selectedEdges, setSelectedEdges] = useRecoilState(selectedEdgesSelector);
+  const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesSelector);
 
   if (typeof edge === 'undefined') {
     return null;
@@ -96,6 +98,8 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
 
       setCanvasDataset(newDataset);
       setLastCreatedNode({ node: newNode, at: now() });
+      setSelectedNodes([newNode?.id]);
+      setSelectedEdges([]);
     };
 
     // Converts the x/y position to a Canvas position and apply some margin for the BlockPickerMenu to display on the right bottom of the cursor
