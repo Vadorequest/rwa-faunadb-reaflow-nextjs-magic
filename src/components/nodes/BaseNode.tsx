@@ -462,6 +462,7 @@ BaseNode.getDefaultNodeProps = (props: GetBaseNodeDefaultPropsProps): BaseNodeDe
     defaultHeight: defaultHeight || fallbackDefaultHeight,
     // @ts-ignore
     ports: BaseNode.getDefaultPorts(),
+    // nodePadding TODO try it (left/top/bottom/right)
   };
 };
 
