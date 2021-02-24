@@ -44,7 +44,7 @@ type Props = {
  * All nodes and edges are drawn within the <Canvas> element.
  * Handles undo/redo.
  *
- * Positioned in absolute position and takes all the spaces of its parent element (EditorContainer).
+ * Positioned in absolute position and takes all the spaces of its parent element (PlaygroundContainer).
  *
  * @see https://github.com/reaviz/reaflow
  * @see https://reaflow.dev/?path=/story/docs-getting-started-basics--page
@@ -224,7 +224,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     <div
       className={'canvas-container'}
       css={css`
-        // Positioned in absolute position and takes all the spaces of its parent element (EditorContainer)
+        // Positioned in absolute position and takes all the spaces of its parent element (PlaygroundContainer)
         position: absolute;
         top: 0;
         bottom: 0;

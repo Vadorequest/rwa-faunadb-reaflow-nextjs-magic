@@ -22,12 +22,6 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
     <div
       className={'playground-container'}
       css={css`
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-
         .background {
           position: absolute;
           width: 100%;
