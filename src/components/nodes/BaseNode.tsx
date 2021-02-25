@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import cloneDeep from 'lodash.clonedeep';
 import remove from 'lodash.remove';
 import React, {
+  KeyboardEventHandler,
   MouseEventHandler,
   useEffect,
   useState,
@@ -233,6 +234,16 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
     // }
   };
 
+  /**
+   * When a keyboard key is pressed/released.
+   *
+   * @param event
+   * @param node
+   */
+  const onKeyDown = (event: React.KeyboardEvent<SVGGElement>, node: BaseNodeData) => {
+    console.log('onKeyDown', event, node);
+  };
+
   // console.log('BaseNode nodeProps', nodeProps);
 
   return (
@@ -250,6 +261,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
       onClick={onNodeClick}
       onEnter={onNodeEnter}
       onLeave={onNodeLeave}
+      onKeyDown={onKeyDown}
       onRemove={onNodeRemove}
       remove={(<Remove hidden={true} />)}
       port={(<BasePort fromNodeId={node.id} />)}
@@ -322,7 +334,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                   //  Solves the display of React Select element.
                   // See https://github.com/chakra-ui/chakra-ui/issues/3288#issuecomment-776316200
                   position: fixed;
-                  
+
                   // Take full size of its parent, minus the margins (left/right)
                   width: calc(100% - 30px); // Depends on above "margin" value
                   height: calc(100% - 30px); // Depends on above "margin" value
@@ -345,6 +357,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
               onClick={onNodeClick as MouseEventHandler}
               onMouseEnter={onNodeEnter as MouseEventHandler}
               onMouseLeave={onNodeLeave as MouseEventHandler}
+              onKeyDown={onKeyDown as KeyboardEventHandler}
             >
               <div
                 className={classnames(`${nodeType}-node node`)}
