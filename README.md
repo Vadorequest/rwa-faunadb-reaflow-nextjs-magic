@@ -11,21 +11,22 @@ It is a single-page application (using a static page) that aims at showing an **
 ## Features
 
 It comes with the following features:
-- Source code heavily documented
+- Source code heavily **documented**
 - Strong TS typings
-- Different kinds of node (`information`, `question`) with different layouts for each type _(see [NodeRouter component](blob/main/src/components/nodes/NodeRouter.tsx))_
-- Nodes use `foreignObject`, which complicates things quite a bit (events, css), but it's the only way of writing HTML/CSS within a SVG `rect`
-- Advanced support for `foreignObject` and best-practices
-- Support for Emotion 11
-- Reaflow Nodes, Edges and Ports are properly extended (BaseNode component, BaseNodeData type, BaseEdge component, BaseEdgeData type, etc.), 
+- Different kinds of node (`start`, `if`, `information`, `question`) with different layouts for each type _(see [NodeRouter component](blob/main/src/components/nodes/NodeRouter.tsx))_
+- Nodes use `foreignObject`, which complicates things quite a bit (events, css), but it's the only way of writing HTML/CSS within an SVG `rect` (custom nodes UI)
+- Advanced support for **`foreignObject`** and best-practices
+- Support for **Emotion 11**
+- Reaflow Nodes, Edges and Ports are properly extended (**BaseNode** component, **BaseNodeData** type, **BaseEdge** component, **BaseEdgeData** type, etc.), 
   which makes it easy to quickly change the properties of all nodes, edges, ports, etc.
 - Creation of nodes through the `BlockPickerMenu` component, which displays either at the bottom of the canvas, or at the mouse pointer position (e.g: when dropping edges)
-- Undo/redo support (with shortcuts)
-- Node deletion
-- Selection of element (nodes, edges) _(**WIP**, implementation might be completely changed in the future)_
-- Uses `Recoil` for shared state management
-- Automatically re-calculate the height of nodes when jumping lines in `textarea`
-- Graph data (nodes, edges) are persisted in the browser localstorage and loaded upon page reload
+- **Undo/redo** support (with shortcuts)
+- Node/edge **deletion**
+- Node **duplication**
+- **Selection** of nodes and edges, one at a time 
+- Uses **`Recoil`** for shared state management
+- Automatically re-calculate the **height** of nodes when jumping lines in `textarea`
+- Graph data (nodes, edges) are **persisted** in the browser **localstorage** and loaded upon page reload
 
 Known limitations:
 - Editor direction is `RIGHT` (hardcoded) and adding nodes will add them to the right side, always (even if you change the direction)
