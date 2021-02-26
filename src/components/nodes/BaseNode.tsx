@@ -271,7 +271,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
           additionalPortChildProps={{
             isReachable,
           }}
-          PortChild={BasePortChild}
+          PortChildComponent={BasePortChild}
         />
       )}
     >

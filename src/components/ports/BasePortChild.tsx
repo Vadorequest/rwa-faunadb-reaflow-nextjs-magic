@@ -3,12 +3,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import BasePortChildProps from '../../types/BasePortChildProps';
 
-type Props = BasePortChildProps;
-
 /**
+ * Each <BasePort> component contains on <BasePortChild> component provided through the "PortChildComponent" property.
  *
+ * The BasePortChild is a <foreignObject> which displays additional content, such as:
+ * - A warning when an entry port is not reachable.
+ * - A warning when an output port is not connected.
  */
-const BasePortChild: React.FunctionComponent<Props> = (props) => {
+const BasePortChild: React.FunctionComponent<BasePortChildProps> = (props) => {
   const {
     isReachable,
   } = props;

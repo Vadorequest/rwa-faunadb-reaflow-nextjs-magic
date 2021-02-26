@@ -48,7 +48,7 @@ import {
 type Props = {
   fromNodeId: string;
   additionalPortChildProps: AdditionalPortChildProps;
-  PortChild: any;
+  PortChildComponent: React.FunctionComponent<BasePortChildProps>;
 } & BasePortProps;
 
 /**
@@ -67,7 +67,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
     properties,
     fromNodeId,
     additionalPortChildProps,
-    PortChild,
+    PortChildComponent,
     onDragStart: onDragStartInternal,
     onDragEnd: onDragEndInternal,
   } = props;
@@ -305,7 +305,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
             ...additionalPortChildProps,
           };
 
-          return <PortChild
+          return <PortChildComponent
             {...basePortChildProps}
           />;
         }
