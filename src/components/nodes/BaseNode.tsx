@@ -38,6 +38,7 @@ import {
 } from '../../utils/nodes';
 import { createPort } from '../../utils/ports';
 import BasePort from '../ports/BasePort';
+import BasePortChild from '../ports/BasePortChild';
 
 type Props = BaseNodeProps & {
   hasCloneAction?: boolean;
@@ -267,16 +268,10 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
       port={(
         <BasePort
           fromNodeId={node.id}
-          displayContent={!isReachable}
-          content={(
-            <div
-              title={`This node is not reachable because there are no edge connected to its entry port.`}
-            >
-              <FontAwesomeIcon
-                icon={['fas', 'exclamation-triangle']}
-              />
-            </div>
-          )}
+          additionalPortChildProps={{
+            isReachable,
+          }}
+          PortChild={BasePortChild}
         />
       )}
     >

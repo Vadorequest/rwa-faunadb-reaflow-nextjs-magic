@@ -1,4 +1,3 @@
-import { css } from '@emotion/react';
 import classnames from 'classnames';
 import cloneDeep from 'lodash.clonedeep';
 import now from 'lodash.now';
@@ -27,6 +26,7 @@ import { selectedEdgesSelector } from '../../states/selectedEdgesState';
 import { selectedNodesSelector } from '../../states/selectedNodesState';
 import BaseEdgeData from '../../types/BaseEdgeData';
 import BaseNodeData from '../../types/BaseNodeData';
+import BasePortChildProps, { AdditionalPortChildProps } from '../../types/BasePortChildProps';
 import BasePortData from '../../types/BasePortData';
 import BasePortProps from '../../types/BasePortProps';
 import BlockPickerMenu, { OnBlockClick } from '../../types/BlockPickerMenu';
@@ -47,8 +47,8 @@ import {
 
 type Props = {
   fromNodeId: string;
-  displayContent: boolean;
-  content: any;
+  additionalPortChildProps: AdditionalPortChildProps;
+  PortChild: any;
 } & BasePortProps;
 
 /**
@@ -66,8 +66,8 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
     id,
     properties,
     fromNodeId,
-    displayContent,
-    content,
+    additionalPortChildProps,
+    PortChild,
     onDragStart: onDragStartInternal,
     onDragEnd: onDragEndInternal,
   } = props;
@@ -300,39 +300,14 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
     >
       {
         (portChildProps: PortChildProps) => {
-          if (!displayContent) {
-            return null;
-          }
+          const basePortChildProps: BasePortChildProps = {
+            ...portChildProps,
+            ...additionalPortChildProps,
+          };
 
-          return (
-            <foreignObject
-              width={100} // Content width will be limited by the width of the foreignObject
-              height={60}
-              x={props?.x}
-              y={props?.y}
-              css={css`
-                position: absolute;
-                color: black;
-                z-index: 1;
-                
-                .port-content {
-                  position: fixed;
-                  cursor: help;
-                  pointer-events: auto;
-                }
-
-                .svg-inline--fa {
-                  color: orange;
-                }
-              `}
-            >
-              <div
-                className={'port-content'}
-              >
-                {content}
-              </div>
-            </foreignObject>
-          );
+          return <PortChild
+            {...basePortChildProps}
+          />;
         }
       }
     </Port>
