@@ -264,7 +264,21 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
       onKeyDown={onKeyDown}
       onRemove={onNodeRemove}
       remove={(<Remove hidden={true} />)}
-      port={(<BasePort fromNodeId={node.id} />)}
+      port={(
+        <BasePort
+          fromNodeId={node.id}
+          displayContent={!isReachable}
+          content={(
+            <div
+              title={`This node is not reachable because there are no edge connected to its entry port.`}
+            >
+              <FontAwesomeIcon
+                icon={['fas', 'exclamation-triangle']}
+              />
+            </div>
+          )}
+        />
+      )}
     >
       {
         /**
@@ -407,20 +421,6 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                 <div
                   className={`node-content-container ${nodeType}-content-container`}
                 >
-                  {
-                    // Displays a warning icon at the left of the node's title (using css float to avoid break line)
-                    !isReachable && (
-                      <span
-                        className={'is-unreachable-warning'}
-                      >
-                        <FontAwesomeIcon
-                          icon={['fas', 'exclamation-triangle']}
-                          onClick={() => alert(`This node is not reachable because there are no edge connected to its entry port.`)}
-                        />
-                      </span>
-                    )
-                  }
-
                   {
                     // Invoke the children as a function, or render the children as a component, if it's not a function
                     // @ts-ignore
