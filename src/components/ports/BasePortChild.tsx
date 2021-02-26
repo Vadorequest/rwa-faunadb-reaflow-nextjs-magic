@@ -1,8 +1,13 @@
 import { css } from '@emotion/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
-import { useRecoilState } from 'recoil';
+import {
+  useRecoilState,
+  useSetRecoilState,
+} from 'recoil';
 import { absoluteTooltipState } from '../../states/absoluteTooltipState';
+import { edgesSelector } from '../../states/edgesState';
+import BaseEdgeData from '../../types/BaseEdgeData';
 import BasePortChildProps from '../../types/BasePortChildProps';
 import { translateXYToCanvasPosition } from '../../utils/canvas';
 
@@ -15,17 +20,33 @@ import { translateXYToCanvasPosition } from '../../utils/canvas';
  */
 const BasePortChild: React.FunctionComponent<BasePortChildProps> = (props) => {
   const {
-    isReachable,
+    isNodeReachable,
     port,
+    isDragging,
     x,
     y,
   } = props;
+  const setTooltip = useSetRecoilState(absoluteTooltipState);
+  const [edges, setEdges] = useRecoilState(edgesSelector);
+  const links: BaseEdgeData[] | undefined = edges?.filter((edge: BaseEdgeData) => port?.side === 'WEST' ? edge?.toPort === port?.id : edge?.fromPort === port?.id);
+  const shouldDisplayUnreachableWarning = port?.side === 'WEST' && !isNodeReachable;
+  const shouldDisplayUnlinkedWarning = port?.side === 'EAST' && !links?.length && !isDragging;
+  const hasContentToDisplay = shouldDisplayUnreachableWarning || shouldDisplayUnlinkedWarning;
 
-  if (isReachable) {
+  let warning: string;
+
+  if (shouldDisplayUnreachableWarning) {
+    warning = `This node is not reachable because there are no edge connected to its entry port.`;
+  } else if (shouldDisplayUnlinkedWarning) {
+    warning = `This port is not linked to any other node.`;
+  }
+
+  // Don't render content if there are no content to display
+  if (!hasContentToDisplay) {
     return null;
   }
 
-  const [tooltip, setTooltip] = useRecoilState(absoluteTooltipState);
+  // Move the content a bit to the left for the West port, and to the right for the right port
   const newX = x + (port?.side === 'WEST' ? -40 : 20);
   const newY = y - 10;
 
@@ -60,7 +81,7 @@ const BasePortChild: React.FunctionComponent<BasePortChildProps> = (props) => {
           // Displays a tooltip in absolute position based on the X/Y position of the targeted element
           setTooltip({
             isDisplayed: true,
-            text: `This node is not reachable because there are no edge connected to its entry port.`,
+            text: warning,
             x,
             y,
           });

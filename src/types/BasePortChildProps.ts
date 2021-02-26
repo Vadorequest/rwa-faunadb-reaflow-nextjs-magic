@@ -1,10 +1,12 @@
 import { PortChildProps } from 'reaflow';
+import BaseNodeData from './BaseNodeData';
 
 /**
  * Additional properties that will be passed down to the PortChildComponent component.
  */
 export type AdditionalPortChildProps = {
-  isReachable: boolean;
+  fromNode: BaseNodeData;
+  isNodeReachable: boolean;
 }
 
 /**
