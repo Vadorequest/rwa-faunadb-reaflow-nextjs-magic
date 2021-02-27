@@ -148,11 +148,16 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
    * @param port
    */
   const onPortClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, port: BasePortData) => {
+    const [x, y] = translateXYToCanvasPosition(event?.clientX, event.clientY, { top: 60, left: 15 });
+
     console.log('onPortClick', port);
     setBlockPickerMenu({
       displayedFrom: `port-${port.id}`,
       isDisplayed: displayedFrom === `port-${port.id}` ? !isDisplayed : true,
       onBlockClick,
+      // Depending on the position of the canvas, you might need to deduce from x/y some delta
+      left: x,
+      top: y - settings.layout.nav.height,
       eventTarget: event.target,
       fromPort: port,
     });
