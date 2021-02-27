@@ -131,7 +131,6 @@ export const QuestionChoice: <NodeData extends BaseNodeData = BaseNodeData>(p: P
         <DebounceInput
           debounceTimeout={500} // Avoids making the Canvas "lag" due to many unnecessary re-renders, by applying input changes in batches (one at most every 500ms)
           placeholder={'Variable name'}
-          // onHeightChange={onTextHeightChange}
           onChange={updateQuestionChoiceVariableName}
           value={name}
         />
@@ -144,7 +143,6 @@ export const QuestionChoice: <NodeData extends BaseNodeData = BaseNodeData>(p: P
           element={TextareaAutosize}
           debounceTimeout={500} // Avoids making the Canvas "lag" due to many unnecessary re-renders, by applying input changes in batches (one at most every 500ms)
           placeholder={'Value'}
-          // onHeightChange={onTextHeightChange}
           onChange={updateQuestionChoiceVariableValue}
           value={value}
           minRows={1}
