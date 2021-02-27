@@ -8,8 +8,6 @@ type Props = {} & TextareaAutosizeProps;
  * Textarea with autoresize and sane default props.
  *
  * Wrapper around the TextareaAutosize component.
- *
- * @param props
  */
 export const Textarea: React.FunctionComponent<Props> = (props) => {
   const {

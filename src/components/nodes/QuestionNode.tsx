@@ -14,13 +14,14 @@ import { SpecializedNodeProps } from '../../types/nodes/SpecializedNodeProps';
 import NodeType from '../../types/NodeType';
 import { isYoungerThan } from '../../utils/date';
 import Textarea from '../plugins/Textarea';
+import VariableNameInput from '../plugins/VariableNameInput';
 import BaseNode from './BaseNode';
 
 type Props = {} & BaseNodeProps<QuestionNodeData>;
 
 const nodeType: NodeType = 'question';
 const defaultWidth = 200;
-const defaultHeight = 400;
+const defaultHeight = 300;
 
 /**
  * Question node.
@@ -162,6 +163,10 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                       onChange={onSelectedChoiceTypeChange}
                     />
                   </div>
+
+                  <VariableNameInput
+                    nodeWidth={defaultWidth}
+                  />
                 </div>
               </div>
             </Fragment>
