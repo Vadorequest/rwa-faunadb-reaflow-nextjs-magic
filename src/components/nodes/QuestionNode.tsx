@@ -20,8 +20,8 @@ import BaseNode from './BaseNode';
 type Props = {} & BaseNodeProps<QuestionNodeData>;
 
 const nodeType: NodeType = 'question';
-const defaultWidth = 200;
-const defaultHeight = 300;
+const defaultWidth = 250;
+const defaultHeight = 250;
 
 /**
  * Question node.

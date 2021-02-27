@@ -23,6 +23,8 @@ export const Textarea: React.FunctionComponent<Props> = (props) => {
       {...rest}
       css={css`
         resize: none;
+        width: 100%;
+        padding-left: 5px;
       `}
     />
   );
