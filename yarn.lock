@@ -1666,6 +1666,11 @@ deep-copy@^1.4.1:
   resolved "https://registry.yarnpkg.com/deep-copy/-/deep-copy-1.4.2.tgz#0622719257e4bd60240e401ea96718211c5c4697"
   integrity sha512-VxZwQ/1+WGQPl5nE67uLhh7OqdrmqI1OazrraO9Bbw/M8Bt6Mol/RxzDA6N6ZgRXpsG/W9PgUj8E1LHHBEq2GQ==
 
+deep-diff@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/deep-diff/-/deep-diff-1.0.2.tgz#afd3d1f749115be965e89c63edc7abb1506b9c26"
+  integrity sha512-aWS3UIVH+NPGCD1kki+DCU9Dua032iSsO43LqQpcs4R3+dVv7tX0qBGjiVHJHjplsoUM2XRO/KB92glqc68awg==
+
 deep-extend@^0.6.0:
   version "0.6.0"
   resolved "https://registry.yarnpkg.com/deep-extend/-/deep-extend-0.6.0.tgz#c4fa7c95404a17a9c3e8ca7e1537312b736330ac"
@@ -3132,7 +3137,15 @@ reakeys@^1.1.0:
   dependencies:
     mousetrap "^1.6.5"
 
-recoil@0.1.2:
+recoil-devtools-logger@0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/recoil-devtools-logger/-/recoil-devtools-logger-0.1.5.tgz#40379e865d155ab2c42fc212b2785f0b1accf06c"
+  integrity sha512-TrNMGyHhyA3I/32JzDve3qyxEO1fo0f6GPKJuisl0FOTDRzWib96ErV/R2Fy9MyXz0GeX6TpmXnprcvSBgs1Lw==
+  dependencies:
+    deep-diff "^1.0.2"
+    recoil "^0.1.2"
+
+recoil@0.1.2, recoil@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/recoil/-/recoil-0.1.2.tgz#844c612f535826dbe54c977761a67ded16f6d063"
   integrity sha512-hIRrHlkmW4yITlBFprVYjVPhzPKYrJKoaDrrJtAtbkMeXfXaa/XE5OlyR10n+rNfnKWNToCKb3Z4fo86IGjkzg==

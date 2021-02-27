@@ -7,7 +7,14 @@ import {
 import { Router } from 'next/router';
 import React from 'react';
 import { RecoilRoot } from 'recoil';
+import { RecoilLogger } from 'recoil-devtools-logger';
 import { RecoilExternalStatePortal } from '../components/RecoilExternalStatePortal';
+import { blockPickerMenuSelector } from '../states/blockPickerMenuState';
+import { canvasDatasetSelector } from '../states/canvasDatasetSelector';
+import { lastCreatedState } from '../states/lastCreatedState';
+import { mouseEnteredSelector } from '../states/mouseEnteredState';
+import { selectedEdgesSelector } from '../states/selectedEdgesState';
+import { selectedNodesSelector } from '../states/selectedNodesState';
 import '../utils/fontAwesome';
 
 type Props = {
@@ -31,6 +38,39 @@ const App: React.FunctionComponent<Props> = (props): JSX.Element => {
   return (
     <ChakraProvider>
       <RecoilRoot>
+        {/* logs for related recoil values only in development */}
+        {/*{process.env.NODE_ENV === `development` && (*/}
+        <RecoilLogger
+          values={[
+            blockPickerMenuSelector,
+          ]}
+        />
+        <RecoilLogger
+          values={[
+            canvasDatasetSelector,
+          ]}
+        />
+        <RecoilLogger
+          values={[
+            lastCreatedState,
+          ]}
+        />
+        <RecoilLogger
+          values={[
+            mouseEnteredSelector,
+          ]}
+        />
+        <RecoilLogger
+          values={[
+            selectedEdgesSelector,
+          ]}
+        />
+        <RecoilLogger
+          values={[
+            selectedNodesSelector,
+          ]}
+        />
+        {/*)}*/}
         <Component {...pageProps} />
         <RecoilExternalStatePortal />
       </RecoilRoot>
