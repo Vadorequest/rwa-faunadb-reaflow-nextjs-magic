@@ -1,3 +1,7 @@
+import { Button } from '@chakra-ui/react';
+import { css } from '@emotion/react';
+import now from 'lodash.now';
+import sortBy from 'lodash.sortby';
 import React, {
   Fragment,
   useEffect,
@@ -7,16 +11,19 @@ import { DebounceInput } from 'react-debounce-input';
 import ReactSelect from 'react-select';
 import { OptionTypeBase } from 'react-select/src/types';
 import { TextareaHeightChangeMeta } from 'react-textarea-autosize/dist/declarations/src';
+import { v1 as uuid } from 'uuid';
 import settings from '../../settings';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
 import { QuestionChoiceType } from '../../types/nodes/QuestionChoiceType';
 import { QuestionChoiceTypeOption } from '../../types/nodes/QuestionChoiceTypeOption';
+import { QuestionChoiceVariable } from '../../types/nodes/QuestionNodeAdditionalData';
 import { QuestionNodeData } from '../../types/nodes/QuestionNodeData';
 import { SpecializedNodeProps } from '../../types/nodes/SpecializedNodeProps';
 import NodeType from '../../types/NodeType';
 import { isYoungerThan } from '../../utils/date';
+import QuestionChoice from '../plugins/QuestionChoice';
 import Textarea from '../plugins/Textarea';
 import VariableNameInput from '../plugins/VariableNameInput';
 import BaseNode from './BaseNode';
@@ -58,6 +65,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
           const lastCreatedNode = lastCreated?.node;
           const lastCreatedAt = lastCreated?.at;
           const displayChoiceInputs = node?.data?.questionType === 'single-quick-reply';
+          const additionalHeightChoiceInputs = 200;
 
           // Autofocus works fine when the node is inside the viewport, but when it's created outside it moves the viewport back at the beginning
           const shouldAutofocus = false && lastCreatedNode?.id === node.id && isYoungerThan(lastCreatedAt, 1000);
@@ -68,7 +76,6 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
            * The node's height is dynamic and depends on various parameters (selected option, length of text, etc.).
            */
           useEffect(() => {
-            const additionalHeightChoiceInputs = 200;
             const newHeight = defaultHeight + questionTextareaAdditionalHeight + (displayChoiceInputs ? additionalHeightChoiceInputs : 0);
 
             // Only update the height if it's different
@@ -151,6 +158,15 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
 
               <div
                 className={`node-content ${nodeType}-content`}
+                css={css`
+                  .choice-type-select {
+                    margin-bottom: 10px;
+                  }
+
+                  .add-question-choice {
+                    margin-top: 10px;
+                  }
+                `}
               >
                 <DebounceInput
                   // @ts-ignore
@@ -186,7 +202,47 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
 
                   {
                     displayChoiceInputs && (
-                      <div></div>
+                      <div
+                        className={'question-choices-container'}
+                      >
+                        <div
+                          className={'question-choices'}
+                          css={css`
+                            max-height: ${additionalHeightChoiceInputs}px;
+                            overflow: scroll;
+                          `}
+                        >
+                          {
+                            sortBy(node?.data?.questionChoices, ['createdAt'])?.map((questionChoice: QuestionChoiceVariable, key: number) => {
+                              return (
+                                <QuestionChoice
+                                  node={node}
+                                  questionChoiceVariable={questionChoice}
+                                  patchCurrentNode={patchCurrentNode}
+                                />
+                              );
+                            })
+                          }
+                        </div>
+
+                        <Button
+                          className={'add-question-choice'}
+                          width={'100%'}
+                          onClick={() => patchCurrentNode({
+                            data: {
+                              questionChoices: [
+                                ...(node?.data?.questionChoices || []),
+                                {
+                                  id: uuid(),
+                                  createdAt: now(),
+                                },
+                              ],
+                            },
+                          } as QuestionNodeData)}
+                        >
+                          +
+                        </Button>
+                      </div>
                     )
                   }
 
