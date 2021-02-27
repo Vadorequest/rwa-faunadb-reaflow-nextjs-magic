@@ -7,6 +7,7 @@ import {
 import { Router } from 'next/router';
 import React from 'react';
 import { RecoilRoot } from 'recoil';
+import LogMonitor from 'recoil-devtools-log-monitor';
 import { RecoilExternalStatePortal } from '../components/RecoilExternalStatePortal';
 import '../utils/fontAwesome';
 
@@ -31,6 +32,7 @@ const App: React.FunctionComponent<Props> = (props): JSX.Element => {
   return (
     <ChakraProvider>
       <RecoilRoot>
+        <LogMonitor />
         <Component {...pageProps} />
         <RecoilExternalStatePortal />
       </RecoilRoot>
