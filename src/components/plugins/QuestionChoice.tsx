@@ -1,5 +1,6 @@
 import { css } from '@emotion/react';
 import React, { PropsWithChildren } from 'react';
+import { DebounceInput } from 'react-debounce-input';
 import TextareaAutosize from 'react-textarea-autosize';
 import BaseNodeData from '../../types/BaseNodeData';
 import { PatchCurrentNode } from '../../types/BaseNodeProps';
@@ -31,7 +32,7 @@ export const QuestionChoice: <NodeData extends BaseNodeData = BaseNodeData>(p: P
    * Filter the current question choice to keep only other question choices.
    */
   const filterCurrentQuestionChoice = (): QuestionChoiceVariable[] => {
-    return (node as QuestionNodeData)?.data?.questionChoices?.filter((variable: QuestionChoiceVariable) => variable?.id !== questionChoiceVariable?.id) || [];
+    return (node as QuestionNodeData)?.data?.questionChoices?.filter((variable: QuestionChoiceVariable) => variable?.id !== id) || [];
   };
 
   /**
@@ -86,7 +87,6 @@ export const QuestionChoice: <NodeData extends BaseNodeData = BaseNodeData>(p: P
 
   return (
     <div
-      key={id}
       className={'question-choice'}
       css={css`
         border-radius: 5px;
@@ -128,21 +128,27 @@ export const QuestionChoice: <NodeData extends BaseNodeData = BaseNodeData>(p: P
       <div
         className={'question-choice-name'}
       >
-        <input
-          value={name}
+        <DebounceInput
+          debounceTimeout={500} // Avoids making the Canvas "lag" due to many unnecessary re-renders, by applying input changes in batches (one at most every 500ms)
           placeholder={'Variable name'}
+          // onHeightChange={onTextHeightChange}
           onChange={updateQuestionChoiceVariableName}
+          value={name}
         />
       </div>
       <div
         className={'question-choice-value'}
       >
-        <TextareaAutosize
+        <DebounceInput
+          // @ts-ignore
+          element={TextareaAutosize}
+          debounceTimeout={500} // Avoids making the Canvas "lag" due to many unnecessary re-renders, by applying input changes in batches (one at most every 500ms)
+          placeholder={'Value'}
+          // onHeightChange={onTextHeightChange}
+          onChange={updateQuestionChoiceVariableValue}
+          value={value}
           minRows={1}
           maxRows={5}
-          value={value}
-          placeholder={'Value'}
-          onChange={updateQuestionChoiceVariableValue}
         />
       </div>
     </div>

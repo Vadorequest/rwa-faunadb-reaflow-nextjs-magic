@@ -214,9 +214,10 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                         >
                           {
                             // Sort the questions from the oldest to youngest, avoids "jumps" of position when editing
-                            sortBy(node?.data?.questionChoices, ['createdAt'])?.map((questionChoice: QuestionChoiceVariable, key: number) => {
+                            sortBy(node?.data?.questionChoices, ['createdAt'])?.map((questionChoice: QuestionChoiceVariable) => {
                               return (
                                 <QuestionChoice
+                                  key={questionChoice?.id}
                                   node={node}
                                   questionChoiceVariable={questionChoice}
                                   patchCurrentNode={patchCurrentNode}
