@@ -165,7 +165,8 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                   </div>
 
                   <VariableNameInput
-                    nodeWidth={defaultWidth}
+                    node={node}
+                    patchCurrentNode={patchCurrentNode}
                   />
                 </div>
               </div>

@@ -1,9 +1,12 @@
 import { css } from '@emotion/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React from 'react';
+import React, { useState } from 'react';
+import BaseNodeData from '../../types/BaseNodeData';
+import { PatchCurrentNode } from '../../types/BaseNodeProps';
 
 type Props = {
-  nodeWidth: number;
+  node: BaseNodeData;
+  patchCurrentNode: PatchCurrentNode;
 };
 
 /**
@@ -13,8 +16,30 @@ type Props = {
  */
 export const VariableNameInput: React.FunctionComponent<Props> = (props) => {
   const {
-    nodeWidth = 200,
+    node,
+    patchCurrentNode,
   } = props;
+  const {
+    width = 200,
+
+  } = node;
+  console.log('node', node);
+  const [variableName, setVariableName] = useState<string | undefined>(node?.data?.variableName);
+  console.log('VariableNameInput variableName', variableName);
+
+  const onChange = (event: any) => {
+    console.log('onChange variableName', event, event?.target?.value);
+    setVariableName(event?.target?.value);
+  };
+
+  const onSubmit = () => {
+    console.log('onSubmit variableName', variableName);
+    patchCurrentNode({
+      data: {
+        variableName: variableName,
+      },
+    });
+  };
 
   return (
     <div
@@ -23,7 +48,7 @@ export const VariableNameInput: React.FunctionComponent<Props> = (props) => {
         position: absolute;
         bottom: 0;
         background-color: black;
-        width: ${nodeWidth}px;
+        width: ${width}px;
         height: 50px;
         margin-left: -15px;
         margin-bottom: -15px;
@@ -31,15 +56,15 @@ export const VariableNameInput: React.FunctionComponent<Props> = (props) => {
         border-radius: 5px;
 
         .variable-name {
-          width: ${nodeWidth - 50}px;
-          margin-top: 10px;
+          width: ${width - 50}px;
+          margin-top: 12px;
           margin-left: -5px;
           padding-left: 5px;
           background-color: black;
-          color: #6E6E6E;
+          color: ${variableName?.length ? 'white' : '#6E6E6E'}; // Change different color between placeholder and actual value
           border: 1px solid #6E6E6E;
         }
-        
+
         .submit {
           color: #6E6E6E;
           margin-left: 10px;
@@ -50,10 +75,14 @@ export const VariableNameInput: React.FunctionComponent<Props> = (props) => {
       <input
         className={'variable-name'}
         placeholder={'Variable name'}
+        value={variableName}
+        onChange={onChange}
       />
+
       <FontAwesomeIcon
         className={'submit'}
         icon={['fas', 'paper-plane']}
+        onClick={onSubmit}
       />
     </div>
   );
