@@ -92,7 +92,7 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
             // Updates the value in the Recoil store
             patchCurrentNode({
               data: {
-                text: newValue,
+                informationText: newValue,
               },
             } as InformationNodeData);
           };
@@ -116,7 +116,7 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
                   placeholder={'Say something here'}
                   onHeightChange={onTextHeightChange}
                   onChange={onTextInputValueChange}
-                  value={node?.data?.text}
+                  value={node?.data?.informationText}
                   autoFocus={shouldAutofocus}
                 />
               </div>
