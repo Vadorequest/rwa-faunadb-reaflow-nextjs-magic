@@ -45,7 +45,7 @@ export const createNode = (nodeData?: Partial<BaseNodeData>): BaseNodeData => {
 export const createNodeFromDefaultProps = (defaultProps: BaseNodeDefaultProps): BaseNodeData => {
   console.log('createNodeFromDefaultProps', defaultProps);
   const node = {
-    text: undefined,
+    text: undefined, // XXX Built-in Reaflow "text", unused in our case because we use complex components and we don't need it
     width: defaultProps.defaultWidth,
     height: defaultProps.defaultHeight,
     data: {

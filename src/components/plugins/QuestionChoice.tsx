@@ -27,21 +27,28 @@ export const QuestionChoice: <NodeData extends BaseNodeData = BaseNodeData>(p: P
     value,
   } = questionChoiceVariable;
 
-  const getOtherQuestionChoices = (): QuestionChoiceVariable[] => {
+  /**
+   * Filter the current question choice to keep only other question choices.
+   */
+  const filterCurrentQuestionChoice = (): QuestionChoiceVariable[] => {
     return (node as QuestionNodeData)?.data?.questionChoices?.filter((variable: QuestionChoiceVariable) => variable?.id !== questionChoiceVariable?.id) || [];
   };
 
-  const updateQuestionChoiceVariableName = (event: any) => {
-    const newName = event?.target?.value;
+  /**
+   * Patches the current question choice, leaving other choices untouched.
+   *
+   * Might reorder the array of questionChoices within the node.
+   *
+   * @param patch
+   */
+  const patchCurrentQuestionChoice = (patch: Partial<QuestionChoiceVariable>) => {
     const patchedQuestionChoices: QuestionChoiceVariable[] = [
-      ...getOtherQuestionChoices(),
+      ...filterCurrentQuestionChoice(),
       {
         ...questionChoiceVariable,
-        name: newName,
+        ...patch,
       },
     ];
-
-    console.log('patchedQuestionChoices', patchedQuestionChoices);
 
     // @ts-ignore
     patchCurrentNode({
@@ -51,23 +58,29 @@ export const QuestionChoice: <NodeData extends BaseNodeData = BaseNodeData>(p: P
     });
   };
 
+  /**
+   * Update the question choice variable's name.
+   *
+   * @param event
+   */
+  const updateQuestionChoiceVariableName = (event: any) => {
+    const newName = event?.target?.value;
+
+    patchCurrentQuestionChoice({
+      name: newName,
+    });
+  };
+
+  /**
+   * Update the question choice variable's value.
+   *
+   * @param event
+   */
   const updateQuestionChoiceVariableValue = (event: any) => {
     const newValue = event?.target?.value;
-    const patchedQuestionChoices: QuestionChoiceVariable[] = [
-      ...getOtherQuestionChoices(),
-      {
-        ...questionChoiceVariable,
-        value: newValue,
-      },
-    ];
 
-    console.log('patchedQuestionChoices', patchedQuestionChoices);
-
-    // @ts-ignore
-    patchCurrentNode({
-      data: {
-        questionChoices: patchedQuestionChoices,
-      },
+    patchCurrentQuestionChoice({
+      value: newValue,
     });
   };
 

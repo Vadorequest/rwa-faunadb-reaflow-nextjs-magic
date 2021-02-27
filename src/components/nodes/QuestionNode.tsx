@@ -64,7 +64,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
           const choiceTypes: QuestionChoiceTypeOption[] = settings.canvas.nodes.questionNode.choiceTypeOptions;
           const lastCreatedNode = lastCreated?.node;
           const lastCreatedAt = lastCreated?.at;
-          const displayChoiceInputs = node?.data?.questionType === 'single-quick-reply';
+          const displayChoiceInputs = node?.data?.questionChoiceType === 'single-quick-reply';
           const additionalHeightChoiceInputs = 200;
 
           // Autofocus works fine when the node is inside the viewport, but when it's created outside it moves the viewport back at the beginning
@@ -112,7 +112,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
             // Updates the value in the Recoil store
             patchCurrentNode({
               data: {
-                text: newValue,
+                questionText: newValue,
               },
             } as QuestionNodeData);
           };
@@ -129,7 +129,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
           };
 
           /**
-           * Updates the current node "questionType" value.
+           * Updates the current node "questionChoiceType" value.
            *
            * @param selectedChoice
            * @param action
@@ -138,11 +138,11 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
             const selectedChoiceValue: QuestionChoiceType = selectedChoice?.value;
 
             // Don't update if the choice is not different
-            if (selectedChoiceValue !== node?.data?.questionType) {
+            if (selectedChoiceValue !== node?.data?.questionChoiceType) {
               // Updates the value in the Recoil store
               patchCurrentNode({
                 data: {
-                  questionType: selectedChoiceValue,
+                  questionChoiceType: selectedChoiceValue,
                 },
               } as QuestionNodeData);
             }
@@ -176,7 +176,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                   placeholder={'Say something here'}
                   onHeightChange={onTextHeightChange}
                   onChange={onTextInputValueChange}
-                  value={node?.data?.text}
+                  value={node?.data?.questionText}
                   autoFocus={shouldAutofocus}
                 />
 
@@ -194,7 +194,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                     <ReactSelect
                       className={'select select-simple'}
                       isMulti={false}
-                      value={findSelectedQuestionTypeOption(node?.data?.questionType)}
+                      value={findSelectedQuestionTypeOption(node?.data?.questionChoiceType)}
                       options={choiceTypes}
                       onChange={onSelectedChoiceTypeChange}
                     />
@@ -213,6 +213,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                           `}
                         >
                           {
+                            // Sort the questions from the oldest to youngest, avoids "jumps" of position when editing
                             sortBy(node?.data?.questionChoices, ['createdAt'])?.map((questionChoice: QuestionChoiceVariable, key: number) => {
                               return (
                                 <QuestionChoice
