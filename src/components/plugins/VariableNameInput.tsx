@@ -1,12 +1,15 @@
 import { css } from '@emotion/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useState } from 'react';
+import React, {
+  PropsWithChildren,
+  useState,
+} from 'react';
 import BaseNodeData from '../../types/BaseNodeData';
 import { PatchCurrentNode } from '../../types/BaseNodeProps';
 
-type Props = {
-  node: BaseNodeData;
-  patchCurrentNode: PatchCurrentNode;
+type Props<NodeData extends BaseNodeData = BaseNodeData> = {
+  node: NodeData;
+  patchCurrentNode: PatchCurrentNode<NodeData>;
 };
 
 /**
@@ -14,7 +17,7 @@ type Props = {
  *
  * Some nodes ask for an input (text, choice, etc.), the selected value will be stored and be indexed using the selected variable's name.
  */
-export const VariableNameInput: React.FunctionComponent<Props> = (props) => {
+export const VariableNameInput: <NodeData extends BaseNodeData = BaseNodeData>(p: PropsWithChildren<Props<NodeData>>) => React.ReactElement = (props) => {
   const {
     node,
     patchCurrentNode,
@@ -24,6 +27,7 @@ export const VariableNameInput: React.FunctionComponent<Props> = (props) => {
 
   } = node;
   console.log('node', node);
+  // @ts-ignore
   const [variableName, setVariableName] = useState<string | undefined>(node?.data?.variableName);
   console.log('VariableNameInput variableName', variableName);
 
@@ -34,6 +38,7 @@ export const VariableNameInput: React.FunctionComponent<Props> = (props) => {
 
   const onSubmit = () => {
     console.log('onSubmit variableName', variableName);
+    // @ts-ignore
     patchCurrentNode({
       data: {
         variableName: variableName,

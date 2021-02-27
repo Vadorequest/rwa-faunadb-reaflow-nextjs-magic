@@ -164,7 +164,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                     />
                   </div>
 
-                  <VariableNameInput
+                  <VariableNameInput<QuestionNodeData>
                     node={node}
                     patchCurrentNode={patchCurrentNode}
                   />
