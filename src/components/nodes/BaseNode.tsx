@@ -107,6 +107,11 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
    * Only updates the provided properties, doesn't update other properties.
    * Also merges the 'data' object, by keeping existing data and only overwriting those that are specified.
    *
+   * XXX Make sure to call this function once per function call, otherwise only the last patch call would be persisted correctly
+   *  (multiple calls within the same function would be overridden by the last patch,
+   *  because the "node" used as reference wouldn't be updated right away and would still use the same (outdated) reference)
+   *  TLDR; Don't use "patchCurrentNode" multiple times in the same function, it won't work as expected
+   *
    * @param patch
    */
   const patchCurrentNode: PatchCurrentNode = (patch: Partial<BaseNodeData>): void => {

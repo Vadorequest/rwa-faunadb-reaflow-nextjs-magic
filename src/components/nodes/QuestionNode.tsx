@@ -133,8 +133,6 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
             // Don't update if the choice is not different
             if (selectedChoiceValue !== node?.data?.questionType) {
               // Updates the value in the Recoil store
-              // XXX We must apply all patches to the current object at once, otherwise only the last patch would be applied
-              //  (previous patches would be overridden by the last patch, because the "node" used as reference wouldn't be updated right away)
               patchCurrentNode({
                 data: {
                   questionType: selectedChoiceValue,
@@ -185,6 +183,12 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                       onChange={onSelectedChoiceTypeChange}
                     />
                   </div>
+
+                  {
+                    displayChoiceInputs && (
+                      <div></div>
+                    )
+                  }
 
                   {/* Displays the "Variable name" input at the bottom of the node, in absolute position */}
                   <VariableNameInput<QuestionNodeData>
