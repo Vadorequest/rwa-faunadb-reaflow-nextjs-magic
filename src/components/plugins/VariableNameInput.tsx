@@ -29,18 +29,14 @@ export const VariableNameInput: <NodeData extends BaseNodeData = BaseNodeData>(p
     width = 200,
 
   } = node;
-  console.log('node', node);
   // @ts-ignore
   const [variableName, setVariableName] = useState<string | undefined>(node?.data?.variableName);
-  console.log('VariableNameInput variableName', variableName);
 
   const onChange = (event: any) => {
-    console.log('onChange variableName', event, event?.target?.value);
     setVariableName(event?.target?.value);
   };
 
   const onSubmit = () => {
-    console.log('onSubmit variableName', variableName);
     // @ts-ignore
     patchCurrentNode({
       data: {

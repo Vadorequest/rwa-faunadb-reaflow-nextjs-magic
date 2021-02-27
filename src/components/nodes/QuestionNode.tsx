@@ -52,9 +52,23 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
           const choiceTypes: QuestionChoiceTypeOption[] = settings.canvas.nodes.questionNode.choiceTypeOptions;
           const lastCreatedNode = lastCreated?.node;
           const lastCreatedAt = lastCreated?.at;
+          const displayChoiceInputs = node?.data?.questionType === 'single-quick-reply';
+          const additionalHeightChoiceInputs = 200;
 
           // Autofocus works fine when the node is inside the viewport, but when it's created outside it moves the viewport back at the beginning
           const shouldAutofocus = false && lastCreatedNode?.id === node.id && isYoungerThan(lastCreatedAt, 1000);
+
+          /**
+           * Calculates the node's height.
+           *
+           * The node's height is dynamic and depends on various elements.
+           *
+           * @param questionDynamicHeight
+           * @param choiceInputsHeight
+           */
+          const calcNodeHeight = (questionDynamicHeight: number, choiceInputsHeight: number) => {
+            return defaultHeight + questionDynamicHeight + choiceInputsHeight;
+          }
 
           /**
            * When textarea input height changes, we need to increase the height of the whole node accordingly.
@@ -65,7 +79,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
           const onTextHeightChange = (height: number, meta: TextareaHeightChangeMeta) => {
             // Only consider additional height, by ignoring the height of the first row
             const additionalHeight = height - meta.rowHeight;
-            const newHeight: number = defaultHeight + additionalHeight;
+            const newHeight: number = calcNodeHeight(additionalHeight, displayChoiceInputs ? additionalHeightChoiceInputs : 0);
 
             // Only update if the new height is different from the current height to avoid needless re-renders
             if (node.height !== newHeight) {
@@ -111,14 +125,26 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
           const onSelectedChoiceTypeChange = (selectedChoice: OptionTypeBase, action: { action: string }): void => {
             const selectedChoiceValue: QuestionChoiceType = selectedChoice?.value;
 
-            console.log('setSelectedChoiceType', selectedChoice, 'action:', action);
+            // Don't update if the choice is not different
+            if (selectedChoiceValue !== node?.data?.questionType) {
+              const patch = {
+                data: {
+                  questionType: selectedChoiceValue,
+                },
+              } as QuestionNodeData;
 
-            // Updates the value in the Recoil store
-            patchCurrentNode({
-              data: {
-                questionType: selectedChoiceValue,
-              },
-            } as QuestionNodeData);
+              // When the single quick reply choice is selected, increase the size of the node. Otherwise, decrease it.
+              if (selectedChoiceValue === 'single-quick-reply') {
+                patch.height = (node?.height || defaultHeight) + additionalHeightChoiceInputs;
+              } else {
+                patch.height = (node?.height || defaultHeight) - additionalHeightChoiceInputs;
+              }
+
+              // Updates the value in the Recoil store
+              // XXX We must apply all patches to the current object at once, otherwise only the last patch would be applied
+              //  (previous patches would be overridden by the last patch, because the "node" used as reference wouldn't be updated right away)
+              patchCurrentNode(patch);
+            }
           };
 
           return (
