@@ -16,6 +16,9 @@ type Props<NodeData extends BaseNodeData = BaseNodeData> = {
  * Input that stores the name of the node's selected value.
  *
  * Some nodes ask for an input (text, choice, etc.), the selected value will be stored and be indexed using the selected variable's name.
+ *
+ * Displays at the bottom of the node, in absolute position.
+ * Takes all the width of the node it is contained witin.
  */
 export const VariableNameInput: <NodeData extends BaseNodeData = BaseNodeData>(p: PropsWithChildren<Props<NodeData>>) => React.ReactElement = (props) => {
   const {

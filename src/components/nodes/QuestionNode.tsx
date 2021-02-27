@@ -164,6 +164,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                     />
                   </div>
 
+                  {/* Displays the "Variable name" input at the bottom of the node, in absolute position */}
                   <VariableNameInput<QuestionNodeData>
                     node={node}
                     patchCurrentNode={patchCurrentNode}
