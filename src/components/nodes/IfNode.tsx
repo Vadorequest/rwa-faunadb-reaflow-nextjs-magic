@@ -18,7 +18,7 @@ type Props = {} & BaseNodeProps<IfNodeData>;
 
 const nodeType: NodeType = 'if';
 const defaultWidth = 300;
-const defaultHeight = 200;
+const defaultHeight = 300;
 
 /**
  * If/Else node.

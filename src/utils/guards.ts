@@ -1,13 +1,14 @@
-import NodeDataWithVariableName from '../types/NodeDataWithVariableName';
+import BaseNodeData from '../types/BaseNodeData';
+import { QuestionNodeData } from '../types/nodes/QuestionNodeData';
 
 /**
- * Applies a TypeScript guard check to make sure the variable is of NodeDataWithVariableName type.
+ * Applies a TypeScript guard check to make sure the nodeData is of QuestionNodeData type.
  *
- * @param variable
+ * @param nodeData
  *
  * @see https://rangle.io/blog/how-to-use-typescript-type-guards/
  */
-export const isNodeDataWithVariableName = (variable: any): variable is NodeDataWithVariableName => {
-  return (variable as NodeDataWithVariableName).variableName !== undefined;
-}
+export const isQuestionNodeData = (nodeData: BaseNodeData): nodeData is QuestionNodeData => {
+  return nodeData?.data?.type === 'question';
+};
 
