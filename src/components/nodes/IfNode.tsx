@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import React, { Fragment } from 'react';
 import settings from '../../settings';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
@@ -9,6 +10,7 @@ import { SpecializedNodeProps } from '../../types/nodes/SpecializedNodeProps';
 import NodeType from '../../types/NodeType';
 import { ReactSelectDefaultOption } from '../../types/ReactSelect';
 import { createPort } from '../../utils/ports';
+import SelectComparisonOperator from '../plugins/SelectComparisonOperator';
 import SelectVariable, { OnSelectedVariableChange } from '../plugins/SelectVariable';
 import BaseNode from './BaseNode';
 
@@ -60,6 +62,26 @@ const IfNode: BaseNodeComponent<Props> = (props) => {
             }
           };
 
+          /**
+           * Updates the current node "comparisonOperator" value.
+           *
+           * @param selectedOption
+           * @param actionMeta
+           */
+          const onSelectedComparedComparisonOperatorChange: OnSelectedVariableChange = (selectedOption: ReactSelectDefaultOption | undefined, actionMeta) => {
+            const newValue = selectedOption?.value;
+
+            // Do not update when the value isn't different
+            if (newValue !== node?.data?.comparisonOperator) {
+              // Updates the value in the Recoil store
+              patchCurrentNode({
+                data: {
+                  comparisonOperator: newValue,
+                },
+              } as IfNodeData);
+            }
+          };
+
           return (
             <Fragment>
               <div
@@ -70,11 +92,23 @@ const IfNode: BaseNodeComponent<Props> = (props) => {
 
               <div
                 className={`node-content ${nodeType}-content`}
+                css={css`
+                  .select {
+                    margin-top: 10px;
+                    margin-bottom: 10px;
+                  }
+                `}
               >
                 <SelectVariable
                   selectedVariableName={node?.data?.comparedVariableName}
                   onSelectedVariableChange={onSelectedComparedVariableChange}
                   placeholder={'Variable to compare'}
+                />
+
+                <SelectComparisonOperator
+                  selectedComparisonOperatorName={node?.data?.comparisonOperator}
+                  onSelectedComparisonOperatorChange={onSelectedComparedComparisonOperatorChange}
+                  placeholder={'Comparison operator'}
                 />
 
                 Else
