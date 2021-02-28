@@ -3,20 +3,18 @@ import { selector } from 'recoil';
 import BaseNodeData from '../types/BaseNodeData';
 import Variable from '../types/Variable';
 import { isNodeDataWithVariableName } from '../utils/guards';
-import { nodesState } from './nodesState';
+import { nodesSelector } from './nodesState';
 
 /**
  * Builds the list of variables based on the variables used by nodes.
  *
  * This makes sure the list of variables that are displayed in "If" selects are always up-to-date with variable names used in Question nodes.
  * Doesn't allow manual mutation.
- *
- * TODO build from IfNodeAdditionalData "comparedVariableName/expectedVariableName" too
  */
 export const variablesSelector = selector<Variable[]>({
   key: 'variablesSelector',
   get: ({ get }): Variable[] => {
-    const currentNodes: BaseNodeData[] = get(nodesState) as BaseNodeData[];
+    const currentNodes: BaseNodeData[] = get(nodesSelector) as BaseNodeData[];
     const variableNamesFromNodes: Variable[] = (currentNodes
       ?.map((node: BaseNodeData): Variable | undefined => {
         if (isNodeDataWithVariableName(node?.data)) {
