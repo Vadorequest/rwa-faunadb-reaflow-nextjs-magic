@@ -2,12 +2,11 @@ import { css } from '@emotion/react';
 import React, { PropsWithChildren } from 'react';
 import { DebounceInput } from 'react-debounce-input';
 import TextareaAutosize from 'react-textarea-autosize';
-import BaseNodeData from '../../types/BaseNodeData';
 import { PatchCurrentNode } from '../../types/BaseNodeProps';
 import { QuestionChoiceVariable } from '../../types/nodes/QuestionNodeAdditionalData';
 import { QuestionNodeData } from '../../types/nodes/QuestionNodeData';
 
-type Props<NodeData extends BaseNodeData = BaseNodeData> = {
+type Props<NodeData extends QuestionNodeData = QuestionNodeData> = {
   node: NodeData;
   questionChoiceVariable: QuestionChoiceVariable;
   patchCurrentNode: PatchCurrentNode<NodeData>;
@@ -16,7 +15,7 @@ type Props<NodeData extends BaseNodeData = BaseNodeData> = {
 /**
  *
  */
-export const QuestionChoice: <NodeData extends BaseNodeData = BaseNodeData>(p: PropsWithChildren<Props<NodeData>>) => React.ReactElement = (props) => {
+export const QuestionChoice = <NodeData extends QuestionNodeData = QuestionNodeData>(props: PropsWithChildren<Props<NodeData>>): React.ReactElement => {
   const {
     node,
     questionChoiceVariable,
@@ -32,7 +31,7 @@ export const QuestionChoice: <NodeData extends BaseNodeData = BaseNodeData>(p: P
    * Filter the current question choice to keep only other question choices.
    */
   const filterCurrentQuestionChoice = (): QuestionChoiceVariable[] => {
-    return (node as QuestionNodeData)?.data?.questionChoices?.filter((variable: QuestionChoiceVariable) => variable?.id !== id) || [];
+    return node?.data?.questionChoices?.filter((variable: QuestionChoiceVariable) => variable?.id !== id) || [];
   };
 
   /**

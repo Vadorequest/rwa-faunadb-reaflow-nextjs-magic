@@ -102,6 +102,7 @@ export const findNodeComponentByType = (nodeType: NodeType): BaseNodeComponent =
     case 'information':
       return InformationNode;
     case 'question':
+      // @ts-ignore
       return QuestionNode;
     case 'if':
       return IfNode;

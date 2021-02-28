@@ -4,10 +4,10 @@ import React, {
   PropsWithChildren,
   useState,
 } from 'react';
-import BaseNodeData from '../../types/BaseNodeData';
 import { PatchCurrentNode } from '../../types/BaseNodeProps';
+import NodeDataWithVariableName from '../../types/NodeDataWithVariableName';
 
-type Props<NodeData extends BaseNodeData = BaseNodeData> = {
+type Props<NodeData extends NodeDataWithVariableName = NodeDataWithVariableName> = {
   node: NodeData;
   patchCurrentNode: PatchCurrentNode<NodeData>;
 };
@@ -20,7 +20,7 @@ type Props<NodeData extends BaseNodeData = BaseNodeData> = {
  * Displays at the bottom of the node, in absolute position.
  * Takes all the width of the node it is contained witin.
  */
-export const VariableNameInput: <NodeData extends BaseNodeData = BaseNodeData>(p: PropsWithChildren<Props<NodeData>>) => React.ReactElement = (props) => {
+export const VariableNameInput = <NodeData extends NodeDataWithVariableName = NodeDataWithVariableName>(props: PropsWithChildren<Props<NodeData>>): React.ReactElement => {
   const {
     node,
     patchCurrentNode,
@@ -29,7 +29,6 @@ export const VariableNameInput: <NodeData extends BaseNodeData = BaseNodeData>(p
     width = 200,
 
   } = node;
-  // @ts-ignore
   const [variableName, setVariableName] = useState<string | undefined>(node?.data?.variableName);
 
   const onChange = (event: any) => {
@@ -37,12 +36,11 @@ export const VariableNameInput: <NodeData extends BaseNodeData = BaseNodeData>(p
   };
 
   const onSubmit = () => {
-    // @ts-ignore
     patchCurrentNode({
       data: {
         variableName: variableName,
       },
-    });
+    } as NodeData);
   };
 
   return (

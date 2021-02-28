@@ -1,4 +1,5 @@
 import BaseNodeAdditionalData from '../BaseNodeAdditionalData';
+import NodeDataWithVariableName from '../NodeDataWithVariableName';
 import { QuestionChoiceType } from './QuestionChoiceType';
 
 /**
@@ -33,7 +34,7 @@ export type QuestionChoiceVariable = {
 /**
  * Additional data contained in a Question node "data" object.
  */
-export type QuestionNodeAdditionalData = BaseNodeAdditionalData & {
+export type QuestionNodeAdditionalData = BaseNodeAdditionalData & NodeDataWithVariableName & {
   /**
    * Question asked to the user (as text).
    */
@@ -43,11 +44,6 @@ export type QuestionNodeAdditionalData = BaseNodeAdditionalData & {
    * Type of the question
    */
   questionChoiceType?: QuestionChoiceType;
-
-  /**
-   * Variable name used to store the user's response to the question.
-   */
-  variableName?: string;
 
   /**
    * Question choices.
