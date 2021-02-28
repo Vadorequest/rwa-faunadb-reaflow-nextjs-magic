@@ -76,6 +76,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
            * The node's height is dynamic and depends on various parameters (selected option, length of text, etc.).
            */
           useEffect(() => {
+            // TODO increase height depending on how many input choice there are (50px/unit)?
             const newHeight = defaultHeight + questionTextareaAdditionalHeight + (displayChoiceInputs ? additionalHeightChoiceInputs : 0);
 
             // Only update the height if it's different

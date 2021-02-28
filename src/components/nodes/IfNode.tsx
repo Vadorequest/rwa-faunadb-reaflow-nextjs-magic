@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import ReactSelect from 'react-select';
 import settings from '../../settings';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
@@ -39,17 +40,17 @@ const IfNode: BaseNodeComponent<Props> = (props) => {
           } = nodeProps;
 
           /**
-           * Updates the current node "variable1" value.
+           * Updates the current node "comparedVariableName" value.
            *
            * @param event
            */
-          const onSelectedVariable1Change = (event: any) => {
+          const onSelectedComparedVariableChange = (event: any) => {
             const newValue = event.target.value;
 
             // Updates the value in the Recoil store
             patchCurrentNode({
               data: {
-                variable1: newValue,
+                comparedVariableName: newValue,
               },
             } as IfNodeData);
           };
@@ -65,6 +66,14 @@ const IfNode: BaseNodeComponent<Props> = (props) => {
               <div
                 className={`node-content ${nodeType}-content`}
               >
+                {/*<ReactSelect*/}
+                {/*  className={'select select-simple'}*/}
+                {/*  isMulti={false}*/}
+                {/*  value={findSelectedQuestionTypeOption(node?.data?.questionChoiceType)}*/}
+                {/*  options={choiceTypes}*/}
+                {/*  onChange={onSelectedVariableChange}*/}
+                {/*/>*/}
+
                 Else
               </div>
             </Fragment>
