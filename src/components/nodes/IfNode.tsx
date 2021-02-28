@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react';
-import ReactSelect from 'react-select';
 import settings from '../../settings';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
@@ -16,7 +15,7 @@ import BaseNode from './BaseNode';
 type Props = {} & BaseNodeProps<IfNodeData>;
 
 const nodeType: NodeType = 'if';
-const defaultWidth = 200;
+const defaultWidth = 300;
 const defaultHeight = 200;
 
 /**
@@ -47,15 +46,18 @@ const IfNode: BaseNodeComponent<Props> = (props) => {
            * @param selectedOption
            * @param actionMeta
            */
-          const onSelectedComparedVariableChange: OnSelectedVariableChange = (selectedOption: ReactSelectDefaultOption, actionMeta) => {
-            const newValue = selectedOption.value;
+          const onSelectedComparedVariableChange: OnSelectedVariableChange = (selectedOption: ReactSelectDefaultOption | undefined, actionMeta) => {
+            const newValue = selectedOption?.value;
 
-            // Updates the value in the Recoil store
-            patchCurrentNode({
-              data: {
-                comparedVariableName: newValue,
-              },
-            } as IfNodeData);
+            // Do not update when the value isn't different
+            if (newValue !== node?.data?.comparedVariableName) {
+              // Updates the value in the Recoil store
+              patchCurrentNode({
+                data: {
+                  comparedVariableName: newValue,
+                },
+              } as IfNodeData);
+            }
           };
 
           return (
@@ -72,6 +74,7 @@ const IfNode: BaseNodeComponent<Props> = (props) => {
                 <SelectVariable
                   selectedVariableName={node?.data?.comparedVariableName}
                   onSelectedVariableChange={onSelectedComparedVariableChange}
+                  placeholder={'Variable to compare'}
                 />
 
                 Else

@@ -15,7 +15,7 @@ export type OnSelectedVariableChange = (selectedOption: ReactSelectDefaultOption
 type Props = {
   selectedVariableName: string | undefined;
   onSelectedVariableChange: OnSelectedVariableChange;
-};
+} & React.HTMLProps<HTMLSelectElement>; // TODO remove "any" but it breaks the "ReactSelect" typings below when doing so
 
 /**
  * Select that displays a list of all variables currently used in the application.
@@ -24,6 +24,7 @@ export const SelectVariable: React.FunctionComponent<Props> = (props) => {
   const {
     selectedVariableName,
     onSelectedVariableChange,
+    ...rest
   } = props;
 
   const [variables] = useRecoilState(variablesSelector);
@@ -37,12 +38,15 @@ export const SelectVariable: React.FunctionComponent<Props> = (props) => {
   });
 
   return (
+    // @ts-ignore
     <ReactSelect
       className={'select select-simple'}
       isMulti={false}
       value={variablesAsOptions?.find((variable: ReactSelectDefaultOption) => variable?.value === selectedVariableName)}
       options={variablesAsOptions}
       onChange={onSelectedVariableChange as (value: ValueType<OptionTypeBase, boolean>, actionMeta: ActionMeta<OptionTypeBase>) => void}
+      isClearable={true}
+      {...rest}
     />
   );
 };
