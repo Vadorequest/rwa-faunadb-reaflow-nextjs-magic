@@ -1,11 +1,12 @@
 import { NodeData } from 'reaflow';
 import BaseNodeAdditionalData from './BaseNodeAdditionalData';
+import Variable from './Variable';
 
 type WithVariableName = {
   /**
    * Variable name used to store the user's response to the question.
    */
-  variableName?: string;
+  variableName?: Variable['name'];
 }
 
 /**
