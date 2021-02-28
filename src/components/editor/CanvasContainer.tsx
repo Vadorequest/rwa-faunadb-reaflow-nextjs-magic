@@ -43,6 +43,7 @@ type Props = {
  *
  * All nodes and edges are drawn within the <Canvas> element.
  * Handles undo/redo.
+ * Handles selection of nodes/edges. (one at a time, multi-select isn't supported)
  *
  * Positioned in absolute position and takes all the spaces of its parent element (PlaygroundContainer).
  *

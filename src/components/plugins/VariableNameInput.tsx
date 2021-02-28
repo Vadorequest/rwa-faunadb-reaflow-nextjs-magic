@@ -13,12 +13,13 @@ type Props<NodeData extends NodeDataWithVariableName = NodeDataWithVariableName>
 };
 
 /**
- * Input that stores the name of the node's selected value.
+ * Input storing the name of the node's "variable name".
  *
- * Some nodes ask for an input (text, choice, etc.), the selected value will be stored and be indexed using the selected variable's name.
+ * Some nodes ask for a "variable name" input (text, choice, etc.).
+ * The variable name is used in the <SelectVariable> component, to be displayed as a list of variables.
  *
  * Displays at the bottom of the node, in absolute position.
- * Takes all the width of the node it is contained witin.
+ * Takes full width of the node component it is contained within.
  */
 export const VariableNameInput = <NodeData extends NodeDataWithVariableName = NodeDataWithVariableName>(props: PropsWithChildren<Props<NodeData>>): React.ReactElement => {
   const {

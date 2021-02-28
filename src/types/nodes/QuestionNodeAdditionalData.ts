@@ -32,7 +32,7 @@ export type QuestionChoiceVariable = {
 }
 
 /**
- * Additional data contained in a Question node "data" object.
+ * Additional "node.data" for the "QuestionNodeData" type.
  */
 export type QuestionNodeAdditionalData = BaseNodeAdditionalData & NodeDataWithVariableName & {
   /**

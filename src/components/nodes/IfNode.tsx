@@ -11,9 +11,9 @@ import NodeType from '../../types/NodeType';
 import { OnSelectedOptionChange } from '../../types/OnSelectedOptionChange';
 import { ReactSelectDefaultOption } from '../../types/ReactSelect';
 import { createPort } from '../../utils/ports';
-import SelectExpectedValue from '../plugins/SelectExpectedValue';
 import SelectComparisonOperator from '../plugins/SelectComparisonOperator';
-import SelectVariable  from '../plugins/SelectVariable';
+import SelectExpectedValue from '../plugins/SelectExpectedValue';
+import SelectVariable from '../plugins/SelectVariable';
 import BaseNode from './BaseNode';
 
 type Props = {} & BaseNodeProps<IfNodeData>;
@@ -27,10 +27,9 @@ const defaultHeight = 300;
  *
  * Used to split the workflow depending on the result of comparison between 2 variables.
  *
- * Displays inputs and select to defined how the variable1 should be compared to the variable2.
+ * Displays 3 select inputs to define how the compared variable should be compared to the expected value.
  * Has one west port and two east ports.
  * The west port allows unlimited links to other nodes.
- * The east port allows only one link to another node. (TODO not enforced yet)
  */
 const IfNode: BaseNodeComponent<Props> = (props) => {
   return (

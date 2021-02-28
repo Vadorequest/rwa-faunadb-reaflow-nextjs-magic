@@ -1,8 +1,8 @@
+import { isBrowser } from '@unly/utils';
 import DisplayOnBrowserMount from '../components/DisplayOnBrowserMount';
 import EditorContainer from '../components/editor/EditorContainer';
 import Layout from '../components/Layout';
 import { CanvasDataset } from '../types/CanvasDataset';
-import { isBrowser } from '@unly/utils';
 import { getCanvasDatasetFromLS } from '../utils/persistCanvasDataset';
 
 export type Props = {
@@ -26,7 +26,8 @@ export const getStaticProps = (): { props: Props } => {
 /**
  * Index/home page.
  *
- * A simple page that does nothing more than displaying a layout and the Reaflow canvas (EditorContainer).
+ * A simple page that does nothing more than displaying a layout and the Reaflow canvas (EditorContainer),
+ * after it has initialized the global "initialCanvasDataset" browser variable, which is used by the nodesSelector and edgesSelector Recoil state managers.
  */
 const IndexPage = (props: any) => {
   const { canvasDataset: canvasDatasetFromServer } = props; // We don't use canvasDatasetFromServer in this demo, but localstorage instead
@@ -39,7 +40,7 @@ const IndexPage = (props: any) => {
    *  And it won't have multiple re-renders due to mutating state, which in turn avoids lagginess during init.
    *  Also, it's a viable approach whether using the data from browser localstorage, or a real DB.
    */
-  if(isBrowser()){
+  if (isBrowser()) {
     window.initialCanvasDataset = getCanvasDatasetFromLS();
   }
 

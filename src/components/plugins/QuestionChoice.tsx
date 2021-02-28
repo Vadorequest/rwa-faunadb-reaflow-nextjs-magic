@@ -13,7 +13,10 @@ type Props<NodeData extends QuestionNodeData = QuestionNodeData> = {
 };
 
 /**
+ * Display a single "question choice".
  *
+ * Displays within a QuestionNode component.
+ * Displayed only when the QuestionNode's "questionChoiceType" is set to "single-quick-reply".
  */
 export const QuestionChoice = <NodeData extends QuestionNodeData = QuestionNodeData>(props: PropsWithChildren<Props<NodeData>>): React.ReactElement => {
   const {
@@ -149,7 +152,6 @@ export const QuestionChoice = <NodeData extends QuestionNodeData = QuestionNodeD
         />
       </div>
     </div>
-
   );
 };
 

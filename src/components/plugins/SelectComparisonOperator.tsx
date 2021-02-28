@@ -18,7 +18,7 @@ type ComparisonOperator = {
   label: string;
 }
 /**
- * Select that displays a list of all comparison operators available.
+ * Select displaying a list of all comparison operators available.
  *
  * Those are hardcoded and cannot be added manually.
  */

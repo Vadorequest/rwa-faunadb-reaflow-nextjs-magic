@@ -29,7 +29,6 @@ const defaultHeight = 100;
  * Displays a multi lines text input. (textarea)
  * Has one west port and one east port.
  * The west port allows unlimited links to other nodes.
- * The east port allows only one link to another node. (TODO not enforced yet)
  */
 const InformationNode: BaseNodeComponent<Props> = (props) => {
   return (

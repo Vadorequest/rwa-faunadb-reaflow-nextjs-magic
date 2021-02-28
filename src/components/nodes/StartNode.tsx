@@ -22,10 +22,10 @@ const defaultHeight = 100;
  * Start node.
  *
  * Used to define the workflow's entry point.
+ * Is unique, there can be only one StartNode, and it's required and must always be present.
  *
  * Displays a start icon.
  * Has only one east port.
- * The east port allows only one link to another node. (TODO not enforced yet)
  */
 const StartNode: BaseNodeComponent<Props> = (props) => {
   return (

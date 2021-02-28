@@ -8,6 +8,8 @@ It is a single-page application (using a static page) that aims at showing an **
 
 [Demo](https://poc-nextjs-reaflow.vercel.app/) (automatically updated from the `master` branch).
 
+![image](https://user-images.githubusercontent.com/3807458/109431687-08bf1680-7a08-11eb-98bd-31fa91e21680.png)
+
 ## Features
 
 It comes with the following features:
@@ -33,6 +35,12 @@ Known limitations:
     - I don't plan on changing that at the moment
 
 > This POC can be used as a boilerplate to start your own project using Reaflow.
+
+## Getting started
+
+- `yarn`
+- `yarn start`
+- Open browser at [http://localhost:8890](http://localhost:8890)
 
 ## Deploy your own
 

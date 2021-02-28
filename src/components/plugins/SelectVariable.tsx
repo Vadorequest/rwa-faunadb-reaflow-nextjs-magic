@@ -12,7 +12,10 @@ type Props = {
 } & Partial<CommonProps<ReactSelectDefaultOption, false>> & React.HTMLProps<HTMLSelectElement>;
 
 /**
- * Select that displays a list of all variables currently used in the application.
+ * Select displaying a list of all variables currently used.
+ *
+ * The list of variables is automatically resolved by lookup on all existing nodes.
+ * This is done automatically by the "variablesSelector".
  */
 export const SelectVariable: React.FunctionComponent<Props> = (props) => {
   const {

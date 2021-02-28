@@ -14,7 +14,7 @@ type Props = {
 } & Partial<CommonProps<ReactSelectDefaultOption, false>> & React.HTMLProps<HTMLSelectElement>;
 
 /**
- * Select that displays a list of all possible choices for the currently selected variable.
+ * Select displaying a list of all possible choices for the currently selected variable ("selectedComparedVariableName").
  */
 export const SelectExpectedValue: React.FunctionComponent<Props> = (props) => {
   const {

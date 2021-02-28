@@ -25,7 +25,7 @@ export const createEdge = (fromNode?: BaseNodeData, toNode?: BaseNodeData, fromP
     to: toNode?.id,
     parent: fromNode?.parent,
     fromPort: fromPort?.id,
-    toPort: toPort?.id
+    toPort: toPort?.id,
   };
   console.log('createEdge newEdge', newEdge);
 

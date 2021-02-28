@@ -42,11 +42,10 @@ const defaultHeight = 250;
  * Displays a multi lines text input. (textarea)
  * Displays a "question type" select input. (React Select)
  *  - If question type is "text", doesn't display anything more.
- *  - If question type is "single-quick-reply", displays a list of manual entries below (ref, label), with ability to create new entries.
+ *  - If question type is "single-quick-reply", displays a list of manual choices below, with ability to create new entries.
  * Displays a "question ref" input at the node's bottom.
  * Has one west port and one east port.
  * The west port allows unlimited links to other nodes.
- * The east port allows only one link to another node. (TODO not enforced yet)
  */
 const QuestionNode: BaseNodeComponent<Props> = (props) => {
   return (

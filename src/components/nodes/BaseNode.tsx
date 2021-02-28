@@ -51,7 +51,7 @@ const fallbackDefaultHeight = 100;
  * Base node component.
  *
  * This component contains shared business logic common to all nodes.
- * It renders a Reaflow <Node> component, which contains a <foreignObject> that allows us to write proper HTML/CSS within.
+ * It renders a Reaflow <Node> component, which contains a <foreignObject> HTML element that allows us to write advanced HTML elements within.
  *
  * The Node is rendered as SVG <rect> element.
  * Beware the <foreignObject> will appear "on top" of the <Node>, and thus the Node will not receive some events because they're caught by the <foreignObject>.
@@ -62,6 +62,7 @@ const fallbackDefaultHeight = 100;
  * @see https://github.com/reaviz/reaflow/issues/45 Using `foreignObject` "steals" all `Node` events (onEnter, etc.) - How to forward events when using foreignObject?
  * @see https://github.com/reaviz/reaflow/issues/50 `useSelection` hook `onKeyDown` event doesn't work with `foreignObject` - Multiple selection doesn't work when using a `foreignObject
  * @see https://github.com/reaviz/reaflow/issues/44 React select component displays/hides itself randomly (as `foreignObject`)
+ * TODO link doc about foreignObject - awaiting https://github.com/reaviz/reaflow/pull/74
  */
 const BaseNode: BaseNodeComponent<Props> = (props) => {
   const {

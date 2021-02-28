@@ -3,7 +3,6 @@ import { Link as ChakraLink } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Head from 'next/head';
-import Link from 'next/link';
 import React, { ReactNode } from 'react';
 import settings from '../settings';
 

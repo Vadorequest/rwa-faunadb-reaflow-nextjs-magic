@@ -9,6 +9,10 @@ type Props = {
 }
 
 /**
+ * The playground contains the CanvasContainer and the background of the canvas.
+ *
+ * Also contains absolutely-positioned components that have are singletons (one instance at a time) and must appear on top of the canvas.
+ *
  * @see https://github.com/reaviz/reaflow
  */
 const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element | null => {
