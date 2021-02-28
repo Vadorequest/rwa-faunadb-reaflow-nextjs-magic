@@ -2,6 +2,6 @@ import BaseNodeAdditionalData from '../BaseNodeAdditionalData';
 
 export type IfNodeAdditionalData = BaseNodeAdditionalData & {
   comparedVariableName?: string;
-  expectedVariableName?: string;
+  expectedValue?: string;
   comparisonOperator?: string;
 };

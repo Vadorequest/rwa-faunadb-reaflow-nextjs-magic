@@ -15,7 +15,7 @@ export type QuestionChoiceVariable = {
   /**
    * Timestamp of creation. (should use lodash.now())
    */
-  createdAt: string; // lodash.now
+  createdAt: string;
 
   /**
    * Name of the variable.

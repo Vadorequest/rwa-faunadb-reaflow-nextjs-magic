@@ -8,10 +8,12 @@ import BasePortData from '../../types/BasePortData';
 import { IfNodeData } from '../../types/nodes/IfNodeData';
 import { SpecializedNodeProps } from '../../types/nodes/SpecializedNodeProps';
 import NodeType from '../../types/NodeType';
+import { OnSelectedOptionChange } from '../../types/OnSelectedOptionChange';
 import { ReactSelectDefaultOption } from '../../types/ReactSelect';
 import { createPort } from '../../utils/ports';
+import SelectExpectedValue from '../plugins/SelectExpectedValue';
 import SelectComparisonOperator from '../plugins/SelectComparisonOperator';
-import SelectVariable, { OnSelectedVariableChange } from '../plugins/SelectVariable';
+import SelectVariable  from '../plugins/SelectVariable';
 import BaseNode from './BaseNode';
 
 type Props = {} & BaseNodeProps<IfNodeData>;
@@ -48,7 +50,7 @@ const IfNode: BaseNodeComponent<Props> = (props) => {
            * @param selectedOption
            * @param actionMeta
            */
-          const onSelectedComparedVariableChange: OnSelectedVariableChange = (selectedOption: ReactSelectDefaultOption | undefined, actionMeta) => {
+          const onSelectedComparedVariableChange: OnSelectedOptionChange = (selectedOption: ReactSelectDefaultOption | undefined, actionMeta) => {
             const newValue = selectedOption?.value;
 
             // Do not update when the value isn't different
@@ -68,7 +70,7 @@ const IfNode: BaseNodeComponent<Props> = (props) => {
            * @param selectedOption
            * @param actionMeta
            */
-          const onSelectedComparedComparisonOperatorChange: OnSelectedVariableChange = (selectedOption: ReactSelectDefaultOption | undefined, actionMeta) => {
+          const onSelectedComparedComparisonOperatorChange: OnSelectedOptionChange = (selectedOption: ReactSelectDefaultOption | undefined, actionMeta) => {
             const newValue = selectedOption?.value;
 
             // Do not update when the value isn't different
@@ -77,6 +79,26 @@ const IfNode: BaseNodeComponent<Props> = (props) => {
               patchCurrentNode({
                 data: {
                   comparisonOperator: newValue,
+                },
+              } as IfNodeData);
+            }
+          };
+
+          /**
+           * Updates the current node "expectedValue" value.
+           *
+           * @param selectedOption
+           * @param actionMeta
+           */
+          const onSelectedComparisonChange: OnSelectedOptionChange = (selectedOption: ReactSelectDefaultOption | undefined, actionMeta) => {
+            const newValue = selectedOption?.value;
+
+            // Do not update when the value isn't different
+            if (newValue !== node?.data?.expectedValue) {
+              // Updates the value in the Recoil store
+              patchCurrentNode({
+                data: {
+                  expectedValue: newValue,
                 },
               } as IfNodeData);
             }
@@ -109,6 +131,13 @@ const IfNode: BaseNodeComponent<Props> = (props) => {
                   selectedComparisonOperatorName={node?.data?.comparisonOperator}
                   onSelectedComparisonOperatorChange={onSelectedComparedComparisonOperatorChange}
                   placeholder={'Comparison operator'}
+                />
+
+                <SelectExpectedValue
+                  selectedComparedVariableName={node?.data?.comparedVariableName}
+                  selectedExpectedValue={node?.data?.expectedValue}
+                  onSelectedComparisonChange={onSelectedComparisonChange}
+                  placeholder={'Compared to expected value'}
                 />
 
                 Else

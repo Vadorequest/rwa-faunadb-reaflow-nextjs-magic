@@ -53,7 +53,7 @@ export const SelectComparisonOperator: React.FunctionComponent<Props> = (props) 
       className={'select select-simple'}
       isMulti={false}
       // @ts-ignore
-      value={comparisonOperatorsAsOptions?.find((comparisonOperators: ReactSelectDefaultOption) => comparisonOperators?.value === selectedComparisonOperatorName)}
+      value={comparisonOperatorsAsOptions?.find((option: ReactSelectDefaultOption) => option?.value === selectedComparisonOperatorName)}
       options={comparisonOperatorsAsOptions}
       onChange={onSelectedComparisonOperatorChange as any}
       {...rest}

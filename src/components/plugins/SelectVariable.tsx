@@ -1,19 +1,14 @@
 import React from 'react';
 import ReactSelect, { CommonProps } from 'react-select';
-import {
-  ActionMeta,
-  OptionTypeBase,
-} from 'react-select/src/types';
 import { useRecoilState } from 'recoil';
 import { variablesSelector } from '../../states/variablesState';
+import { OnSelectedOptionChange } from '../../types/OnSelectedOptionChange';
 import { ReactSelectDefaultOption } from '../../types/ReactSelect';
 import Variable from '../../types/Variable';
 
-export type OnSelectedVariableChange = (selectedOption: ReactSelectDefaultOption, actionMeta: ActionMeta<OptionTypeBase>) => void;
-
 type Props = {
   selectedVariableName: string | undefined;
-  onSelectedVariableChange: OnSelectedVariableChange;
+  onSelectedVariableChange: OnSelectedOptionChange;
 } & Partial<CommonProps<ReactSelectDefaultOption, false>> & React.HTMLProps<HTMLSelectElement>;
 
 /**
@@ -41,7 +36,7 @@ export const SelectVariable: React.FunctionComponent<Props> = (props) => {
       className={'select select-simple'}
       isMulti={false}
       // @ts-ignore
-      value={variablesAsOptions?.find((variable: ReactSelectDefaultOption) => variable?.value === selectedVariableName)}
+      value={variablesAsOptions?.find((option: ReactSelectDefaultOption) => option?.value === selectedVariableName)}
       options={variablesAsOptions}
       onChange={onSelectedVariableChange as any}
       {...rest}
