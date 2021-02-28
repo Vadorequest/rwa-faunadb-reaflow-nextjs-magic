@@ -8,7 +8,9 @@ import BasePortData from '../../types/BasePortData';
 import { IfNodeData } from '../../types/nodes/IfNodeData';
 import { SpecializedNodeProps } from '../../types/nodes/SpecializedNodeProps';
 import NodeType from '../../types/NodeType';
+import { ReactSelectDefaultOption } from '../../types/ReactSelect';
 import { createPort } from '../../utils/ports';
+import SelectVariable, { OnSelectedVariableChange } from '../plugins/SelectVariable';
 import BaseNode from './BaseNode';
 
 type Props = {} & BaseNodeProps<IfNodeData>;
@@ -42,10 +44,11 @@ const IfNode: BaseNodeComponent<Props> = (props) => {
           /**
            * Updates the current node "comparedVariableName" value.
            *
-           * @param event
+           * @param selectedOption
+           * @param actionMeta
            */
-          const onSelectedComparedVariableChange = (event: any) => {
-            const newValue = event.target.value;
+          const onSelectedComparedVariableChange: OnSelectedVariableChange = (selectedOption: ReactSelectDefaultOption, actionMeta) => {
+            const newValue = selectedOption.value;
 
             // Updates the value in the Recoil store
             patchCurrentNode({
@@ -66,13 +69,10 @@ const IfNode: BaseNodeComponent<Props> = (props) => {
               <div
                 className={`node-content ${nodeType}-content`}
               >
-                {/*<ReactSelect*/}
-                {/*  className={'select select-simple'}*/}
-                {/*  isMulti={false}*/}
-                {/*  value={findSelectedQuestionTypeOption(node?.data?.questionChoiceType)}*/}
-                {/*  options={choiceTypes}*/}
-                {/*  onChange={onSelectedVariableChange}*/}
-                {/*/>*/}
+                <SelectVariable
+                  selectedVariableName={node?.data?.comparedVariableName}
+                  onSelectedVariableChange={onSelectedComparedVariableChange}
+                />
 
                 Else
               </div>
