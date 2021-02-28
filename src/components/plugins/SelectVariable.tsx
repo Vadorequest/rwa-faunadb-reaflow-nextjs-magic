@@ -44,7 +44,6 @@ export const SelectVariable: React.FunctionComponent<Props> = (props) => {
       value={variablesAsOptions?.find((variable: ReactSelectDefaultOption) => variable?.value === selectedVariableName)}
       options={variablesAsOptions}
       onChange={onSelectedVariableChange as any}
-      isClearable={true}
       {...rest}
     />
   );
