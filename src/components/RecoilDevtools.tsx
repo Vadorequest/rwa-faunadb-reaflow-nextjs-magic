@@ -1,10 +1,10 @@
-import React from "react";
-import { RecoilLogger } from "recoil-devtools-logger";
-import LogMonitor from "recoil-devtools-log-monitor";
-import DockMonitor from "recoil-devtools-dock";
-import DisplayOnBrowserMount from "./DisplayOnBrowserMount";
+import React from 'react';
+import DockMonitor from 'recoil-devtools-dock';
+import LogMonitor from 'recoil-devtools-log-monitor';
+import { RecoilLogger } from 'recoil-devtools-logger';
+import DisplayOnBrowserMount from './DisplayOnBrowserMount';
 
-export const Devtools = () => (
+export const RecoilDevtools = () => (
   <DisplayOnBrowserMount>
     <RecoilLogger />
     <DockMonitor
