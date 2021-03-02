@@ -47,6 +47,9 @@
     "react-textarea-autosize": "8.3.0",
     "reaflow": "3.0.13",
     "recoil": "0.1.2",
+    "recoil-devtools-dock": "^0.1.6",
+    "recoil-devtools-log-monitor": "^0.2.7",
+    "recoil-devtools-logger": "^0.1.5",
     "uuid": "8.3.2"
   },
   "devDependencies": {

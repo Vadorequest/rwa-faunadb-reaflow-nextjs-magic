@@ -887,6 +887,11 @@
   dependencies:
     tslib "^2.0.0"
 
+"@types/base16@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@types/base16/-/base16-1.0.2.tgz#eb3a07db52309bfefb9ba010dfdb3c0784971f65"
+  integrity sha512-oYO/U4VD1DavwrKuCSQWdLG+5K22SLPem2OQaHmFcQuwHoVeGC+JGVRji2MUqZUAIQZHEonOeVfAX09hYiLsdg==
+
 "@types/classnames@2.2.11":
   version "2.2.11"
   resolved "https://registry.yarnpkg.com/@types/classnames/-/classnames-2.2.11.tgz#2521cc86f69d15c5b90664e4829d84566052c1cf"
@@ -903,6 +908,13 @@
   version "4.5.6"
   resolved "https://registry.yarnpkg.com/@types/lodash.clonedeep/-/lodash.clonedeep-4.5.6.tgz#3b6c40a0affe0799a2ce823b440a6cf33571d32b"
   integrity sha512-cE1jYr2dEg1wBImvXlNtp0xDoS79rfEdGozQVgliDZj1uERH4k+rmEMTudP9b4VQ8O6nRb5gPqft0QzEQGMQgA==
+  dependencies:
+    "@types/lodash" "*"
+
+"@types/lodash.curry@^4.1.6":
+  version "4.1.6"
+  resolved "https://registry.yarnpkg.com/@types/lodash.curry/-/lodash.curry-4.1.6.tgz#f26c490c80c92d7cbaa2300d542e89781d44b1ff"
+  integrity sha512-x3ctCcmOYqRrihNNnQJW6fe/yZFCgnrIa6p80AiPQRO8Jis29bBdy1dEw1FwngoF/mCZa3Bx+33fUZvOEE635Q==
   dependencies:
     "@types/lodash" "*"
 
@@ -1003,7 +1015,7 @@
   resolved "https://registry.yarnpkg.com/@types/parse-json/-/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
   integrity sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==
 
-"@types/prop-types@*":
+"@types/prop-types@*", "@types/prop-types@^15.7.3":
   version "15.7.3"
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.3.tgz#2ab0d5da2e5815f94b0b9d4b95d1e5f243ab2ca7"
   integrity sha512-KfRL3PuHmqQLOG+2tGpRO26Ctg+Cq1E01D2DMriKEATHgWLfeNDmq9e29Q9WIky0dQ3NPkd1mzYH8Lm936Z9qw==
@@ -1189,6 +1201,11 @@ babel-plugin-syntax-jsx@6.18.0:
   version "6.18.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-syntax-jsx/-/babel-plugin-syntax-jsx-6.18.0.tgz#0af32a9a6e13ca7a3fd5069e62d7b0f58d0d8946"
   integrity sha1-CvMqmm4Tyno/1QaeYtew9Y0NiUY=
+
+base16@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/base16/-/base16-1.0.0.tgz#e297f60d7ec1014a7a971a39ebc8a98c0b681e70"
+  integrity sha1-4pf2DX7BAUp6lxo568ipjAtoHnA=
 
 base64-js@^1.0.2, base64-js@^1.3.1:
   version "1.5.1"
@@ -1455,7 +1472,7 @@ color-string@^1.5.4:
     color-name "^1.0.0"
     simple-swizzle "^0.2.2"
 
-color@^3.1.3:
+color@^3.1.2, color@^3.1.3:
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/color/-/color-3.1.3.tgz#ca67fb4e7b97d611dcde39eceed422067d91596e"
   integrity sha512-xgXAcTHa2HeFCGLE9Xs/R82hujGtu9Jd9x4NW3T34+OMs7VoPsjwzRczKHvTAHeJwWFwX5j15+MgAppE8ztObQ==
@@ -1679,6 +1696,11 @@ deep-copy@^1.4.1:
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/deep-copy/-/deep-copy-1.4.2.tgz#0622719257e4bd60240e401ea96718211c5c4697"
   integrity sha512-VxZwQ/1+WGQPl5nE67uLhh7OqdrmqI1OazrraO9Bbw/M8Bt6Mol/RxzDA6N6ZgRXpsG/W9PgUj8E1LHHBEq2GQ==
+
+deep-diff@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/deep-diff/-/deep-diff-1.0.2.tgz#afd3d1f749115be965e89c63edc7abb1506b9c26"
+  integrity sha512-aWS3UIVH+NPGCD1kki+DCU9Dua032iSsO43LqQpcs4R3+dVv7tX0qBGjiVHJHjplsoUM2XRO/KB92glqc68awg==
 
 deep-extend@^0.6.0:
   version "0.6.0"
@@ -2332,7 +2354,12 @@ lodash.clonedeep@4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz#e23f3f9c4f8fbdde872529c1071857a086e5ccef"
   integrity sha1-4j8/nE+Pvd6HJSnBBxhXoIblzO8=
 
-lodash.debounce@4.0.8, lodash.debounce@^4:
+lodash.curry@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/lodash.curry/-/lodash.curry-4.1.1.tgz#248e36072ede906501d75966200a86dab8b23170"
+  integrity sha1-JI42By7ekGUB11lmIAqG2riyMXA=
+
+lodash.debounce@4.0.8, lodash.debounce@^4, lodash.debounce@^4.0.8:
   version "4.0.8"
   resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
   integrity sha1-gteb/zCmfEAF/9XiUVMArZyk168=
@@ -2711,6 +2738,11 @@ parse-json@^5.0.0:
     json-parse-even-better-errors "^2.3.0"
     lines-and-columns "^1.1.6"
 
+parse-key@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/parse-key/-/parse-key-0.2.1.tgz#7bcf76595536e36075664be4d687e4bdd910208f"
+  integrity sha1-e892WVU242B1Zkvk1ofkvdkQII8=
+
 path-browserify@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/path-browserify/-/path-browserify-0.0.1.tgz#e6c4ddd7ed3aa27c68a20cc4e50e1a4ee83bbc4a"
@@ -2950,6 +2982,18 @@ rdk@5.0.6, rdk@^5.0.6:
     popper.js "^1.16.1"
     react-scrolllock "^5.0.1"
 
+react-base16-styling@^0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/react-base16-styling/-/react-base16-styling-0.8.0.tgz#6251b814b4e09efab3284ae1ecdd490f2c4111eb"
+  integrity sha512-ElvciPaL4xpWh7ISX7ugkNS/dvoh7DpVMp4t93ngnEsS2LkMd8Gu+cDDOLis2rj4889CNK662UdjOfv3wvZg9w==
+  dependencies:
+    "@types/base16" "^1.0.2"
+    "@types/lodash.curry" "^4.1.6"
+    base16 "^1.0.0"
+    color "^3.1.2"
+    csstype "^3.0.2"
+    lodash.curry "^4.1.1"
+
 react-clientside-effect@^1.2.2:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/react-clientside-effect/-/react-clientside-effect-1.2.3.tgz#95c95f520addfb71743608b990bfe01eb002012b"
@@ -2968,6 +3012,15 @@ react-debounce-input@3.2.3:
   integrity sha512-7Bfjm9sxrtgB+IsSrdXoo4CVqKg7CbWC68dNhr8q7ZmY6C0AqtR524//SenHQWT+eeSG9DmSLWNWCUFSyaaWSQ==
   dependencies:
     lodash.debounce "^4"
+    prop-types "^15.7.2"
+
+react-dock@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/react-dock/-/react-dock-0.3.0.tgz#5d9d51cac78ee5819854c3ad180dabe50c420820"
+  integrity sha512-A0Dfy6enwb6gruxsMXAkZM6hVyJETTcuB4u/CUVPAj4ZH0/ULQacLHmIdUHfYtZYmPCfeEgOa7KyTueSPrIjFg==
+  dependencies:
+    "@types/prop-types" "^15.7.3"
+    lodash.debounce "^4.0.8"
     prop-types "^15.7.2"
 
 react-dom@17.0.1:
@@ -3007,6 +3060,15 @@ react-is@16.13.1, react-is@^16.7.0, react-is@^16.8.1:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
+
+react-json-tree@^0.13.0:
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/react-json-tree/-/react-json-tree-0.13.0.tgz#49b1e68e4ed7f4f918142a4b0d9af6c533c86a7d"
+  integrity sha512-FPJUQzYWi7pvBUAnMd9ENOnAUT2mXLhe01VUbPfKH9Q4gk4FQ0fpS1e1WZ3o7g6zfYJpYJeBTo1WwlMHlMlZOw==
+  dependencies:
+    "@types/prop-types" "^15.7.3"
+    prop-types "^15.7.2"
+    react-base16-styling "^0.8.0"
 
 react-refresh@0.8.3:
   version "0.8.3"
@@ -3151,7 +3213,43 @@ reakeys@^1.1.0:
   dependencies:
     mousetrap "^1.6.5"
 
-recoil@0.1.2:
+recoil-devtools-dock@^0.1.6:
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/recoil-devtools-dock/-/recoil-devtools-dock-0.1.6.tgz#88037b16e44515c4f63e1d8fcb046b470cab0af1"
+  integrity sha512-ADCT7QE5H/LF2tUtz339y+pzIsEfXVh1yltBijQKnFskp6wS/JhZHRaWW6jDEXJQl6awuB+PMuS9fe46ZYN6aQ==
+  dependencies:
+    parse-key "^0.2.1"
+    react-dock "^0.3.0"
+    recoil "^0.1.2"
+
+recoil-devtools-log-monitor@^0.2.7:
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/recoil-devtools-log-monitor/-/recoil-devtools-log-monitor-0.2.7.tgz#1cf604f1393ec868212805ba67c98b857caa3310"
+  integrity sha512-tfTzAPXj5UX955tLaA2a02AU8BsrSDiBGaeq+x597aRaNDEzwu7VXuOnFIF0dYHd/aqlqaHoF9svwTbm0Etscw==
+  dependencies:
+    base16 "^1.0.0"
+    lodash.debounce "^4.0.8"
+    react-json-tree "^0.13.0"
+    recoil "^0.1.2"
+    recoil-devtools-themes "^0.1.2"
+
+recoil-devtools-logger@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/recoil-devtools-logger/-/recoil-devtools-logger-0.1.5.tgz#40379e865d155ab2c42fc212b2785f0b1accf06c"
+  integrity sha512-TrNMGyHhyA3I/32JzDve3qyxEO1fo0f6GPKJuisl0FOTDRzWib96ErV/R2Fy9MyXz0GeX6TpmXnprcvSBgs1Lw==
+  dependencies:
+    deep-diff "^1.0.2"
+    recoil "^0.1.2"
+
+recoil-devtools-themes@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/recoil-devtools-themes/-/recoil-devtools-themes-0.1.2.tgz#5b6a2000153d5183417071c3a4beedd2b466b6fc"
+  integrity sha512-cawFXiUMNCw/gLImG93i4WjURBZxtuJa4bR7Y6KNvDRY2SWl2hGt+AA+r7kcs3MtdwbarR595m5yiLfUlRIyHQ==
+  dependencies:
+    "@types/base16" "^1.0.2"
+    base16 "^1.0.0"
+
+recoil@0.1.2, recoil@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/recoil/-/recoil-0.1.2.tgz#844c612f535826dbe54c977761a67ded16f6d063"
   integrity sha512-hIRrHlkmW4yITlBFprVYjVPhzPKYrJKoaDrrJtAtbkMeXfXaa/XE5OlyR10n+rNfnKWNToCKb3Z4fo86IGjkzg==
