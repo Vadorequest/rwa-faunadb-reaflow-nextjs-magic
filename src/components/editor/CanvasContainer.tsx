@@ -1,4 +1,4 @@
-import { Button } from '@chakra-ui/react';
+import { Button, extendTheme } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { isBrowser } from '@unly/utils';
