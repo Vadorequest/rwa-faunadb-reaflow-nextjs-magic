@@ -29,9 +29,16 @@ const theme = extendTheme({
     Button: {
       baseStyle: {
         bgColor: "#DBE1FF",
+        bg: "#DBE1FF",
         background: "#DBE1FF",
         color: "#0028FF",
-        margin: "5px"
+        margin: "5px",
+        _hover: {
+          bgColor: "#0028FF",
+          bg: "#0028FF",
+          background: "#0028FF",
+          color: "#DBE1FF",
+        },
       },
     },
   },
