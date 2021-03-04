@@ -3,10 +3,12 @@ import { useState } from 'react';
 import DisplayOnBrowserMount from '../components/DisplayOnBrowserMount';
 import EditorContainer from '../components/editor/EditorContainer';
 import Layout from '../components/Layout';
+import { setRecoilExternalState } from '../components/RecoilExternalStatePortal';
 import {
   findSharedCanvasDocument,
-  startStreamOnDocument,
+  startStreamingCanvasDataset,
 } from '../lib/faunadbClient';
+import { canvasDatasetSelector } from '../states/canvasDatasetSelector';
 import { CanvasDataset } from '../types/CanvasDataset';
 import { getCanvasDatasetFromLS } from '../utils/persistCanvasDataset';
 
@@ -57,10 +59,12 @@ const IndexPage = (props: any) => {
       setIsLoadingDataFromDB(true);
 
       // Starts the stream between the browser and the FaunaDB using the default canvas document
-      startStreamOnDocument(findSharedCanvasDocument(), (canvasDatasetFromDB: CanvasDataset) => {
+      startStreamingCanvasDataset((canvasDatasetFromDB: CanvasDataset) => {
         console.log('canvasDatasetFromDB', canvasDatasetFromDB);
         setCanvasDataset(canvasDatasetFromDB);
         setIsReadyToRender(true);
+      }, (canvasDatasetRemotelyUpdated: CanvasDataset) => {
+        setRecoilExternalState(canvasDatasetSelector, canvasDatasetRemotelyUpdated);
       });
     }
 

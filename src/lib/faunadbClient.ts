@@ -1,18 +1,27 @@
 import faunadb, {
   Create,
   Expr,
+  Get,
+  Update,
 } from 'faunadb';
 import { Subscription } from 'faunadb/src/types/Stream';
 import * as Fauna from 'faunadb/src/types/values';
+import isEqual from 'lodash.isequal';
 import { CanvasDataset } from '../types/CanvasDataset';
 
 const { Ref, Collection } = faunadb.query;
 const client = new faunadb.Client({ secret: 'fnAEDdp0CWACBZUTQvkktsqAQeW03uDhZYY0Ttlg' });
 
 type CanvasResult = Fauna.values.Document<CanvasDataset>;
+type VersionEvent = {
+  action: 'create' | 'update' | 'delete';
+  document: CanvasResult;
+  diff: CanvasResult;
+  prev: CanvasResult;
+}
 
 /**
- * Find the shared canvas document.
+ * Finds the shared canvas document.
  *
  * Always use "1" as document ref id.
  * There is only one document in the DB, and the same document is shared with all users.
@@ -22,12 +31,38 @@ export const findSharedCanvasDocument = (id: string = '1') => {
 };
 
 /**
+ * Updates the shared canvas document.
+ *
+ * Only update if the content has changed, to avoid infinite loop because this is called during canvas rendering (useEffect)
+ *
+ * @param newCanvasDataset
+ */
+export const updateSharedCanvasDocument = async (newCanvasDataset: CanvasDataset) => {
+  const existingCanvasDatasetResult: CanvasResult = await client.query(Get(findSharedCanvasDocument()));
+  const existingCanvasDataset: CanvasDataset = existingCanvasDatasetResult.data;
+
+  if (!isEqual(newCanvasDataset, existingCanvasDataset)) {
+    console.log('Updating canvas dataset in FaunaDB. Old:', existingCanvasDataset, 'new:', newCanvasDataset);
+
+    return client
+      .query(Update(findSharedCanvasDocument(), { data: newCanvasDataset }))
+      // @ts-ignore
+      .then((result: CanvasResult) => {
+        console.log('FaunaDB Canvas dataset updated', result);
+      })
+      .catch((error: Error) => {
+        console.error(error);
+      });
+  }
+};
+
+/**
  * Starts the real-time stream between the browser and the FaunaDB database, on a specific record/document.
  *
- * @param documentRef
  * @param onInit
+ * @param onUpdate
  */
-export const startStreamOnDocument = (documentRef: Expr, onInit: (snapshot: any) => void) => {
+export const startStreamingCanvasDataset = (onInit: (canvasDataset: CanvasDataset) => void, onUpdate: (canvasDataset: CanvasDataset) => void) => {
   let stream: Subscription;
 
   const _startStream = async (documentRef: Expr) => {
@@ -36,16 +71,19 @@ export const startStreamOnDocument = (documentRef: Expr, onInit: (snapshot: any)
     stream = client.stream.
       // @ts-ignore
       document(documentRef)
-      .on('start', (snapshot: any) => {
-        console.log('start', snapshot);
+      .on('start', (at: number) => {
+        console.log('Stream started at:', at);
       })
-      .on('snapshot', (snapshot: any) => {
+      .on('snapshot', (snapshot: CanvasResult) => {
         console.log('snapshot', snapshot);
-        onInit(snapshot);
+        onInit(snapshot.data);
       })
-      .on('version', (version: any) => {
+      .on('version', (version: VersionEvent) => {
         console.log('version', version);
-        onInit(version);
+
+        if (version.action === 'update') {
+          onUpdate(version.document.data);
+        }
       })
       .on('error', async (error: any) => {
         console.log('Error:', error);
@@ -75,5 +113,5 @@ export const startStreamOnDocument = (documentRef: Expr, onInit: (snapshot: any)
       .start();
   };
 
-  _startStream(documentRef);
+  _startStream(findSharedCanvasDocument());
 };
