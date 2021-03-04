@@ -10,6 +10,7 @@ import { RecoilRoot } from 'recoil';
 import { RecoilDevtools } from '../components/RecoilDevtools';
 import { RecoilExternalStatePortal } from '../components/RecoilExternalStatePortal';
 import '../utils/fontAwesome';
+import '../lib/faunadbClient';
 
 type Props = {
   Component: NextComponentType<NextPageContext>; // Page component, not provided if pageProps.statusCode is 3xx or 4xx
