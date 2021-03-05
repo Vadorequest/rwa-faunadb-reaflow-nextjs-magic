@@ -307,17 +307,29 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
               // y={0} // Relative position from the parent Node component (aligned to left)
               css={css`
                 position: relative;
+                transition: box-shadow 0.3s ease-in-out;
+                
+                &:hover{
+                  box-shadow: 0px 5px 15px rgba(0, 40, 255, 0.2);
+                  transition: box-shadow 0.3s ease-in-out;
+                }
 
                 // Highlights the node when it's being selected
                 &.is-selected {
-                  border: 1px dashed ${settings.canvas.nodes.selected.borderColor};
+                  border: 2px solid ${settings.canvas.nodes.selected.borderColor};
+                  border-radius: 2px;
                 }
 
                 // Highlights the node when it's the last created node
                 &.is-recently-created {
-                  box-shadow: 0px 0px 10px 0px blue;
+                   box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+                   transition: box-shadow 0.3s ease-in-out;
                 }
-
+                
+                &.is-recently-created:hover {
+                  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                }
+                
                 // Disabling pointer-events on top-level containers, for events to be forwarded to the underlying <rect>
                 // Allows using events specific to the Reaflow <Node> component (onClick, onEnter, onLeave, etc.)
                 pointer-events: none;
