@@ -313,7 +313,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                   box-shadow: 0px 5px 15px rgba(0, 40, 255, 0.2);
                   transition: box-shadow 0.3s ease-in-out;
                 }
-
+  
                 // Highlights the node when it's being selected
                 &.is-selected {
                   border: 2px solid ${settings.canvas.nodes.selected.borderColor};
@@ -322,12 +322,18 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
 
                 // Highlights the node when it's the last created node
                 &.is-recently-created {
-                   box-shadow: 0 1px 2px rgba(0,0,0,0.15);
-                   transition: box-shadow 0.3s ease-in-out;
-                }
-                
-                &.is-recently-created:hover {
-                  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                  animation: fadeIn ease-in-out 800ms;
+                 
+                    @keyframes fadeIn{
+                      0% {
+                        opacity:0;
+                        box-shadow: 0px 5px 15px rgba(0, 40, 255, 1);
+                      }
+                      100% {
+                        opacity:1;
+                        box-shadow: 0px 5px 15px rgba(0, 40, 255, 0);
+                      }
+                    }
                 }
                 
                 // Disabling pointer-events on top-level containers, for events to be forwarded to the underlying <rect>
