@@ -16,6 +16,7 @@ import {
   useUndo,
 } from 'reaflow';
 import { useRecoilState } from 'recoil';
+import { updateSharedCanvasDocument } from '../../lib/faunadbClient';
 import settings from '../../settings';
 import { blockPickerMenuSelector } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
@@ -29,7 +30,6 @@ import {
   createNodeFromDefaultProps,
   getDefaultNodePropsWithFallback,
 } from '../../utils/nodes';
-import { persistCanvasDatasetInLS } from '../../utils/persistCanvasDataset';
 import canvasUtilsContext from '../context/canvasUtilsContext';
 import BaseEdge from '../edges/BaseEdge';
 import NodeRouter from '../nodes/NodeRouter';
@@ -80,12 +80,13 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const [cursorXY, setCursorXY] = useState<[number, number]>([0, 0]);
 
   /**
-   * When nodes or edges are modified, updates the persisted data in the local storage.
+   * When nodes or edges are modified, updates the persisted data in FaunaDB.
    *
    * Persisted data are automatically loaded upon page refresh.
    */
   useEffect(() => {
-    persistCanvasDatasetInLS(canvasDataset);
+    // persistCanvasDatasetInLS(canvasDataset);
+    updateSharedCanvasDocument(canvasDataset);
   }, [canvasDataset]);
 
   /**
