@@ -7,6 +7,7 @@ import {
 import { Router } from 'next/router';
 import React from 'react';
 import { RecoilRoot } from 'recoil';
+import { RecoilDevtools } from '../components/RecoilDevtools';
 import { RecoilExternalStatePortal } from '../components/RecoilExternalStatePortal';
 import '../utils/fontAwesome';
 
@@ -31,8 +32,13 @@ const App: React.FunctionComponent<Props> = (props): JSX.Element => {
   return (
     <ChakraProvider>
       <RecoilRoot>
-        <Component {...pageProps} />
+        {/* Dev tools for Recoil */}
+        <RecoilDevtools />
+
+        {/* Utility component allowing to use the Recoil state outside of a React component */}
         <RecoilExternalStatePortal />
+
+        <Component {...pageProps} />
       </RecoilRoot>
     </ChakraProvider>
   );

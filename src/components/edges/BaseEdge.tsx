@@ -44,7 +44,7 @@ type Props = {} & BaseEdgeProps;
  * This component contains shared business logic common to all edges.
  * It renders a Reaflow <Edge> component.
  *
- * The Edge is rendered as SVG <g> wrapper, which contains the <path> that displays the link itself.
+ * The Edge renders itself as SVG <g> HTML element wrapper, which contains the <path> HTML element that displays the link itself.
  *
  * @see https://reaflow.dev/?path=/story/demos-edges
  */

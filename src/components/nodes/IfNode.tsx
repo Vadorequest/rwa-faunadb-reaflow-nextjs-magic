@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import React, { Fragment } from 'react';
 import settings from '../../settings';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
@@ -7,24 +8,28 @@ import BasePortData from '../../types/BasePortData';
 import { IfNodeData } from '../../types/nodes/IfNodeData';
 import { SpecializedNodeProps } from '../../types/nodes/SpecializedNodeProps';
 import NodeType from '../../types/NodeType';
+import { OnSelectedOptionChange } from '../../types/OnSelectedOptionChange';
+import { ReactSelectDefaultOption } from '../../types/ReactSelect';
 import { createPort } from '../../utils/ports';
+import SelectComparisonOperator from '../plugins/SelectComparisonOperator';
+import SelectExpectedValue from '../plugins/SelectExpectedValue';
+import SelectVariable from '../plugins/SelectVariable';
 import BaseNode from './BaseNode';
 
 type Props = {} & BaseNodeProps<IfNodeData>;
 
 const nodeType: NodeType = 'if';
-const defaultWidth = 200;
-const defaultHeight = 200;
+const defaultWidth = 300;
+const defaultHeight = 300;
 
 /**
  * If/Else node.
  *
  * Used to split the workflow depending on the result of comparison between 2 variables.
  *
- * Displays inputs and select to defined how the variable1 should be compared to the variable2.
+ * Displays 3 select inputs to define how the compared variable should be compared to the expected value.
  * Has one west port and two east ports.
  * The west port allows unlimited links to other nodes.
- * The east port allows only one link to another node. (TODO not enforced yet)
  */
 const IfNode: BaseNodeComponent<Props> = (props) => {
   return (
@@ -39,19 +44,63 @@ const IfNode: BaseNodeComponent<Props> = (props) => {
           } = nodeProps;
 
           /**
-           * Updates the current node "variable1" value.
+           * Updates the current node "comparedVariableName" value.
            *
-           * @param event
+           * @param selectedOption
+           * @param actionMeta
            */
-          const onSelectedVariable1Change = (event: any) => {
-            const newValue = event.target.value;
+          const onSelectedComparedVariableChange: OnSelectedOptionChange = (selectedOption: ReactSelectDefaultOption | undefined, actionMeta) => {
+            const newValue = selectedOption?.value;
 
-            // Updates the value in the Recoil store
-            patchCurrentNode({
-              data: {
-                variable1: newValue,
-              },
-            } as IfNodeData);
+            // Do not update when the value isn't different
+            if (newValue !== node?.data?.comparedVariableName) {
+              // Updates the value in the Recoil store
+              patchCurrentNode({
+                data: {
+                  comparedVariableName: newValue,
+                },
+              } as IfNodeData);
+            }
+          };
+
+          /**
+           * Updates the current node "comparisonOperator" value.
+           *
+           * @param selectedOption
+           * @param actionMeta
+           */
+          const onSelectedComparedComparisonOperatorChange: OnSelectedOptionChange = (selectedOption: ReactSelectDefaultOption | undefined, actionMeta) => {
+            const newValue = selectedOption?.value;
+
+            // Do not update when the value isn't different
+            if (newValue !== node?.data?.comparisonOperator) {
+              // Updates the value in the Recoil store
+              patchCurrentNode({
+                data: {
+                  comparisonOperator: newValue,
+                },
+              } as IfNodeData);
+            }
+          };
+
+          /**
+           * Updates the current node "expectedValue" value.
+           *
+           * @param selectedOption
+           * @param actionMeta
+           */
+          const onSelectedComparisonChange: OnSelectedOptionChange = (selectedOption: ReactSelectDefaultOption | undefined, actionMeta) => {
+            const newValue = selectedOption?.value;
+
+            // Do not update when the value isn't different
+            if (newValue !== node?.data?.expectedValue) {
+              // Updates the value in the Recoil store
+              patchCurrentNode({
+                data: {
+                  expectedValue: newValue,
+                },
+              } as IfNodeData);
+            }
           };
 
           return (
@@ -64,7 +113,32 @@ const IfNode: BaseNodeComponent<Props> = (props) => {
 
               <div
                 className={`node-content ${nodeType}-content`}
+                css={css`
+                  .select {
+                    margin-top: 10px;
+                    margin-bottom: 10px;
+                  }
+                `}
               >
+                <SelectVariable
+                  selectedVariableName={node?.data?.comparedVariableName}
+                  onSelectedVariableChange={onSelectedComparedVariableChange}
+                  placeholder={'Variable to compare'}
+                />
+
+                <SelectComparisonOperator
+                  selectedComparisonOperatorName={node?.data?.comparisonOperator}
+                  onSelectedComparisonOperatorChange={onSelectedComparedComparisonOperatorChange}
+                  placeholder={'Comparison operator'}
+                />
+
+                <SelectExpectedValue
+                  selectedComparedVariableName={node?.data?.comparedVariableName}
+                  selectedExpectedValue={node?.data?.expectedValue}
+                  onSelectedComparisonChange={onSelectedComparisonChange}
+                  placeholder={'Compared to expected value'}
+                />
+
                 Else
               </div>
             </Fragment>

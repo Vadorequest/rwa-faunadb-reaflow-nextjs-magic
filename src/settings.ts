@@ -56,7 +56,7 @@ Object.freeze(settings);
 /**
  * Global settings for the app.
  *
- * Could also be stored as a React Context, but hardcoded settings are kinda similar.
+ * Could also be stored as a React Context, but hardcoded settings are kinda similar although more flexible and can be used outside of React components.
  */
 export type Settings = {
   /**

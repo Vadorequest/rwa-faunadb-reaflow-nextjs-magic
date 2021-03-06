@@ -6,6 +6,9 @@ type Props = {
   onBlockClick: OnBlockClick;
 };
 
+/**
+ * When clicking on this block (from the <BlockPickerMenu>), it creates a <InformationNode> component in the canvas.
+ */
 const InformationBlock: BaseBlockComponent<Props> = (props) => {
   const {
     onBlockClick,

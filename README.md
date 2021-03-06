@@ -8,6 +8,8 @@ It is a single-page application (using a static page) that aims at showing an **
 
 [Demo](https://poc-nextjs-reaflow.vercel.app/) (automatically updated from the `master` branch).
 
+![image](https://user-images.githubusercontent.com/3807458/109431687-08bf1680-7a08-11eb-98bd-31fa91e21680.png)
+
 ## Features
 
 It comes with the following features:
@@ -26,13 +28,24 @@ It comes with the following features:
 - **Selection** of nodes and edges, one at a time 
 - Uses **`Recoil`** for shared state management
 - Automatically re-calculate the **height** of nodes when jumping lines in `textarea`
-- Graph data (nodes, edges) are **persisted** in the browser **localstorage** and loaded upon page reload
+- ~~Graph data (nodes, edges) are **persisted** in the browser **localstorage** and automatically loaded upon page reload~~
+  - Graph data (nodes, edges) are **persisted** in FaunaDB and automatically loaded upon page reload
+- Real-time support for collaboration (open 2 tabs), using FaunaDB
+  - FaunaDB token is public and has read/update access rights on one table of the DB only
+  - All users share the same "Canvas" document in the DB
+  - This POC will **not improve further** the collaborative experience, it's only a POC (undo/redo undoes peer actions, undo/redo seems a bit broken sometimes)
 
 Known limitations:
 - Editor direction is `RIGHT` (hardcoded) and adding nodes will add them to the right side, always (even if you change the direction)
     - I don't plan on changing that at the moment
 
 > This POC can be used as a boilerplate to start your own project using Reaflow.
+
+## Getting started
+
+- `yarn`
+- `yarn start`
+- Open browser at [http://localhost:8890](http://localhost:8890)
 
 ## Deploy your own
 

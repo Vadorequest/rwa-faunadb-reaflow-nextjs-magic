@@ -3,6 +3,9 @@ import BaseNodeData from '../BaseNodeData';
 import { PatchCurrentNode } from '../BaseNodeProps';
 import { LastCreated } from '../LastCreated';
 
+/**
+ * A SpecializedNodeProps is a generic type that extends the BaseNodeData, with additional properties common to all specialized nodes.
+ */
 export type SpecializedNodeProps<NodeData extends BaseNodeData = BaseNodeData> = Omit<NodeChildProps, 'node'> & {
   /**
    * Current node data.

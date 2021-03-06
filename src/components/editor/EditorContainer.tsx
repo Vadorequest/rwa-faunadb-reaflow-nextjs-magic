@@ -12,7 +12,7 @@ type Props = {};
 /**
  * Displays the playground container.
  *
- * Use a relative position for the playground to use an absolute position based on this container relative position.
+ * Uses a relative position, to make the playground use an absolute position based on this container relative position.
  * Takes as much space as possible (full page width, full page height minus the height of header/footer components).
  */
 const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | null => {
@@ -20,7 +20,8 @@ const EditorContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   /**
    * Used to create a reference to the canvas.
    *
-   * XXX Unused in this file at the moment, but was necessary when using drag & drop features, so it was kept in case it'd be useful later.
+   * XXX Unused in this file at the moment, but was necessary when using drag & drop features (which were removed since).
+   *  Kept in case it'd be useful later.
    */
   const canvasRef: MutableRefObject<CanvasRef | null> = useRef<CanvasRef | null>(null);
 

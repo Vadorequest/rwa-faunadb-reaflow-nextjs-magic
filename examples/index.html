@@ -1,0 +1,59 @@
+<html>
+  <head>
+    <style>
+      span.scores {
+        font-family: monospace;
+        white-space: pre;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Scores stream</h1>
+    <p>
+      Scores: <span class="scores"></span>
+    </p>
+  </body>
+
+  <script src="https://cdn.jsdelivr.net/npm/faunadb@latest/dist/faunadb-min.js"></script>
+  <script type="text/javascript">
+
+    var faunadb = window.faunadb;
+    var q = faunadb.query;
+
+    var client = new faunadb.Client({
+      secret: 'fnAEDdp0CWACBZUTQvkktsqAQeW03uDhZYY0Ttlg',
+    });
+
+    var docRef = q.Ref(q.Collection('Scores'), '1');
+
+    function report(e) {
+      console.log(e);
+      var data = ('action' in e)
+        ? e['document'].data
+        : e.data;
+      document.body.innerHTML += '<p><span class="scores">' +
+        JSON.stringify(data) +
+        '</span></p>';
+    }
+
+    var stream;
+    const startStream = () => {
+      stream = client.stream.document(docRef)
+        .on('snapshot', snapshot => {
+          report(snapshot);
+        })
+        .on('version', version => {
+          report(version);
+        })
+        .on('error', error => {
+          console.log('Error:', error);
+          stream.close();
+          setTimeout(startStream, 1000);
+        })
+        .start();
+    };
+
+    startStream();
+
+  </script>
+</html>

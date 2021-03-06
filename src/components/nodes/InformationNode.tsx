@@ -1,4 +1,8 @@
-import React, { Fragment } from 'react';
+import React, {
+  Fragment,
+  useEffect,
+  useState,
+} from 'react';
 import { DebounceInput } from 'react-debounce-input';
 import { TextareaHeightChangeMeta } from 'react-textarea-autosize/dist/declarations/src';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
@@ -25,7 +29,6 @@ const defaultHeight = 100;
  * Displays a multi lines text input. (textarea)
  * Has one west port and one east port.
  * The west port allows unlimited links to other nodes.
- * The east port allows only one link to another node. (TODO not enforced yet)
  */
 const InformationNode: BaseNodeComponent<Props> = (props) => {
   return (
@@ -39,11 +42,28 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
             lastCreated,
             patchCurrentNode,
           } = nodeProps;
+          const [informationTextareaAdditionalHeight, setInformationTextareaAdditionalHeight] = useState<number>(0);
           const lastCreatedNode = lastCreated?.node;
           const lastCreatedAt = lastCreated?.at;
 
           // Autofocus works fine when the node is inside the viewport, but when it's created outside it moves the viewport back at the beginning
           const shouldAutofocus = false && lastCreatedNode?.id === node.id && isYoungerThan(lastCreatedAt, 1000);
+
+          /**
+           * Calculates the node's height dynamically.
+           *
+           * The node's height is dynamic and depends on various parameters (length of text, etc.).
+           */
+          useEffect(() => {
+            const newHeight = defaultHeight + informationTextareaAdditionalHeight;
+
+            // Only update the height if it's different
+            if (node?.height !== newHeight) {
+              patchCurrentNode({
+                height: newHeight,
+              });
+            }
+          }, [informationTextareaAdditionalHeight]);
 
           /**
            * When textarea input height changes, we need to increase the height of the whole node accordingly.
@@ -54,13 +74,9 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
           const onTextHeightChange = (height: number, meta: TextareaHeightChangeMeta) => {
             // Only consider additional height, by ignoring the height of the first row
             const additionalHeight = height - meta.rowHeight;
-            const newHeight: number = defaultHeight + additionalHeight;
 
-            // Only update if the new height is different from the current height to avoid needless re-renders
-            if (node.height !== newHeight) {
-              patchCurrentNode({
-                height: newHeight,
-              });
+            if (informationTextareaAdditionalHeight !== additionalHeight) {
+              setInformationTextareaAdditionalHeight(additionalHeight);
             }
           };
 
@@ -75,7 +91,7 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
             // Updates the value in the Recoil store
             patchCurrentNode({
               data: {
-                text: newValue,
+                informationText: newValue,
               },
             } as InformationNodeData);
           };
@@ -99,7 +115,7 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
                   placeholder={'Say something here'}
                   onHeightChange={onTextHeightChange}
                   onChange={onTextInputValueChange}
-                  value={node?.data?.text}
+                  value={node?.data?.informationText}
                   autoFocus={shouldAutofocus}
                 />
               </div>

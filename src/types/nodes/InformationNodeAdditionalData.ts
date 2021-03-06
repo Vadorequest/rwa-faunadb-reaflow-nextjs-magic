@@ -1,5 +1,8 @@
 import BaseNodeAdditionalData from '../BaseNodeAdditionalData';
 
+/**
+ * Additional "node.data" for the "InformationNodeData" type.
+ */
 export type InformationNodeAdditionalData = BaseNodeAdditionalData & {
-  text?: string;
+  informationText?: string;
 };

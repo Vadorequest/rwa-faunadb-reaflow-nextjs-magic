@@ -57,7 +57,7 @@ type Props = {
  * This component contains shared business logic common to all ports.
  * It renders a Reaflow <Port> component.
  *
- * The Port is rendered as SVG <g> wrapper, which contains the <rect> that displays the port itself.
+ * The Port is rendered as SVG <g> HTML element wrapper, which contains the <rect> HTML element that displays the port itself.
  *
  * @see https://reaflow.dev/?path=/story/demos-ports
  */
@@ -154,11 +154,16 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
    * @param port
    */
   const onPortClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, port: BasePortData) => {
+    const [x, y] = translateXYToCanvasPosition(event?.clientX, event.clientY, { top: 60, left: 15 });
+
     console.log('onPortClick', port);
     setBlockPickerMenu({
       displayedFrom: `port-${port.id}`,
       isDisplayed: displayedFrom === `port-${port.id}` ? !isDisplayed : true,
       onBlockClick,
+      // Depending on the position of the canvas, you might need to deduce from x/y some delta
+      left: x,
+      top: y - settings.layout.nav.height,
       eventTarget: event.target,
       fromPort: port,
     });

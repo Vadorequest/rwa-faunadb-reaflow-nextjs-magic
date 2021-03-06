@@ -12,7 +12,7 @@ type Props = {
 /**
  * Node router.
  *
- * Acts as a router between node layouts, by rendering a different node layout, depending on the node "type".
+ * Acts as a router between node layouts, by rendering a different node layout, depending on the node "data.type" property.
  */
 const NodeRouter: React.FunctionComponent<Props> = (props) => {
   const {

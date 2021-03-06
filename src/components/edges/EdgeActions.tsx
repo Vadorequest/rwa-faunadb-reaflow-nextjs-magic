@@ -24,6 +24,8 @@ type Props = {
  *
  * Displays the actions only when the edge is being selected.
  * Displays the actions a bit above the edge, in a line.
+ *
+ * TODO Replace this component by a component that uses HTML - awaiting https://github.com/reaviz/reaflow/pull/76
  */
 const EdgeActions: React.FunctionComponent<Props> = (props) => {
   const {

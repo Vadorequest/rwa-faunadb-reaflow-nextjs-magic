@@ -1,7 +1,10 @@
 import BaseNodeAdditionalData from '../BaseNodeAdditionalData';
 
+/**
+ * Additional "node.data" for the "IfNodeData" type.
+ */
 export type IfNodeAdditionalData = BaseNodeAdditionalData & {
-  variable1?: string;
-  variable2?: string;
+  comparedVariableName?: string;
+  expectedValue?: string;
   comparisonOperator?: string;
 };
