@@ -1956,6 +1956,11 @@ fast-deep-equal@^1.0.0:
   resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-1.1.0.tgz#c053477817c86b51daa853c81e059b733d023614"
   integrity sha1-wFNHeBfIa1HaqFPIHgWbcz0CNhQ=
 
+faunadb-fql-lib@0.13.0:
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/faunadb-fql-lib/-/faunadb-fql-lib-0.13.0.tgz#c6cb126d4ad31a19d879ec7fe909050e3e2bd2c1"
+  integrity sha512-BkK42ipViIDf5JxpXhEx4uiaptLAf70zRNPr1IfLPSKyNe5DDhEj4a6SFNdL28kMvJCarPvAJ8XTFa9bHfYG2w==
+
 faunadb@4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/faunadb/-/faunadb-4.1.1.tgz#c505aae1171abb18b7e8bf98bfe6b7bc1785e446"

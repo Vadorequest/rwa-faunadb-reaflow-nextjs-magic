@@ -26,6 +26,7 @@
     "animate.css": "4.1.1",
     "classnames": "2.2.6",
     "faunadb": "4.1.1",
+    "faunadb-fql-lib": "0.13.0",
     "framer-motion": "3.2.1",
     "lodash.capitalize": "4.2.1",
     "lodash.clonedeep": "4.5.0",
