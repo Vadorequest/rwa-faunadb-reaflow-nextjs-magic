@@ -1,9 +1,16 @@
-import { ExternalLinkIcon } from '@chakra-ui/icons';
+import {
+  ExternalLinkIcon,
+  QuestionOutlineIcon,
+} from '@chakra-ui/icons';
 import {
   Box,
+  Button,
   Flex,
   Link as ChakraLink,
   Spacer,
+  Tag,
+  TagLabel,
+  Tooltip,
 } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -25,7 +32,17 @@ const Footer: React.FunctionComponent<Props> = (props) => {
       `}
     >
       <Flex>
-        <Box p="2" />
+        <Box p="2">
+          Demo:
+          <Tooltip
+            label="This demo showcases FaunaDB Authentication where there is a global document shared by all anonymous users, and a dedicated document for each authenticated user."
+            fontSize="md"
+          >
+            <Tag>
+              <b><TagLabel>With Auth</TagLabel></b>
+            </Tag>
+          </Tooltip>
+        </Box>
         <Spacer />
         <Box p="2">
           <FontAwesomeIcon
