@@ -38,6 +38,7 @@ import {
 } from '../../utils/nodes';
 import { createPort } from '../../utils/ports';
 import BasePort from '../ports/BasePort';
+import BasePortChild from '../ports/BasePortChild';
 
 type Props = BaseNodeProps & {
   hasCloneAction?: boolean;
@@ -270,7 +271,16 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
       onKeyDown={onKeyDown}
       onRemove={onNodeRemove}
       remove={(<Remove hidden={true} />)}
-      port={(<BasePort fromNodeId={node.id} />)}
+      port={(
+        <BasePort
+          fromNodeId={node.id}
+          additionalPortChildProps={{
+            fromNode: node,
+            isNodeReachable: isReachable,
+          }}
+          PortChildComponent={BasePortChild}
+        />
+      )}
     >
       {
         /**
@@ -431,20 +441,6 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                 <div
                   className={`node-content-container ${nodeType}-content-container`}
                 >
-                  {
-                    // Displays a warning icon at the left of the node's title (using css float to avoid break line)
-                    !isReachable && (
-                      <span
-                        className={'is-unreachable-warning'}
-                      >
-                        <FontAwesomeIcon
-                          icon={['fas', 'exclamation-triangle']}
-                          onClick={() => alert(`This node is not reachable because there are no edge connected to its entry port.`)}
-                        />
-                      </span>
-                    )
-                  }
-
                   {
                     // Invoke the children as a function, or render the children as a component, if it's not a function
                     // @ts-ignore

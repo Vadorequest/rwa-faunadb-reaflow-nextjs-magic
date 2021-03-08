@@ -1,7 +1,14 @@
 import { isBrowser } from '@unly/utils';
+import { useState } from 'react';
 import DisplayOnBrowserMount from '../components/DisplayOnBrowserMount';
 import EditorContainer from '../components/editor/EditorContainer';
 import Layout from '../components/Layout';
+import { setRecoilExternalState } from '../components/RecoilExternalStatePortal';
+import {
+  findSharedCanvasDocument,
+  startStreamingCanvasDataset,
+} from '../lib/faunadbClient';
+import { canvasDatasetSelector } from '../states/canvasDatasetSelector';
 import { CanvasDataset } from '../types/CanvasDataset';
 import { getCanvasDatasetFromLS } from '../utils/persistCanvasDataset';
 
@@ -30,7 +37,13 @@ export const getStaticProps = (): { props: Props } => {
  * after it has initialized the global "initialCanvasDataset" browser variable, which is used by the nodesSelector and edgesSelector Recoil state managers.
  */
 const IndexPage = (props: any) => {
-  const { canvasDataset: canvasDatasetFromServer } = props; // We don't use canvasDatasetFromServer in this demo, but localstorage instead
+  const [canvasDataset, setCanvasDataset] = useState<CanvasDataset | undefined>(undefined);
+
+  // Used to know when the app is ready to be rendered (when the data have been fetched from DB)
+  const [isReadyToRender, setIsReadyToRender] = useState<boolean>(false);
+
+  // Used to avoid starting several streams from the same browser
+  const [isLoadingDataFromDB, setIsLoadingDataFromDB] = useState<boolean>(false);
 
   /**
    * Gets the canvas dataset stored in the browser localstorage and makes it available in the global "window" object.
@@ -41,14 +54,36 @@ const IndexPage = (props: any) => {
    *  Also, it's a viable approach whether using the data from browser localstorage, or a real DB.
    */
   if (isBrowser()) {
-    window.initialCanvasDataset = getCanvasDatasetFromLS();
+    // Initialize the stream (only once)
+    if (!isLoadingDataFromDB) {
+      setIsLoadingDataFromDB(true);
+
+      // Starts the stream between the browser and the FaunaDB using the default canvas document
+      startStreamingCanvasDataset((canvasDatasetFromDB: CanvasDataset) => {
+        console.log('canvasDatasetFromDB', canvasDatasetFromDB);
+        setCanvasDataset(canvasDatasetFromDB);
+        setIsReadyToRender(true);
+      }, (canvasDatasetRemotelyUpdated: CanvasDataset) => {
+        setRecoilExternalState(canvasDatasetSelector, canvasDatasetRemotelyUpdated);
+      });
+    }
+
+    if (canvasDataset && setIsReadyToRender) {
+      window.initialCanvasDataset = canvasDataset;
+    }
   }
 
   return (
     <Layout>
       {/* Only renders the EditorContainer on the browser because it's not server-side compatible */}
-      <DisplayOnBrowserMount>
-        <EditorContainer />
+      <DisplayOnBrowserMount
+        deps={[canvasDataset]}
+      >
+        {
+          isReadyToRender && (
+            <EditorContainer />
+          )
+        }
       </DisplayOnBrowserMount>
     </Layout>
   );
