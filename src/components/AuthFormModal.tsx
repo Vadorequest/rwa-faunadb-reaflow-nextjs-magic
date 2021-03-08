@@ -11,21 +11,20 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { Magic } from 'magic-sdk';
-import Router from 'next/router';
 import React, {
   useEffect,
   useState,
 } from 'react';
 
 type Props = {
-  mode: 'log-in' | 'create-account';
+  mode: 'login' | 'create-account';
 }
 
 const LS_EMAIL_KEY = 'email';
 
 const AuthFormModal = (props: Props) => {
   const { mode } = props;
-  const isLoginForm = mode === 'log-in';
+  const isLoginForm = mode === 'login';
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [email, setEmail] = useState<string>('');
 

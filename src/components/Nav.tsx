@@ -57,7 +57,7 @@ const Nav: React.FunctionComponent<Props> = (props) => {
               ) : (
                 <Fragment>
                   <AuthFormModal
-                    mode={'log-in'}
+                    mode={'login'}
                   />
                   <AuthFormModal
                     mode={'create-account'}
