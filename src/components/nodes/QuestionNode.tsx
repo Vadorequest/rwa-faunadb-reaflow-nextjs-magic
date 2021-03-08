@@ -161,6 +161,11 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                 css={css`
                   .choice-type-select {
                     margin-bottom: 10px;
+                    margin-top: 15px;
+                  }
+                  
+                  .choice-container{
+                    margin-top: 15px
                   }
 
                   .add-question-choice {
@@ -228,6 +233,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                         </div>
 
                         <Button
+                          variant="secondary"
                           className={'add-question-choice'}
                           width={'100%'}
                           onClick={() => patchCurrentNode({
