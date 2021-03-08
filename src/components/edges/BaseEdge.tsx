@@ -1,9 +1,12 @@
+import { Button } from '@chakra-ui/react';
+import { css } from '@emotion/react';
 import classnames from 'classnames';
 import cloneDeep from 'lodash.clonedeep';
 import now from 'lodash.now';
 import React from 'react';
 import {
   Edge,
+  EdgeChildProps,
   EdgeData,
 } from 'reaflow';
 import {
@@ -155,25 +158,35 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
         />
       )}
       onClick={onEdgeClick}
-    />
-    // Doesn't support children - See https://github.com/reaviz/reaflow/issues/67
-    // Possible to use a custom children to achieve this, but not great DX because of manual x/y placement
-    /*
-      <foreignObject
-        width={30}
-        height={30}
-        // x={1272}
-        // y={231}
-        css={css`
-          position: absolute;
-          //left: 1272px;
-          //top: 231px;
-          color: black;
-        `}
-      >
-        test
-      </foreignObject>
-    * */
+    >
+      {
+        (edgeChildProps: EdgeChildProps) => {
+          const {
+            center,
+          } = edgeChildProps;
+
+          return (
+            <foreignObject
+              width={100} // Content width will be limited by the width of the foreignObject
+              height={60}
+              x={center?.x}
+              y={center?.y}
+              css={css`
+                position: absolute;
+                color: black;
+                z-index: 1;
+              `}
+            >
+              {
+                isSelected && (
+                  <Button>Edit label</Button>
+                )
+              }
+            </foreignObject>
+          );
+        }
+      }
+    </Edge>
   );
 };
 
