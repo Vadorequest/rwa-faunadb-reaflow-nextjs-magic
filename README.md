@@ -54,7 +54,7 @@ While working on this project, I've reached several milestones with a different 
    The canvas dataset is stored in FaunaDB. 
    Changes to the canvas are real-time and shared with everyone. 
    Everybody shares the same working document.
-1. [`with-faunadb-auth`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-faunadb-auth) 
+1. _(Current)_ [`with-faunadb-auth`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-faunadb-auth) 
    ([Demo](https://poc-nextjs-reaflow-git-with-faunadb-auth-ambroise-dhenain.vercel.app/)): 
    The canvas dataset is stored in FaunaDB. 
    Changes to the canvas are real-time and shared with everyone when **anonymous**. 
