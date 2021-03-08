@@ -1,11 +1,7 @@
-import { ExternalLinkIcon } from '@chakra-ui/icons';
-import { Link as ChakraLink } from '@chakra-ui/react';
-import { css } from '@emotion/react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Head from 'next/head';
 import React, { ReactNode } from 'react';
-import settings from '../settings';
 import Footer from './Footer';
+import Nav from './Nav';
 
 type Props = {
   children?: ReactNode
@@ -24,42 +20,14 @@ const Layout: React.FunctionComponent<Props> = (props) => {
   } = props;
 
   return (
-    <div
-      css={css`
-        .nav {
-          height: ${settings.layout.nav.height}px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-
-          a {
-            margin-left: 10px;
-            margin-right: 10px;
-          }
-        }
-      `}
-    >
+    <div>
       <Head>
         <title>{title}</title>
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
 
-      <header>
-        <nav className={'nav'}>
-          <ChakraLink
-            href={'https://github.com/Vadorequest/poc-nextjs-reaflow'}
-            isExternal
-            color="teal.500"
-          >
-            <FontAwesomeIcon
-              icon={['fab', 'github']}
-            />
-            GitHub
-            <ExternalLinkIcon mx="2px" />
-          </ChakraLink>
-        </nav>
-      </header>
+      <Nav />
 
       {children}
 
