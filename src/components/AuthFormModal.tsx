@@ -28,6 +28,11 @@ const AuthFormModal = (props: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [email, setEmail] = useState<string>('');
 
+  /**
+   *
+   * @param event
+   * @see https://docs.magic.link/client-sdk/web/api-reference#loginwithmagiclink
+   */
   const onSubmit = async (event: MouseEvent): Promise<void> => {
     event.preventDefault();
     console.log('email', email);
@@ -39,6 +44,7 @@ const AuthFormModal = (props: Props) => {
         const magic = new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY as string);
         const didToken = await magic.auth.loginWithMagicLink({
           email: email,
+          showUI: true,
         });
         const res = await fetch('/api/login', {
           method: 'POST',
@@ -69,6 +75,11 @@ const AuthFormModal = (props: Props) => {
       console.log(e);
     }
   }, [mode]);
+
+  useEffect(() => {
+    const magic = new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY as string);
+    magic.preload(); // See https://docs.magic.link/client-sdk/web/api-reference#preload
+  }, []);
 
   return (
     <>
