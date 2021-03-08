@@ -50,7 +50,7 @@ While working on this project, I've reached several milestones with a different 
    The canvas dataset is stored in the browser localstorage. 
    There is no real-time and no authentication.
 1. [`with-faunadb-real-time`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-faunadb-real-time) 
-   ([Demo](https://poc-nextjs-reaflow-git-with-with-faunadb-real-time-ambroise-dhenain.vercel.app/)): 
+   ([Demo](https://poc-nextjs-reaflow-git-with-faunadb-real-time-ambroise-dhenain.vercel.app/)): 
    The canvas dataset is stored in FaunaDB. 
    Changes to the canvas are real-time and shared with everyone. 
    Everybody shares the same working document.
