@@ -22,7 +22,7 @@ export const RecoilDevtools = () => {
         toggleVisibilityKey="ctrl-h"
         changePositionKey="ctrl-q"
         changeMonitorKey="ctrl-m" // Unnecessary for our app, because we only have one Recoil store
-        defaultIsVisible
+        defaultIsVisible={false}
       >
         <LogMonitor />
       </DockMonitor>
