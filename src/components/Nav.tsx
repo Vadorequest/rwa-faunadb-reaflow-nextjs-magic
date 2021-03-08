@@ -1,10 +1,6 @@
-import { QuestionOutlineIcon } from '@chakra-ui/icons';
 import {
   Box,
-  Button,
-  Flex,
-  Spacer,
-  Tooltip,
+  Center,
 } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import React from 'react';
@@ -27,26 +23,11 @@ const Nav: React.FunctionComponent<Props> = (props) => {
       `}
     >
       <nav className={'nav'}>
-        <Flex>
+        <Center>
           <Box p="2">
-            You are currently <b>anonymous</b> and working on a shared document.
+            You are a guest working on your own document. Changes are automatically saved in the browser local storage and cannot be shared or seen by anyone else.
           </Box>
-
-          <Spacer />
-
-          <Box p="2">
-            <Button variant={'primary'}>
-              Log in
-            </Button>
-            <Button variant={'primary'}>
-              Create account
-              &nbsp;
-              <Tooltip label="Creating an account will allow you to work on your own document" fontSize="md">
-                <QuestionOutlineIcon />
-              </Tooltip>
-            </Button>
-          </Box>
-        </Flex>
+        </Center>
       </nav>
     </header>
   );

@@ -35,11 +35,11 @@ const Footer: React.FunctionComponent<Props> = (props) => {
         <Box p="2">
           Demo:
           <Tooltip
-            label="This demo showcases FaunaDB Authentication where there is a global document shared by all anonymous users, and a dedicated document for each authenticated user."
+            label="This demo showcases Reaflow with a single document that is stored in the browser local storage."
             fontSize="md"
           >
             <Tag>
-              <b><TagLabel>With Auth</TagLabel></b>
+              <b><TagLabel>With Local storage</TagLabel></b>
             </Tag>
           </Tooltip>
         </Box>
