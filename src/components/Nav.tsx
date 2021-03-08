@@ -2,6 +2,7 @@ import { QuestionOutlineIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
+  Center,
   Flex,
   Spacer,
   Tooltip,
@@ -27,26 +28,11 @@ const Nav: React.FunctionComponent<Props> = (props) => {
       `}
     >
       <nav className={'nav'}>
-        <Flex>
+        <Center>
           <Box p="2">
-            You are currently <b>anonymous</b> and working on a shared document.
+            You are currently working on a shared document, updated in real-time by any visitor.
           </Box>
-
-          <Spacer />
-
-          <Box p="2">
-            <Button variant={'primary'}>
-              Log in
-            </Button>
-            <Button variant={'primary'}>
-              Create account
-              &nbsp;
-              <Tooltip label="Creating an account will allow you to work on your own document" fontSize="md">
-                <QuestionOutlineIcon />
-              </Tooltip>
-            </Button>
-          </Box>
-        </Flex>
+        </Center>
       </nav>
     </header>
   );
