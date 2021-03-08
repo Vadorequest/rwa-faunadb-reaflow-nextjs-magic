@@ -42,9 +42,6 @@ const IndexPage = (props: any) => {
   // Used to avoid starting several streams from the same browser
   const [isLoadingDataFromDB, setIsLoadingDataFromDB] = useState<boolean>(false);
 
-  const user = useUser();
-  console.log('user', user)
-
   /**
    * Gets the canvas dataset stored in the browser localstorage and makes it available in the global "window" object.
    * The window.initialCanvasDataset will be used by the nodes/edges atom during their initialisation.

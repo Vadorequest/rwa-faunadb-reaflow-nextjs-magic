@@ -18,6 +18,7 @@ export const useUser = (props: Props = {}) => {
   const { redirectTo, redirectIfFound } = props;
   const { data, error } = useSWR('/api/user', fetcher);
   const user = data?.user;
+  console.log('user', user, data, error)
   const finished = Boolean(data);
   const hasUser = Boolean(user);
 

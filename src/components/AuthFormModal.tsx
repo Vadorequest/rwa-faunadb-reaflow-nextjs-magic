@@ -28,8 +28,10 @@ const AuthFormModal = (props: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [email, setEmail] = useState<string>('');
 
-  const onSubmit = async () => {
+  const onSubmit = async (event: MouseEvent): Promise<void> => {
+    event.preventDefault();
     console.log('email', email);
+
     try {
       localStorage?.setItem(LS_EMAIL_KEY, email);
 
@@ -108,6 +110,7 @@ const AuthFormModal = (props: Props) => {
             </Button>
             <Button
               colorScheme="blue"
+              // @ts-ignore
               onClick={onSubmit}
             >
               Send
