@@ -236,7 +236,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         // CSS rules applied to the whole <Canvas> (global rules, within the <Canvas>)
         .reaflow-canvas {
           // Make all edges display an infinite dash animation
-          .edge {
+          .edge-svg-graph {
             stroke: ${settings.canvas.edges.strokeColor};
             stroke-dasharray: 5;
             animation: dashdraw .5s linear infinite;
