@@ -16,7 +16,14 @@ const fetcher = (url: string) =>
 
 export const useUser = (props: Props = {}) => {
   const { redirectTo, redirectIfFound } = props;
-  const { data, error } = useSWR('/api/user', fetcher);
+  const { data, error } = useSWR(
+    '/api/user',
+    fetcher,
+    {
+      // Automatically refresh the page once the user has logged in, to update the UI
+      refreshInterval: 1000,
+    },
+  );
   const isLoading = !error && !data;
   const user = data?.user;
   const hasUser = Boolean(user);
