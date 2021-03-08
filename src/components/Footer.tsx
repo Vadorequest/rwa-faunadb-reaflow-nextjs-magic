@@ -1,5 +1,10 @@
 import { ExternalLinkIcon } from '@chakra-ui/icons';
-import { Link as ChakraLink } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Link as ChakraLink,
+  Spacer,
+} from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
@@ -13,50 +18,56 @@ const Footer: React.FunctionComponent<Props> = (props) => {
       className={'footer'}
       css={css`
         height: ${settings.layout.footer.height}px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
 
         .svg-inline--fa {
           margin-right: 5px;
         }
       `}
     >
-      <div>
-        <FontAwesomeIcon
-          icon={['fas', 'heart']}
-        />
-        Made with
-        <ChakraLink
-          href={'https://nextjs.org/'}
-          isExternal
-          color="teal.500"
-        >
-          {' '}Next.js{' '}
-          <ExternalLinkIcon mx="2px" />
-        </ChakraLink>
-        {' '}and{' '}
-        <ChakraLink
-          href={'https://github.com/reaviz/reaflow'}
-          isExternal
-          color="teal.500"
-        >
-          {' '}Reaflow{' '}
-          <ExternalLinkIcon mx="2px" />
-        </ChakraLink>
-        {' - '}
-        <ChakraLink
-          href={'https://github.com/Vadorequest/poc-nextjs-reaflow'}
-          isExternal
-        >
+      <Flex>
+        <Box p="2" />
+        <Spacer />
+        <Box p="2">
           <FontAwesomeIcon
-            icon={['fab', 'github']}
+            icon={['fas', 'heart']}
           />
-          {' '}
-          GitHub
-          <ExternalLinkIcon mx="2px" />
-        </ChakraLink>
-      </div>
+          Made with
+          <ChakraLink
+            href={'https://nextjs.org/'}
+            isExternal
+            color="teal.500"
+          >
+            {' '}Next.js{' '}
+            <ExternalLinkIcon mx="2px" />
+          </ChakraLink>
+          {' '}and{' '}
+          <ChakraLink
+            href={'https://github.com/reaviz/reaflow'}
+            isExternal
+            color="teal.500"
+          >
+            {' '}Reaflow{' '}
+            <ExternalLinkIcon mx="2px" />
+          </ChakraLink>
+        </Box>
+
+        <Spacer />
+
+        <Box p="2">
+          <ChakraLink
+            href={'https://github.com/Vadorequest/poc-nextjs-reaflow'}
+            isExternal
+            color="teal.500"
+          >
+            <FontAwesomeIcon
+              icon={['fab', 'github']}
+            />
+            {' '}
+            GitHub
+            <ExternalLinkIcon mx="2px" />
+          </ChakraLink>
+        </Box>
+      </Flex>
     </footer>
   );
 };
