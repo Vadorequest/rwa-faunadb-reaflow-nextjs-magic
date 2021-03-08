@@ -44,6 +44,18 @@ const Footer: React.FunctionComponent<Props> = (props) => {
           {' '}Reaflow{' '}
           <ExternalLinkIcon mx="2px" />
         </ChakraLink>
+        {' - '}
+        <ChakraLink
+          href={'https://github.com/Vadorequest/poc-nextjs-reaflow'}
+          isExternal
+        >
+          <FontAwesomeIcon
+            icon={['fab', 'github']}
+          />
+          {' '}
+          GitHub
+          <ExternalLinkIcon mx="2px" />
+        </ChakraLink>
       </div>
     </footer>
   );
