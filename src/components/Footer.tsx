@@ -33,11 +33,20 @@ const Footer: React.FunctionComponent<Props> = (props) => {
           />
           Made with
           <ChakraLink
-            href={'https://nextjs.org/'}
+            href={'https://nextjs.org'}
             isExternal
             color="teal.500"
           >
             {' '}Next.js{' '}
+            <ExternalLinkIcon mx="2px" />
+          </ChakraLink>
+          {' '}, {' '}
+          <ChakraLink
+            href={'https://fauna.com'}
+            isExternal
+            color="teal.500"
+          >
+            {' '}FaunaDB{' '}
             <ExternalLinkIcon mx="2px" />
           </ChakraLink>
           {' '}and{' '}
