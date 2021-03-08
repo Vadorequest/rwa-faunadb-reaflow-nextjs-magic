@@ -17,13 +17,16 @@ const fetcher = (url: string) =>
 export const useUser = (props: Props = {}) => {
   const { redirectTo, redirectIfFound } = props;
   const { data, error } = useSWR('/api/user', fetcher);
+  const isLoading = !error && !data;
   const user = data?.user;
-  console.log('user', user, data, error)
-  const finished = Boolean(data);
   const hasUser = Boolean(user);
+  console.log('user', user);
+  console.log('data', data);
+  console.log('error', error);
+  console.log('isLoading', isLoading);
 
   useEffect(() => {
-    if (!redirectTo || !finished) return;
+    if (!redirectTo || isLoading) return;
     if (
       // If redirectTo is set, redirect if the user was not found.
       (redirectTo && !redirectIfFound && !hasUser) ||
@@ -32,7 +35,11 @@ export const useUser = (props: Props = {}) => {
     ) {
       Router.push(redirectTo);
     }
-  }, [redirectTo, redirectIfFound, finished, hasUser]);
+  }, [redirectTo, redirectIfFound, isLoading, hasUser]);
+
+  if (error) {
+    console.error(error);
+  }
 
   return error ? null : user;
 };
