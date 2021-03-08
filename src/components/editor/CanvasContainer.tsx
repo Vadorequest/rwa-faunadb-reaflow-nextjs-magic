@@ -278,12 +278,14 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         style={{ position: 'absolute', top: 10, left: 20, zIndex: 999 }}
       >
         <Button
+          variant="primary"
           onClick={undo}
           disabled={!canUndo}
         >
           Undo
         </Button>
         <Button
+          variant="primary"
           onClick={redo}
           disabled={!canRedo}
         >
@@ -295,6 +297,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         style={{ position: 'absolute', top: 10, right: 20, zIndex: 999 }}
       >
         <Button
+          variant="primary"
           onClick={() => {
             if (confirm(`Remove all nodes and edges?`)) {
               setHasClearedUndoHistory(false); // Reset to allow clearing history even if the option is used several times in the same session
@@ -313,6 +316,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         style={{ position: 'absolute', bottom: 10, right: 20, zIndex: 999 }}
       >
         <Button
+          variant="primary"
           onClick={canvasRef?.current?.zoomOut}
         >
           <FontAwesomeIcon
@@ -320,6 +324,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
           />
         </Button>
         <Button
+          variant="primary"
           onClick={canvasRef?.current?.zoomIn}
         >
           <FontAwesomeIcon
@@ -327,6 +332,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
           />
         </Button>
         <Button
+          variant="primary"
           onClick={canvasRef?.current?.centerCanvas}
         >
           <FontAwesomeIcon
@@ -334,6 +340,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
           />
         </Button>
         <Button
+          variant="primary"
           onClick={canvasRef?.current?.fitCanvas}
         >
           <FontAwesomeIcon

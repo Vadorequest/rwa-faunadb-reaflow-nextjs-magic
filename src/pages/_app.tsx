@@ -27,7 +27,8 @@ type Props = {
 const theme = extendTheme({
   components: {
     Button: {
-      baseStyle: {
+      variants: {
+        "primary" :{
         bgColor: "#DBE1FF",
         bg: "#DBE1FF",
         background: "#DBE1FF",
@@ -38,6 +39,20 @@ const theme = extendTheme({
           bg: "#0028FF",
           background: "#0028FF",
           color: "#DBE1FF",
+          },
+        },
+        "secondary": {
+          bgColor: "#DBE1FF",
+          bg: "#DBE1FF",
+          background: "#DBE1FF",
+          color: "#0028FF",
+          margin: "5px",
+          _hover: {
+            bgColor: "#0028FF",
+            bg: "#0028FF",
+            background: "#0028FF",
+            color: "#DBE1FF",
+          },
         },
       },
     },
