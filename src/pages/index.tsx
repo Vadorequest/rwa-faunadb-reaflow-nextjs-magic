@@ -2,6 +2,7 @@ import { isBrowser } from '@unly/utils';
 import { useState } from 'react';
 import DisplayOnBrowserMount from '../components/DisplayOnBrowserMount';
 import EditorContainer from '../components/editor/EditorContainer';
+import { useUser } from '../components/hooks/useUser';
 import Layout from '../components/Layout';
 import { setRecoilExternalState } from '../components/RecoilExternalStatePortal';
 import { startStreamingCanvasDataset } from '../lib/faunadbClient';
@@ -40,6 +41,9 @@ const IndexPage = (props: any) => {
 
   // Used to avoid starting several streams from the same browser
   const [isLoadingDataFromDB, setIsLoadingDataFromDB] = useState<boolean>(false);
+
+  const user = useUser();
+  console.log('user', user)
 
   /**
    * Gets the canvas dataset stored in the browser localstorage and makes it available in the global "window" object.

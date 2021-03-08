@@ -10,6 +10,8 @@ import {
   ModalOverlay,
   useDisclosure,
 } from '@chakra-ui/react';
+import { Magic } from 'magic-sdk';
+import Router from 'next/router';
 import React, {
   useEffect,
   useState,
@@ -27,10 +29,33 @@ const AuthFormModal = (props: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [email, setEmail] = useState<string>('');
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     console.log('email', email);
     try {
       localStorage?.setItem(LS_EMAIL_KEY, email);
+
+      try {
+        const magic = new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY as string);
+        const didToken = await magic.auth.loginWithMagicLink({
+          email: email,
+        });
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + didToken,
+          },
+          body: JSON.stringify({ email }),
+        });
+
+        if (res.status === 200) {
+          onClose();
+        } else {
+          throw new Error(await res.text());
+        }
+      } catch (error) {
+        console.error('An unexpected error happened occurred:', error);
+      }
     } catch (e) {
       console.log(e);
     }
@@ -42,7 +67,7 @@ const AuthFormModal = (props: Props) => {
     } catch (e) {
       console.log(e);
     }
-  }, [mode])
+  }, [mode]);
 
   return (
     <>

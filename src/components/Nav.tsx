@@ -1,18 +1,22 @@
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
 import {
   Box,
+  Button,
   Flex,
   Spacer,
   Tooltip,
 } from '@chakra-ui/react';
 import { css } from '@emotion/react';
-import React from 'react';
+import React, { Fragment } from 'react';
 import settings from '../settings';
 import AuthFormModal from './AuthFormModal';
+import { useUser } from './hooks/useUser';
 
 type Props = {}
 
 const Nav: React.FunctionComponent<Props> = (props) => {
+  const user = useUser();
+
   return (
     <header
       css={css`
@@ -29,22 +33,42 @@ const Nav: React.FunctionComponent<Props> = (props) => {
       <nav className={'nav'}>
         <Flex>
           <Box p="2">
-            You are currently <b>anonymous</b> and working on a shared document.
+            {
+              user ? (
+                <Fragment>
+                  Welcome <b>{user?.email}</b>! You are currently working on your personal document.
+                </Fragment>
+              ) : (
+                <Fragment>
+                  You are currently <b>anonymous</b> and working on a shared document.
+                </Fragment>
+              )
+            }
           </Box>
 
           <Spacer />
 
           <Box p="2">
-            <AuthFormModal
-              mode={'log-in'}
-            />
-            <AuthFormModal
-              mode={'create-account'}
-            />
-            &nbsp;
-            <Tooltip label="Creating an account will allow you to work on your own document" fontSize="md">
-              <QuestionOutlineIcon />
-            </Tooltip>
+            {
+              user ? (
+                <a href="/api/logout">
+                  <Button>Logout</Button>
+                </a>
+              ) : (
+                <Fragment>
+                  <AuthFormModal
+                    mode={'log-in'}
+                  />
+                  <AuthFormModal
+                    mode={'create-account'}
+                  />
+                  &nbsp;
+                  <Tooltip label="Creating an account will allow you to work on your own document" fontSize="md">
+                    <QuestionOutlineIcon />
+                  </Tooltip>
+                </Fragment>
+              )
+            }
           </Box>
         </Flex>
       </nav>
