@@ -114,7 +114,7 @@ export const QuestionChoice = <NodeData extends QuestionNodeData = QuestionNodeD
             textarea {
               margin: 5px 0px 5px 0px;
               background-color: #F9694A;
-              color: #F9694A;
+              color: white;
               
               ::placeholder{
                 color: white; !important;
