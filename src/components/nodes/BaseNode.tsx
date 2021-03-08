@@ -317,13 +317,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
               // y={0} // Relative position from the parent Node component (aligned to left)
               css={css`
                 position: relative;
-                transition: box-shadow 0.3s ease-in-out;
-                
-                &:hover{
-                  box-shadow: 0px 5px 15px rgba(0, 40, 255, 0.2);
-                  transition: box-shadow 0.3s ease-in-out;
-                }
-  
+            
                 // Highlights the node when it's being selected
                 &.is-selected {
                   border: 2px solid ${settings.canvas.nodes.selected.borderColor};
