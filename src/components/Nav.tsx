@@ -1,7 +1,6 @@
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
 import {
   Box,
-  Button,
   Flex,
   Spacer,
   Tooltip,
@@ -9,6 +8,7 @@ import {
 import { css } from '@emotion/react';
 import React from 'react';
 import settings from '../settings';
+import AuthFormModal from './AuthFormModal';
 
 type Props = {}
 
@@ -35,16 +35,16 @@ const Nav: React.FunctionComponent<Props> = (props) => {
           <Spacer />
 
           <Box p="2">
-            <Button variant={'primary'}>
-              Log in
-            </Button>
-            <Button variant={'primary'}>
-              Create account
-              &nbsp;
-              <Tooltip label="Creating an account will allow you to work on your own document" fontSize="md">
-                <QuestionOutlineIcon />
-              </Tooltip>
-            </Button>
+            <AuthFormModal
+              mode={'log-in'}
+            />
+            <AuthFormModal
+              mode={'create-account'}
+            />
+            &nbsp;
+            <Tooltip label="Creating an account will allow you to work on your own document" fontSize="md">
+              <QuestionOutlineIcon />
+            </Tooltip>
           </Box>
         </Flex>
       </nav>
