@@ -332,10 +332,15 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
 
                 // Highlights the node when it's the last created node
                 &.is-recently-created {
-                  animation: fadeIn ease-in-out 800ms;
-                 
+                  animation: fadeIn ease-in-out 1.3s;
+                  
+                  
                     @keyframes fadeIn{
                       0% {
+                        opacity:0;
+                        box-shadow: 0px 5px 15px rgba(0, 40, 255, 1);
+                      }
+                      35% {
                         opacity:0;
                         box-shadow: 0px 5px 15px rgba(0, 40, 255, 1);
                       }
