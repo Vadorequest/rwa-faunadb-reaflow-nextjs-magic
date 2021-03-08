@@ -10,18 +10,39 @@ import {
   ModalOverlay,
   useDisclosure,
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
 
 type Props = {
   mode: 'log-in' | 'create-account';
 }
 
+const LS_EMAIL_KEY = 'email';
+
 const AuthFormModal = (props: Props) => {
   const { mode } = props;
+  const isLoginForm = mode === 'log-in';
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [email, setEmail] = useState<string>('');
 
-  const isLoginForm = mode === 'log-in';
+  const onSubmit = () => {
+    console.log('email', email);
+    try {
+      localStorage?.setItem(LS_EMAIL_KEY, email);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    try {
+      setEmail(localStorage?.getItem(LS_EMAIL_KEY) || '');
+    } catch (e) {
+      console.log(e);
+    }
+  }, [mode])
 
   return (
     <>
@@ -45,7 +66,7 @@ const AuthFormModal = (props: Props) => {
 
           <ModalBody>
             <Input
-              type={'text'}
+              type={'email'}
               placeholder={'Your email'}
               onChange={(event) => setEmail(event.target.value)}
               value={email}
@@ -54,10 +75,19 @@ const AuthFormModal = (props: Props) => {
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
+            <Button
+              mr={3}
+              onClick={onClose}
+              variant="ghost"
+            >
               Close
             </Button>
-            <Button variant="ghost">Send</Button>
+            <Button
+              colorScheme="blue"
+              onClick={onSubmit}
+            >
+              Send
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
