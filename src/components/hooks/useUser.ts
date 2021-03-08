@@ -27,10 +27,6 @@ export const useUser = (props: Props = {}) => {
   const isLoading = !error && !data;
   const user = data?.user;
   const hasUser = Boolean(user);
-  console.log('user', user);
-  console.log('data', data);
-  console.log('error', error);
-  console.log('isLoading', isLoading);
 
   useEffect(() => {
     if (!redirectTo || isLoading) return;

@@ -35,7 +35,6 @@ const AuthFormModal = (props: Props) => {
    */
   const onSubmit = async (event: MouseEvent): Promise<void> => {
     event.preventDefault();
-    console.log('email', email);
 
     try {
       localStorage?.setItem(LS_EMAIL_KEY, email);
@@ -64,7 +63,7 @@ const AuthFormModal = (props: Props) => {
         console.error('An unexpected error happened occurred:', error);
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   };
 
@@ -72,7 +71,7 @@ const AuthFormModal = (props: Props) => {
     try {
       setEmail(localStorage?.getItem(LS_EMAIL_KEY) || '');
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }, [mode]);
 
