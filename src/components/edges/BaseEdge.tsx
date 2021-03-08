@@ -1,5 +1,5 @@
-import { Button } from '@chakra-ui/react';
 import { css } from '@emotion/react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classnames from 'classnames';
 import cloneDeep from 'lodash.clonedeep';
 import now from 'lodash.now';
@@ -7,7 +7,6 @@ import React from 'react';
 import {
   Edge,
   EdgeChildProps,
-  EdgeData,
 } from 'reaflow';
 import {
   SetterOrUpdater,
@@ -34,7 +33,6 @@ import {
   getDefaultNodePropsWithFallback,
   upsertNodeThroughPorts,
 } from '../../utils/nodes';
-import EdgeActions from './EdgeActions';
 
 type Props = {} & BaseEdgeProps;
 
@@ -90,9 +88,8 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
    * by splitting the edge in two parts and adding the new node in between.
    *
    * @param event
-   * @param edge_DO_NOT_USE
    */
-  const onAddIconClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, edge_DO_NOT_USE: EdgeData): void => {
+  const onAddIconClick = (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
     console.log('onAdd edge', edge, event);
     const onBlockClick: OnBlockClick = (nodeType: NodeType) => {
       console.log('onBlockClick (from edge add)', nodeType, edge);
@@ -125,9 +122,8 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
    * Removes the selected edge.
    *
    * @param event
-   * @param edge
    */
-  const onRemoveIconClick = (event: React.MouseEvent<SVGGElement, MouseEvent>, edge: EdgeData): void => {
+  const onRemoveIconClick = (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
     console.log('onRemoveIconClick', event, edge);
     setEdges(edges.filter((edge: BaseEdgeData) => edge.id !== id));
   };
@@ -149,14 +145,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
   return (
     <Edge
       {...props}
-      className={classnames(`edge`, { 'is-selected': isSelected })}
-      add={(
-        <EdgeActions
-          hidden={!isSelected}
-          onAdd={onAddIconClick}
-          onRemove={onRemoveIconClick}
-        />
-      )}
+      className={classnames(`edge-svg-graph`, { 'is-selected': isSelected })}
       onClick={onEdgeClick}
     >
       {
@@ -165,21 +154,56 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
             center,
           } = edgeChildProps;
 
+          // Improve centering (because we have 3 icons), and position the foreignObject children above the line
+          const x = (center?.x || 0) - 25;
+          const y = (center?.y || 0) - 25;
+
           return (
             <foreignObject
+              id={`edge-foreignObject-${edge.id}`}
+              className={classnames(`edge-container`, {
+                'is-selected': isSelected,
+              })}
               width={100} // Content width will be limited by the width of the foreignObject
               height={60}
-              x={center?.x}
-              y={center?.y}
+              x={x}
+              y={y}
               css={css`
-                position: absolute;
+                position: relative;
                 color: black;
                 z-index: 1;
+
+                .edge {
+                  // XXX Elements within a <foreignObject> that are using the CSS "position" attribute won't be shown properly, 
+                  //  unless they're wrapped into a container using a "fixed" position.
+                  //  Solves the display of React Select element.
+                  // See https://github.com/chakra-ui/chakra-ui/issues/3288#issuecomment-776316200
+                  position: fixed;
+                }
+
+                .svg-inline--fa {
+                  cursor: pointer;
+                }
               `}
             >
               {
                 isSelected && (
-                  <Button>Edit label</Button>
+                  <div className={'edge'}>
+                    <FontAwesomeIcon
+                      icon={['fas', 'search-plus']}
+                      onClick={onAddIconClick}
+                    />
+
+                    <FontAwesomeIcon
+                      icon={['fas', 'search-minus']}
+                      onClick={onRemoveIconClick}
+                    />
+
+                    <FontAwesomeIcon
+                      icon={['fas', 'edit']}
+                      onClick={onRemoveIconClick}
+                    />
+                  </div>
                 )
               }
             </foreignObject>
