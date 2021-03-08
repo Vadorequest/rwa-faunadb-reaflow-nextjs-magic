@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Head from 'next/head';
 import React, { ReactNode } from 'react';
 import settings from '../settings';
+import Footer from './Footer';
 
 type Props = {
   children?: ReactNode
@@ -36,17 +37,6 @@ const Layout: React.FunctionComponent<Props> = (props) => {
             margin-right: 10px;
           }
         }
-
-        .footer {
-          height: ${settings.layout.footer.height}px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .svg-inline--fa {
-          margin-right: 5px;
-        }
       `}
     >
       <Head>
@@ -73,31 +63,7 @@ const Layout: React.FunctionComponent<Props> = (props) => {
 
       {children}
 
-      <footer className={'footer'}>
-        <div>
-          <FontAwesomeIcon
-            icon={['fas', 'heart']}
-          />
-          Made with
-          <ChakraLink
-            href={'https://nextjs.org/'}
-            isExternal
-            color="teal.500"
-          >
-            {' '}Next.js{' '}
-            <ExternalLinkIcon mx="2px" />
-          </ChakraLink>
-          {' '}and{' '}
-          <ChakraLink
-            href={'https://github.com/reaviz/reaflow'}
-            isExternal
-            color="teal.500"
-          >
-            {' '}Reaflow{' '}
-            <ExternalLinkIcon mx="2px" />
-          </ChakraLink>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };
