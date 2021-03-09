@@ -228,12 +228,18 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
                 color: black;
                 z-index: 1;
 
+                // Disabling pointer-events on top-level container, because the foreignObject is displayed on top (above) the edge line itself and blocks selection
+                pointer-events: none;
+
                 .edge {
                   // XXX Elements within a <foreignObject> that are using the CSS "position" attribute won't be shown properly, 
                   //  unless they're wrapped into a container using a "fixed" position.
                   //  Solves the display of React Select element.
                   // See https://github.com/chakra-ui/chakra-ui/issues/3288#issuecomment-776316200
                   position: fixed;
+
+                  // Enable pointer events for elements within the edge
+                  pointer-events: auto;
                 }
 
                 .svg-inline--fa {
