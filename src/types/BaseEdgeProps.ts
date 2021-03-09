@@ -1,4 +1,7 @@
 import { EdgeProps } from 'reaflow';
+import BaseEdgeData from './BaseEdgeData';
+
+export type PatchCurrentEdge<EdgeData extends Partial<BaseEdgeData> = Partial<BaseEdgeData>> = (patch: Partial<EdgeData>) => void;
 
 /**
  * Props received by any edge component (BaseEdge).

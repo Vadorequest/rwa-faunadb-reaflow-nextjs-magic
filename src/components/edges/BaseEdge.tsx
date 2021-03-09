@@ -21,7 +21,7 @@ import { lastCreatedState } from '../../states/lastCreatedState';
 import { selectedEdgesSelector } from '../../states/selectedEdgesState';
 import { selectedNodesSelector } from '../../states/selectedNodesState';
 import BaseEdgeData from '../../types/BaseEdgeData';
-import BaseEdgeProps from '../../types/BaseEdgeProps';
+import BaseEdgeProps, { PatchCurrentEdge } from '../../types/BaseEdgeProps';
 import BaseNodeData from '../../types/BaseNodeData';
 import BasePortData from '../../types/BasePortData';
 import BlockPickerMenu, { OnBlockClick } from '../../types/BlockPickerMenu';
@@ -143,6 +143,36 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
     setSelectedEdges([edge.id]);
   };
 
+  /**
+   * Path the properties of the current node.
+   *
+   * Only updates the provided properties, doesn't update other properties.
+   * Also merges the 'data' object, by keeping existing data and only overwriting those that are specified.
+   *
+   * XXX Make sure to call this function once per function call, otherwise only the last patch call would be persisted correctly
+   *  (multiple calls within the same function would be overridden by the last patch,
+   *  because the "node" used as reference wouldn't be updated right away and would still use the same (outdated) reference)
+   *  TLDR; Don't use "patchCurrentNode" multiple times in the same function, it won't work as expected
+   *
+   * @param patch
+   */
+  const patchCurrentEdge: PatchCurrentEdge = (patch: Partial<BaseEdgeData>): void => {
+    const edgeToUpdateIndex = edges.findIndex((edge: BaseEdgeData) => edge.id === id);
+    const existingEdge: BaseEdgeData = edges[edgeToUpdateIndex];
+    const edgeToUpdate = {
+      ...existingEdge,
+      ...patch,
+      id: existingEdge.id, // Force keep same id to avoid edge cases
+    };
+    console.log('patchCurrentEdge before', existingEdge, 'after:', edgeToUpdate, 'using patch:', patch);
+
+    const newEdges = cloneDeep(edges);
+    // @ts-ignore
+    newEdges[edgeToUpdateIndex] = edgeToUpdate;
+
+    setEdges(newEdges);
+  };
+
   return (
     <Edge
       {...props}
@@ -162,6 +192,10 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
 
           const onLabelSubmit = (value: string) => {
             console.log('value', value);
+
+            patchCurrentEdge({
+              text: value || ' ', // Use a space as default, to increase the distance between nodes, which ease edge's selection
+            });
           };
 
           const onStartLabelEditing = (event: React.MouseEvent<SVGGElement, MouseEvent>) => {
