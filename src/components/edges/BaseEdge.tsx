@@ -190,6 +190,11 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
           const x = (center?.x || 0) - 25;
           const y = (center?.y || 0) - 25;
 
+          /**
+           * Triggered when the label has been modified.
+           *
+           * @param value
+           */
           const onLabelSubmit = (value: string) => {
             console.log('value', value);
 

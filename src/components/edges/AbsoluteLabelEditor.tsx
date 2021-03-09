@@ -61,6 +61,17 @@ const AbsoluteLabelEditor: FC<Props> = (props) => {
   };
 
   /**
+   * When pressing "Enter", automatically clicks on the submit button.
+   *
+   * @param event
+   */
+  const onInputKeyDown = (event: any) => {
+    if(event?.code === 'Enter'){
+      onIconClick();
+    }
+  }
+
+  /**
    * The icon acts as submit button.
    */
   const onIconClick = () => {
@@ -87,6 +98,7 @@ const AbsoluteLabelEditor: FC<Props> = (props) => {
         onChange={onInputChange}
         autoFocus={true}
         value={label}
+        onKeyDown={onInputKeyDown}
       />
       <FontAwesomeIcon
         icon={['fas', 'edit']}
