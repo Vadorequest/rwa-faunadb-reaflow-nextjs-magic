@@ -56,6 +56,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
     target: targetNodeId,
     targetPort: targetPortId,
   } = props;
+  console.log('props', props)
 
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState<BlockPickerMenu>(blockPickerMenuSelector);
   const [canvasDataset, setCanvasDataset] = useRecoilState(canvasDatasetSelector);
@@ -205,8 +206,8 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
 
           const onStartLabelEditing = (event: React.MouseEvent<SVGGElement, MouseEvent>) => {
             setAbsoluteLabelEditor({
-              x: center?.x,
-              y: center?.y,
+              x: window.innerWidth / 2,
+              y: 0,
               defaultValue: edge?.text,
               onSubmit: onLabelSubmit,
               isDisplayed: true,
