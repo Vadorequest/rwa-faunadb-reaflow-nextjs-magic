@@ -41,6 +41,25 @@ Known limitations:
 
 > This POC can be used as a boilerplate to start your own project using Reaflow.
 
+## Variants
+
+While working on this project, I've reached several milestones with a different set of features, in order:
+
+1. [`with-local-storage`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-local-storage) 
+   ([Demo](https://poc-nextjs-reaflow-git-with-local-storage-ambroise-dhenain.vercel.app/)): 
+   The canvas dataset is stored in the browser localstorage. 
+   There is no real-time and no authentication.
+1. [`with-faunadb-real-time`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-faunadb-real-time) 
+   ([Demo](https://poc-nextjs-reaflow-git-with-faunadb-real-time-ambroise-dhenain.vercel.app/)): 
+   The canvas dataset is stored in FaunaDB. 
+   Changes to the canvas are real-time and shared with everyone. 
+   Everybody shares the same working document.
+1. _(Current)_ [`with-magic-link-auth`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-magic-link-auth) 
+   ([Demo](https://poc-nextjs-reaflow-git-with-magic-link-auth-ambroise-dhenain.vercel.app/)): 
+   The canvas dataset is stored in FaunaDB. 
+   Changes to the canvas are real-time and shared with everyone. 
+   Authenticated users see their email being displayed and can login/logout but still share the same document as guests.
+
 ## Getting started
 
 - `yarn`
