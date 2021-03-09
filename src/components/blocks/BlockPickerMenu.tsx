@@ -93,22 +93,20 @@ const BlockPickerMenu: React.FunctionComponent<Props> = (props) => {
           flex-wrap: nowrap;
           justify-content: space-evenly;
         }
-        
-        
       `}
     >
       <div
         className={'blocks-picker'}
       >
-          <InformationBlock
-            onBlockClick={onSpecializedBlockClick}
-          />
-          <QuestionBlock
-            onBlockClick={onSpecializedBlockClick}
-          />
-          <IfBlock
-            onBlockClick={onSpecializedBlockClick}
-          />
+        <InformationBlock
+          onBlockClick={onSpecializedBlockClick}
+        />
+        <QuestionBlock
+          onBlockClick={onSpecializedBlockClick}
+        />
+        <IfBlock
+          onBlockClick={onSpecializedBlockClick}
+        />
       </div>
     </div>
   );
