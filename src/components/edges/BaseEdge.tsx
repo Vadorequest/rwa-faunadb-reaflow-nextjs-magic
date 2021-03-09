@@ -202,6 +202,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
             setAbsoluteLabelEditor({
               x: center?.x,
               y: center?.y,
+              defaultValue: edge?.text,
               onSubmit: onLabelSubmit,
               isDisplayed: true,
             });

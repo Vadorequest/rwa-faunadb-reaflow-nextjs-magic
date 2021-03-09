@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, {
   FC,
+  useEffect,
   useState,
 } from 'react';
 import { useRecoilState } from 'recoil';
@@ -16,14 +17,19 @@ type Props = {}
  * Displays on top of the canvas.
  */
 const AbsoluteLabelEditor: FC<Props> = (props) => {
-  const [label, setLabel] = useState<string>('');
   const [absoluteLabelEditor, setAbsoluteLabelEditor] = useRecoilState(absoluteLabelEditorState);
   const {
     isDisplayed,
     x,
     y,
+    defaultValue,
     onSubmit,
   } = absoluteLabelEditor || {};
+  const [label, setLabel] = useState<string>('');
+
+  useEffect(() => {
+    setLabel(defaultValue?.trim() || '');
+  }, [defaultValue]);
 
   if (!isDisplayed) {
     return null;
@@ -39,7 +45,7 @@ const AbsoluteLabelEditor: FC<Props> = (props) => {
     setAbsoluteLabelEditor({
       isDisplayed: false,
     });
-  }
+  };
 
   return (
     <div
@@ -55,6 +61,7 @@ const AbsoluteLabelEditor: FC<Props> = (props) => {
         placeholder={'Label'}
         onChange={onInputChange}
         autoFocus={true}
+        value={label}
       />
       <FontAwesomeIcon
         icon={['fas', 'edit']}
