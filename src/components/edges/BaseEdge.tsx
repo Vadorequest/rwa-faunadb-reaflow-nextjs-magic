@@ -33,6 +33,7 @@ import {
   getDefaultNodePropsWithFallback,
   upsertNodeThroughPorts,
 } from '../../utils/nodes';
+import Label from './Label';
 
 type Props = {} & BaseEdgeProps;
 
@@ -90,9 +91,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
    * @param event
    */
   const onAddIconClick = (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
-    console.log('onAdd edge', edge, event);
     const onBlockClick: OnBlockClick = (nodeType: NodeType) => {
-      console.log('onBlockClick (from edge add)', nodeType, edge);
       const newNode: BaseNodeData = createNodeFromDefaultProps(getDefaultNodePropsWithFallback(nodeType));
       const newDataset: CanvasDataset = upsertNodeThroughPorts(cloneDeep(nodes), cloneDeep(edges), edge, newNode);
 
@@ -145,6 +144,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
   return (
     <Edge
       {...props}
+      label={<Label />}
       className={classnames(`edge-svg-graph`, { 'is-selected': isSelected })}
       onClick={onEdgeClick}
     >
