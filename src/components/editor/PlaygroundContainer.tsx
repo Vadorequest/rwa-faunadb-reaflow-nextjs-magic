@@ -2,6 +2,7 @@ import { css } from '@emotion/react';
 import React, { MutableRefObject } from 'react';
 import { CanvasRef } from 'reaflow';
 import BlockPickerMenu from '../blocks/BlockPickerMenu';
+import AbsoluteLabelEditor from '../edges/AbsoluteLabelEditor';
 import AbsoluteTooltip from '../plugins/AbsoluteTooltip';
 import CanvasContainer from './CanvasContainer';
 
@@ -47,6 +48,7 @@ const PlaygroundContainer: React.FunctionComponent<Props> = (props): JSX.Element
 
       <BlockPickerMenu />
       <AbsoluteTooltip />
+      <AbsoluteLabelEditor />
     </div>
   );
 };

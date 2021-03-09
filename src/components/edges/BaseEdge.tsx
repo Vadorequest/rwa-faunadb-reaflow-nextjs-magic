@@ -13,6 +13,7 @@ import {
   useRecoilState,
   useSetRecoilState,
 } from 'recoil';
+import { absoluteLabelEditorState } from '../../states/absoluteLabelEditorStateState';
 import { blockPickerMenuSelector } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
 import { edgesSelector } from '../../states/edgesState';
@@ -65,6 +66,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
   const edge: BaseEdgeData = edges.find((edge: BaseEdgeData) => edge?.id === id) as BaseEdgeData;
   const [selectedEdges, setSelectedEdges] = useRecoilState(selectedEdgesSelector);
   const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesSelector);
+  const setAbsoluteLabelEditor = useSetRecoilState(absoluteLabelEditorState);
 
   if (typeof edge === 'undefined') {
     return null;
@@ -158,6 +160,19 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
           const x = (center?.x || 0) - 25;
           const y = (center?.y || 0) - 25;
 
+          const onLabelSubmit = (value: string) => {
+            console.log('value', value);
+          };
+
+          const onStartLabelEditing = (event: React.MouseEvent<SVGGElement, MouseEvent>) => {
+            setAbsoluteLabelEditor({
+              x: center?.x,
+              y: center?.y,
+              onSubmit: onLabelSubmit,
+              isDisplayed: true,
+            });
+          };
+
           return (
             <foreignObject
               id={`edge-foreignObject-${edge.id}`}
@@ -201,7 +216,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
 
                     <FontAwesomeIcon
                       icon={['fas', 'edit']}
-                      onClick={onRemoveIconClick}
+                      onClick={onStartLabelEditing}
                     />
                   </div>
                 )
