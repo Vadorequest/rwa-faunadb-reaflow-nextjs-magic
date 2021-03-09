@@ -2,15 +2,12 @@ import { isBrowser } from '@unly/utils';
 import { useState } from 'react';
 import DisplayOnBrowserMount from '../components/DisplayOnBrowserMount';
 import EditorContainer from '../components/editor/EditorContainer';
+import { useUser } from '../components/hooks/useUser';
 import Layout from '../components/Layout';
 import { setRecoilExternalState } from '../components/RecoilExternalStatePortal';
-import {
-  findSharedCanvasDocument,
-  startStreamingCanvasDataset,
-} from '../lib/faunadbClient';
+import { startStreamingCanvasDataset } from '../lib/faunadbClient';
 import { canvasDatasetSelector } from '../states/canvasDatasetSelector';
 import { CanvasDataset } from '../types/CanvasDataset';
-import { getCanvasDatasetFromLS } from '../utils/persistCanvasDataset';
 
 export type Props = {
   canvasDataset: CanvasDataset | null;
