@@ -1,7 +1,10 @@
 import { Input } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { FC } from 'react';
+import React, {
+  FC,
+  useState,
+} from 'react';
 import { useRecoilState } from 'recoil';
 import { absoluteLabelEditorState } from '../../states/absoluteLabelEditorStateState';
 
@@ -13,6 +16,7 @@ type Props = {}
  * Displays on top of the canvas.
  */
 const AbsoluteLabelEditor: FC<Props> = (props) => {
+  const [label, setLabel] = useState<string>('');
   const [absoluteLabelEditor, setAbsoluteLabelEditor] = useRecoilState(absoluteLabelEditorState);
   const {
     isDisplayed,
@@ -25,13 +29,17 @@ const AbsoluteLabelEditor: FC<Props> = (props) => {
     return null;
   }
 
-  const onChange = (event: any) => {
-    console.log('value', event.target.value);
-
-    if (typeof onSubmit === 'function') {
-      onSubmit(event.target.value);
-    }
+  const onInputChange = (event: any) => {
+    setLabel(event.target.value);
   };
+
+  const onIconClick = () => {
+    onSubmit?.(label);
+
+    setAbsoluteLabelEditor({
+      isDisplayed: false,
+    });
+  }
 
   return (
     <div
@@ -45,11 +53,12 @@ const AbsoluteLabelEditor: FC<Props> = (props) => {
     >
       <Input
         placeholder={'Label'}
-        onChange={onChange}
+        onChange={onInputChange}
         autoFocus={true}
       />
       <FontAwesomeIcon
         icon={['fas', 'edit']}
+        onClick={onIconClick}
       />
     </div>
   );
