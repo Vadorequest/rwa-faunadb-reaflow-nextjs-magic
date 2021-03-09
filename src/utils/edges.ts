@@ -18,7 +18,7 @@ export const createEdge = (fromNode?: BaseNodeData, toNode?: BaseNodeData, fromP
   let { id = uuid() } = edgeData || {};
 
   const newEdge = {
-    text: ' ', // Use a space to increase the distance between nodes, which ease edge's selection
+    text: 'Label plus grand', // Use a space to increase the distance between nodes, which ease edge's selection
     ...edgeData,
     id,
     from: fromNode?.id,
