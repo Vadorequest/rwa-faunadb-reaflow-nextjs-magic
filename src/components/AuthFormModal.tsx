@@ -11,6 +11,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { Magic } from 'magic-sdk';
+import Router  from 'next/router';
 import React, {
   useEffect,
   useState,
@@ -45,6 +46,7 @@ const AuthFormModal = (props: Props) => {
           email: email,
           showUI: true,
         });
+        console.info('User has logged in')
         const res = await fetch('/api/login', {
           method: 'POST',
           headers: {
@@ -56,6 +58,7 @@ const AuthFormModal = (props: Props) => {
 
         if (res.status === 200) {
           onClose();
+          Router.push('/'); // Forces a re-render
         } else {
           throw new Error(await res.text());
         }
