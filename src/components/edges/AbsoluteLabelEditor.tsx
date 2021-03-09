@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import { useRecoilState } from 'recoil';
 import { absoluteLabelEditorState } from '../../states/absoluteLabelEditorStateState';
-import useFocus from '../hooks/useFocus';
+import useFocus from '../../hooks/useFocus';
 
 type Props = {}
 

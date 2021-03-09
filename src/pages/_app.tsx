@@ -7,7 +7,7 @@ import {
 import { Router } from 'next/router';
 import React from 'react';
 import { RecoilRoot } from 'recoil';
-import { useUser } from '../components/hooks/useUser';
+import { useUser } from '../hooks/useUser';
 import { RecoilDevtools } from '../components/RecoilDevtools';
 import { RecoilExternalStatePortal } from '../components/RecoilExternalStatePortal';
 import '../utils/fontAwesome';
