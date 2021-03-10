@@ -3,7 +3,7 @@ import {
   NextApiResponse,
 } from 'next';
 import { setLoginSession } from '../../lib/auth';
-import { magic } from '../../lib/magic';
+import { magicAdmin } from '../../lib/magicAdmin';
 
 type EndpointRequest = NextApiRequest & {
   query: {};
@@ -12,7 +12,7 @@ type EndpointRequest = NextApiRequest & {
 export const login = async (req: EndpointRequest, res: NextApiResponse): Promise<void> => {
   try {
     const didToken = req?.headers?.authorization?.substr(7);
-    const metadata = await magic?.users?.getMetadataByToken(didToken);
+    const metadata = await magicAdmin?.users?.getMetadataByToken(didToken);
     const session = { ...metadata };
 
     await setLoginSession(res, session);
