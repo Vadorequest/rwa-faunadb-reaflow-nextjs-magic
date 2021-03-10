@@ -5,6 +5,7 @@ import {
   NextApiResponse,
 } from 'next';
 import { UserSession } from '../../types/auth/UserSession';
+import { UserMetadataWithAuth } from '../../types/UserMetadataWithAuth';
 import {
   getTokenCookie,
   MAX_AGE,
@@ -24,7 +25,7 @@ type EndpointRequest = NextApiRequest & {
  * @param res
  * @param userMetadata
  */
-export const setUserSession = async (res: NextApiResponse, userMetadata: MagicUserMetadata): Promise<void> => {
+export const setUserSession = async (res: NextApiResponse, userMetadata: UserMetadataWithAuth): Promise<void> => {
   const createdAt = Date.now();
 
   // Create a session object with a max age that we can validate later
