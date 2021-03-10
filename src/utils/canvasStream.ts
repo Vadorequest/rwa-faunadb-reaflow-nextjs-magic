@@ -1,28 +1,30 @@
 import {
   Client,
+  Collection,
   Create,
   Expr,
   Get,
+  Index,
+  Match,
+  Paginate,
+  Ref,
   Update,
 } from 'faunadb';
 import { Subscription } from 'faunadb/src/types/Stream';
 import isEqual from 'lodash.isequal';
 import { setRecoilExternalState } from '../components/RecoilExternalStatePortal';
-import {
-  getClient,
-  q,
-} from '../lib/faunadb/faunadb';
+import { getClient } from '../lib/faunadb/faunadb';
 import { canvasDatasetSelector } from '../states/canvasDatasetSelector';
 import { UserSession } from '../types/auth/UserSession';
 import { CanvasDataset } from '../types/CanvasDataset';
+import { Canvas } from '../types/faunadb/Canvas';
+import { CanvasByOwnerIndex } from '../types/faunadb/CanvasByOwnerIndex';
 import { CanvasResult } from '../types/faunadb/CanvasResult';
 import {
   OnInit,
   OnUpdate,
 } from '../types/faunadb/CanvasStream';
 import { FaunadbStreamVersionEvent } from '../types/faunadb/FaunadbStreamVersionEvent';
-
-const { Ref, Collection } = q;
 
 const PUBLIC_SHARED_FAUNABD_TOKEN = 'fnAEDdp0CWACBZUTQvkktsqAQeW03uDhZYY0Ttlg';
 const SHARED_CANVAS_DOCUMENT_ID = '1';
@@ -40,61 +42,66 @@ export const getUserClient = (user: UserSession | null): Client => {
  * @param onInit
  * @param onUpdate
  */
-export const initStream = (user: UserSession | null, onInit: OnInit, onUpdate: OnUpdate) => {
+export const initStream = async (user: UserSession | null, onInit: OnInit, onUpdate: OnUpdate) => {
   const client: Client = getUserClient(user);
-  const canvasRef: Expr = findUserCanvasRef(user);
-  console.log('Working on Canvas document', canvasRef);
-  let stream: Subscription;
+  const canvasRef: Expr | undefined = await findUserCanvasRef(user);
 
-  const _startStream = async () => {
-    console.log(`Stream to FaunaDB is (re)starting for:`, canvasRef);
+  if (canvasRef) {
+    console.log('Working on Canvas document', canvasRef);
+    let stream: Subscription;
 
-    stream = client.stream.
-      // @ts-ignore
-      document(canvasRef)
-      .on('start', (at: number) => {
-        console.log('Stream started at:', at);
-      })
-      .on('snapshot', (snapshot: CanvasResult) => {
-        console.log('snapshot', snapshot);
-        onInit(snapshot.data);
-      })
-      .on('version', (version: FaunadbStreamVersionEvent) => {
-        console.log('version', version);
+    const _startStream = async () => {
+      console.log(`Stream to FaunaDB is (re)starting for:`, canvasRef);
 
-        if (version.action === 'update') {
-          onUpdate(version.document.data);
-        }
-      })
-      .on('error', async (error: any) => {
-        console.log('Error:', error);
-        if (error?.name === 'NotFound') {
-          const defaultCanvasDataset: CanvasDataset = {
-            nodes: [],
-            edges: [],
-          };
+      stream = client.stream.
+        // @ts-ignore
+        document(canvasRef)
+        .on('start', (at: number) => {
+          console.log('Stream started at:', at);
+        })
+        .on('snapshot', (snapshot: CanvasResult) => {
+          console.log('snapshot', snapshot);
+          onInit(snapshot.data);
+        })
+        .on('version', (version: FaunadbStreamVersionEvent) => {
+          console.log('version', version);
 
-          console.log('No record found, creating record...');
-          const createDefaultRecord = Create(Ref(Collection('Canvas'), '1'), {
-            data: defaultCanvasDataset,
-          });
-          const result: CanvasResult = await client.query(createDefaultRecord);
-          console.log('result', result);
-          onInit(result?.data);
-        } else {
+          if (version.action === 'update') {
+            onUpdate(version.document.data);
+          }
+        })
+        .on('error', async (error: any) => {
+          console.log('Error:', error);
+          if (error?.name === 'NotFound') {
+            const defaultCanvasDataset: CanvasDataset = {
+              nodes: [],
+              edges: [],
+            };
+
+            console.log('No record found, creating record...');
+            const createDefaultRecord = Create(findUserCanvasRef(user), {
+              data: defaultCanvasDataset,
+            });
+            const result: CanvasResult = await client.query(createDefaultRecord);
+            console.log('result', result);
+            onInit(result?.data);
+          } else {
+            stream.close();
+            setTimeout(_startStream, 1000);
+          }
+        })
+        .on('history_rewrite', (error: any) => {
+          console.log('Error:', error);
           stream.close();
           setTimeout(_startStream, 1000);
-        }
-      })
-      .on('history_rewrite', (error: any) => {
-        console.log('Error:', error);
-        stream.close();
-        setTimeout(_startStream, 1000);
-      })
-      .start();
-  };
+        })
+        .start();
+    };
 
-  _startStream();
+    _startStream();
+  } else {
+    console.error(`[initStream] "canvasRef" is undefined, streaming aborted.`, canvasRef);
+  }
 };
 
 /**
@@ -103,43 +110,96 @@ export const initStream = (user: UserSession | null, onInit: OnInit, onUpdate: O
  * Always use "1" as document ref id.
  * There is only one document in the DB, and the same document is shared with all users.
  */
-export const findUserCanvasRef = (user: UserSession | null): Expr => {
-  let userDocumentId: string;
-
+export const findUserCanvasRef = async (user: UserSession | null): Promise<Expr | undefined> => {
   if (user) {
-    userDocumentId = ''; // TODO
+    return await findOrCreateUserCanvas(user);
   } else {
-    userDocumentId = SHARED_CANVAS_DOCUMENT_ID;
+    return Ref(Collection('Canvas'), SHARED_CANVAS_DOCUMENT_ID);
   }
+};
 
-  return Ref(Collection('Canvas'), userDocumentId);
+export const findOrCreateUserCanvas = async (user: UserSession): Promise<Expr | undefined> => {
+  console.log('findOrCreateUserCanvas');
+  const client: Client = getUserClient(user);
+  const findUserCanvas = Paginate(
+    Match(
+      Index('canvas_by_owner'),
+      Ref(Collection('Users'), '292674252603130373'),
+    ),
+  );
+
+  try {
+    const findUserCanvasResult = await client.query<CanvasByOwnerIndex>(findUserCanvas);
+    console.log('findUserCanvasResult', findUserCanvasResult);
+
+    if (findUserCanvasResult?.data?.length === 0) {
+      // This user doesn't have a Canvas document yet
+      const canvas: Canvas = {
+        data: {
+          owner: Ref(Collection('Users'), '292674252603130373'),
+          nodes: [],
+          edges: [],
+        },
+      };
+
+      const createUserCanvas = Create(
+        Collection('Canvas'),
+        canvas,
+      );
+
+      try {
+        const createUserCanvasResult = await client.query<Canvas>(createUserCanvas);
+        console.log('createUserCanvasResult', createUserCanvasResult);
+
+        return createUserCanvasResult?.ref;
+      } catch (e) {
+        console.error(`[findOrCreateUserCanvas] Error while creating canvas:`, e);
+      }
+    } else {
+      // Return existing canvas reference
+      // Although users could have several canvas (projects), they can only create one and thus we only care about the first
+      const [canvasRef, nodes, edges] = findUserCanvasResult.data[0];
+      return canvasRef;
+    }
+  } catch (e) {
+    console.error(`[findOrCreateUserCanvas] Error while fetching canvas:`, e);
+  }
 };
 
 /**
- * Updates the shared canvas document.
+ * Updates the user canvas document.
  *
  * Only update if the content has changed, to avoid infinite loop because this is called during canvas rendering (useEffect)
  *
  * @param user
  * @param newCanvasDataset
  */
-export const updateSharedCanvasDocument = async (user: UserSession | null, newCanvasDataset: CanvasDataset) => {
+export const updateUserCanvas = async (user: UserSession | null, newCanvasDataset: CanvasDataset): Promise<void> => {
   const client: Client = getUserClient(user);
-  const existingCanvasDatasetResult: CanvasResult = await client.query(Get(findUserCanvasRef(user)));
-  const existingCanvasDataset: CanvasDataset = existingCanvasDatasetResult.data;
 
-  if (!isEqual(newCanvasDataset, existingCanvasDataset)) {
-    console.log('Updating canvas dataset in FaunaDB. Old:', existingCanvasDataset, 'new:', newCanvasDataset);
+  try {
+    const canvasRef = await findUserCanvasRef(user);
 
-    return client
-      .query(Update(findUserCanvasRef(user), { data: newCanvasDataset }))
-      // @ts-ignore
-      .then((result: CanvasResult) => {
-        console.log('FaunaDB Canvas dataset updated', result);
-      })
-      .catch((error: Error) => {
-        console.error(error);
-      });
+    if (canvasRef) {
+      const existingCanvasDatasetResult: CanvasResult = await client.query(Get(canvasRef));
+      const existingCanvasDataset: CanvasDataset = existingCanvasDatasetResult.data;
+
+      if (!isEqual(newCanvasDataset, existingCanvasDataset)) {
+        console.log('Updating canvas dataset in FaunaDB. Old:', existingCanvasDataset, 'new:', newCanvasDataset);
+
+        try {
+          const x: CanvasResult = await client.query<CanvasResult>(Update(canvasRef, { data: newCanvasDataset }));
+          console.log('x', x);
+
+        } catch (e) {
+          console.error(`[updateUserCanvas] Error while updating canvas:`, e);
+        }
+      }
+    } else {
+      console.error(`[updateUserCanvas] "canvasRef" is undefined, update aborted.`, canvasRef);
+    }
+  } catch (e) {
+    console.error(`[updateUserCanvas] Error while fetching canvas:`, e);
   }
 };
 

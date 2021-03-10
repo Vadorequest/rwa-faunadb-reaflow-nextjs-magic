@@ -19,6 +19,11 @@ export const q = faunadb.query;
 export function getClient(secret: string) {
   const options: ClientConfig = {
     secret,
+
+    // Custom observer used to log responses for easier debug
+    observer: (res, client) => {
+      console.debug('FaunaDB response:', res);
+    },
   };
 
   return new faunadb.Client(options);

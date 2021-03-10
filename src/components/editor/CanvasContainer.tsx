@@ -29,7 +29,7 @@ import { CanvasDataset } from '../../types/CanvasDataset';
 import {
   onInit,
   onUpdate,
-  updateSharedCanvasDocument,
+  updateUserCanvas,
 } from '../../utils/canvasStream';
 import { isOlderThan } from '../../utils/date';
 import {
@@ -99,7 +99,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
 
     // Only save changes once the stream has started, to avoid saving anything until the initial canvas dataset was initialized
     if (isStreaming) {
-      updateSharedCanvasDocument(user, canvasDataset);
+      updateUserCanvas(user, canvasDataset);
     }
   }, [canvasDataset]);
 

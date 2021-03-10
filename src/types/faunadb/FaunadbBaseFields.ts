@@ -1,4 +1,4 @@
 export type FaunadbBaseFields = {
-  ref: any;
-  ts: number;
+  ref?: any;
+  ts?: number;
 }
