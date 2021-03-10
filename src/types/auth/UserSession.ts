@@ -1,6 +1,6 @@
-import { MagicUserMetadata } from '@magic-sdk/admin';
+import { UserMetadataWithAuth } from '../UserMetadataWithAuth';
 
-export type UserSession = MagicUserMetadata & {
+export type UserSession = UserMetadataWithAuth & {
   createdAt: number;
   maxAge: number;
 };
