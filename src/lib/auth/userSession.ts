@@ -9,13 +9,17 @@ import {
   getTokenCookie,
   MAX_AGE,
   setTokenCookie,
-} from './auth-cookies';
-
-const TOKEN_SECRET = process.env.TOKEN_SECRET as string;
+} from './authCookies';
 
 type EndpointRequest = NextApiRequest & {
   query: {};
 };
+
+const TOKEN_SECRET = process.env.TOKEN_SECRET as string;
+
+if(!TOKEN_SECRET || TOKEN_SECRET?.length < 32){
+  throw new Error(`You must define a "TOKEN_SECRET" environment variable of at least 32 characters in order to use authentication. Found "${TOKEN_SECRET}".`);
+}
 
 /**
  * Writes a login cookie token to the browser.
@@ -25,7 +29,7 @@ type EndpointRequest = NextApiRequest & {
  * @param res
  * @param userMetadata
  */
-export const setLoginSession = async (res: NextApiResponse, userMetadata: MagicUserMetadata): Promise<void> => {
+export const setUserSession = async (res: NextApiResponse, userMetadata: MagicUserMetadata): Promise<void> => {
   const createdAt = Date.now();
 
   // Create a session object with a max age that we can validate later
@@ -39,12 +43,20 @@ export const setLoginSession = async (res: NextApiResponse, userMetadata: MagicU
   setTokenCookie(res, token);
 };
 
-export const getLoginSession = async (req: EndpointRequest, res?: NextApiResponse): Promise<UserSession | undefined> => {
+/**
+ * Returns the user session.
+ *
+ * Resolves the user session by unsealing the token contained in the cookie.
+ *
+ * @param req
+ * @param res
+ */
+export const getUserSession = async (req: EndpointRequest, res?: NextApiResponse): Promise<UserSession | undefined> => {
   const token: string | null = getTokenCookie(req);
 
   if (!token) return;
 
-  const session = await Iron.unseal(token, TOKEN_SECRET, Iron.defaults);
+  const session: UserSession = await Iron.unseal(token, TOKEN_SECRET, Iron.defaults);
   const expiresAt = session.createdAt + session.maxAge * 1000;
 
   // Validate the expiration date of the session
