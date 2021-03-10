@@ -25,7 +25,7 @@ export class UserModel {
    * @param email
    */
   async createUser(email: string): Promise<User | undefined> {
-    return faunadbAdminClient?.query<User>(Create(Collection('users'), {
+    return faunadbAdminClient?.query<User>(Create(Collection('Users'), {
       data: { email },
     }));
   }
