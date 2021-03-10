@@ -11,7 +11,6 @@ import {
   getClient,
   q,
 } from '../lib/faunadb/faunadb';
-import { findSharedCanvasDocument } from '../lib/faunadb/faunadbClient';
 import { UserSession } from '../types/auth/UserSession';
 import { CanvasDataset } from '../types/CanvasDataset';
 import { CanvasResult } from '../types/faunadb/CanvasResult';
@@ -122,14 +121,14 @@ export const findUserCanvasRef = (user: UserSession | null): Expr => {
  */
 export const updateSharedCanvasDocument = async (user: UserSession | null, newCanvasDataset: CanvasDataset) => {
   const client: Client = getUserClient(user);
-  const existingCanvasDatasetResult: CanvasResult = await client.query(Get(findSharedCanvasDocument()));
+  const existingCanvasDatasetResult: CanvasResult = await client.query(Get(findUserCanvasRef(user)));
   const existingCanvasDataset: CanvasDataset = existingCanvasDatasetResult.data;
 
   if (!isEqual(newCanvasDataset, existingCanvasDataset)) {
     console.log('Updating canvas dataset in FaunaDB. Old:', existingCanvasDataset, 'new:', newCanvasDataset);
 
     return client
-      .query(Update(findSharedCanvasDocument(), { data: newCanvasDataset }))
+      .query(Update(findUserCanvasRef(user), { data: newCanvasDataset }))
       // @ts-ignore
       .then((result: CanvasResult) => {
         console.log('FaunaDB Canvas dataset updated', result);
@@ -142,8 +141,8 @@ export const updateSharedCanvasDocument = async (user: UserSession | null, newCa
 
 export const onInit: OnInit = (canvasDataset: CanvasDataset) => {
 
-}
+};
 
 export const onUpdate: OnUpdate = (canvasDataset: CanvasDataset) => {
 
-}
+};
