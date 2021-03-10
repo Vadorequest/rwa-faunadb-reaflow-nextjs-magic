@@ -4,7 +4,7 @@ import {
 } from 'next';
 import { getLoginSession } from '../../lib/auth';
 import { removeTokenCookie } from '../../lib/auth-cookies';
-import { magic } from '../../lib/magic';
+import { magicAdmin } from '../../lib/magicAdmin';
 import { UserSession } from '../../types/auth/UserSession';
 
 type EndpointRequest = NextApiRequest & {
@@ -16,7 +16,7 @@ export const logout = async (req: EndpointRequest, res: NextApiResponse): Promis
     const session: UserSession | undefined = await getLoginSession(req);
 
     if (session?.issuer) {
-      await magic.users.logoutByIssuer(session?.issuer as string);
+      await magicAdmin.users.logoutByIssuer(session?.issuer as string);
       removeTokenCookie(res);
     }
   } catch (error) {
