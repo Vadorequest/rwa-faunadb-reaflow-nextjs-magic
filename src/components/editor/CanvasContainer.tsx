@@ -16,7 +16,6 @@ import {
   useUndo,
 } from 'reaflow';
 import { useRecoilState } from 'recoil';
-import { updateSharedCanvasDocument } from '../../lib/faunadb/faunadbClient';
 import settings from '../../settings';
 import { blockPickerMenuSelector } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
@@ -25,6 +24,10 @@ import { nodesSelector } from '../../states/nodesState';
 import { selectedEdgesSelector } from '../../states/selectedEdgesState';
 import { selectedNodesSelector } from '../../states/selectedNodesState';
 import BaseNodeData from '../../types/BaseNodeData';
+import {
+  onInit,
+  onUpdate,
+} from '../../utils/canvasStream';
 import { isOlderThan } from '../../utils/date';
 import {
   createNodeFromDefaultProps,
@@ -32,6 +35,7 @@ import {
 } from '../../utils/nodes';
 import canvasUtilsContext from '../context/canvasUtilsContext';
 import BaseEdge from '../edges/BaseEdge';
+import FaunaDBCanvasStream from '../FaunaDBCanvasStream';
 import NodeRouter from '../nodes/NodeRouter';
 
 type Props = {
@@ -86,7 +90,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
    */
   useEffect(() => {
     // persistCanvasDatasetInLS(canvasDataset);
-    updateSharedCanvasDocument(canvasDataset);
+    // updateSharedCanvasDocument(canvasDataset);
   }, [canvasDataset]);
 
   /**
@@ -373,6 +377,12 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
           edge={Edge}
           onLayoutChange={layout => console.log('Layout', layout)}
           layoutOptions={elkLayoutOptions}
+        />
+
+        {/* Handles the real-time stream */}
+        <FaunaDBCanvasStream
+          onInit={onInit}
+          onUpdate={onUpdate}
         />
       </canvasUtilsContext.Provider>
     </div>

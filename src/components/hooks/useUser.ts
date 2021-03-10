@@ -1,6 +1,7 @@
 import Router from 'next/router';
 import { useEffect } from 'react';
 import useSWR from 'swr';
+import { UserSession } from '../../types/auth/UserSession';
 
 type Props = {
   redirectTo?: string;
@@ -14,7 +15,7 @@ const fetcher = (url: string) =>
       return { user: data?.user || null };
     });
 
-export const useUser = (props: Props = {}) => {
+export const useUser = (props: Props = {}): UserSession | null => {
   const { redirectTo, redirectIfFound } = props;
   const { data, error } = useSWR(
     '/api/user',

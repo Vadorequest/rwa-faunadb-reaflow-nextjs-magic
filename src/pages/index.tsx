@@ -3,9 +3,6 @@ import { useState } from 'react';
 import DisplayOnBrowserMount from '../components/DisplayOnBrowserMount';
 import EditorContainer from '../components/editor/EditorContainer';
 import Layout from '../components/Layout';
-import { setRecoilExternalState } from '../components/RecoilExternalStatePortal';
-import { startStreamingCanvasDataset } from '../lib/faunadb/faunadbClient';
-import { canvasDatasetSelector } from '../states/canvasDatasetSelector';
 import { CanvasDataset } from '../types/CanvasDataset';
 
 export type Props = {
@@ -35,12 +32,6 @@ export const getStaticProps = (): { props: Props } => {
 const IndexPage = (props: any) => {
   const [canvasDataset, setCanvasDataset] = useState<CanvasDataset | undefined>(undefined);
 
-  // Used to know when the app is ready to be rendered (when the data have been fetched from DB)
-  const [isReadyToRender, setIsReadyToRender] = useState<boolean>(false);
-
-  // Used to avoid starting several streams from the same browser
-  const [isLoadingDataFromDB, setIsLoadingDataFromDB] = useState<boolean>(false);
-
   /**
    * Gets the canvas dataset stored in the browser localstorage and makes it available in the global "window" object.
    * The window.initialCanvasDataset will be used by the nodes/edges atom during their initialisation.
@@ -51,34 +42,29 @@ const IndexPage = (props: any) => {
    */
   if (isBrowser()) {
     // Initialize the stream (only once)
-    if (!isLoadingDataFromDB) {
-      setIsLoadingDataFromDB(true);
 
       // Starts the stream between the browser and the FaunaDB using the default canvas document
-      startStreamingCanvasDataset((canvasDatasetFromDB: CanvasDataset) => {
-        console.log('canvasDatasetFromDB', canvasDatasetFromDB);
-        setCanvasDataset(canvasDatasetFromDB);
-        setIsReadyToRender(true);
-      }, (canvasDatasetRemotelyUpdated: CanvasDataset) => {
-        setRecoilExternalState(canvasDatasetSelector, canvasDatasetRemotelyUpdated);
-      });
-    }
+      // startStreamingCanvasDataset((canvasDatasetFromDB: CanvasDataset) => {
+      //   console.log('canvasDatasetFromDB', canvasDatasetFromDB);
+      //   setCanvasDataset(canvasDatasetFromDB);
+      //   setIsReadyToRender(true);
+      // }, (canvasDatasetRemotelyUpdated: CanvasDataset) => {
+      //   setRecoilExternalState(canvasDatasetSelector, canvasDatasetRemotelyUpdated);
+      // });
 
-    if (canvasDataset && setIsReadyToRender) {
-      window.initialCanvasDataset = canvasDataset;
-    }
+    // if (canvasDataset) {
+    //   window.initialCanvasDataset = canvasDataset;
+    // }
   }
 
   return (
     <Layout>
       {/* Only renders the EditorContainer on the browser because it's not server-side compatible */}
       <DisplayOnBrowserMount
-        deps={[canvasDataset]}
+        // deps={[canvasDataset]}
       >
         {
-          isReadyToRender && (
-            <EditorContainer />
-          )
+          <EditorContainer />
         }
       </DisplayOnBrowserMount>
     </Layout>
