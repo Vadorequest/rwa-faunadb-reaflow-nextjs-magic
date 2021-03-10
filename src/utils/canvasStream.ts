@@ -129,7 +129,7 @@ export const findOrCreateUserCanvas = async (user: UserSession): Promise<Expr | 
   );
 
   try {
-    const findUserCanvasResult = await client.query<CanvasByOwnerIndex>(findUserCanvas);
+    const findUserCanvasResult: CanvasByOwnerIndex = await client.query<CanvasByOwnerIndex>(findUserCanvas);
     console.log('findUserCanvasResult', findUserCanvasResult);
 
     if (findUserCanvasResult?.data?.length === 0) {
@@ -158,7 +158,7 @@ export const findOrCreateUserCanvas = async (user: UserSession): Promise<Expr | 
     } else {
       // Return existing canvas reference
       // Although users could have several canvas (projects), they can only create one and thus we only care about the first
-      const [canvasRef, nodes, edges] = findUserCanvasResult.data[0];
+      const [canvasRef] = findUserCanvasResult.data[0];
       return canvasRef;
     }
   } catch (e) {
