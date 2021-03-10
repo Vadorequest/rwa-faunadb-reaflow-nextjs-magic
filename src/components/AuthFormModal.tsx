@@ -16,6 +16,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
+import { magicClient } from '../lib/magicClient';
 
 type Props = {
   mode: 'login' | 'create-account';
@@ -41,8 +42,7 @@ const AuthFormModal = (props: Props) => {
       localStorage?.setItem(LS_EMAIL_KEY, email);
 
       try {
-        const magic = new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY as string);
-        const didToken = await magic.auth.loginWithMagicLink({
+        const didToken = await magicClient.auth.loginWithMagicLink({
           email: email,
           showUI: true,
         });
@@ -79,8 +79,7 @@ const AuthFormModal = (props: Props) => {
   }, [mode]);
 
   useEffect(() => {
-    const magic = new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY as string);
-    magic.preload(); // See https://docs.magic.link/client-sdk/web/api-reference#preload
+    magicClient.preload(); // See https://docs.magic.link/client-sdk/web/api-reference#preload
   }, []);
 
   return (
