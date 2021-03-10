@@ -1,23 +1,36 @@
+import { isBrowser } from '@unly/utils';
 import faunadb, {
+  Client,
   Create,
   Expr,
   Get,
   Update,
 } from 'faunadb';
 import { Subscription } from 'faunadb/src/types/Stream';
-import * as Fauna from 'faunadb/src/types/values';
 import isEqual from 'lodash.isequal';
 import { CanvasDataset } from '../../types/CanvasDataset';
+import { CanvasResult } from '../../types/faunadb/CanvasResult';
+import {
+  OnInit,
+  OnUpdate,
+} from '../../types/faunadb/CanvasStream';
+import { FaunadbStreamVersionEvent } from '../../types/faunadb/FaunadbStreamVersionEvent';
 
 const { Ref, Collection } = faunadb.query;
-const client = new faunadb.Client({ secret: 'fnAEDdp0CWACBZUTQvkktsqAQeW03uDhZYY0Ttlg' });
+let client: Client;
 
-type CanvasResult = Fauna.values.Document<CanvasDataset>;
-type VersionEvent = {
-  action: 'create' | 'update' | 'delete';
-  document: CanvasResult;
-  diff: CanvasResult;
-  prev: CanvasResult;
+// TODO use stream manager
+//  Convert to react component because we need to use hooks
+if (isBrowser()) {
+  const secret =
+    // @ts-ignore
+    window['__FAUNADB_USER_TOKEN__']
+    || 'fnAEDdp0CWACBZUTQvkktsqAQeW03uDhZYY0Ttlg';
+
+  console.log('Initializing stream client with secret', secret);
+  client = new faunadb.Client({
+    secret,
+  });
 }
 
 /**
@@ -62,11 +75,11 @@ export const updateSharedCanvasDocument = async (newCanvasDataset: CanvasDataset
  * @param onInit
  * @param onUpdate
  */
-export const startStreamingCanvasDataset = (onInit: (canvasDataset: CanvasDataset) => void, onUpdate: (canvasDataset: CanvasDataset) => void) => {
+export const startStreamingCanvasDataset = (onInit: OnInit, onUpdate: OnUpdate) => {
   let stream: Subscription;
 
-  const _startStream = async (documentRef: Expr) => {
-    console.log(`Stream to FaunaDB is starting for:`, documentRef);
+  const _startStream = async () => {
+    console.log(`Stream to FaunaDB is starting for:`, findSharedCanvasDocument());
 
     stream = client.stream.
       // @ts-ignore
@@ -78,7 +91,7 @@ export const startStreamingCanvasDataset = (onInit: (canvasDataset: CanvasDatase
         console.log('snapshot', snapshot);
         onInit(snapshot.data);
       })
-      .on('version', (version: VersionEvent) => {
+      .on('version', (version: FaunadbStreamVersionEvent) => {
         console.log('version', version);
 
         if (version.action === 'update') {
@@ -113,5 +126,5 @@ export const startStreamingCanvasDataset = (onInit: (canvasDataset: CanvasDatase
       .start();
   };
 
-  _startStream(findSharedCanvasDocument());
+  _startStream();
 };
