@@ -10,19 +10,14 @@ import {
   MAX_AGE,
   setTokenCookie,
 } from './authCookies';
+import { decryptToken, encryptData } from './crypto';
 
 type EndpointRequest = NextApiRequest & {
   query: {};
 };
 
-const TOKEN_SECRET = process.env.TOKEN_SECRET as string;
-
-if(!TOKEN_SECRET || TOKEN_SECRET?.length < 32){
-  throw new Error(`You must define a "TOKEN_SECRET" environment variable of at least 32 characters in order to use authentication. Found "${TOKEN_SECRET}".`);
-}
-
 /**
- * Writes a login cookie token to the browser.
+ * Writes the user session cookie token to the browser.
  *
  * Uses user metadata (provided by Magic), and augments them (using custom login logic).
  *
@@ -38,7 +33,7 @@ export const setUserSession = async (res: NextApiResponse, userMetadata: MagicUs
     createdAt,
     maxAge: MAX_AGE,
   };
-  const token: string = await Iron.seal(userSession, TOKEN_SECRET, Iron.defaults);
+  const token: string = await encryptData(userSession);
 
   setTokenCookie(res, token);
 };
@@ -46,7 +41,7 @@ export const setUserSession = async (res: NextApiResponse, userMetadata: MagicUs
 /**
  * Returns the user session.
  *
- * Resolves the user session by unsealing the token contained in the cookie.
+ * Resolves the user session by decrypting the token contained in the cookie.
  *
  * @param req
  * @param res
@@ -56,7 +51,7 @@ export const getUserSession = async (req: EndpointRequest, res?: NextApiResponse
 
   if (!token) return;
 
-  const session: UserSession = await Iron.unseal(token, TOKEN_SECRET, Iron.defaults);
+  const session: UserSession = await decryptToken(token);
   const expiresAt = session.createdAt + session.maxAge * 1000;
 
   // Validate the expiration date of the session
