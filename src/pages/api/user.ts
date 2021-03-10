@@ -2,7 +2,7 @@ import {
   NextApiRequest,
   NextApiResponse,
 } from 'next';
-import { getLoginSession } from '../../lib/auth';
+import { getLoginSession } from '../../lib/auth/auth';
 import { UserSession } from '../../types/auth/UserSession';
 
 type EndpointRequest = NextApiRequest & {

@@ -3,8 +3,8 @@ import {
   NextApiRequest,
   NextApiResponse,
 } from 'next';
-import { setLoginSession } from '../../lib/auth';
-import { magicAdmin } from '../../lib/magicAdmin';
+import { setLoginSession } from '../../lib/auth/auth';
+import { magicAdmin } from '../../lib/auth/magicAdmin';
 
 type EndpointRequest = NextApiRequest & {
   query: {};

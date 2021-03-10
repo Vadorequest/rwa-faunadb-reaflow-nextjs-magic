@@ -16,7 +16,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { magicClient } from '../lib/magicClient';
+import { magicClient } from '../lib/auth/magicClient';
 
 type Props = {
   mode: 'login' | 'create-account';

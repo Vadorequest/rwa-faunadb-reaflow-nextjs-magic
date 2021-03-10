@@ -4,7 +4,7 @@ import {
   NextApiRequest,
   NextApiResponse,
 } from 'next';
-import { UserSession } from '../types/auth/UserSession';
+import { UserSession } from '../../types/auth/UserSession';
 import {
   getTokenCookie,
   MAX_AGE,
