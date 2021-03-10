@@ -23,10 +23,13 @@ import { edgesSelector } from '../../states/edgesState';
 import { nodesSelector } from '../../states/nodesState';
 import { selectedEdgesSelector } from '../../states/selectedEdgesState';
 import { selectedNodesSelector } from '../../states/selectedNodesState';
+import { UserSession } from '../../types/auth/UserSession';
 import BaseNodeData from '../../types/BaseNodeData';
+import { CanvasDataset } from '../../types/CanvasDataset';
 import {
   onInit,
   onUpdate,
+  updateSharedCanvasDocument,
 } from '../../utils/canvasStream';
 import { isOlderThan } from '../../utils/date';
 import {
@@ -36,6 +39,7 @@ import {
 import canvasUtilsContext from '../context/canvasUtilsContext';
 import BaseEdge from '../edges/BaseEdge';
 import FaunaDBCanvasStream from '../FaunaDBCanvasStream';
+import { useUser } from '../hooks/useUser';
 import NodeRouter from '../nodes/NodeRouter';
 
 type Props = {
@@ -62,6 +66,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const {
     canvasRef,
   } = props;
+  const user: UserSession | null = useUser();
 
   /**
    * The canvas ref contains useful properties (xy, scroll, etc.) and functions (zoom, centerCanvas, etc.)
@@ -82,6 +87,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const selections = selectedNodes; // TODO merge selected nodes and edges
   const [hasClearedUndoHistory, setHasClearedUndoHistory] = useState<boolean>(false);
   const [cursorXY, setCursorXY] = useState<[number, number]>([0, 0]);
+  const [isStreaming, setIsStreaming] = useState<boolean>(false);
 
   /**
    * When nodes or edges are modified, updates the persisted data in FaunaDB.
@@ -90,7 +96,11 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
    */
   useEffect(() => {
     // persistCanvasDatasetInLS(canvasDataset);
-    // updateSharedCanvasDocument(canvasDataset);
+
+    // Only save changes once the stream has started, to avoid saving anything until the initial canvas dataset was initialized
+    if (isStreaming) {
+      updateSharedCanvasDocument(user, canvasDataset);
+    }
   }, [canvasDataset]);
 
   /**
@@ -126,11 +136,12 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
    * Ensures the start node is always present.
    *
    * Will automatically create the start node even if all the nodes are deleted.
+   * Disabled until the stream has started to avoid creating the start node even before we got the initial canvas dataset from the stream.
    */
   useEffect(() => {
     const startNode: BaseNodeData | undefined = nodes?.find((node: BaseNodeData) => node?.data?.type === 'start');
 
-    if (!startNode) {
+    if (!startNode && isStreaming) {
       console.info(`No "start" node found. Creating one automatically.`, nodes);
       setNodes([
         ...nodes,
@@ -381,7 +392,12 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
 
         {/* Handles the real-time stream */}
         <FaunaDBCanvasStream
-          onInit={onInit}
+          onInit={(canvasDataset: CanvasDataset) => {
+            onInit(canvasDataset);
+
+            // Mark the stream has running
+            setIsStreaming(true);
+          }}
           onUpdate={onUpdate}
         />
       </canvasUtilsContext.Provider>

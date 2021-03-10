@@ -27,9 +27,7 @@ const FaunaDBCanvasStream: React.FunctionComponent<Props> = (props) => {
 
   // Used to avoid starting several streams from the same browser
   const [hasStreamStarted, setHasStreamStarted] = useState<boolean>(false);
-
   const user: UserSession | null = useUser();
-  console.log('FaunaDBCanvasStream user', user);
 
   if (!isBrowser()) {
     return null;

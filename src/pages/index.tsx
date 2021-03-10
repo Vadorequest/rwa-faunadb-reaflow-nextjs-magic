@@ -41,17 +41,6 @@ const IndexPage = (props: any) => {
    *  Also, it's a viable approach whether using the data from browser localstorage, or a real DB.
    */
   if (isBrowser()) {
-    // Initialize the stream (only once)
-
-      // Starts the stream between the browser and the FaunaDB using the default canvas document
-      // startStreamingCanvasDataset((canvasDatasetFromDB: CanvasDataset) => {
-      //   console.log('canvasDatasetFromDB', canvasDatasetFromDB);
-      //   setCanvasDataset(canvasDatasetFromDB);
-      //   setIsReadyToRender(true);
-      // }, (canvasDatasetRemotelyUpdated: CanvasDataset) => {
-      //   setRecoilExternalState(canvasDatasetSelector, canvasDatasetRemotelyUpdated);
-      // });
-
     // if (canvasDataset) {
     //   window.initialCanvasDataset = canvasDataset;
     // }

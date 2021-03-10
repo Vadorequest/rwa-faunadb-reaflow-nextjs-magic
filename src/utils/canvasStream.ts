@@ -7,10 +7,12 @@ import {
 } from 'faunadb';
 import { Subscription } from 'faunadb/src/types/Stream';
 import isEqual from 'lodash.isequal';
+import { setRecoilExternalState } from '../components/RecoilExternalStatePortal';
 import {
   getClient,
   q,
 } from '../lib/faunadb/faunadb';
+import { canvasDatasetSelector } from '../states/canvasDatasetSelector';
 import { UserSession } from '../types/auth/UserSession';
 import { CanvasDataset } from '../types/CanvasDataset';
 import { CanvasResult } from '../types/faunadb/CanvasResult';
@@ -41,10 +43,11 @@ export const getUserClient = (user: UserSession | null): Client => {
 export const initStream = (user: UserSession | null, onInit: OnInit, onUpdate: OnUpdate) => {
   const client: Client = getUserClient(user);
   const canvasRef: Expr = findUserCanvasRef(user);
+  console.log('Working on Canvas document', canvasRef);
   let stream: Subscription;
 
-  const _startStream = async (documentRef: Expr) => {
-    console.log(`Stream to FaunaDB is starting for:`, canvasRef);
+  const _startStream = async () => {
+    console.log(`Stream to FaunaDB is (re)starting for:`, canvasRef);
 
     stream = client.stream.
       // @ts-ignore
@@ -91,6 +94,7 @@ export const initStream = (user: UserSession | null, onInit: OnInit, onUpdate: O
       .start();
   };
 
+  _startStream();
 };
 
 /**
@@ -140,9 +144,11 @@ export const updateSharedCanvasDocument = async (user: UserSession | null, newCa
 };
 
 export const onInit: OnInit = (canvasDataset: CanvasDataset) => {
-
+  // Starts the stream between the browser and the FaunaDB using the default canvas document
+  console.log('onInit canvasDataset', canvasDataset);
+  setRecoilExternalState(canvasDatasetSelector, canvasDataset);
 };
 
-export const onUpdate: OnUpdate = (canvasDataset: CanvasDataset) => {
-
+export const onUpdate: OnUpdate = (canvasDatasetRemotelyUpdated: CanvasDataset) => {
+  setRecoilExternalState(canvasDatasetSelector, canvasDatasetRemotelyUpdated);
 };
