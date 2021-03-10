@@ -7,12 +7,24 @@ import {
   NextApiResponse,
 } from 'next';
 
+type Cookies = { [key: string]: string }
+
 const COOKIE_TOKEN_NAME = 'token';
 
 export const MAX_AGE = 60 * 60 * 12; // 12 hours
 
+/**
+ * Writes the authentication cookie token in the browser.
+ *
+ * The cookie is only readable by the server (httpOnly), not by the browser.
+ *
+ * @param res
+ * @param token
+ *
+ * @see https://owasp.org/www-community/HttpOnly
+ */
 export function setTokenCookie(res: NextApiResponse, token: string) {
-  const cookie = serialize(COOKIE_TOKEN_NAME, token, {
+  const cookie: string = serialize(COOKIE_TOKEN_NAME, token, {
     maxAge: MAX_AGE,
     expires: new Date(Date.now() + MAX_AGE * 1000),
     httpOnly: true,
@@ -24,8 +36,13 @@ export function setTokenCookie(res: NextApiResponse, token: string) {
   res.setHeader('Set-Cookie', cookie);
 }
 
+/**
+ * Deletes the authentication cookie from the browser.
+ *
+ * @param res
+ */
 export function removeTokenCookie(res: NextApiResponse) {
-  const cookie = serialize(COOKIE_TOKEN_NAME, '', {
+  const cookie: string = serialize(COOKIE_TOKEN_NAME, '', {
     maxAge: -1,
     path: '/',
   });
@@ -33,7 +50,14 @@ export function removeTokenCookie(res: NextApiResponse) {
   res.setHeader('Set-Cookie', cookie);
 }
 
-export function parseCookies(req: NextApiRequest) {
+/**
+ * Parse the cookies, if they've not been parsed already.
+ *
+ * Works for Next.js API routes and pages. (behavior is slightly different between both)
+ *
+ * @param req
+ */
+export function parseCookies(req: NextApiRequest): Cookies {
   // For API Routes we don't need to parse the cookies.
   if (req.cookies) return req.cookies;
 
@@ -42,7 +66,12 @@ export function parseCookies(req: NextApiRequest) {
   return parse(cookie || '');
 }
 
-export function getTokenCookie(req: NextApiRequest) {
-  const cookies = parseCookies(req);
-  return cookies[COOKIE_TOKEN_NAME];
+/**
+ * Returns the authentication token from the cookie.
+ *
+ * @param req
+ */
+export function getTokenCookie(req: NextApiRequest): string | null {
+  const cookies: Cookies = parseCookies(req);
+  return cookies?.[COOKIE_TOKEN_NAME];
 }
