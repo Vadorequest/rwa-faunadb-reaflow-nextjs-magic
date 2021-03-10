@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import classNames from 'classnames';
 import React, { FC } from 'react';
 import { LabelProps } from 'reaflow';
@@ -21,15 +22,24 @@ const Label: FC<Partial<LabelProps>> = (props) => {
   }
 
   return (
-    <g transform={`translate(${(x || 0) - offsetX}, ${(y || 0) - offsetY})`}>
-      <title>{originalText}</title>
-      <text
-        className={classNames('label', className)}
-        style={style}
+    <svg>
+      <g
+        transform={`translate(${(x || 0) - offsetX}, ${(y || 0) - offsetY})`}
+        css={css`
+           text{
+           fill: #898989;  
+           }
+        `}
       >
-        {text}
-      </text>
-    </g>
+        <title>{originalText}</title>
+        <text
+          className={classNames('label', className)}
+          style={style}
+        >
+          {text}
+        </text>
+      </g>
+    </svg>
   );
 };
 

@@ -245,6 +245,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
 
                 .svg-inline--fa {
                   cursor: pointer;
+                  margin: 4px;
                 }
               `}
             >
@@ -252,11 +253,13 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
                 isSelected && (
                   <div className={'edge'}>
                     <FontAwesomeIcon
+                      color={'#0028FF'}
                       icon={['fas', 'search-plus']}
                       onClick={onAddIconClick}
                     />
 
                     <FontAwesomeIcon
+                      color={'#F9694A'}
                       icon={['fas', 'search-minus']}
                       onClick={onRemoveIconClick}
                     />
