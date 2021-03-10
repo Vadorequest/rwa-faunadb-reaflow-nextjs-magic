@@ -1,4 +1,4 @@
-import { Input } from '@chakra-ui/react';
+import { Button, Input } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, {
@@ -85,11 +85,17 @@ const AbsoluteLabelEditor: FC<Props> = (props) => {
   return (
     <div
       css={css`
+        display: flex;
         position: absolute;
         left: ${(x || 0)}px;
         top: ${(y || 0)}px;
         background-color: white;
         color: black;
+        border-radius: 5px;
+        
+        input{
+        margin: 5px 0px 5px 5px;
+        }
       `}
     >
       <Input
@@ -100,10 +106,14 @@ const AbsoluteLabelEditor: FC<Props> = (props) => {
         value={label}
         onKeyDown={onInputKeyDown}
       />
-      <FontAwesomeIcon
-        icon={['fas', 'edit']}
-        onClick={onIconClick}
-      />
+      <Button
+        variant="primary"
+      >
+        <FontAwesomeIcon
+          icon={['fas', 'edit']}
+          onClick={onIconClick}
+        />
+      </Button>
     </div>
   );
 };
