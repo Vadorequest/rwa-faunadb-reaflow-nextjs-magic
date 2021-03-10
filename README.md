@@ -43,7 +43,7 @@ Known limitations:
 
 ## Variants
 
-While working on this project, I've reached several milestones with a different set of features, in order:
+While working on this project, I've reached several milestones with a different set of features, available as "Examples":
 
 1. [`with-local-storage`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-local-storage) 
    ([Demo](https://poc-nextjs-reaflow-git-with-local-storage-ambroise-dhenain.vercel.app/)): 
@@ -54,11 +54,6 @@ While working on this project, I've reached several milestones with a different 
    The canvas dataset is stored in FaunaDB. 
    Changes to the canvas are real-time and shared with everyone. 
    Everybody shares the same working document.
-1. _(Current)_ [`with-magic-link-auth`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-magic-link-auth) 
-   ([Demo](https://poc-nextjs-reaflow-git-with-magic-link-auth-ambroise-dhenain.vercel.app/)): 
-   The canvas dataset is stored in FaunaDB. 
-   Changes to the canvas are real-time and shared with everyone. 
-   Authenticated users see their email being displayed and can login/logout but still share the same document as guests.
 
 ## Getting started
 
