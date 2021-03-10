@@ -59,6 +59,7 @@ While working on this project, I've reached several milestones with a different 
 
 - `yarn`
 - `yarn start`
+- `cp .env.local.example .env.local`, and define your environment variables
 - Open browser at [http://localhost:8890](http://localhost:8890)
 
 ## Deploy your own
