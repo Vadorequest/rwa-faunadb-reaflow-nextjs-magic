@@ -5,7 +5,7 @@ import EditorContainer from '../components/editor/EditorContainer';
 import { useUser } from '../components/hooks/useUser';
 import Layout from '../components/Layout';
 import { setRecoilExternalState } from '../components/RecoilExternalStatePortal';
-import { startStreamingCanvasDataset } from '../lib/faunadbClient';
+import { startStreamingCanvasDataset } from '../lib/faunadb/faunadbClient';
 import { canvasDatasetSelector } from '../states/canvasDatasetSelector';
 import { CanvasDataset } from '../types/CanvasDataset';
 

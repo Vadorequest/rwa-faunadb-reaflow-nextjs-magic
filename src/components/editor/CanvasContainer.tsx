@@ -16,7 +16,7 @@ import {
   useUndo,
 } from 'reaflow';
 import { useRecoilState } from 'recoil';
-import { updateSharedCanvasDocument } from '../../lib/faunadbClient';
+import { updateSharedCanvasDocument } from '../../lib/faunadb/faunadbClient';
 import settings from '../../settings';
 import { blockPickerMenuSelector } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';

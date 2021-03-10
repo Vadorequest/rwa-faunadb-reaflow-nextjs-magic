@@ -2,9 +2,9 @@ import {
   NextApiRequest,
   NextApiResponse,
 } from 'next';
-import { getLoginSession } from '../../lib/auth';
-import { removeTokenCookie } from '../../lib/auth-cookies';
-import { magicAdmin } from '../../lib/magicAdmin';
+import { getLoginSession } from '../../lib/auth/auth';
+import { removeTokenCookie } from '../../lib/auth/auth-cookies';
+import { magicAdmin } from '../../lib/auth/magicAdmin';
 import { UserSession } from '../../types/auth/UserSession';
 
 type EndpointRequest = NextApiRequest & {

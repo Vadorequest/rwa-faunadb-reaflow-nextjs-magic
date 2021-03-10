@@ -7,7 +7,7 @@ import faunadb, {
 import { Subscription } from 'faunadb/src/types/Stream';
 import * as Fauna from 'faunadb/src/types/values';
 import isEqual from 'lodash.isequal';
-import { CanvasDataset } from '../types/CanvasDataset';
+import { CanvasDataset } from '../../types/CanvasDataset';
 
 const { Ref, Collection } = faunadb.query;
 const client = new faunadb.Client({ secret: 'fnAEDdp0CWACBZUTQvkktsqAQeW03uDhZYY0Ttlg' });
