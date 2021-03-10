@@ -3,7 +3,7 @@ import {
   NextApiRequest,
   NextApiResponse,
 } from 'next';
-import { setLoginSession } from '../../lib/auth/auth';
+import { setUserSession } from '../../lib/auth/userSession';
 import { magicAdmin } from '../../lib/auth/magicAdmin';
 
 type EndpointRequest = NextApiRequest & {
@@ -16,7 +16,7 @@ type EndpointRequest = NextApiRequest & {
  * Called when Magic Link returns a didToken after calling "loginWithMagicLink".
  * Called from AuthFormModal.
  *
- * Parses the authorization Bearer token (didToken), fetches the user's metadata and then generates a cookie containing the authentication token.
+ * Parses the authorization Bearer token (didToken), fetches the user's metadata and then generates a cookie containing the user session token.
  *
  * @param req
  * @param res
@@ -36,7 +36,7 @@ export const login = async (req: EndpointRequest, res: NextApiResponse): Promise
     const userMetadata: MagicUserMetadata = await magicAdmin.users.getMetadataByToken(didToken);
 
     // Those metadata are then used to generate a login session (Magic metadata + custom login metadata)
-    await setLoginSession(res, userMetadata);
+    await setUserSession(res, userMetadata);
 
     res.status(200).send({ done: true });
   } catch (error) {

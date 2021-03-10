@@ -67,7 +67,7 @@ export function parseCookies(req: NextApiRequest): Cookies {
 }
 
 /**
- * Returns the authentication token from the cookie.
+ * Returns the user session token from the cookie.
  *
  * @param req
  */
