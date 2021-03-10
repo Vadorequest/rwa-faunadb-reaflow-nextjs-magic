@@ -1,21 +1,25 @@
-import faunadb from 'faunadb'
-
-const FAUNADB_SERVER_SECRET_KEY = process.env.FAUNADB_SERVER_SECRET_KEY as string;
-
-if (!FAUNADB_SERVER_SECRET_KEY || FAUNADB_SERVER_SECRET_KEY?.length < 32) {
-  throw new Error(`You must define a "FAUNADB_SERVER_SECRET_KEY" environment variable in order to use authentication. Found "${FAUNADB_SERVER_SECRET_KEY}".`);
-}
-
-/** Alias to `faunadb.query` */
-export const q = faunadb.query
+import faunadb from 'faunadb';
+import { ClientConfig } from 'faunadb/src/types/Client';
 
 /**
- * Creates an authenticated FaunaDB client
- * configured with the given `secret`.
+ * Alias to `faunadb.query`.
+ *
+ * It is recommended to use destructuration to make JS-FQL queries identical to native FQL queries.
+ * This way, you can simply copy/past queries written in JS to the FQL Shell.
+ *
+ * @example `const { Get, Select } = q;`
+ */
+export const q = faunadb.query;
+
+/**
+ * Creates an authenticated FaunaDB client configured with the given `secret`.
+ *
+ * @see https://docs.fauna.com/fauna/current/drivers/javascript.html#instantiating-a-client-and-issuing-queries
  */
 export function getClient(secret: string) {
-  return new faunadb.Client({ secret })
-}
+  const options: ClientConfig = {
+    secret,
+  };
 
-/** FaunaDB Client configured with our server secret. */
-export const adminClient = getClient(FAUNADB_SERVER_SECRET_KEY)
+  return new faunadb.Client(options);
+}
