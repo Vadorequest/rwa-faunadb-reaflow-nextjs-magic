@@ -31,12 +31,15 @@ export const VariableNameInput = <NodeData extends NodeDataWithVariableName = No
 
   } = node;
   const [variableName, setVariableName] = useState<string | undefined>(node?.data?.variableName);
+  const [isSaved, setSave] = useState(false);
 
   const onChange = (event: any) => {
+    setSave(false);
     setVariableName(event?.target?.value);
   };
 
   const onSubmit = () => {
+    setSave(true);
     patchCurrentNode({
       data: {
         variableName: variableName,
@@ -52,7 +55,7 @@ export const VariableNameInput = <NodeData extends NodeDataWithVariableName = No
         bottom: 0;
         background-color: black;
         width: ${width}px;
-        height: 50px;
+        height: 60px;
         margin-left: -15px;
         margin-bottom: -15px;
         padding-left: 15px;
@@ -73,6 +76,14 @@ export const VariableNameInput = <NodeData extends NodeDataWithVariableName = No
           margin-left: 10px;
           cursor: pointer;
         }
+        
+        text{
+        fill: #6E6E6E;
+        color: #6E6E6E;
+        position: relative;
+        top: -5px;
+        font-size: 0.6em;
+        }
       `}
     >
       <input
@@ -87,6 +98,18 @@ export const VariableNameInput = <NodeData extends NodeDataWithVariableName = No
         icon={['fas', 'paper-plane']}
         onClick={onSubmit}
       />
+
+      {
+         isSaved ? (
+          <text>
+            Saved
+          </text>
+        ) : (
+          <text>
+            Unsaved
+          </text>
+        )
+      }
     </div>
   );
 };
