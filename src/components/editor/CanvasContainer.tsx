@@ -26,10 +26,15 @@ import { selectedEdgesSelector } from '../../states/selectedEdgesState';
 import { selectedNodesSelector } from '../../states/selectedNodesState';
 import BaseNodeData from '../../types/BaseNodeData';
 import { isOlderThan } from '../../utils/date';
+import { createEdge } from '../../utils/edges';
 import {
   createNodeFromDefaultProps,
   getDefaultNodePropsWithFallback,
 } from '../../utils/nodes';
+import {
+  getDefaultFromPort,
+  getDefaultToPort,
+} from '../../utils/ports';
 import canvasUtilsContext from '../context/canvasUtilsContext';
 import BaseEdge from '../edges/BaseEdge';
 import NodeRouter from '../nodes/NodeRouter';
@@ -119,19 +124,30 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   });
 
   /**
-   * Ensures the start node is always present.
+   * Ensures the "start" node and "end" node are always present.
    *
-   * Will automatically create the start node even if all the nodes are deleted.
+   * Will automatically create the start/end nodes, even when all the nodes have been deleted.
    */
   useEffect(() => {
-    const startNode: BaseNodeData | undefined = nodes?.find((node: BaseNodeData) => node?.data?.type === 'start');
+    const existingStartNode: BaseNodeData | undefined = nodes?.find((node: BaseNodeData) => node?.data?.type === 'start');
+    const existingEndNode: BaseNodeData | undefined = nodes?.find((node: BaseNodeData) => node?.data?.type === 'end');
 
-    if (!startNode) {
+    if (!existingStartNode || !existingEndNode) {
       console.info(`No "start" node found. Creating one automatically.`, nodes);
-      setNodes([
-        ...nodes,
-        createNodeFromDefaultProps(getDefaultNodePropsWithFallback('start')),
-      ]);
+      const startNode: BaseNodeData = createNodeFromDefaultProps(getDefaultNodePropsWithFallback('start'));
+      const endNode: BaseNodeData = createNodeFromDefaultProps(getDefaultNodePropsWithFallback('end'));
+      const newNodes = [
+        startNode,
+        endNode,
+      ];
+      const newEdges = [
+        createEdge(startNode, endNode, getDefaultFromPort(startNode), getDefaultToPort(endNode)),
+      ];
+
+      setCanvasDataset({
+        nodes: newNodes,
+        edges: newEdges,
+      });
 
       // Clearing the undo/redo history to avoid allowing the editor to "undo" the creation of the "start" node
       // If the "start" node creation step is "undoed" then it'd be re-created automatically, which would erase the whole history

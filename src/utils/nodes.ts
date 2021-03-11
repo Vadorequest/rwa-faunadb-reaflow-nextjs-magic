@@ -2,6 +2,7 @@ import cloneDeep from 'lodash.clonedeep';
 import filter from 'lodash.filter';
 import { v1 as uuid } from 'uuid';
 import BaseNode from '../components/nodes/BaseNode';
+import EndNode from '../components/nodes/EndNode';
 import IfNode from '../components/nodes/IfNode';
 import InformationNode from '../components/nodes/InformationNode';
 import QuestionNode from '../components/nodes/QuestionNode';
@@ -106,6 +107,8 @@ export const findNodeComponentByType = (nodeType: NodeType): BaseNodeComponent =
       return QuestionNode;
     case 'if':
       return IfNode;
+    case 'end':
+      return EndNode;
     default:
       throw new Error(`Couldn't find the Node Component to use, using "nodeType=${nodeType}"`);
   }
