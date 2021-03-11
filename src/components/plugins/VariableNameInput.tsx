@@ -76,7 +76,7 @@ export const VariableNameInput = <NodeData extends NodeDataWithVariableName = No
         }
 
         .submit {
-          color: #6E6E6E;
+          color:  ${isModified ? 'white' : '#6E6E6E'};
           margin-left: 10px;
           cursor: pointer;
           animation: ${isModified ? 'bounce ease 1s infinite' : ''};
