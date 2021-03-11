@@ -16,6 +16,7 @@ import {
   useUndo,
 } from 'reaflow';
 import { useRecoilState } from 'recoil';
+import { useUser } from '../../hooks/useUser';
 import settings from '../../settings';
 import { blockPickerMenuSelector } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
@@ -32,14 +33,18 @@ import {
   updateUserCanvas,
 } from '../../utils/canvasStream';
 import { isOlderThan } from '../../utils/date';
+import { createEdge } from '../../utils/edges';
 import {
   createNodeFromDefaultProps,
   getDefaultNodePropsWithFallback,
 } from '../../utils/nodes';
+import {
+  getDefaultFromPort,
+  getDefaultToPort,
+} from '../../utils/ports';
 import canvasUtilsContext from '../context/canvasUtilsContext';
 import BaseEdge from '../edges/BaseEdge';
 import FaunaDBCanvasStream from '../FaunaDBCanvasStream';
-import { useUser } from '../hooks/useUser';
 import NodeRouter from '../nodes/NodeRouter';
 
 type Props = {
@@ -99,8 +104,11 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
 
     // Only save changes once the stream has started, to avoid saving anything until the initial canvas dataset was initialized
     if (isStreaming) {
-      // Ignore dataset changes if the dataset contains only a start node with no edge
-      const isDefaultDataset = canvasDataset?.nodes?.length === 1 && canvasDataset?.edges?.length === 0 && canvasDataset?.nodes[0]?.data?.type === 'start';
+      // Ignore dataset changes if the dataset contains only:
+      // - a start node with no edge
+      // - or a start node and an end node and one edge
+      const isDefaultDataset = canvasDataset?.nodes?.length === 1 && canvasDataset?.edges?.length === 0 && canvasDataset?.nodes[0]?.data?.type === 'start'
+        || canvasDataset?.nodes?.length === 2 && canvasDataset?.edges?.length === 1 && canvasDataset?.nodes[0]?.data?.type === 'start' && canvasDataset?.nodes[1]?.data?.type === 'end';
 
       if (!isDefaultDataset) {
         updateUserCanvas(user, canvasDataset);
@@ -140,20 +148,31 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   });
 
   /**
-   * Ensures the start node is always present.
+   * Ensures the "start" node and "end" node are always present.
    *
-   * Will automatically create the start node even if all the nodes are deleted.
+   * Will automatically create the start/end nodes, even when all the nodes have been deleted.
    * Disabled until the stream has started to avoid creating the start node even before we got the initial canvas dataset from the stream.
    */
   useEffect(() => {
-    const startNode: BaseNodeData | undefined = nodes?.find((node: BaseNodeData) => node?.data?.type === 'start');
+    const existingStartNode: BaseNodeData | undefined = nodes?.find((node: BaseNodeData) => node?.data?.type === 'start');
+    const existingEndNode: BaseNodeData | undefined = nodes?.find((node: BaseNodeData) => node?.data?.type === 'end');
 
-    if (!startNode && isStreaming) {
-      console.info(`No "start" node found. Creating one automatically.`, nodes);
-      setNodes([
-        ...nodes,
-        createNodeFromDefaultProps(getDefaultNodePropsWithFallback('start')),
-      ]);
+    if ((!existingStartNode || !existingEndNode) && isStreaming) {
+      console.info(`No "start" or "end" node found. Creating them automatically.`, nodes);
+      const startNode: BaseNodeData = createNodeFromDefaultProps(getDefaultNodePropsWithFallback('start'));
+      const endNode: BaseNodeData = createNodeFromDefaultProps(getDefaultNodePropsWithFallback('end'));
+      const newNodes = [
+        startNode,
+        endNode,
+      ];
+      const newEdges = [
+        createEdge(startNode, endNode, getDefaultFromPort(startNode), getDefaultToPort(endNode)),
+      ];
+
+      setCanvasDataset({
+        nodes: newNodes,
+        edges: newEdges,
+      });
 
       // Clearing the undo/redo history to avoid allowing the editor to "undo" the creation of the "start" node
       // If the "start" node creation step is "undoed" then it'd be re-created automatically, which would erase the whole history
@@ -301,12 +320,14 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         style={{ position: 'absolute', top: 10, left: 20, zIndex: 999 }}
       >
         <Button
+          variant="primary"
           onClick={undo}
           disabled={!canUndo}
         >
           Undo
         </Button>
         <Button
+          variant="primary"
           onClick={redo}
           disabled={!canRedo}
         >
@@ -318,6 +339,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         style={{ position: 'absolute', top: 10, right: 20, zIndex: 999 }}
       >
         <Button
+          variant="primary"
           onClick={() => {
             if (confirm(`Remove all nodes and edges?`)) {
               setHasClearedUndoHistory(false); // Reset to allow clearing history even if the option is used several times in the same session
@@ -336,6 +358,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         style={{ position: 'absolute', bottom: 10, right: 20, zIndex: 999 }}
       >
         <Button
+          variant="primary"
           onClick={canvasRef?.current?.zoomOut}
         >
           <FontAwesomeIcon
@@ -343,6 +366,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
           />
         </Button>
         <Button
+          variant="primary"
           onClick={canvasRef?.current?.zoomIn}
         >
           <FontAwesomeIcon
@@ -350,6 +374,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
           />
         </Button>
         <Button
+          variant="primary"
           onClick={canvasRef?.current?.centerCanvas}
         >
           <FontAwesomeIcon
@@ -357,6 +382,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
           />
         </Button>
         <Button
+          variant="primary"
           onClick={canvasRef?.current?.fitCanvas}
         >
           <FontAwesomeIcon

@@ -23,7 +23,7 @@ export const settings: Settings = {
     nodes: {
       defaultDebounceFor: 250,
       selected: {
-        borderColor: 'blue',
+        borderColor: 'rgba(0, 40, 255, 0.2)',
       },
       questionNode: {
         choiceTypeOptions: [

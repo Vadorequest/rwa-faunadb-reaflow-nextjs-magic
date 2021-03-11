@@ -258,7 +258,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
       {...nodeProps}
       style={{
         strokeWidth: 0,
-        fill: isReachable ? 'white' : 'lightgray',
+        fill: isReachable ? 'white' : '#eaeaea',
         color: 'black',
         cursor: 'auto',
       }}
@@ -320,12 +320,28 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
 
                 // Highlights the node when it's being selected
                 &.is-selected {
-                  border: 1px dashed ${settings.canvas.nodes.selected.borderColor};
+                  border: 2px solid ${isReachable ? settings.canvas.nodes.selected.borderColor : 'orange'};
+                  border-radius: 2px;
                 }
 
                 // Highlights the node when it's the last created node
                 &.is-recently-created {
-                  box-shadow: 0px 0px 10px 0px blue;
+                  animation: fadeIn ease-in-out 1.3s;
+
+                  @keyframes fadeIn {
+                    0% {
+                      opacity: 0;
+                      box-shadow: 0px 5px 15px rgba(0, 40, 255, 1);
+                    }
+                    35% {
+                      opacity: 0;
+                      box-shadow: 0px 5px 15px rgba(0, 40, 255, 1);
+                    }
+                    100% {
+                      opacity: 1;
+                      box-shadow: 0px 5px 15px rgba(0, 40, 255, 0);
+                    }
+                  }
                 }
 
                 // Disabling pointer-events on top-level containers, for events to be forwarded to the underlying <rect>
@@ -366,7 +382,9 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                 // Applied to all textarea for all nodes
                 .textarea {
                   margin-top: 15px;
-                  background-color: #eaeaea;
+                  background-color: #F1F3FF;
+                  border: 0.5px solid lightgrey;
+                  border-radius: 5px;
                 }
               `}
               // Use the same onClick/onMouseEnter/onMouseLeave handlers as the one used by the Node component, to yield the same behavior whether clicking on the <rect> or on the <foreignObject> element
@@ -394,6 +412,10 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
 
                     .node-action {
                       cursor: pointer;
+
+                      .svg-inline--fa {
+                        margin-right: 5px;
+                      }
                     }
                   `}
                 >
@@ -403,7 +425,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                         className={'node-action delete-action'}
                         onClick={onNodeClone as MouseEventHandler}
                       >
-                        <FontAwesomeIcon icon={['fas', 'clone']} />
+                        <FontAwesomeIcon color="#0028FF" icon={['fas', 'clone']} />
                       </div>
                     )
                   }
@@ -414,7 +436,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                         className={'node-action delete-action'}
                         onClick={onNodeRemove as MouseEventHandler}
                       >
-                        <FontAwesomeIcon icon={['fas', 'trash-alt']} />
+                        <FontAwesomeIcon color="#F9694A" icon={['fas', 'trash-alt']} />
                       </div>
                     )
                   }

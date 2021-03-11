@@ -6,6 +6,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
+import { useUser } from '../hooks/useUser';
 import { UserSession } from '../types/auth/UserSession';
 import {
   OnInit,
@@ -13,7 +14,6 @@ import {
   OnUpdate,
 } from '../types/faunadb/CanvasStream';
 import { initStream } from '../utils/canvasStream';
-import { useUser } from './hooks/useUser';
 
 type Ref = values.Ref;
 

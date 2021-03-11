@@ -13,6 +13,7 @@ import {
   useRecoilState,
   useSetRecoilState,
 } from 'recoil';
+import { absoluteLabelEditorState } from '../../states/absoluteLabelEditorStateState';
 import { blockPickerMenuSelector } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
 import { edgesSelector } from '../../states/edgesState';
@@ -20,7 +21,7 @@ import { lastCreatedState } from '../../states/lastCreatedState';
 import { selectedEdgesSelector } from '../../states/selectedEdgesState';
 import { selectedNodesSelector } from '../../states/selectedNodesState';
 import BaseEdgeData from '../../types/BaseEdgeData';
-import BaseEdgeProps from '../../types/BaseEdgeProps';
+import BaseEdgeProps, { PatchCurrentEdge } from '../../types/BaseEdgeProps';
 import BaseNodeData from '../../types/BaseNodeData';
 import BasePortData from '../../types/BasePortData';
 import BlockPickerMenu, { OnBlockClick } from '../../types/BlockPickerMenu';
@@ -33,6 +34,7 @@ import {
   getDefaultNodePropsWithFallback,
   upsertNodeThroughPorts,
 } from '../../utils/nodes';
+import Label from './Label';
 
 type Props = {} & BaseEdgeProps;
 
@@ -54,6 +56,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
     target: targetNodeId,
     targetPort: targetPortId,
   } = props;
+  // console.log('props', props)
 
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState<BlockPickerMenu>(blockPickerMenuSelector);
   const [canvasDataset, setCanvasDataset] = useRecoilState(canvasDatasetSelector);
@@ -64,6 +67,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
   const edge: BaseEdgeData = edges.find((edge: BaseEdgeData) => edge?.id === id) as BaseEdgeData;
   const [selectedEdges, setSelectedEdges] = useRecoilState(selectedEdgesSelector);
   const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesSelector);
+  const setAbsoluteLabelEditor = useSetRecoilState(absoluteLabelEditorState);
 
   if (typeof edge === 'undefined') {
     return null;
@@ -90,9 +94,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
    * @param event
    */
   const onAddIconClick = (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
-    console.log('onAdd edge', edge, event);
     const onBlockClick: OnBlockClick = (nodeType: NodeType) => {
-      console.log('onBlockClick (from edge add)', nodeType, edge);
       const newNode: BaseNodeData = createNodeFromDefaultProps(getDefaultNodePropsWithFallback(nodeType));
       const newDataset: CanvasDataset = upsertNodeThroughPorts(cloneDeep(nodes), cloneDeep(edges), edge, newNode);
 
@@ -142,9 +144,40 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
     setSelectedEdges([edge.id]);
   };
 
+  /**
+   * Path the properties of the current node.
+   *
+   * Only updates the provided properties, doesn't update other properties.
+   * Also merges the 'data' object, by keeping existing data and only overwriting those that are specified.
+   *
+   * XXX Make sure to call this function once per function call, otherwise only the last patch call would be persisted correctly
+   *  (multiple calls within the same function would be overridden by the last patch,
+   *  because the "node" used as reference wouldn't be updated right away and would still use the same (outdated) reference)
+   *  TLDR; Don't use "patchCurrentNode" multiple times in the same function, it won't work as expected
+   *
+   * @param patch
+   */
+  const patchCurrentEdge: PatchCurrentEdge = (patch: Partial<BaseEdgeData>): void => {
+    const edgeToUpdateIndex = edges.findIndex((edge: BaseEdgeData) => edge.id === id);
+    const existingEdge: BaseEdgeData = edges[edgeToUpdateIndex];
+    const edgeToUpdate = {
+      ...existingEdge,
+      ...patch,
+      id: existingEdge.id, // Force keep same id to avoid edge cases
+    };
+    console.log('patchCurrentEdge before', existingEdge, 'after:', edgeToUpdate, 'using patch:', patch);
+
+    const newEdges = cloneDeep(edges);
+    // @ts-ignore
+    newEdges[edgeToUpdateIndex] = edgeToUpdate;
+
+    setEdges(newEdges);
+  };
+
   return (
     <Edge
       {...props}
+      label={<Label />}
       className={classnames(`edge-svg-graph`, { 'is-selected': isSelected })}
       onClick={onEdgeClick}
     >
@@ -157,6 +190,29 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
           // Improve centering (because we have 3 icons), and position the foreignObject children above the line
           const x = (center?.x || 0) - 25;
           const y = (center?.y || 0) - 25;
+
+          /**
+           * Triggered when the label has been modified.
+           *
+           * @param value
+           */
+          const onLabelSubmit = (value: string) => {
+            console.log('value', value);
+
+            patchCurrentEdge({
+              text: value || ' ', // Use a space as default, to increase the distance between nodes, which ease edge's selection
+            });
+          };
+
+          const onStartLabelEditing = (event: React.MouseEvent<SVGGElement, MouseEvent>) => {
+            setAbsoluteLabelEditor({
+              x: window.innerWidth / 2,
+              y: 0,
+              defaultValue: edge?.text,
+              onSubmit: onLabelSubmit,
+              isDisplayed: true,
+            });
+          };
 
           return (
             <foreignObject
@@ -173,16 +229,23 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
                 color: black;
                 z-index: 1;
 
+                // Disabling pointer-events on top-level container, because the foreignObject is displayed on top (above) the edge line itself and blocks selection
+                pointer-events: none;
+
                 .edge {
                   // XXX Elements within a <foreignObject> that are using the CSS "position" attribute won't be shown properly, 
                   //  unless they're wrapped into a container using a "fixed" position.
                   //  Solves the display of React Select element.
                   // See https://github.com/chakra-ui/chakra-ui/issues/3288#issuecomment-776316200
                   position: fixed;
+
+                  // Enable pointer events for elements within the edge
+                  pointer-events: auto;
                 }
 
                 .svg-inline--fa {
                   cursor: pointer;
+                  margin: 4px;
                 }
               `}
             >
@@ -190,18 +253,20 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
                 isSelected && (
                   <div className={'edge'}>
                     <FontAwesomeIcon
-                      icon={['fas', 'search-plus']}
+                      color={'#0028FF'}
+                      icon={['fas', 'plus-circle']}
                       onClick={onAddIconClick}
                     />
 
                     <FontAwesomeIcon
-                      icon={['fas', 'search-minus']}
+                      color={'#F9694A'}
+                      icon={['fas', 'times-circle']}
                       onClick={onRemoveIconClick}
                     />
 
                     <FontAwesomeIcon
                       icon={['fas', 'edit']}
-                      onClick={onRemoveIconClick}
+                      onClick={onStartLabelEditing}
                     />
                   </div>
                 )

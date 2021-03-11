@@ -1,5 +1,6 @@
 import { css } from '@emotion/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import classnames from 'classnames';
 import React, {
   PropsWithChildren,
   useState,
@@ -28,12 +29,17 @@ export const VariableNameInput = <NodeData extends NodeDataWithVariableName = No
   } = props;
   const {
     width = 200,
-
   } = node;
   const [variableName, setVariableName] = useState<string | undefined>(node?.data?.variableName);
+  const [isModified, setIsModified] = useState(false);
 
   const onChange = (event: any) => {
     setVariableName(event?.target?.value);
+
+    // Avoid unnecessary state changes while modifying
+    if (!isModified) {
+      setIsModified(true);
+    }
   };
 
   const onSubmit = () => {
@@ -42,6 +48,7 @@ export const VariableNameInput = <NodeData extends NodeDataWithVariableName = No
         variableName: variableName,
       },
     } as NodeData);
+    setIsModified(false);
   };
 
   return (
@@ -52,7 +59,7 @@ export const VariableNameInput = <NodeData extends NodeDataWithVariableName = No
         bottom: 0;
         background-color: black;
         width: ${width}px;
-        height: 50px;
+        height: 60px;
         margin-left: -15px;
         margin-bottom: -15px;
         padding-left: 15px;
@@ -69,10 +76,45 @@ export const VariableNameInput = <NodeData extends NodeDataWithVariableName = No
         }
 
         .submit {
-          color: #6E6E6E;
+          color:  ${isModified ? 'white' : '#6E6E6E'};
           margin-left: 10px;
           cursor: pointer;
+          animation: ${isModified ? 'bounce ease 1s infinite' : ''};
         }
+
+        text {
+          fill: #6E6E6E;
+          color: #6E6E6E;
+          position: relative;
+          top: -5px;
+          font-size: 0.6em;
+        }
+
+        .fade {
+          animation: fadeOut ease 0.4s forwards;
+          animation-delay: 2.5s;
+        }
+
+        @keyframes fadeOut {
+          0% {
+            opacity: 1;
+          }
+          100% {
+            opacity: 0;
+          }
+        }
+          
+        @keyframes bounce {
+          0% {
+            transform:scale(1.1);
+          }
+          50% {
+            transform: scale(0.85);
+          }
+          100% {
+            transform: scale(1.1);
+          }
+        }          
       `}
     >
       <input
@@ -87,6 +129,18 @@ export const VariableNameInput = <NodeData extends NodeDataWithVariableName = No
         icon={['fas', 'paper-plane']}
         onClick={onSubmit}
       />
+
+      {
+        !isModified ? (
+          <text className={'fade'}>
+            Saved
+          </text>
+        ) : (
+          <text>
+            Unsaved
+          </text>
+        )
+      }
     </div>
   );
 };

@@ -10,7 +10,7 @@ import { css } from '@emotion/react';
 import React, { Fragment } from 'react';
 import settings from '../settings';
 import AuthFormModal from './AuthFormModal';
-import { useUser } from './hooks/useUser';
+import { useUser } from '../hooks/useUser';
 
 type Props = {}
 

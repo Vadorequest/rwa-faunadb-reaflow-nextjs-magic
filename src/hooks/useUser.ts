@@ -1,8 +1,8 @@
 import Router from 'next/router';
 import { useEffect } from 'react';
 import useSWR from 'swr';
-import { ApiGetUserResult } from '../../pages/api/user';
-import { UserSession } from '../../types/auth/UserSession';
+import { ApiGetUserResult } from '../pages/api/user';
+import { UserSession } from '../types/auth/UserSession';
 
 type Props = {
   redirectTo?: string;
@@ -21,7 +21,7 @@ const fetcher = (url: string): Promise<ApiGetUserResult> =>
     .then((r) => r.json())
     .then((data: ApiGetUserResult) => {
       return {
-        user: data?.user || null
+        user: data?.user || null,
       };
     });
 

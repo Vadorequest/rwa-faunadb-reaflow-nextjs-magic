@@ -82,8 +82,8 @@ const BlockPickerMenu: React.FunctionComponent<Props> = (props) => {
         top: ${typeof top !== 'undefined' ? `${top}px` : `initial`};
         bottom: ${typeof top !== 'undefined' ? `initial` : `0`};
         left: ${typeof left !== 'undefined' ? `${left}px` : `calc(50% - 100px)`};
-        width: 200px;
-        height: 50px;
+        width: 300px;
+        height: 58px;
         background-color: white;
         border-radius: 5px;
         padding: 10px;
@@ -92,12 +92,6 @@ const BlockPickerMenu: React.FunctionComponent<Props> = (props) => {
           display: flex;
           flex-wrap: nowrap;
           justify-content: space-evenly;
-
-          div {
-            padding: 5px;
-            border: 1px solid;
-            cursor: pointer;
-          }
         }
       `}
     >
