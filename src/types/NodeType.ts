@@ -15,5 +15,6 @@ export type NodeType =
   | 'information'
   | 'question'
   | 'if'
+  | 'end'
 
 export default NodeType;
