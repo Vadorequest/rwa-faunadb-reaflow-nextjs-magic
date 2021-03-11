@@ -1,6 +1,7 @@
 import { values } from 'faunadb';
 import { FaunadbBaseFields } from './FaunadbBaseFields';
-import Ref = values.Ref;
+
+type Ref = values.Ref;
 
 /**
  * A Token created by FaunaDB.

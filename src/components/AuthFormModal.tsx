@@ -58,12 +58,8 @@ const AuthFormModal = (props: Props) => {
         });
 
         if (res.status === 200) {
-          onClose();
-
-          // Refresh the page, which will automatically close the existing FaunaDB stream (linked to the shared document), and create a new one (linked to the user's document)
-          // If we simply re-render, we might accidentally update the current shared document using the user's document (or vice-versa), because it updates at every re-render
-          // XXX There might be a cleaner way to do that that doesn't require a full page refresh
-          document.location.href = '/';
+          // The user is now authenticated (cookie has been set on the browser) to both Magic and FaunaDB
+          onClose(); // XXX Updating the state here has a side-effect, it'll automatically refresh the UI, which will update and display user-related informations
         } else {
           throw new Error(await res.text());
         }

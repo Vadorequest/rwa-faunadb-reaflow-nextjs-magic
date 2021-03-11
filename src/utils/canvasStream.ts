@@ -10,6 +10,7 @@ import {
   Paginate,
   Ref,
   Update,
+  values,
 } from 'faunadb';
 import { Subscription } from 'faunadb/src/types/Stream';
 import isEqual from 'lodash.isequal';
@@ -23,9 +24,12 @@ import { CanvasByOwnerIndex } from '../types/faunadb/CanvasByOwnerIndex';
 import { CanvasResult } from '../types/faunadb/CanvasResult';
 import {
   OnInit,
+  OnStart,
   OnUpdate,
 } from '../types/faunadb/CanvasStream';
 import { FaunadbStreamVersionEvent } from '../types/faunadb/FaunadbStreamVersionEvent';
+
+type TypeOfRef = values.Ref;
 
 const PUBLIC_SHARED_FAUNABD_TOKEN = process.env.NEXT_PUBLIC_SHARED_FAUNABD_TOKEN as string;
 const SHARED_CANVAS_DOCUMENT_ID = '1';
@@ -40,10 +44,11 @@ export const getUserClient = (user: UserSession | null): Client => {
  * Starts the real-time stream between the browser and the FaunaDB database, on a specific record/document.
  *
  * @param user
+ * @param onStart
  * @param onInit
  * @param onUpdate
  */
-export const initStream = async (user: UserSession | null, onInit: OnInit, onUpdate: OnUpdate) => {
+export const initStream = async (user: UserSession | null, onStart: OnStart, onInit: OnInit, onUpdate: OnUpdate) => {
   console.log('Init stream for user', user);
   const client: Client = getUserClient(user);
   const canvasRef: Expr | undefined = await findUserCanvasRef(user);
@@ -60,6 +65,7 @@ export const initStream = async (user: UserSession | null, onInit: OnInit, onUpd
         document(canvasRef)
         .on('start', (at: number) => {
           console.log('Stream started at:', at);
+          onStart(stream, canvasRef as TypeOfRef);
         })
         .on('snapshot', (snapshot: CanvasResult) => {
           console.log('snapshot', snapshot);
