@@ -42,15 +42,14 @@ const StartNode: BaseNodeComponent<Props> = (props) => {
                 className={`node-content ${nodeType}-content`}
                 css={css`
                   svg {
-                    margin: 10px;
-                    margin-left: 15px;
-                    color: lime;
+                    margin: 20px;
+                    color: #2EC52B;
                   }
                 `}
               >
                 <FontAwesomeIcon
                   icon={['fas', 'play']}
-                  size={'4x'}
+                  size={'2x'}
                 />
               </div>
             </Fragment>
