@@ -158,7 +158,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     const existingEndNode: BaseNodeData | undefined = nodes?.find((node: BaseNodeData) => node?.data?.type === 'end');
 
     if ((!existingStartNode || !existingEndNode) && isStreaming) {
-      console.info(`No "start" node found. Creating one automatically.`, nodes);
+      console.info(`No "start" or "end" node found. Creating them automatically.`, nodes);
       const startNode: BaseNodeData = createNodeFromDefaultProps(getDefaultNodePropsWithFallback('start'));
       const endNode: BaseNodeData = createNodeFromDefaultProps(getDefaultNodePropsWithFallback('end'));
       const newNodes = [
