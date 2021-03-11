@@ -1,3 +1,4 @@
+import { diff } from 'deep-diff';
 import {
   Client,
   Collection,
@@ -189,10 +190,14 @@ export const updateUserCanvas = async (user: UserSession | null, newCanvasDatase
 
     if (canvasRef) {
       const existingCanvasDatasetResult: CanvasResult = await client.query(Get(canvasRef));
-      const existingCanvasDataset: CanvasDataset = existingCanvasDatasetResult.data;
+      const existingCanvasDataset: CanvasDataset = {
+        // Consider only nodes/edges and ignore other fields to avoid false-positive difference that musn't be taken into account
+        nodes: existingCanvasDatasetResult.data?.nodes,
+        edges: existingCanvasDatasetResult.data?.edges,
+      };
 
-      if (!isEqual(newCanvasDataset, existingCanvasDataset)) {
-        console.log('Updating canvas dataset in FaunaDB. Old:', existingCanvasDataset, 'new:', newCanvasDataset);
+      if (!isEqual(existingCanvasDataset, newCanvasDataset)) {
+        console.log('Updating canvas dataset in FaunaDB. Old:', existingCanvasDataset, 'new:', newCanvasDataset, 'diff:', diff(existingCanvasDataset, newCanvasDataset));
 
         try {
           const updateCanvasResult: CanvasResult = await client.query<CanvasResult>(Update(canvasRef, { data: newCanvasDataset }));
