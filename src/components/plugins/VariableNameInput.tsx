@@ -76,26 +76,26 @@ export const VariableNameInput = <NodeData extends NodeDataWithVariableName = No
           margin-left: 10px;
           cursor: pointer;
         }
-        
-        text{
-        fill: #6E6E6E;
-        color: #6E6E6E;
-        position: relative;
-        top: -5px;
-        font-size: 0.6em;
+
+        text {
+          fill: #6E6E6E;
+          color: #6E6E6E;
+          position: relative;
+          top: -5px;
+          font-size: 0.6em;
         }
-        
-        .fade{
+
+        .fade {
           animation: fadeOut ease 0.4s forwards;
           animation-delay: 2.5s;
         }
-        
+
         @keyframes fadeOut {
           0% {
-            opacity:1;
+            opacity: 1;
           }
           100% {
-            opacity:0;
+            opacity: 0;
           }
       `}
     >
@@ -113,13 +113,13 @@ export const VariableNameInput = <NodeData extends NodeDataWithVariableName = No
       />
 
       {
-         isSaved ? (
-          <text className={"fade"}>
+        isSaved ? (
+          <text className={'fade'}>
             Saved
           </text>
         ) : (
           <text>
-          unsaved
+            Unsaved
           </text>
         )
       }
