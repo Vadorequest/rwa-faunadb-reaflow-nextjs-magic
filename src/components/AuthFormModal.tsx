@@ -10,8 +10,6 @@ import {
   ModalOverlay,
   useDisclosure,
 } from '@chakra-ui/react';
-import { Magic } from 'magic-sdk';
-import Router  from 'next/router';
 import React, {
   useEffect,
   useState,
@@ -46,7 +44,7 @@ const AuthFormModal = (props: Props) => {
           email: email,
           showUI: true,
         });
-        console.info('User has logged in')
+        console.info('User has logged in');
         const res = await fetch('/api/login', {
           method: 'POST',
           headers: {
@@ -58,7 +56,12 @@ const AuthFormModal = (props: Props) => {
 
         if (res.status === 200) {
           onClose();
-          Router.push('/'); // Forces a re-render
+
+          // Refresh the page, which will automatically close the existing FaunaDB stream (linked to the shared document), and create a new one (linked to the user's document)
+          // If we simply re-render, we might accidentally update the current shared document using the user's document (or vice-versa), because it updates at every re-render
+          // XXX There might be a cleaner way to do that that doesn't require a full page refresh
+          document.location.href = '/';
+          // Router.push('/'); // Forces a re-render
         } else {
           throw new Error(await res.text());
         }
