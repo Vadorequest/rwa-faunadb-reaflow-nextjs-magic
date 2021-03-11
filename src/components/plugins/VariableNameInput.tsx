@@ -28,23 +28,26 @@ export const VariableNameInput = <NodeData extends NodeDataWithVariableName = No
   } = props;
   const {
     width = 200,
-
   } = node;
   const [variableName, setVariableName] = useState<string | undefined>(node?.data?.variableName);
-  const [isSaved, setSave] = useState(false);
+  const [isModified, setIsModified] = useState(false);
 
   const onChange = (event: any) => {
-    setSave(false);
     setVariableName(event?.target?.value);
+
+    // Avoid unnecessary state changes while modifying
+    if (!isModified) {
+      setIsModified(true);
+    }
   };
 
   const onSubmit = () => {
-    setSave(true);
     patchCurrentNode({
       data: {
         variableName: variableName,
       },
     } as NodeData);
+    setIsModified(false);
   };
 
   return (
@@ -113,7 +116,7 @@ export const VariableNameInput = <NodeData extends NodeDataWithVariableName = No
       />
 
       {
-        isSaved ? (
+        !isModified ? (
           <text className={'fade'}>
             Saved
           </text>
