@@ -46,7 +46,7 @@ Known limitations:
 While working on this project, I've reached several milestones with a different set of features, available as "Examples":
 
 1. [`with-local-storage`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-local-storage) 
-   ([Demo](https://poc-nextjs-reaflow-git-with-local-storage-ambroise-dhenain.vercel.app/)): 
+   ([Demo](https://poc-nextjs-reaflow-git-with-local-storage-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/14)): 
    The canvas dataset is stored in the browser localstorage. 
    There is no real-time and no authentication.
 
