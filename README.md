@@ -43,27 +43,29 @@ Known limitations:
 
 ## Variants
 
-While working on this project, I've reached several milestones with a different set of features, in order:
+While working on this project, I've reached several milestones with a different set of features, available as "Examples":
 
-1. [`with-local-storage`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-local-storage) 
-   ([Demo](https://poc-nextjs-reaflow-git-with-local-storage-ambroise-dhenain.vercel.app/)): 
+1. [`with-local-storage`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-local-storage)
+   ([Demo](https://poc-nextjs-reaflow-git-with-local-storage-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/14)):
    The canvas dataset is stored in the browser localstorage. 
    There is no real-time and no authentication.
 1. [`with-faunadb-real-time`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-faunadb-real-time) 
-   ([Demo](https://poc-nextjs-reaflow-git-with-faunadb-real-time-ambroise-dhenain.vercel.app/)): 
+   ([Demo](https://poc-nextjs-reaflow-git-with-faunadb-real-time-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/13)): 
    The canvas dataset is stored in FaunaDB. 
    Changes to the canvas are real-time and shared with everyone. 
    Everybody shares the same working document.
-1. _(Current)_ [`with-faunadb-auth`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-faunadb-auth) 
-   ([Demo](https://poc-nextjs-reaflow-git-with-faunadb-auth-ambroise-dhenain.vercel.app/)): 
+1. [`with-magic-link-auth`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-magic-link-auth) 
+   ([Demo](https://poc-nextjs-reaflow-git-with-magic-link-auth-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/15)): 
    The canvas dataset is stored in FaunaDB. 
-   Changes to the canvas are real-time and shared with everyone when **anonymous**. 
-   Authenticated users have their own private version of the document, which is protected.
+   Changes to the canvas are real-time and shared with everyone. 
+   Everybody shares the same working document.
+   Users can create an account and login using Magic Link, but they still share the same Canvas document as guests.
 
 ## Getting started
 
 - `yarn`
 - `yarn start`
+- `cp .env.local.example .env.local`, and define your environment variables
 - Open browser at [http://localhost:8890](http://localhost:8890)
 
 ## Deploy your own
