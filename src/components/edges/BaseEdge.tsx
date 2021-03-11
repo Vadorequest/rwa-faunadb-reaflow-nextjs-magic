@@ -254,13 +254,13 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
                   <div className={'edge'}>
                     <FontAwesomeIcon
                       color={'#0028FF'}
-                      icon={['fas', 'times-circle']}
+                      icon={['fas', 'plus-circle']}
                       onClick={onAddIconClick}
                     />
 
                     <FontAwesomeIcon
                       color={'#F9694A'}
-                      icon={['fas', 'plus-circle']}
+                      icon={['fas', 'times-circle']}
                       onClick={onRemoveIconClick}
                     />
 
