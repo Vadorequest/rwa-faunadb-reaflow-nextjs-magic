@@ -66,7 +66,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const {
     canvasRef,
   } = props;
-  const user: UserSession | null = useUser();
+  const user: UserSession | null = useUser() as UserSession | null;
 
   /**
    * The canvas ref contains useful properties (xy, scroll, etc.) and functions (zoom, centerCanvas, etc.)
@@ -99,7 +99,14 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
 
     // Only save changes once the stream has started, to avoid saving anything until the initial canvas dataset was initialized
     if (isStreaming) {
-      updateUserCanvas(user, canvasDataset);
+      // Ignore dataset changes if the dataset contains only a start node with no edge
+      const isDefaultDataset = canvasDataset?.nodes?.length === 1 && canvasDataset?.edges?.length === 0 && canvasDataset?.nodes[0]?.data?.type === 'start';
+
+      if (!isDefaultDataset) {
+        updateUserCanvas(user, canvasDataset);
+      } else {
+        console.info('CanvasDataset has changed. Default dataset detected, database update aborted.');
+      }
     }
   }, [canvasDataset]);
 
