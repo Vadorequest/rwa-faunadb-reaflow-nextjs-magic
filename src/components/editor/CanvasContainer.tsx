@@ -16,6 +16,7 @@ import {
   useUndo,
 } from 'reaflow';
 import { useRecoilState } from 'recoil';
+import { useUser } from '../../hooks/useUser';
 import settings from '../../settings';
 import { blockPickerMenuSelector } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
@@ -44,7 +45,6 @@ import {
 import canvasUtilsContext from '../context/canvasUtilsContext';
 import BaseEdge from '../edges/BaseEdge';
 import FaunaDBCanvasStream from '../FaunaDBCanvasStream';
-import { useUser } from '../hooks/useUser';
 import NodeRouter from '../nodes/NodeRouter';
 
 type Props = {
