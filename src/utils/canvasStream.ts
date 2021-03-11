@@ -43,6 +43,7 @@ export const getUserClient = (user: UserSession | null): Client => {
  * @param onUpdate
  */
 export const initStream = async (user: UserSession | null, onInit: OnInit, onUpdate: OnUpdate) => {
+  console.log('Init stream for user', user);
   const client: Client = getUserClient(user);
   const canvasRef: Expr | undefined = await findUserCanvasRef(user);
 
@@ -134,11 +135,14 @@ export const findOrCreateUserCanvas = async (user: UserSession): Promise<Expr | 
 
     if (findUserCanvasResult?.data?.length === 0) {
       // This user doesn't have a Canvas document yet
+      const canvasDataset: CanvasDataset = {
+        nodes: [],
+        edges: [],
+      };
       const canvas: Canvas = {
         data: {
           owner: Ref(Collection('Users'), '292674252603130373'),
-          nodes: [],
-          edges: [],
+          ...canvasDataset,
         },
       };
 
@@ -150,6 +154,9 @@ export const findOrCreateUserCanvas = async (user: UserSession): Promise<Expr | 
       try {
         const createUserCanvasResult = await client.query<Canvas>(createUserCanvas);
         console.log('createUserCanvasResult', createUserCanvasResult);
+
+        // Update the current canvas with the new dataset
+        // setRecoilExternalState(canvasDatasetSelector, canvasDataset);
 
         return createUserCanvasResult?.ref;
       } catch (e) {
@@ -188,8 +195,17 @@ export const updateUserCanvas = async (user: UserSession | null, newCanvasDatase
         console.log('Updating canvas dataset in FaunaDB. Old:', existingCanvasDataset, 'new:', newCanvasDataset);
 
         try {
-          const x: CanvasResult = await client.query<CanvasResult>(Update(canvasRef, { data: newCanvasDataset }));
-          console.log('x', x);
+          const updateCanvasResult: CanvasResult = await client.query<CanvasResult>(Update(canvasRef, { data: newCanvasDataset }));
+          console.log('updateCanvasResult', updateCanvasResult);
+
+          const canvasDataset: CanvasDataset = {
+            nodes: updateCanvasResult?.data?.nodes,
+            edges: updateCanvasResult?.data?.edges,
+          };
+          console.log('new canvasDataset (from db)', canvasDataset);
+
+          // Update the current canvas with the existing dataset
+          // setRecoilExternalState(canvasDatasetSelector, canvasDataset)
 
         } catch (e) {
           console.error(`[updateUserCanvas] Error while updating canvas:`, e);
