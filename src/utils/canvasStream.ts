@@ -132,7 +132,7 @@ export const findOrCreateUserCanvas = async (user: UserSession): Promise<Expr | 
   const findUserCanvas = Paginate(
     Match(
       Index('canvas_by_owner'),
-      Ref(Collection('Users'), '292674252603130373'),
+      Ref(Collection('Users'), user.id),
     ),
   );
 
@@ -148,7 +148,7 @@ export const findOrCreateUserCanvas = async (user: UserSession): Promise<Expr | 
       };
       const canvas: Canvas = {
         data: {
-          owner: Ref(Collection('Users'), '292674252603130373'),
+          owner: Ref(Collection('Users'), user.id),
           ...canvasDataset,
         },
       };

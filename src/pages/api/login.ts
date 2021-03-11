@@ -48,6 +48,7 @@ export const login = async (req: EndpointRequest, res: NextApiResponse): Promise
 
     // Auto-detects new user sign-up when `getUserByEmail` resolves to `undefined`
     const user: User = (await userModel.getUserByEmail(userMetadata?.email) ?? await userModel.createUser(userMetadata?.email)) as User;
+    console.log('Found user', user);
 
     // Generates a FaunaDB token specific associated to this user
     const faunaDBToken: string | undefined = await userModel.obtainFaunaDBToken(user);
@@ -63,6 +64,8 @@ export const login = async (req: EndpointRequest, res: NextApiResponse): Promise
     const userMetadataWithAuth: UserMetadataWithAuth = {
       ...userMetadata,
       faunaDBToken,
+      ref: user.ref,
+      id: user.ref.id,
     };
 
     // Those metadata are then used to generate a login session (Magic metadata + custom login metadata)
