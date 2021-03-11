@@ -104,8 +104,11 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
 
     // Only save changes once the stream has started, to avoid saving anything until the initial canvas dataset was initialized
     if (isStreaming) {
-      // Ignore dataset changes if the dataset contains only a start node with no edge
-      const isDefaultDataset = canvasDataset?.nodes?.length === 1 && canvasDataset?.edges?.length === 0 && canvasDataset?.nodes[0]?.data?.type === 'start';
+      // Ignore dataset changes if the dataset contains only:
+      // - a start node with no edge
+      // - or a start node and an end node and one edge
+      const isDefaultDataset = canvasDataset?.nodes?.length === 1 && canvasDataset?.edges?.length === 0 && canvasDataset?.nodes[0]?.data?.type === 'start'
+        || canvasDataset?.nodes?.length === 2 && canvasDataset?.edges?.length === 1 && canvasDataset?.nodes[0]?.data?.type === 'start' && canvasDataset?.nodes[1]?.data?.type === 'end';
 
       if (!isDefaultDataset) {
         updateUserCanvas(user, canvasDataset);
