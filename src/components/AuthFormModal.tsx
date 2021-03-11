@@ -15,6 +15,7 @@ import React, {
   useState,
 } from 'react';
 import { magicClient } from '../lib/auth/magicClient';
+import Animated3Dots from './Animated3Dots';
 
 type Props = {
   mode: 'login' | 'create-account';
@@ -27,6 +28,7 @@ const AuthFormModal = (props: Props) => {
   const isLoginForm = mode === 'login';
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [email, setEmail] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   /**
    *
@@ -35,6 +37,7 @@ const AuthFormModal = (props: Props) => {
    */
   const onSubmit = async (event: MouseEvent): Promise<void> => {
     event.preventDefault();
+    setIsSubmitting(true);
 
     try {
       localStorage?.setItem(LS_EMAIL_KEY, email);
@@ -115,19 +118,29 @@ const AuthFormModal = (props: Props) => {
           </ModalBody>
 
           <ModalFooter>
-            <Button
-              mr={3}
-              onClick={onClose}
-              variant="ghost"
-            >
-              Close
-            </Button>
+            {
+              !isSubmitting && (
+                <Button
+                  mr={3}
+                  onClick={onClose}
+                  variant="ghost"
+                >
+                  Close
+                </Button>
+              )
+            }
+
             <Button
               colorScheme="blue"
               // @ts-ignore
               onClick={onSubmit}
             >
               Send
+              {
+                isSubmitting && (
+                  <Animated3Dots fill={'white'} />
+                )
+              }
             </Button>
           </ModalFooter>
         </ModalContent>
