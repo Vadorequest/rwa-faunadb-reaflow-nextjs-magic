@@ -18,6 +18,11 @@ const {
   Logout,
 } = q;
 
+/**
+ * Helps managing users in the FaunaDB database.
+ *
+ * @see https://magic.link/posts/todomvc-magic-nextjs-fauna#step-43-modifying-users-in-faunadb-and-issuing-sessions Inspired from
+ */
 export class UserModel {
   /**
    * Creates a new user in the "users" collection.
