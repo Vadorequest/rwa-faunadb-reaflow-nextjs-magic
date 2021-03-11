@@ -101,3 +101,51 @@ Here are some good places to start and useful links I've compiled for my own sak
 
 Known limitations:
 - [Tracking issue - Manually positioning the nodes ("Standalone Edge Routing")](https://github.com/eclipse/elk/issues/315)
+
+---
+
+# Inspirations
+
+Here is a list of online resources and open-source repositories that have been the most helpful:
+
+**Understanding FaunaDB:**
+- https://fauna.com/blog/modernizing-from-postgresql-to-serverless-with-fauna-part-1
+
+**Authentication and authorization:**
+- https://docs.fauna.com/fauna/current/tutorials/basics/authentication?lang=javascript
+- https://magic.link/posts/todomvc-magic-nextjs-fauna (tuto Magic + Next.js + FaunaDB)
+    - https://github.com/magiclabs/example-nextjs-faunadb-todomvc (repo)
+    
+**Real-time streaming:**
+- https://github.com/fauna-brecht/fauna-streaming-example Very different from what is built here, but holds solid foundations about streaming
+  - https://github.com/fauna-brecht/fauna-streaming-example/blob/776c911eb4/src/data/streams.js
+
+**Real-world apps (RWA):**
+- https://docs.fauna.com/fauna/current/start/apps/fwitter
+- https://github.com/fauna-brecht/skeleton-auth
+- https://github.com/fillipvt/with-graphql-faunadb-cookie-auth
+- https://github.com/fauna-brecht/fauna-streaming-example
+- https://github.com/magiclabs/example-nextjs-faunadb-todomvc
+
+**FQL:**
+- UDF
+  - https://docs.fauna.com/fauna/current/security/roles API definitions for CRUD ops
+- https://github.com/shiftx/faunadb-fql-lib
+- https://docs.fauna.com/fauna/current/cookbook/?lang=javascript
+- https://github.com/fauna-brecht/faunadb-auth-skeleton-frontend/blob/default/fauna-queries/helpers/fql.js
+
+**GQL:**
+- https://css-tricks.com/instant-graphql-backend-using-faunadb/
+- https://github.com/ptpaterson/faunadb-graphql-schema-loader
+- https://github.com/Plazide/fauna-gql-upload
+- Schema management
+  - https://github.com/fillipvt/with-graphql-faunadb-cookie-auth/blob/master/scripts/uploadSchema.js
+
+**DevOps:**
+- https://github.com/fauna-brecht/fauna-schema-migrate
+
+**Community resources:**
+- https://github.com/n400/awesome-faunadb
+  - https://gist.github.com/BrunoQuaresma/0236aff64dc44795f19994cbc7a07db6 React query hook
+  - https://gist.github.com/tovbinm/f76bcbf56ea8e2e3740e237b6c2f2ab9 GraphQL relation query examples
+  - https://gist.github.com/TracyNgot/291738b403cfa012fe7bf05614c22408 Query builder
