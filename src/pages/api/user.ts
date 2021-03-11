@@ -5,6 +5,10 @@ import {
 import { getUserSession } from '../../lib/auth/userSession';
 import { UserSession } from '../../types/auth/UserSession';
 
+export type ApiGetUserResult = {
+  user: UserSession | null;
+}
+
 type EndpointRequest = NextApiRequest & {
   query: {};
 };
@@ -19,11 +23,12 @@ type EndpointRequest = NextApiRequest & {
  */
 export const user = async (req: EndpointRequest, res: NextApiResponse): Promise<void> => {
   const userSession: UserSession | undefined = await getUserSession(req);
+  // TODO fetch user's data
+  const result: ApiGetUserResult = {
+    user: userSession || null,
+  };
 
-  // After getting the session you may want to fetch for the user instead
-  // of sending the session's payload directly, this example doesn't have a DB
-  // so it won't matter in this case
-  res.status(200).json({ user: userSession || null });
-}
+  res.status(200).json(result);
+};
 
 export default user;
