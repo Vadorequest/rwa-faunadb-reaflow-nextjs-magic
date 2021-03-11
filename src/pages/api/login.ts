@@ -21,6 +21,8 @@ type EndpointRequest = NextApiRequest & {
  *
  * Parses the authorization Bearer token (didToken), fetches the user's metadata and then generates a cookie containing the user session token.
  *
+ * It doesn't matter if the user exists or not, if it doesn't it'll be automatically created, as long as the DID token from Magic is correct.
+ *
  * @param req
  * @param res
  *

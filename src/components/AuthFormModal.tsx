@@ -23,6 +23,9 @@ type Props = {
 
 const LS_EMAIL_KEY = 'email';
 
+/**
+ * Login/Signup form.
+ */
 const AuthFormModal = (props: Props) => {
   const { mode } = props;
   const isLoginForm = mode === 'login';
@@ -31,8 +34,18 @@ const AuthFormModal = (props: Props) => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   /**
+   * Submits the form.
+   *
+   * Fetches a DID token from Magic API.
+   * Fetches our internal /api/login endpoint which creates the authentication cookie.
+   * Once the cookie is set, the "useUser" hook will return the currently authenticated user.
+   *
+   * The same function is used for both account creation and login.
+   * There are 2 buttons but it's only visual, there is no difference between both, they both call the same /api/login endpoint which handles both.
    *
    * @param event
+   *
+   * @see https://docs.magic.link/decentralized-id#what-is-a-did-token What is a DID token?
    * @see https://docs.magic.link/client-sdk/web/api-reference#loginwithmagiclink
    */
   const onSubmit = async (event: MouseEvent): Promise<void> => {
@@ -71,6 +84,9 @@ const AuthFormModal = (props: Props) => {
     }
   };
 
+  /**
+   * Automatically loads the previous email used from localstorage.
+   */
   useEffect(() => {
     try {
       setEmail(localStorage?.getItem(LS_EMAIL_KEY) || '');
@@ -79,8 +95,15 @@ const AuthFormModal = (props: Props) => {
     }
   }, [mode]);
 
+  /**
+   * Preloads the static assets required to render the Magic iframe context.
+   *
+   * Makes the iframe display faster the first time the user loads it (better UX).
+   *
+   * @see https://docs.magic.link/client-sdk/web/api-reference#preload
+   */
   useEffect(() => {
-    magicClient.preload(); // See https://docs.magic.link/client-sdk/web/api-reference#preload
+    magicClient.preload();
   }, []);
 
   return (
