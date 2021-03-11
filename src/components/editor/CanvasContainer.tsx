@@ -16,7 +16,6 @@ import {
   useUndo,
 } from 'reaflow';
 import { useRecoilState } from 'recoil';
-import { updateSharedCanvasDocument } from '../../lib/faunadbClient';
 import settings from '../../settings';
 import { blockPickerMenuSelector } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
@@ -24,7 +23,14 @@ import { edgesSelector } from '../../states/edgesState';
 import { nodesSelector } from '../../states/nodesState';
 import { selectedEdgesSelector } from '../../states/selectedEdgesState';
 import { selectedNodesSelector } from '../../states/selectedNodesState';
+import { UserSession } from '../../types/auth/UserSession';
 import BaseNodeData from '../../types/BaseNodeData';
+import { CanvasDataset } from '../../types/CanvasDataset';
+import {
+  onInit,
+  onUpdate,
+  updateUserCanvas,
+} from '../../utils/canvasStream';
 import { isOlderThan } from '../../utils/date';
 import { createEdge } from '../../utils/edges';
 import {
@@ -37,6 +43,8 @@ import {
 } from '../../utils/ports';
 import canvasUtilsContext from '../context/canvasUtilsContext';
 import BaseEdge from '../edges/BaseEdge';
+import FaunaDBCanvasStream from '../FaunaDBCanvasStream';
+import { useUser } from '../hooks/useUser';
 import NodeRouter from '../nodes/NodeRouter';
 
 type Props = {
@@ -63,6 +71,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const {
     canvasRef,
   } = props;
+  const user: UserSession | null = useUser() as UserSession | null;
 
   /**
    * The canvas ref contains useful properties (xy, scroll, etc.) and functions (zoom, centerCanvas, etc.)
@@ -83,6 +92,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const selections = selectedNodes; // TODO merge selected nodes and edges
   const [hasClearedUndoHistory, setHasClearedUndoHistory] = useState<boolean>(false);
   const [cursorXY, setCursorXY] = useState<[number, number]>([0, 0]);
+  const [isStreaming, setIsStreaming] = useState<boolean>(false);
 
   /**
    * When nodes or edges are modified, updates the persisted data in FaunaDB.
@@ -91,7 +101,18 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
    */
   useEffect(() => {
     // persistCanvasDatasetInLS(canvasDataset);
-    updateSharedCanvasDocument(canvasDataset);
+
+    // Only save changes once the stream has started, to avoid saving anything until the initial canvas dataset was initialized
+    if (isStreaming) {
+      // Ignore dataset changes if the dataset contains only a start node with no edge
+      const isDefaultDataset = canvasDataset?.nodes?.length === 1 && canvasDataset?.edges?.length === 0 && canvasDataset?.nodes[0]?.data?.type === 'start';
+
+      if (!isDefaultDataset) {
+        updateUserCanvas(user, canvasDataset);
+      } else {
+        console.info('CanvasDataset has changed. Default dataset detected, database update aborted.');
+      }
+    }
   }, [canvasDataset]);
 
   /**
@@ -127,12 +148,13 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
    * Ensures the "start" node and "end" node are always present.
    *
    * Will automatically create the start/end nodes, even when all the nodes have been deleted.
+   * Disabled until the stream has started to avoid creating the start node even before we got the initial canvas dataset from the stream.
    */
   useEffect(() => {
     const existingStartNode: BaseNodeData | undefined = nodes?.find((node: BaseNodeData) => node?.data?.type === 'start');
     const existingEndNode: BaseNodeData | undefined = nodes?.find((node: BaseNodeData) => node?.data?.type === 'end');
 
-    if (!existingStartNode || !existingEndNode) {
+    if ((!existingStartNode || !existingEndNode) && isStreaming) {
       console.info(`No "start" node found. Creating one automatically.`, nodes);
       const startNode: BaseNodeData = createNodeFromDefaultProps(getDefaultNodePropsWithFallback('start'));
       const endNode: BaseNodeData = createNodeFromDefaultProps(getDefaultNodePropsWithFallback('end'));
@@ -396,6 +418,17 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
           edge={Edge}
           onLayoutChange={layout => console.log('Layout', layout)}
           layoutOptions={elkLayoutOptions}
+        />
+
+        {/* Handles the real-time stream */}
+        <FaunaDBCanvasStream
+          onInit={(canvasDataset: CanvasDataset) => {
+            onInit(canvasDataset);
+
+            // Mark the stream has running
+            setIsStreaming(true);
+          }}
+          onUpdate={onUpdate}
         />
       </canvasUtilsContext.Provider>
     </div>

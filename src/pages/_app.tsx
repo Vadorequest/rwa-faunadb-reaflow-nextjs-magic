@@ -7,7 +7,7 @@ import {
 import { Router } from 'next/router';
 import React from 'react';
 import { RecoilRoot } from 'recoil';
-import { useUser } from '../hooks/useUser';
+import GlobalStyles from '../components/GlobalStyles';
 import { RecoilDevtools } from '../components/RecoilDevtools';
 import { RecoilExternalStatePortal } from '../components/RecoilExternalStatePortal';
 import '../utils/fontAwesome';
@@ -82,7 +82,6 @@ const theme = extendTheme({
  */
 const App: React.FunctionComponent<Props> = (props): JSX.Element => {
   const { Component, pageProps } = props;
-  const user = useUser();
 
   return (
     <ChakraProvider theme={theme}>
@@ -93,6 +92,7 @@ const App: React.FunctionComponent<Props> = (props): JSX.Element => {
         {/* Utility component allowing to use the Recoil state outside of a React component */}
         <RecoilExternalStatePortal />
 
+        <GlobalStyles />
         <Component {...pageProps} />
       </RecoilRoot>
     </ChakraProvider>

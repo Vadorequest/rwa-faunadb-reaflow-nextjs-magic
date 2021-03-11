@@ -43,27 +43,30 @@ Known limitations:
 
 ## Variants
 
-While working on this project, I've reached several milestones with a different set of features, in order:
+While working on this project, I've reached several milestones with a different set of features, available as "Examples":
 
-1. [`with-local-storage`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-local-storage) 
-   ([Demo](https://poc-nextjs-reaflow-git-with-local-storage-ambroise-dhenain.vercel.app/)): 
+1. [`with-local-storage`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-local-storage)
+   ([Demo](https://poc-nextjs-reaflow-git-with-local-storage-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/14)):
    The canvas dataset is stored in the browser localstorage. 
    There is no real-time and no authentication.
 1. [`with-faunadb-real-time`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-faunadb-real-time) 
-   ([Demo](https://poc-nextjs-reaflow-git-with-faunadb-real-time-ambroise-dhenain.vercel.app/)): 
+   ([Demo](https://poc-nextjs-reaflow-git-with-faunadb-real-time-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/13)): 
    The canvas dataset is stored in FaunaDB. 
    Changes to the canvas are real-time and shared with everyone. 
    Everybody shares the same working document.
-1. _(Current)_ [`with-faunadb-auth`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-faunadb-auth) 
-   ([Demo](https://poc-nextjs-reaflow-git-with-faunadb-auth-ambroise-dhenain.vercel.app/)): 
+1. [`with-magic-link-auth`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-magic-link-auth) 
+   ([Demo](https://poc-nextjs-reaflow-git-with-magic-link-auth-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/15)): 
    The canvas dataset is stored in FaunaDB. 
-   Changes to the canvas are real-time and shared with everyone when **anonymous**. 
-   Authenticated users have their own private version of the document, which is protected.
+   Changes to the canvas are real-time and shared with everyone. 
+   Everybody shares the same working document.
+   Users can create an account and login using Magic Link, but they still share the same Canvas document as guests.
 
 ## Getting started
 
 - `yarn`
 - `yarn start`
+- Run commands in `fql/setup.js` from the Web Shell at [https://dashboard.fauna.com/](https://dashboard.fauna.com/), this will create the FaunaDB collection, indexes, roles, etc.
+- `cp .env.local.example .env.local`, and define your environment variables
 - Open browser at [http://localhost:8890](http://localhost:8890)
 
 ## Deploy your own
@@ -98,3 +101,51 @@ Here are some good places to start and useful links I've compiled for my own sak
 
 Known limitations:
 - [Tracking issue - Manually positioning the nodes ("Standalone Edge Routing")](https://github.com/eclipse/elk/issues/315)
+
+---
+
+# Inspirations
+
+Here is a list of online resources and open-source repositories that have been the most helpful:
+
+**Understanding FaunaDB:**
+- https://fauna.com/blog/modernizing-from-postgresql-to-serverless-with-fauna-part-1
+
+**Authentication and authorization:**
+- https://docs.fauna.com/fauna/current/tutorials/basics/authentication?lang=javascript
+- https://magic.link/posts/todomvc-magic-nextjs-fauna (tuto Magic + Next.js + FaunaDB)
+    - https://github.com/magiclabs/example-nextjs-faunadb-todomvc (repo)
+    
+**Real-time streaming:**
+- https://github.com/fauna-brecht/fauna-streaming-example Very different from what is built here, but holds solid foundations about streaming
+  - https://github.com/fauna-brecht/fauna-streaming-example/blob/776c911eb4/src/data/streams.js
+
+**Real-world apps (RWA):**
+- https://docs.fauna.com/fauna/current/start/apps/fwitter
+- https://github.com/fauna-brecht/skeleton-auth
+- https://github.com/fillipvt/with-graphql-faunadb-cookie-auth
+- https://github.com/fauna-brecht/fauna-streaming-example
+- https://github.com/magiclabs/example-nextjs-faunadb-todomvc
+
+**FQL:**
+- UDF
+  - https://docs.fauna.com/fauna/current/security/roles API definitions for CRUD ops
+- https://github.com/shiftx/faunadb-fql-lib
+- https://docs.fauna.com/fauna/current/cookbook/?lang=javascript
+- https://github.com/fauna-brecht/faunadb-auth-skeleton-frontend/blob/default/fauna-queries/helpers/fql.js
+
+**GQL:**
+- https://css-tricks.com/instant-graphql-backend-using-faunadb/
+- https://github.com/ptpaterson/faunadb-graphql-schema-loader
+- https://github.com/Plazide/fauna-gql-upload
+- Schema management
+  - https://github.com/fillipvt/with-graphql-faunadb-cookie-auth/blob/master/scripts/uploadSchema.js
+
+**DevOps:**
+- https://github.com/fauna-brecht/fauna-schema-migrate
+
+**Community resources:**
+- https://github.com/n400/awesome-faunadb
+  - https://gist.github.com/BrunoQuaresma/0236aff64dc44795f19994cbc7a07db6 React query hook
+  - https://gist.github.com/tovbinm/f76bcbf56ea8e2e3740e237b6c2f2ab9 GraphQL relation query examples
+  - https://gist.github.com/TracyNgot/291738b403cfa012fe7bf05614c22408 Query builder

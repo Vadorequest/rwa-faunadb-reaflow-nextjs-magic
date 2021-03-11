@@ -66,13 +66,22 @@ const Footer: React.FunctionComponent<Props> = (props) => {
             {' '}FaunaDB{' '}
             <ExternalLinkIcon mx="2px" />
           </ChakraLink>
-          {' '}and{' '}
+          {' '}, {' '}
           <ChakraLink
             href={'https://github.com/reaviz/reaflow'}
             isExternal
             color="teal.500"
           >
             {' '}Reaflow{' '}
+            <ExternalLinkIcon mx="2px" />
+          </ChakraLink>
+          {' '} and some {' '}
+          <ChakraLink
+            href={'https://magic.link'}
+            isExternal
+            color="teal.500"
+          >
+            {' '}Magic{' '}
             <ExternalLinkIcon mx="2px" />
           </ChakraLink>
         </Box>
