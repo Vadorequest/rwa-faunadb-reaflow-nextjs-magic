@@ -10,12 +10,12 @@ import {
   ModalOverlay,
   useDisclosure,
 } from '@chakra-ui/react';
-import { Magic } from 'magic-sdk';
-import Router  from 'next/router';
 import React, {
   useEffect,
   useState,
 } from 'react';
+import { magicClient } from '../lib/auth/magicClient';
+import Animated3Dots from './Animated3Dots';
 
 type Props = {
   mode: 'login' | 'create-account';
@@ -28,6 +28,7 @@ const AuthFormModal = (props: Props) => {
   const isLoginForm = mode === 'login';
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [email, setEmail] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   /**
    *
@@ -36,17 +37,17 @@ const AuthFormModal = (props: Props) => {
    */
   const onSubmit = async (event: MouseEvent): Promise<void> => {
     event.preventDefault();
+    setIsSubmitting(true);
 
     try {
       localStorage?.setItem(LS_EMAIL_KEY, email);
 
       try {
-        const magic = new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY as string);
-        const didToken = await magic.auth.loginWithMagicLink({
+        const didToken = await magicClient.auth.loginWithMagicLink({
           email: email,
           showUI: true,
         });
-        console.info('User has logged in')
+        console.info('User has logged in');
         const res = await fetch('/api/login', {
           method: 'POST',
           headers: {
@@ -57,8 +58,8 @@ const AuthFormModal = (props: Props) => {
         });
 
         if (res.status === 200) {
-          onClose();
-          Router.push('/'); // Forces a re-render
+          // The user is now authenticated (cookie has been set on the browser) to both Magic and FaunaDB
+          onClose(); // XXX Updating the state here has a side-effect, it'll automatically refresh the UI, which will update and display user-related informations
         } else {
           throw new Error(await res.text());
         }
@@ -79,8 +80,7 @@ const AuthFormModal = (props: Props) => {
   }, [mode]);
 
   useEffect(() => {
-    const magic = new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY as string);
-    magic.preload(); // See https://docs.magic.link/client-sdk/web/api-reference#preload
+    magicClient.preload(); // See https://docs.magic.link/client-sdk/web/api-reference#preload
   }, []);
 
   return (
@@ -114,19 +114,29 @@ const AuthFormModal = (props: Props) => {
           </ModalBody>
 
           <ModalFooter>
-            <Button
-              mr={3}
-              onClick={onClose}
-              variant="ghost"
-            >
-              Close
-            </Button>
+            {
+              !isSubmitting && (
+                <Button
+                  mr={3}
+                  onClick={onClose}
+                  variant="ghost"
+                >
+                  Close
+                </Button>
+              )
+            }
+
             <Button
               colorScheme="blue"
               // @ts-ignore
               onClick={onSubmit}
             >
               Send
+              {
+                isSubmitting && (
+                  <Animated3Dots fill={'white'} />
+                )
+              }
             </Button>
           </ModalFooter>
         </ModalContent>
