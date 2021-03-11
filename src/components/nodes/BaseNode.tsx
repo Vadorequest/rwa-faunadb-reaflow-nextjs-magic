@@ -412,6 +412,10 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                     .node-action {
                       cursor: pointer;
                     }
+                    
+                    .modifIcon{
+                      margin-right: 5px;
+                    }
                   `}
                 >
                   {
@@ -420,7 +424,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                         className={'node-action delete-action'}
                         onClick={onNodeClone as MouseEventHandler}
                       >
-                        <FontAwesomeIcon color="#0028FF" icon={['fas', 'clone']} />
+                        <FontAwesomeIcon className="modifIcon" color="#0028FF" icon={['fas', 'clone']} />
                       </div>
                     )
                   }
@@ -431,7 +435,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                         className={'node-action delete-action'}
                         onClick={onNodeRemove as MouseEventHandler}
                       >
-                        <FontAwesomeIcon color="#F9694A" icon={['fas', 'trash-alt']} />
+                        <FontAwesomeIcon className="modifIcon" color="#F9694A" icon={['fas', 'trash-alt']} />
                       </div>
                     )
                   }
