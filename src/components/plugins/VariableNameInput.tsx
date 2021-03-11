@@ -84,6 +84,19 @@ export const VariableNameInput = <NodeData extends NodeDataWithVariableName = No
         top: -5px;
         font-size: 0.6em;
         }
+        
+        .fade{
+          animation: fadeOut ease 0.4s forwards;
+          animation-delay: 2.5s;
+        }
+        
+        @keyframes fadeOut {
+          0% {
+            opacity:1;
+          }
+          100% {
+            opacity:0;
+          }
       `}
     >
       <input
@@ -101,12 +114,12 @@ export const VariableNameInput = <NodeData extends NodeDataWithVariableName = No
 
       {
          isSaved ? (
-          <text>
+          <text className={"fade"}>
             Saved
           </text>
         ) : (
           <text>
-            Unsaved
+          unsaved
           </text>
         )
       }
