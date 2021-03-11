@@ -56,7 +56,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
     target: targetNodeId,
     targetPort: targetPortId,
   } = props;
-  console.log('props', props)
+  // console.log('props', props)
 
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState<BlockPickerMenu>(blockPickerMenuSelector);
   const [canvasDataset, setCanvasDataset] = useRecoilState(canvasDatasetSelector);
