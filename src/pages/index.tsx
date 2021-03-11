@@ -2,7 +2,9 @@ import { isBrowser } from '@unly/utils';
 import { useState } from 'react';
 import DisplayOnBrowserMount from '../components/DisplayOnBrowserMount';
 import EditorContainer from '../components/editor/EditorContainer';
+import { useUser } from '../components/hooks/useUser';
 import Layout from '../components/Layout';
+import { UserSession } from '../types/auth/UserSession';
 import { CanvasDataset } from '../types/CanvasDataset';
 
 export type Props = {
@@ -30,6 +32,7 @@ export const getStaticProps = (): { props: Props } => {
  * after it has initialized the global "initialCanvasDataset" browser variable, which is used by the nodesSelector and edgesSelector Recoil state managers.
  */
 const IndexPage = (props: any) => {
+  const user: UserSession | null | undefined = useUser(); // "user" is "undefined" until a response is received from the API
   const [canvasDataset, setCanvasDataset] = useState<CanvasDataset | undefined>(undefined);
 
   /**
@@ -53,7 +56,10 @@ const IndexPage = (props: any) => {
         // deps={[canvasDataset]}
       >
         {
-          <EditorContainer />
+          // Wait until the user has been fetched from the API endpoint (returns either "null" or "UserSession")
+          user !== undefined && (
+            <EditorContainer />
+          )
         }
       </DisplayOnBrowserMount>
     </Layout>
