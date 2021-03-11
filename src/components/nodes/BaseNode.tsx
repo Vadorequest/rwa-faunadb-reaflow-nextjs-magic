@@ -258,7 +258,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
       {...nodeProps}
       style={{
         strokeWidth: 0,
-        fill: isReachable ? 'white' : 'lightgray',
+        fill: isReachable ? 'white' : '#eaeaea',
         color: 'black',
         cursor: 'auto',
       }}
@@ -320,7 +320,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
             
                 // Highlights the node when it's being selected
                 &.is-selected {
-                  border: 2px solid ${settings.canvas.nodes.selected.borderColor};
+                  border: 2px solid ${isReachable ? settings.canvas.nodes.selected.borderColor : 'orange'};
                   border-radius: 2px;
                 }
 
@@ -383,7 +383,8 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                 // Applied to all textarea for all nodes
                 .textarea {
                   margin-top: 15px;
-                  background-color: #eaeaea;
+                  background-color: ${isReachable ? '#eaeaea' : 'lightgrey'};
+                  
                 }
               `}
               // Use the same onClick/onMouseEnter/onMouseLeave handlers as the one used by the Node component, to yield the same behavior whether clicking on the <rect> or on the <foreignObject> element
