@@ -14,8 +14,10 @@ import {
   faHome,
   faPaperPlane,
   faPlay,
+  faPlusCircle,
   faSearchMinus,
   faSearchPlus,
+  faTimesCircle,
   faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -46,8 +48,10 @@ library.add(
   faHome,
   faPaperPlane,
   faPlay,
+  faPlusCircle,
   faSearchMinus,
   faSearchPlus,
+  faTimesCircle,
   faTrashAlt,
 );
 
