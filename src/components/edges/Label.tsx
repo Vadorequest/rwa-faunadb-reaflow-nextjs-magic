@@ -22,7 +22,6 @@ const Label: FC<Partial<LabelProps>> = (props) => {
   }
 
   return (
-    <svg>
       <g
         transform={`translate(${(x || 0) - offsetX}, ${(y || 0) - offsetY})`}
         css={css`
@@ -39,7 +38,6 @@ const Label: FC<Partial<LabelProps>> = (props) => {
           {text}
         </text>
       </g>
-    </svg>
   );
 };
 
