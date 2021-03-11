@@ -382,7 +382,9 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                 // Applied to all textarea for all nodes
                 .textarea {
                   margin-top: 15px;
-                  background-color: ${isReachable ? '#eaeaea' : 'lightgrey'};
+                  background-color: #F1F3FF;
+                  border: 0.5px solid lightgrey;
+                  border-radius: 5px;
                 }
               `}
               // Use the same onClick/onMouseEnter/onMouseLeave handlers as the one used by the Node component, to yield the same behavior whether clicking on the <rect> or on the <foreignObject> element
