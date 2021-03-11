@@ -65,6 +65,7 @@ While working on this project, I've reached several milestones with a different 
 
 - `yarn`
 - `yarn start`
+- Run commands in `fql/setup.js` from the Web Shell at [https://dashboard.fauna.com/](https://dashboard.fauna.com/), this will create the FaunaDB collection, indexes, roles, etc.
 - `cp .env.local.example .env.local`, and define your environment variables
 - Open browser at [http://localhost:8890](http://localhost:8890)
 

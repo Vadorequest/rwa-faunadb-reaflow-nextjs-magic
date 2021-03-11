@@ -26,7 +26,7 @@ import {
 } from '../types/faunadb/CanvasStream';
 import { FaunadbStreamVersionEvent } from '../types/faunadb/FaunadbStreamVersionEvent';
 
-const PUBLIC_SHARED_FAUNABD_TOKEN = 'fnAEDdp0CWACBZUTQvkktsqAQeW03uDhZYY0Ttlg';
+const PUBLIC_SHARED_FAUNABD_TOKEN = process.env.NEXT_PUBLIC_SHARED_FAUNABD_TOKEN as string;
 const SHARED_CANVAS_DOCUMENT_ID = '1';
 
 export const getUserClient = (user: UserSession | null): Client => {
