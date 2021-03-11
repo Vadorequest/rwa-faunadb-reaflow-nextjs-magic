@@ -61,7 +61,6 @@ const AuthFormModal = (props: Props) => {
           // If we simply re-render, we might accidentally update the current shared document using the user's document (or vice-versa), because it updates at every re-render
           // XXX There might be a cleaner way to do that that doesn't require a full page refresh
           document.location.href = '/';
-          // Router.push('/'); // Forces a re-render
         } else {
           throw new Error(await res.text());
         }
