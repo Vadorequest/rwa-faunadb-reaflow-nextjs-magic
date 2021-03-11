@@ -64,9 +64,34 @@ CreateRole({
             Select(['data', 'owner'], Get(Var('ref'))),
           )),
         ),
-        // Editors should be able to edit only Canvas documents that belongs to them.
+        // Editors should be able to edit only Canvas documents that belongs to them (but I don't know how to write that).
         write: true,
-        // Editors should be able to create only Canvas documents that belongs to them.
+        // Editors should be able to create only Canvas documents that belongs to them (but I don't know how to write that).
+        create: true,
+      },
+    },
+  ],
+});
+
+CreateRole({
+  name: 'Public',
+  // The public role is meant to be used to generate a token which allows anyone (unauthenticated users) to update the canvas
+  membership: {},
+  privileges: [
+    {
+      resource: Collection('Canvas'),
+      actions: {
+        // Guests should only be allowed to read the Canvas of id "1"
+        read: Query(
+          Lambda('ref', Equals(
+            '1',
+            Select(['id'], Get(Var('ref'))),
+          )),
+        ),
+        // Guests should only be allowed to update the Canvas of id "1" (but I don't know how to write that)
+        write: true,
+        // Guests should only be allowed to create the Canvas of id "1", but this requires admin permissions and will fail
+        // See https://fauna-community.slack.com/archives/CAKNYCHCM/p1615413941454700
         create: true,
       },
     },
