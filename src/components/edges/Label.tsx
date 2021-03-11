@@ -22,22 +22,22 @@ const Label: FC<Partial<LabelProps>> = (props) => {
   }
 
   return (
-      <g
-        transform={`translate(${(x || 0) - offsetX}, ${(y || 0) - offsetY})`}
-        css={css`
-           text{
-           fill: #898989;  
-           }
-        `}
+    <g
+      transform={`translate(${(x || 0) - offsetX}, ${(y || 0) - offsetY})`}
+      css={css`
+        text {
+          fill: #898989;
+        }
+      `}
+    >
+      <title>{originalText}</title>
+      <text
+        className={classNames('label', className)}
+        style={style}
       >
-        <title>{originalText}</title>
-        <text
-          className={classNames('label', className)}
-          style={style}
-        >
-          {text}
-        </text>
-      </g>
+        {text}
+      </text>
+    </g>
   );
 };
 
