@@ -10,7 +10,6 @@ import {
   Paginate,
   Ref,
   Update,
-  values,
 } from 'faunadb';
 import { Subscription } from 'faunadb/src/types/Stream';
 import isEqual from 'lodash.isequal';
@@ -28,8 +27,7 @@ import {
   OnUpdate,
 } from '../types/faunadb/CanvasStream';
 import { FaunadbStreamVersionEvent } from '../types/faunadb/FaunadbStreamVersionEvent';
-
-type TypeOfRef = values.Ref;
+import { TypeOfRef } from '../types/faunadb/TypeOfRef';
 
 const PUBLIC_SHARED_FAUNABD_TOKEN = process.env.NEXT_PUBLIC_SHARED_FAUNABD_TOKEN as string;
 const SHARED_CANVAS_DOCUMENT_ID = '1';
@@ -64,22 +62,25 @@ export const initStream = async (user: UserSession | null, onStart: OnStart, onI
         // @ts-ignore
         document(canvasRef)
         .on('start', (at: number) => {
-          console.log('Stream started at:', at);
-          onStart(stream, canvasRef as TypeOfRef);
+          console.log('[Streaming] Started at', at);
+          onStart(stream, canvasRef as TypeOfRef, at);
         })
         .on('snapshot', (snapshot: CanvasResult) => {
-          console.log('snapshot', snapshot);
+          console.log('[Streaming] "snapshot" event', snapshot);
           onInit(snapshot.data);
         })
         .on('version', (version: FaunadbStreamVersionEvent) => {
-          console.log('version', version);
+          console.log('[Streaming] "version" event', version);
 
           if (version.action === 'update') {
             onUpdate(version.document.data);
           }
         })
         .on('error', async (error: any) => {
-          console.log('Error:', error);
+          console.error('[Streaming] "error" event:', error);
+
+          // XXX Not sure if this is still valid, it was useful at first (when not automatically creating the document if not found) but might not be needed anymore
+          //  Might still be useful when creating the shared document, which doesn't belong to a user in particular?
           if (error?.name === 'NotFound') {
             const defaultCanvasDataset: CanvasDataset = {
               nodes: [],
@@ -126,8 +127,12 @@ export const findUserCanvasRef = async (user: UserSession | null): Promise<Expr 
   }
 };
 
+/**
+ * Finds the canvas of the given user, creates it if doesn't exist.
+ *
+ * @param user
+ */
 export const findOrCreateUserCanvas = async (user: UserSession): Promise<Expr | undefined> => {
-  console.log('findOrCreateUserCanvas');
   const client: Client = getUserClient(user);
   const findUserCanvas = Paginate(
     Match(
@@ -162,9 +167,6 @@ export const findOrCreateUserCanvas = async (user: UserSession): Promise<Expr | 
         const createUserCanvasResult = await client.query<Canvas>(createUserCanvas);
         console.log('createUserCanvasResult', createUserCanvasResult);
 
-        // Update the current canvas with the new dataset
-        // setRecoilExternalState(canvasDatasetSelector, canvasDataset);
-
         return createUserCanvasResult?.ref;
       } catch (e) {
         console.error(`[findOrCreateUserCanvas] Error while creating canvas:`, e);
@@ -183,41 +185,34 @@ export const findOrCreateUserCanvas = async (user: UserSession): Promise<Expr | 
 /**
  * Updates the user canvas document.
  *
- * Only update if the content has changed, to avoid infinite loop because this is called during canvas rendering (useEffect)
+ * Only update if the content has changed, to avoid infinite loop because this function is called when the CanvasContainer component renders (useEffect).
  *
+ * If the user doesn't have the permissions to update the canvasRef, it'll fail.
+ * The "Editor" role only allows the owner to edit its own documents.
+ *
+ * @param canvasRef Working canvas document reference that'll be modified
  * @param user
  * @param newCanvasDataset
  */
-export const updateUserCanvas = async (user: UserSession | null, newCanvasDataset: CanvasDataset): Promise<void> => {
+export const updateUserCanvas = async (canvasRef: TypeOfRef | undefined, user: UserSession | null, newCanvasDataset: CanvasDataset): Promise<void> => {
   const client: Client = getUserClient(user);
 
   try {
-    const canvasRef = await findUserCanvasRef(user);
-
     if (canvasRef) {
       const existingCanvasDatasetResult: CanvasResult = await client.query(Get(canvasRef));
       const existingCanvasDataset: CanvasDataset = {
-        // Consider only nodes/edges and ignore other fields to avoid false-positive difference that musn't be taken into account
+        // Consider only nodes/edges and ignore other fields to avoid false-positive difference that mustn't be taken into account
         nodes: existingCanvasDatasetResult.data?.nodes,
         edges: existingCanvasDatasetResult.data?.edges,
       };
 
+      // isEqual performs a deep comparison
       if (!isEqual(existingCanvasDataset, newCanvasDataset)) {
         console.log('Updating canvas dataset in FaunaDB. Old:', existingCanvasDataset, 'new:', newCanvasDataset, 'diff:', diff(existingCanvasDataset, newCanvasDataset));
 
         try {
           const updateCanvasResult: CanvasResult = await client.query<CanvasResult>(Update(canvasRef, { data: newCanvasDataset }));
           console.log('updateCanvasResult', updateCanvasResult);
-
-          const canvasDataset: CanvasDataset = {
-            nodes: updateCanvasResult?.data?.nodes,
-            edges: updateCanvasResult?.data?.edges,
-          };
-          console.log('new canvasDataset (from db)', canvasDataset);
-
-          // Update the current canvas with the existing dataset
-          // setRecoilExternalState(canvasDatasetSelector, canvasDataset)
-
         } catch (e) {
           console.error(`[updateUserCanvas] Error while updating canvas:`, e);
         }
@@ -230,12 +225,38 @@ export const updateUserCanvas = async (user: UserSession | null, newCanvasDatase
   }
 };
 
+/**
+ * Invoked when the streaming has been initialized, update the canvasDataset stored in Recoil.
+ *
+ * Due to this, we don't need to prefetch the dataset, as it is provided by the stream during initialization.
+ * Will be called every time the stream is restarted.
+ *
+ * > The initial document when you start the stream.
+ * > This event provides you with the current state of the document and will arrive after the start event and before other events.
+ *
+ * @param canvasDataset
+ *
+ * @see https://fauna.com/blog/live-ui-updates-with-faunas-real-time-document-streaming#defining-the-stream
+ * @see https://docs.fauna.com/fauna/current/drivers/javascript.html
+ */
 export const onInit: OnInit = (canvasDataset: CanvasDataset) => {
   // Starts the stream between the browser and the FaunaDB using the default canvas document
   console.log('onInit canvasDataset', canvasDataset);
   setRecoilExternalState(canvasDatasetSelector, canvasDataset);
 };
 
+/**
+ * Invoked when an update happens on the streamed document.
+ *
+ * We only care about the "update" event in this POC. Because "delete"/"create" events cannot happen.
+ *
+ * > When the data of the document changes, a new event will arrive that details the changes to the document.
+ *
+ * @param canvasDatasetRemotelyUpdated
+ *
+ * @see https://fauna.com/blog/live-ui-updates-with-faunas-real-time-document-streaming#defining-the-stream
+ * @see https://docs.fauna.com/fauna/current/drivers/javascript.html
+ */
 export const onUpdate: OnUpdate = (canvasDatasetRemotelyUpdated: CanvasDataset) => {
   setRecoilExternalState(canvasDatasetSelector, canvasDatasetRemotelyUpdated);
 };

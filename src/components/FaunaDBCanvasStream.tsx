@@ -1,8 +1,9 @@
 import { css } from '@emotion/react';
 import { isBrowser } from '@unly/utils';
-import { values } from 'faunadb';
 import { Subscription } from 'faunadb/src/types/Stream';
 import React, {
+  Dispatch,
+  SetStateAction,
   useEffect,
   useState,
 } from 'react';
@@ -13,13 +14,13 @@ import {
   OnStart,
   OnUpdate,
 } from '../types/faunadb/CanvasStream';
+import { TypeOfRef } from '../types/faunadb/TypeOfRef';
 import { initStream } from '../utils/canvasStream';
-
-type Ref = values.Ref;
 
 type Props = {
   onInit: OnInit;
   onUpdate: OnUpdate;
+  setCanvasDocRef: Dispatch<SetStateAction<TypeOfRef | undefined>>;
 }
 
 /**
@@ -29,21 +30,25 @@ const FaunaDBCanvasStream: React.FunctionComponent<Props> = (props) => {
   const {
     onInit,
     onUpdate,
+    setCanvasDocRef,
   } = props;
 
   // Used to avoid starting several streams from the same browser
   const [hasStreamStarted, setHasStreamStarted] = useState<boolean>(false);
   const [stream, setStream] = useState<Subscription | undefined>(undefined);
-  const [canvasRef, setCanvasRef] = useState<Ref | undefined>(undefined);
+  const [canvasRef, setCanvasRef] = useState<TypeOfRef | undefined>(undefined);
+  const [startedAt, setStartedAt] = useState<number | undefined>(undefined);
   const user: UserSession | null = useUser() as UserSession | null;
 
   if (!isBrowser()) {
     return null;
   }
 
-  const onStart: OnStart = (stream: Subscription, canvasRef: Ref) => {
+  const onStart: OnStart = (stream: Subscription, canvasRef: TypeOfRef, at: number) => {
     setStream(stream);
     setCanvasRef(canvasRef);
+    setCanvasDocRef(canvasRef);
+    setStartedAt(at);
   };
 
   /**

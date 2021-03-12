@@ -1,9 +1,8 @@
 import { MagicUserMetadata } from '@magic-sdk/admin';
-import { values } from 'faunadb';
-type Ref = values.Ref;
+import { TypeOfRef } from './faunadb/TypeOfRef';
 
-export type UserMetadataWithAuth = MagicUserMetadata &  {
+export type UserMetadataWithAuth = MagicUserMetadata & {
   faunaDBToken: string;
-  ref: Ref;
+  ref: TypeOfRef;
   id: string;
 }

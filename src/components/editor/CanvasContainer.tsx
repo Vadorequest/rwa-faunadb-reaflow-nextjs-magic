@@ -27,6 +27,7 @@ import { selectedNodesSelector } from '../../states/selectedNodesState';
 import { UserSession } from '../../types/auth/UserSession';
 import BaseNodeData from '../../types/BaseNodeData';
 import { CanvasDataset } from '../../types/CanvasDataset';
+import { TypeOfRef } from '../../types/faunadb/TypeOfRef';
 import {
   onInit,
   onUpdate,
@@ -93,6 +94,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const [hasClearedUndoHistory, setHasClearedUndoHistory] = useState<boolean>(false);
   const [cursorXY, setCursorXY] = useState<[number, number]>([0, 0]);
   const [isStreaming, setIsStreaming] = useState<boolean>(false);
+  const [canvasDocRef, setCanvasDocRef] = useState<TypeOfRef | undefined>(undefined); // We store the document ref to avoid fetching it for every change
 
   /**
    * When nodes or edges are modified, updates the persisted data in FaunaDB.
@@ -111,7 +113,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         || canvasDataset?.nodes?.length === 2 && canvasDataset?.edges?.length === 1 && canvasDataset?.nodes[0]?.data?.type === 'start' && canvasDataset?.nodes[1]?.data?.type === 'end';
 
       if (!isDefaultDataset) {
-        updateUserCanvas(user, canvasDataset);
+        updateUserCanvas(canvasDocRef, user, canvasDataset);
       } else {
         console.info('CanvasDataset has changed. Default dataset detected, database update aborted.');
       }
@@ -432,6 +434,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
             setIsStreaming(true);
           }}
           onUpdate={onUpdate}
+          setCanvasDocRef={setCanvasDocRef}
         />
       </canvasUtilsContext.Provider>
     </div>

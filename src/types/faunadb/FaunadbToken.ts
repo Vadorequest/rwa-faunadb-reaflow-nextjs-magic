@@ -1,7 +1,5 @@
-import { values } from 'faunadb';
 import { FaunadbBaseFields } from './FaunadbBaseFields';
-
-type Ref = values.Ref;
+import { TypeOfRef } from './TypeOfRef';
 
 /**
  * A Token created by FaunaDB.
@@ -9,7 +7,7 @@ type Ref = values.Ref;
  * @see https://docs.fauna.com/fauna/current/api/fql/functions/tokens?lang=javascript
  */
 export type FaunadbToken = FaunadbBaseFields & {
-  instance: Ref;
+  instance: TypeOfRef;
   secret: string;
   data?: any; // Optional, consider those as token metadata (not user's metadata)
 }
