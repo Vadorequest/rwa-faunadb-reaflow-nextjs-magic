@@ -2,6 +2,7 @@ import { css } from '@emotion/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classnames from 'classnames';
 import cloneDeep from 'lodash.clonedeep';
+import includes from 'lodash.includes';
 import remove from 'lodash.remove';
 import React, {
   KeyboardEventHandler,
@@ -189,7 +190,10 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
    */
   const onNodeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>) => {
     console.log(`node clicked (${node?.data?.type})`, 'node:', node);
-    setSelectedNodes([node.id]);
+    // Don't select nodes that are already selected
+    if (!includes(selectedNodes, node?.id)) {
+      setSelectedNodes([node.id]);
+    }
   };
 
   /**
