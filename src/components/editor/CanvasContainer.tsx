@@ -80,7 +80,6 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
    * @see https://reaflow.dev/?path=/story/docs-advanced-refs--page
    */
   useEffect(() => {
-    console.log('canvasRef', canvasRef);
     canvasRef?.current?.fitCanvas?.();
   }, [canvasRef]);
 
@@ -109,13 +108,15 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
       // Ignore dataset changes if the dataset contains only:
       // - a start node with no edge
       // - or a start node and an end node and one edge
-      const isDefaultDataset = canvasDataset?.nodes?.length === 1 && canvasDataset?.edges?.length === 0 && canvasDataset?.nodes[0]?.data?.type === 'start'
+      // - or no node and no edge (it's temporary state until default nodes/edges are created)
+      const isDefaultDataset: boolean = canvasDataset?.nodes?.length === 1 && canvasDataset?.edges?.length === 0 && canvasDataset?.nodes[0]?.data?.type === 'start'
         || canvasDataset?.nodes?.length === 2 && canvasDataset?.edges?.length === 1 && canvasDataset?.nodes[0]?.data?.type === 'start' && canvasDataset?.nodes[1]?.data?.type === 'end';
+      const isEmptyDataset: boolean = canvasDataset?.nodes?.length === 0 && canvasDataset?.edges?.length === 0;
 
-      if (!isDefaultDataset) {
+      if (!isDefaultDataset && !isEmptyDataset) {
         updateUserCanvas(canvasDocRef, user, canvasDataset);
       } else {
-        console.info('CanvasDataset has changed. Default dataset detected, database update aborted.');
+        console.info('CanvasDataset has changed. Default or empty dataset detected, database update aborted. Only non-default and non-empty changes are saved.');
       }
     }
   }, [canvasDataset]);
@@ -161,7 +162,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
 
     if ((!existingStartNode || !existingEndNode) && isStreaming) {
       console.groupCollapsed('Creating default canvas dataset');
-      console.info(`No "start" or "end" node found. Creating them automatically.`, nodes);
+      console.info(`No "start" or "end" node found. Creating them automatically.`, nodes, edges, existingStartNode, existingEndNode);
       const startNode: BaseNodeData = createNodeFromDefaultProps(getDefaultNodePropsWithFallback('start'));
       const endNode: BaseNodeData = createNodeFromDefaultProps(getDefaultNodePropsWithFallback('end'));
       const newNodes = [
