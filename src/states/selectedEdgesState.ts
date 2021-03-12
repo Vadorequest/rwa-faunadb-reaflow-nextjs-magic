@@ -28,7 +28,6 @@ export const selectedEdgesSelector = selector<string[]>({
    * @param newValue
    */
   set: ({ set, get, reset }, newValue): void => {
-    console.log('selectedEdgesSelector set', newValue);
     set(selectedEdgesState, newValue);
   },
 });
