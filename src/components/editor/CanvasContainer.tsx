@@ -16,6 +16,7 @@ import {
   useUndo,
 } from 'reaflow';
 import { useRecoilState } from 'recoil';
+import useRenderingTrace from '../../hooks/useTraceUpdate';
 import { useUser } from '../../hooks/useUser';
 import settings from '../../settings';
 import { blockPickerMenuSelector } from '../../states/blockPickerMenuState';
@@ -94,6 +95,19 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const [cursorXY, setCursorXY] = useState<[number, number]>([0, 0]);
   const [isStreaming, setIsStreaming] = useState<boolean>(false);
   const [canvasDocRef, setCanvasDocRef] = useState<TypeOfRef | undefined>(undefined); // We store the document ref to avoid fetching it for every change
+  useRenderingTrace('CanvasContainer', {
+    ...props,
+    blockPickerMenu,
+    canvasDataset,
+    nodes,
+    edges,
+    selectedNodes,
+    selectedEdges,
+    hasClearedUndoHistory,
+    cursorXY,
+    isStreaming,
+    canvasDocRef,
+  });
 
   /**
    * When nodes or edges are modified, updates the persisted data in FaunaDB.
