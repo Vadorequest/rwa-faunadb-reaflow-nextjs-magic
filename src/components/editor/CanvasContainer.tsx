@@ -86,8 +86,6 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
 
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuSelector);
   const [canvasDataset, setCanvasDataset] = useRecoilState(canvasDatasetSelector);
-  const [nodes, setNodes] = useRecoilState(nodesSelector);
-  const [edges, setEdges] = useRecoilState(edgesSelector);
   const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesSelector);
   const [selectedEdges, setSelectedEdges] = useRecoilState(selectedEdgesSelector);
   const selections = selectedNodes; // TODO merge selected nodes and edges
@@ -99,8 +97,6 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     ...props,
     blockPickerMenu,
     canvasDataset,
-    nodes,
-    edges,
     selectedNodes,
     selectedEdges,
     hasClearedUndoHistory,
@@ -108,6 +104,8 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     isStreaming,
     canvasDocRef,
   });
+  const nodes = canvasDataset?.nodes;
+  const edges = canvasDataset?.edges;
 
   /**
    * When nodes or edges are modified, updates the persisted data in FaunaDB.
