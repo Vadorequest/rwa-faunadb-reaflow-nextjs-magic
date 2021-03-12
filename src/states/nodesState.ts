@@ -42,7 +42,6 @@ export const nodesSelector = selector<BaseNodeData[]>({
     const hasDuplicateNodes = hasDuplicatedObjects(newValue as BaseNodeData[], 'id');
 
     if (!hasDuplicateNodes) {
-      console.log('nodesSelector set', newValue);
       set(nodesState, newValue);
     } else {
       const message = `Duplicate node ids found, the nodes weren't updated to avoid to corrupt the dataset.`;
