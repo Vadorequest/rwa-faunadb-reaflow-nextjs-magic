@@ -26,9 +26,12 @@ const useRenderingTrace = (componentName: string, propsAndStates: any, level: 'd
   const prev = useRef(propsAndStates);
 
   useEffect(() => {
-    const changedProps = Object.entries(propsAndStates).reduce((property: any, [key, value]: [string, any]) => {
+    const changedProps: { [key: string]: { old: any, new: any } } = Object.entries(propsAndStates).reduce((property: any, [key, value]: [string, any]) => {
       if (prev.current[key] !== value) {
-        property[key] = [prev.current[key], value];
+        property[key] = {
+          old: prev.current[key],
+          new: value,
+        };
       }
       return property;
     }, {});
