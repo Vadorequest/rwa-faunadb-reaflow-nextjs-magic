@@ -46,7 +46,6 @@ export const blockPickerMenuSelector = selector<BlockPickerMenu>({
 
     if (!isEqual(currentValue, newValue)) {
       newValue.at = now(); // Automatically update the timestamp of creation
-      console.log('blockPickerMenuSelector set', newValue, 'patch:', patch);
       set(blockPickerMenuState, newValue as BlockPickerMenu);
     } else {
       console.log('blockPickerMenuSelector identical to current value (not set)', newValue);
