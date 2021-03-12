@@ -252,6 +252,9 @@ export const onInit: OnInit = (canvasDataset: CanvasDataset) => {
  *
  * > When the data of the document changes, a new event will arrive that details the changes to the document.
  *
+ * TODO Handle conflicts between changes from 3rd party (another editor) and current working document to avoid erasing the local document and losing changes
+ *  For another time, won't be part of the POC.
+ *
  * @param canvasDatasetRemotelyUpdated
  *
  * @see https://fauna.com/blog/live-ui-updates-with-faunas-real-time-document-streaming#defining-the-stream
