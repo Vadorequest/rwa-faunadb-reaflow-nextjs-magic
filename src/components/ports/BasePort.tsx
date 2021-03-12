@@ -101,6 +101,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
    * @param blockPickerMenu
    */
   const onBlockClick: OnBlockClick = (nodeType: NodeType, blockPickerMenu: BlockPickerMenu | undefined) => {
+    console.groupCollapsed('Clicked on block from port, creating new node');
     console.log('onBlockClick (from port)', nodeType, draggedEdgeFromPort, blockPickerMenu);
     const newNode = createNodeFromDefaultProps(getDefaultNodePropsWithFallback(nodeType));
     let newDataset: CanvasDataset;
@@ -142,6 +143,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
     setLastCreatedNode({ node: newNode, at: now() });
     setSelectedNodes([newNode?.id]);
     setSelectedEdges([]);
+    console.groupEnd();
   };
 
   /**

@@ -94,7 +94,14 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
    * @param event
    */
   const onAddIconClick = (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
+    /**
+     * Executed when clicking on a block.
+     * Creates a new node corresponding to the selected block.
+     *
+     * @param nodeType
+     */
     const onBlockClick: OnBlockClick = (nodeType: NodeType) => {
+      console.groupCollapsed('Clicked on block from edge, upserting new node');
       const newNode: BaseNodeData = createNodeFromDefaultProps(getDefaultNodePropsWithFallback(nodeType));
       const newDataset: CanvasDataset = upsertNodeThroughPorts(cloneDeep(nodes), cloneDeep(edges), edge, newNode);
 
@@ -102,6 +109,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
       setLastCreatedNode({ node: newNode, at: now() });
       setSelectedNodes([newNode?.id]);
       setSelectedEdges([]);
+      console.groupEnd();
     };
 
     // Converts the x/y position to a Canvas position and apply some margin for the BlockPickerMenu to display on the right bottom of the cursor
