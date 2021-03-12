@@ -30,8 +30,9 @@ export const VariableNameInput = <NodeData extends NodeDataWithVariableName = No
   const {
     width = 200,
   } = node;
-  const [variableName, setVariableName] = useState<string | undefined>(node?.data?.variableName);
-  const [isModified, setIsModified] = useState(false);
+  const [variableName, setVariableName] = useState<string>(node?.data?.variableName || '');
+  const [isModified, setIsModified] = useState(false); // Whether the input has been modified since the last time it was changed
+  const [isPristine, setIsPristine] = useState(true); // The input is pristine until any change is made
 
   const onChange = (event: any) => {
     setVariableName(event?.target?.value);
@@ -39,6 +40,11 @@ export const VariableNameInput = <NodeData extends NodeDataWithVariableName = No
     // Avoid unnecessary state changes while modifying
     if (!isModified) {
       setIsModified(true);
+    }
+
+    // Avoid unnecessary state changes, we only need to run this once
+    if (isPristine) {
+      setIsPristine(false);
     }
   };
 
@@ -82,7 +88,7 @@ export const VariableNameInput = <NodeData extends NodeDataWithVariableName = No
           animation: ${isModified ? 'bounce ease 1s infinite' : ''};
         }
 
-        text {
+        .highlight-info {
           fill: #6E6E6E;
           color: #6E6E6E;
           position: relative;
@@ -131,14 +137,17 @@ export const VariableNameInput = <NodeData extends NodeDataWithVariableName = No
       />
 
       {
-        !isModified ? (
-          <text className={'fade'}>
+        !isPristine && !isModified && (
+          <span className={'highlight-info fade'}>
             Saved
-          </text>
-        ) : (
-          <text>
+          </span>
+        )
+      }
+      {
+        !isPristine && isModified && (
+          <span className={'highlight-info'}>
             Unsaved
-          </text>
+          </span>
         )
       }
     </div>
