@@ -2,6 +2,7 @@ import {
   Collection,
   Documents,
   ExprArg,
+  Function,
   Get,
   Lambda,
   Map,
@@ -19,8 +20,8 @@ export const DeleteIfExists = (ref: ExprArg) => If(Exists(ref), false, Delete(re
 export const IfNotExists = (ref: ExprArg, then: ExprArg) => If(Exists(ref), false, then);
 
 export const CreateOrUpdateFunction = (obj: any) => If(
-  Exists(q.Function(obj.name)),
-  Update(q.Function(obj.name), { body: obj.body, role: obj.role }),
+  Exists(Function(obj.name)),
+  Update(Function(obj.name), { body: obj.body, role: obj.role }),
   CreateFunction({ name: obj.name, body: obj.body, role: obj.role }),
 );
 
@@ -40,6 +41,6 @@ export const SelectAll = (collectionName: string) => Map(
   Paginate(Documents(Collection(collectionName))),
   Lambda(
     ['ref'],
-    Get(Var('ref'))
+    Get(Var('ref')),
   ),
 );
