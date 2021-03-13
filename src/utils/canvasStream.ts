@@ -4,7 +4,6 @@ import {
   Collection,
   Create,
   Expr,
-  Get,
   Index,
   Match,
   Paginate,
@@ -20,7 +19,7 @@ import { UserSession } from '../types/auth/UserSession';
 import { CanvasDataset } from '../types/CanvasDataset';
 import { Canvas } from '../types/faunadb/Canvas';
 import { CanvasByOwnerIndex } from '../types/faunadb/CanvasByOwnerIndex';
-import { CanvasResult } from '../types/faunadb/CanvasResult';
+import { CanvasDatasetResult } from '../types/faunadb/CanvasDatasetResult';
 import {
   OnInit,
   OnStart,
@@ -65,7 +64,7 @@ export const initStream = async (user: UserSession | null, onStart: OnStart, onI
           console.log('[Streaming] Started at', at);
           onStart(stream, canvasRef as TypeOfRef, at);
         })
-        .on('snapshot', (snapshot: CanvasResult) => {
+        .on('snapshot', (snapshot: CanvasDatasetResult) => {
           console.log('[Streaming] "snapshot" event', snapshot);
           onInit(snapshot.data);
         })
@@ -91,7 +90,7 @@ export const initStream = async (user: UserSession | null, onStart: OnStart, onI
             const createDefaultRecord = Create(findUserCanvasRef(user), {
               data: defaultCanvasDataset,
             });
-            const result: CanvasResult = await client.query(createDefaultRecord);
+            const result: CanvasDatasetResult = await client.query(createDefaultRecord);
             console.log('result', result);
             onInit(result?.data);
           } else {
@@ -183,6 +182,27 @@ export const findOrCreateUserCanvas = async (user: UserSession): Promise<Expr | 
 };
 
 /**
+ * Checks whether the canvas dataset should be updated in the database, by comparing the previous and new dataset.
+ *
+ * Ignores dataset changes if the dataset contains only:
+ *  - a start node with no edge
+ *  - OR a start node and an end node and one edge
+ *  - OR no node and no edge (it's temporary state until default nodes/edges are created)
+ *
+ * @param newCanvasDataset
+ */
+export const hasDatasetChanged = (newCanvasDataset: CanvasDataset): boolean => {
+  const isEmptyDataset: boolean = newCanvasDataset?.nodes?.length === 0 && newCanvasDataset?.edges?.length === 0;
+  if (isEmptyDataset) {
+    return false;
+  }
+
+  const isDefaultDataset: boolean = newCanvasDataset?.nodes?.length === 1 && newCanvasDataset?.edges?.length === 0 && newCanvasDataset?.nodes[0]?.data?.type === 'start'
+    || newCanvasDataset?.nodes?.length === 2 && newCanvasDataset?.edges?.length === 1 && newCanvasDataset?.nodes[0]?.data?.type === 'start' && newCanvasDataset?.nodes[1]?.data?.type === 'end';
+  return !isDefaultDataset;
+};
+
+/**
  * Updates the user canvas document.
  *
  * Only update if the content has changed, to avoid infinite loop because this function is called when the CanvasContainer component renders (useEffect).
@@ -193,29 +213,45 @@ export const findOrCreateUserCanvas = async (user: UserSession): Promise<Expr | 
  * @param canvasRef Working canvas document reference that'll be modified
  * @param user
  * @param newCanvasDataset
+ * @param previousCanvasDataset
  */
-export const updateUserCanvas = async (canvasRef: TypeOfRef | undefined, user: UserSession | null, newCanvasDataset: CanvasDataset): Promise<void> => {
+export const updateUserCanvas = async (canvasRef: TypeOfRef | undefined, user: UserSession | null, newCanvasDataset: CanvasDataset, previousCanvasDataset: CanvasDataset | undefined): Promise<void> => {
   const client: Client = getUserClient(user);
 
   try {
     if (canvasRef) {
-      const existingCanvasDatasetResult: CanvasResult = await client.query(Get(canvasRef));
-      const existingCanvasDataset: CanvasDataset = {
-        // Consider only nodes/edges and ignore other fields to avoid false-positive difference that mustn't be taken into account
-        nodes: existingCanvasDatasetResult.data?.nodes,
-        edges: existingCanvasDatasetResult.data?.edges,
-      };
+      console.info(`[updateUserCanvas] Update request triggered, checking if it should be done.`);
 
-      // isEqual performs a deep comparison
-      if (!isEqual(existingCanvasDataset, newCanvasDataset)) {
-        console.log('Updating canvas dataset in FaunaDB. Old:', existingCanvasDataset, 'new:', newCanvasDataset, 'diff:', diff(existingCanvasDataset, newCanvasDataset));
+      if (hasDatasetChanged(newCanvasDataset)) {
+        const areDatasetsDifferent = !isEqual(previousCanvasDataset, newCanvasDataset);
+        const datasetsDiff = diff(previousCanvasDataset, newCanvasDataset);
 
-        try {
-          const updateCanvasResult: CanvasResult = await client.query<CanvasResult>(Update(canvasRef, { data: newCanvasDataset }));
-          console.log('updateCanvasResult', updateCanvasResult);
-        } catch (e) {
-          console.error(`[updateUserCanvas] Error while updating canvas:`, e);
+        // XXX (disabled) We could also check against the dataset stored in the DB like this
+        //  But, it'd incur increased cost, and slow down updates (they need to be fast)
+        //  I'm not sure it's the right decision, lack experience with real-time.
+        //  Handling conflicts between simultaneous updates might affect how/when we check for difference, too.
+        // const existingCanvasDatasetResult: CanvasDatasetResult = await client.query(Get(canvasRef));
+        // const existingCanvasDataset: CanvasDataset = {
+        //   // Consider only nodes/edges and ignore other fields to avoid false-positive difference that mustn't be taken into account
+        //   nodes: existingCanvasDatasetResult.data?.nodes,
+        //   edges: existingCanvasDatasetResult.data?.edges,
+        // };
+
+        // isEqual performs a deep comparison
+        if (areDatasetsDifferent) {
+          console.debug('[updateUserCanvas] Updating canvas dataset in FaunaDB. Old:', previousCanvasDataset, 'new:', newCanvasDataset, 'diff:', datasetsDiff);
+
+          try {
+            const updateCanvasDatasetResult: CanvasDatasetResult = await client.query<CanvasDatasetResult>(Update(canvasRef, { data: newCanvasDataset }));
+            console.log('updateCanvasResult', updateCanvasDatasetResult);
+          } catch (e) {
+            console.error(`[updateUserCanvas] Error while updating canvas:`, e);
+          }
+        } else {
+          console.log(`[updateUserCanvas] Canvas dataset has not changed. Database update was aborted.`, 'diff:', datasetsDiff);
         }
+      } else {
+        console.log(`[updateUserCanvas] Canvas dataset has changed, although it's a default/empty dataset. Only non-default and non-empty changes are persisted to the DB (optimization). Database update was aborted.`);
       }
     } else {
       console.error(`[updateUserCanvas] "canvasRef" is undefined, update aborted.`, canvasRef);

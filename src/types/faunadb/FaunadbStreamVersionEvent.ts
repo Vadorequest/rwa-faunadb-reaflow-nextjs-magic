@@ -1,8 +1,8 @@
-import { CanvasResult } from './CanvasResult';
+import { CanvasDatasetResult } from './CanvasDatasetResult';
 
 export type FaunadbStreamVersionEvent = {
   action: 'create' | 'update' | 'delete';
-  document: CanvasResult;
-  diff: CanvasResult;
-  prev: CanvasResult;
+  document: CanvasDatasetResult;
+  diff: CanvasDatasetResult;
+  prev: CanvasDatasetResult;
 }

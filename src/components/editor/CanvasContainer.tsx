@@ -16,13 +16,12 @@ import {
   useUndo,
 } from 'reaflow';
 import { useRecoilState } from 'recoil';
+import { usePreviousValue } from '../../hooks/usePreviousValue';
 import useRenderingTrace from '../../hooks/useTraceUpdate';
 import { useUser } from '../../hooks/useUser';
 import settings from '../../settings';
 import { blockPickerMenuSelector } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
-import { edgesSelector } from '../../states/edgesState';
-import { nodesSelector } from '../../states/nodesState';
 import { selectedEdgesSelector } from '../../states/selectedEdgesState';
 import { selectedNodesSelector } from '../../states/selectedNodesState';
 import { UserSession } from '../../types/auth/UserSession';
@@ -106,30 +105,26 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   });
   const nodes = canvasDataset?.nodes;
   const edges = canvasDataset?.edges;
+  const previousCanvasDataset: CanvasDataset | undefined = usePreviousValue<CanvasDataset>(canvasDataset);
 
   /**
    * When nodes or edges are modified, updates the persisted data in FaunaDB.
    *
-   * Persisted data are automatically loaded upon page refresh.
+   * Persisted data are automatically loaded when the stream is initialized.
+   * XXX Because we handle nodes/edges using different datasets, when adding/removing a node it will trigger 2 updates:
+   *  - One for adding/removing the node
+   *  - One for adding/removing the edge
+   *
+   * TODO It would be beneficial to queue changes (debounce 100ms) and run them in group instead.
+   *  That way, it'd limit the number of updates performed by the DB, while increasing the consistency of the dataset
+   *  (avoid edge-cases where only one update is applied and there is a node created without edge or vice-versa)
    */
   useEffect(() => {
     // persistCanvasDatasetInLS(canvasDataset);
 
     // Only save changes once the stream has started, to avoid saving anything until the initial canvas dataset was initialized
     if (isStreaming) {
-      // Ignore dataset changes if the dataset contains only:
-      // - a start node with no edge
-      // - or a start node and an end node and one edge
-      // - or no node and no edge (it's temporary state until default nodes/edges are created)
-      const isDefaultDataset: boolean = canvasDataset?.nodes?.length === 1 && canvasDataset?.edges?.length === 0 && canvasDataset?.nodes[0]?.data?.type === 'start'
-        || canvasDataset?.nodes?.length === 2 && canvasDataset?.edges?.length === 1 && canvasDataset?.nodes[0]?.data?.type === 'start' && canvasDataset?.nodes[1]?.data?.type === 'end';
-      const isEmptyDataset: boolean = canvasDataset?.nodes?.length === 0 && canvasDataset?.edges?.length === 0;
-
-      if (!isDefaultDataset && !isEmptyDataset) {
-        updateUserCanvas(canvasDocRef, user, canvasDataset);
-      } else {
-        console.info('CanvasDataset has changed. Default or empty dataset detected, database update aborted. Only non-default and non-empty changes are saved.');
-      }
+      updateUserCanvas(canvasDocRef, user, canvasDataset, previousCanvasDataset);
     }
   }, [canvasDataset]);
 
