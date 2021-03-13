@@ -254,6 +254,7 @@ export const updateUserCanvas = async (canvasRef: TypeOfRef | undefined, user: U
               console.log('updateCanvasResult', updateCanvasDatasetResult);
             } catch (e) {
               console.error(`[updateUserCanvas] Error while updating canvas:`, e);
+              // TODO handle concurrent updates error, might be beneficial to overwrite the local dataset to avoid being out-of-sync and overwriting work done by others?
             }
           } else {
             console.log(`[updateUserCanvas] Canvas remote dataset has not changed. Database update was aborted.`, 'diff:', remoteDiff);
