@@ -58,6 +58,7 @@
     "recoil-devtools-log-monitor": "^0.2.7",
     "recoil-devtools-logger": "^0.1.5",
     "swr": "0.4.2",
+    "use-debounce": "6.0.0",
     "uuid": "8.3.2"
   },
   "devDependencies": {

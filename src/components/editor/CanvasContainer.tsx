@@ -16,6 +16,7 @@ import {
   useUndo,
 } from 'reaflow';
 import { useRecoilState } from 'recoil';
+import { useDebouncedCallback } from 'use-debounce';
 import { usePreviousValue } from '../../hooks/usePreviousValue';
 import useRenderingTrace from '../../hooks/useTraceUpdate';
 import { useUser } from '../../hooks/useUser';
@@ -108,23 +109,39 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const previousCanvasDataset: CanvasDataset | undefined = usePreviousValue<CanvasDataset>(canvasDataset);
 
   /**
+   * Debounces the database update invocation call.
+   *
+   * Helps avoid multiple DB updates and group them into one (by only considering the last one, which is the one that really matters).
+   *
+   * Due to debouncing, multiple database updates are avoided (when they happen in a close time-related burst),
+   * which is really important in a real-time context because it'll greatly reduce update events received by ALL subscribed clients.
+   *
+   * By eliminating burst updates and only considering the latest update, we greatly reduce the stream of updates sent to the DB.
+   * By ensuring those updates happen at most every 1 second (maxWait), which syncs the work being done locally with the remote,
+   * we ensure the work being done locally doesn't fall behind what's done on the remote.
+   *
+   * XXX Because we handle nodes/edges using different states, without debouncing then adding/removing a node would trigger 2 updates:
+   *  - One for adding/removing the node
+   *  - One for adding/removing the edge
+   *  Thanks to debouncing, there is only one actual DB update.
+   */
+  const debouncedUpdateUserCanvas = useDebouncedCallback(
+    (canvasRef: TypeOfRef | undefined, user: UserSession | null, newCanvasDataset: CanvasDataset, previousCanvasDataset: CanvasDataset | undefined) => {
+      updateUserCanvas(canvasDocRef, user, canvasDataset, previousCanvasDataset);
+    },
+    100, // Wait 100ms for other changes to happen, if no change happen then invoke the update
+    { maxWait: 1000 }, // In any case, wait for no more than 1 second, at most
+  );
+
+  /**
    * When nodes or edges are modified, updates the persisted data in FaunaDB.
    *
    * Persisted data are automatically loaded when the stream is initialized.
-   * XXX Because we handle nodes/edges using different datasets, when adding/removing a node it will trigger 2 updates:
-   *  - One for adding/removing the node
-   *  - One for adding/removing the edge
-   *
-   * TODO It would be beneficial to queue changes (debounce 100ms) and run them in group instead.
-   *  That way, it'd limit the number of updates performed by the DB, while increasing the consistency of the dataset
-   *  (avoid edge-cases where only one update is applied and there is a node created without edge or vice-versa)
    */
   useEffect(() => {
-    // persistCanvasDatasetInLS(canvasDataset);
-
     // Only save changes once the stream has started, to avoid saving anything until the initial canvas dataset was initialized
     if (isStreaming) {
-      updateUserCanvas(canvasDocRef, user, canvasDataset, previousCanvasDataset);
+      debouncedUpdateUserCanvas(canvasDocRef, user, canvasDataset, previousCanvasDataset);
     }
   }, [canvasDataset]);
 

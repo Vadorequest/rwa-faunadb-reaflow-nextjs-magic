@@ -4,6 +4,7 @@ import {
   Collection,
   Create,
   Expr,
+  Get,
   Index,
   Match,
   Paginate,
@@ -222,33 +223,43 @@ export const updateUserCanvas = async (canvasRef: TypeOfRef | undefined, user: U
     if (canvasRef) {
       console.info(`[updateUserCanvas] Update request triggered, checking if it should be done.`);
 
+      // Checking if the local dataset has really changed
       if (hasDatasetChanged(newCanvasDataset)) {
-        const areDatasetsDifferent = !isEqual(previousCanvasDataset, newCanvasDataset);
-        const datasetsDiff = diff(previousCanvasDataset, newCanvasDataset);
+        // Checking if the previous and new datasets (local) have changed helps avoiding unnecessary database updates
+        const areLocalDatasetsDifferent = !isEqual(previousCanvasDataset, newCanvasDataset); // isEqual performs a deep comparison
+        const localDiff = diff(previousCanvasDataset, newCanvasDataset);
 
-        // XXX (disabled) We could also check against the dataset stored in the DB like this
-        //  But, it'd incur increased cost, and slow down updates (they need to be fast)
-        //  I'm not sure it's the right decision, lack experience with real-time.
-        //  Handling conflicts between simultaneous updates might affect how/when we check for difference, too.
-        // const existingCanvasDatasetResult: CanvasDatasetResult = await client.query(Get(canvasRef));
-        // const existingCanvasDataset: CanvasDataset = {
-        //   // Consider only nodes/edges and ignore other fields to avoid false-positive difference that mustn't be taken into account
-        //   nodes: existingCanvasDatasetResult.data?.nodes,
-        //   edges: existingCanvasDatasetResult.data?.edges,
-        // };
+        if (areLocalDatasetsDifferent) {
+          // Even when the local dataset has changed, it might just be due to synchronizing from a remote change
+          // In such case (which is frequent when there are several people working on the same doc),
+          // checking the local vs remote dataset helps avoiding unnecessary updates, which in turn doesn't update all client
+          // XXX This is very important in a real-time context, because if the remote DB is updated needlessly,
+          //  it'll in turn trigger a "version" event which will be received by ALL subscribed clients,
+          //  which in turn will update their own local dataset, which might not be up-to-date, which will trigger yet another update
+          //  It can get messy real quick and trigger infinite loops if not handled very carefully.
+          const existingRemoteCanvasDatasetResult: CanvasDatasetResult = await client.query(Get(canvasRef));
+          const existingRemoteCanvasDataset: CanvasDataset = {
+            // Consider only nodes/edges and ignore other fields to avoid false-positive difference that mustn't be taken into account
+            nodes: existingRemoteCanvasDatasetResult.data?.nodes,
+            edges: existingRemoteCanvasDatasetResult.data?.edges,
+          };
+          const isRemoteDatasetsDifferent = !isEqual(existingRemoteCanvasDataset, newCanvasDataset); // isEqual performs a deep comparison
+          const remoteDiff = diff(previousCanvasDataset, newCanvasDataset);
 
-        // isEqual performs a deep comparison
-        if (areDatasetsDifferent) {
-          console.debug('[updateUserCanvas] Updating canvas dataset in FaunaDB. Old:', previousCanvasDataset, 'new:', newCanvasDataset, 'diff:', datasetsDiff);
+          if (isRemoteDatasetsDifferent) {
+            console.debug('[updateUserCanvas] Updating canvas dataset in FaunaDB. Old:', previousCanvasDataset, 'new:', newCanvasDataset, 'diff:', remoteDiff);
 
-          try {
-            const updateCanvasDatasetResult: CanvasDatasetResult = await client.query<CanvasDatasetResult>(Update(canvasRef, { data: newCanvasDataset }));
-            console.log('updateCanvasResult', updateCanvasDatasetResult);
-          } catch (e) {
-            console.error(`[updateUserCanvas] Error while updating canvas:`, e);
+            try {
+              const updateCanvasDatasetResult: CanvasDatasetResult = await client.query<CanvasDatasetResult>(Update(canvasRef, { data: newCanvasDataset }));
+              console.log('updateCanvasResult', updateCanvasDatasetResult);
+            } catch (e) {
+              console.error(`[updateUserCanvas] Error while updating canvas:`, e);
+            }
+          } else {
+            console.log(`[updateUserCanvas] Canvas remote dataset has not changed. Database update was aborted.`, 'diff:', remoteDiff);
           }
         } else {
-          console.log(`[updateUserCanvas] Canvas dataset has not changed. Database update was aborted.`, 'diff:', datasetsDiff);
+          console.log(`[updateUserCanvas] Canvas local dataset has not changed. Database update was aborted.`, 'diff:', localDiff);
         }
       } else {
         console.log(`[updateUserCanvas] Canvas dataset has changed, although it's a default/empty dataset. Only non-default and non-empty changes are persisted to the DB (optimization). Database update was aborted.`);
