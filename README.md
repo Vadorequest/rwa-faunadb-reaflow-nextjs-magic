@@ -149,3 +149,30 @@ Here is a list of online resources and open-source repositories that have been t
   - https://gist.github.com/BrunoQuaresma/0236aff64dc44795f19994cbc7a07db6 React query hook
   - https://gist.github.com/tovbinm/f76bcbf56ea8e2e3740e237b6c2f2ab9 GraphQL relation query examples
   - https://gist.github.com/TracyNgot/291738b403cfa012fe7bf05614c22408 Query builder
+
+---
+
+# Real-time implementation, limits, and considerations for the future
+
+The way the current real-time feature is implemented is not too bad, but not great either.
+
+It works by synching the whole dataset whether the remote `document` (on FaunaDB) is updated, which in turn updates all subscribed clients.
+While this works, work from one client can be overwritten by another when they happen at the same time. 
+
+> `document` means "Canvas Dataset" here. It contains all `nodes` and `edges` (and other props, like `owner`, etc.)
+
+A better implementation would be not to stream the actual `document`, but only the document's **patches**.
+The whole `document` would only be useful for the initialization of the app. 
+Then, any change should be streamed to another document which would only contain the changes applied to the initial document.
+When such changes are streamed (patches), they should then be applied to the current working document, one by one, in order.
+
+Each change/patch would represent a diff between the previous and after states of the document, they would only contain **what** have changed:
+- A node has been added
+- An edge has been deleted
+- An edge has been modified
+
+This way, when something changes, the client would resolve what's changed and stream the patch to the DB, which in turn would update all subscribed clients which would apply that patch.
+
+Conflict may still arise, but they'll be limited to parts of the document that have been updated simultaneously (the same node, the same edge, etc.).
+
+This would provide a much better user experience, because overwrites will happen much less often, and it'd increase collaboration.
