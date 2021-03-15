@@ -91,20 +91,20 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
           const onQuestionInputHeightChange = (height: number, meta: TextareaHeightChangeMeta) => {
             // Only consider additional height, by ignoring the height of the first row
             const additionalHeight = height - meta.rowHeight;
-            console.log('onTextHeightChange ', node?.data?.dynHeights?.questionTextareaHeight, additionalHeight);
+            const patchedNodeAdditionalData: Partial<QuestionNodeAdditionalData> = {
+              dynHeights: {
+                ...node?.data?.dynHeights as QuestionNodeAdditionalData['dynHeights'],
+                questionTextareaHeight: additionalHeight,
+              },
+            };
+            const newHeight = calculateNodeHeight(patchedNodeAdditionalData.dynHeights);
+            console.log('onTextHeightChange ', node?.data?.dynHeights?.questionTextareaHeight, newHeight);
 
-            if (node?.data?.dynHeights?.questionTextareaHeight !== additionalHeight) {
-              const patchedNodeAdditionalData: Partial<QuestionNodeAdditionalData> = {
-                dynHeights: {
-                  ...node?.data?.dynHeights as QuestionNodeAdditionalData['dynHeights'],
-                  questionTextareaHeight: additionalHeight,
-                },
-              };
-
+            if (node?.data?.dynHeights?.questionTextareaHeight !== newHeight) {
               // Updates the value in the Recoil store
               patchCurrentNode({
                 data: patchedNodeAdditionalData,
-                height: calculateNodeHeight(patchedNodeAdditionalData.dynHeights),
+                height: newHeight,
               } as QuestionNodeData);
             }
           };
@@ -117,12 +117,14 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
           const onQuestionInputValueChange = (event: any) => {
             const newValue = event.target.value;
 
-            // Updates the value in the Recoil store
-            patchCurrentNode({
-              data: {
-                questionText: newValue,
-              },
-            } as QuestionNodeData);
+            if (newValue !== node?.data?.questionText) {
+              // Updates the value in the Recoil store
+              patchCurrentNode({
+                data: {
+                  questionText: newValue,
+                },
+              } as QuestionNodeData);
+            }
           };
 
           /**
