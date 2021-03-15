@@ -15,8 +15,8 @@ import BaseNode from './BaseNode';
 type Props = {} & BaseNodeProps<StartNodeData>;
 
 const nodeType: NodeType = 'end';
-const defaultWidth = 100;
-const defaultHeight = 100;
+const baseWidth = 100;
+const baseHeight = 100;
 
 /**
  * End node.
@@ -32,6 +32,8 @@ const EndNode: BaseNodeComponent<Props> = (props) => {
     <BaseNode
       hasCloneAction={false}
       hasDeleteAction={false}
+      baseWidth={baseWidth}
+      baseHeight={baseHeight}
       {...props}
     >
       {
@@ -74,8 +76,8 @@ EndNode.getDefaultPorts = (): BasePortData[] => {
 EndNode.getDefaultNodeProps = (): BaseNodeDefaultProps => {
   return {
     type: nodeType,
-    defaultWidth: defaultWidth,
-    defaultHeight: defaultHeight,
+    baseWidth: baseWidth,
+    baseHeight: baseHeight,
     // @ts-ignore
     ports: EndNode.getDefaultPorts(),
   };

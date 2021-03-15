@@ -18,8 +18,8 @@ import BaseNode from './BaseNode';
 type Props = {} & BaseNodeProps<InformationNodeData>;
 
 const nodeType: NodeType = 'information';
-const defaultWidth = 200;
-const defaultHeight = 100;
+const baseWidth = 200;
+const baseHeight = 100;
 
 /**
  * Information node.
@@ -33,6 +33,8 @@ const defaultHeight = 100;
 const InformationNode: BaseNodeComponent<Props> = (props) => {
   return (
     <BaseNode
+      baseWidth={baseWidth}
+      baseHeight={baseHeight}
       {...props}
     >
       {
@@ -55,7 +57,7 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
            * The node's height is dynamic and depends on various parameters (length of text, etc.).
            */
           useEffect(() => {
-            const newHeight = defaultHeight + informationTextareaAdditionalHeight;
+            const newHeight = baseHeight + informationTextareaAdditionalHeight;
 
             // Only update the height if it's different
             if (node?.height !== newHeight) {
@@ -129,8 +131,8 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
 InformationNode.getDefaultNodeProps = (): BaseNodeDefaultProps => {
   return {
     type: nodeType,
-    defaultWidth: defaultWidth,
-    defaultHeight: defaultHeight,
+    baseWidth: baseWidth,
+    baseHeight: baseHeight,
     // @ts-ignore
     ports: BaseNode.getDefaultPorts(),
   };

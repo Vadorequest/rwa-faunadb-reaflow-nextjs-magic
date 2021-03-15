@@ -54,7 +54,7 @@ export const QuestionChoice = <NodeData extends QuestionNodeData = QuestionNodeD
     ];
 
     // @ts-ignore
-    patchCurrentNode({
+    patchCurrentNode<QuestionNodeData>({
       data: {
         questionChoices: patchedQuestionChoices,
       },

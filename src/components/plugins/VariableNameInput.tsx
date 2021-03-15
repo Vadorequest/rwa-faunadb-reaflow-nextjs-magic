@@ -1,6 +1,5 @@
 import { css } from '@emotion/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import classnames from 'classnames';
 import React, {
   PropsWithChildren,
   useState,
@@ -82,7 +81,7 @@ export const VariableNameInput = <NodeData extends NodeDataWithVariableName = No
         }
 
         .submit {
-          color:  ${isModified ? 'white' : '#6E6E6E'};
+          color: ${isModified ? 'white' : '#6E6E6E'};
           margin-left: 10px;
           cursor: pointer;
           animation: ${isModified ? 'bounce ease 1s infinite' : ''};
@@ -109,10 +108,10 @@ export const VariableNameInput = <NodeData extends NodeDataWithVariableName = No
             opacity: 0;
           }
         }
-          
+
         @keyframes bounce {
           0% {
-            transform:scale(1.1);
+            transform: scale(1.1);
           }
           50% {
             transform: scale(0.85);
@@ -120,7 +119,7 @@ export const VariableNameInput = <NodeData extends NodeDataWithVariableName = No
           100% {
             transform: scale(1.1);
           }
-        }          
+        }
       `}
     >
       <input

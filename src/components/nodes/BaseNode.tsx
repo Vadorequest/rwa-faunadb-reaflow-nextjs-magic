@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classnames from 'classnames';
 import cloneDeep from 'lodash.clonedeep';
 import includes from 'lodash.includes';
+import isEmpty from 'lodash.isempty';
 import remove from 'lodash.remove';
 import React, {
   KeyboardEventHandler,
@@ -22,6 +23,7 @@ import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
 import { lastCreatedState } from '../../states/lastCreatedState';
 import { nodesSelector } from '../../states/nodesState';
 import { selectedNodesSelector } from '../../states/selectedNodesState';
+import BaseNodeAdditionalData from '../../types/BaseNodeAdditionalData';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import BaseNodeData from '../../types/BaseNodeData';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
@@ -31,6 +33,7 @@ import { CanvasDataset } from '../../types/CanvasDataset';
 import { GetBaseNodeDefaultPropsProps } from '../../types/GetBaseNodeDefaultProps';
 import { SpecializedNodeProps } from '../../types/nodes/SpecializedNodeProps';
 import NodeType from '../../types/NodeType';
+import PartialBaseNodeData from '../../types/PartialBaseNodeData';
 import { isYoungerThan } from '../../utils/date';
 import {
   cloneNode,
@@ -44,10 +47,12 @@ import BasePortChild from '../ports/BasePortChild';
 type Props = BaseNodeProps & {
   hasCloneAction?: boolean;
   hasDeleteAction?: boolean;
+  baseWidth: number;
+  baseHeight: number;
 };
 
-const fallbackDefaultWidth = 200;
-const fallbackDefaultHeight = 100;
+const fallbackBaseWidth = 200;
+const fallbackBaseHeight = 100;
 
 /**
  * Base node component.
@@ -72,6 +77,8 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
     node, // Don't forward, not expected
     hasCloneAction = true, // Don't forward, not expected
     hasDeleteAction = true, // Don't forward, not expected
+    baseWidth,
+    baseHeight,
     ...nodeProps // All props that are left will be forwarded to the Node component
   } = props;
 
@@ -105,6 +112,35 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
   }, []);
 
   /**
+   * Update the node's dynamic width/height base in the event it'd have changed.
+   */
+  useEffect(() => {
+    const patchData: Partial<BaseNodeAdditionalData> = {};
+
+    if (node?.data?.dynHeights?.base !== baseHeight) {
+      patchData.dynHeights = {
+        base: baseHeight,
+      };
+    }
+
+    if (node?.data?.dynWidths?.base !== baseWidth) {
+      patchData.dynWidths = {
+        base: baseWidth,
+      };
+    }
+
+    if (!isEmpty(patchData)) {
+      console.log(`Current node's base width/height doesn't match component's own base width/height. Updating the current node with patch:`, patchData)
+      patchCurrentNode({
+        data: patchData
+      })
+    }
+  }, [
+    baseWidth,
+    baseHeight,
+  ]);
+
+  /**
    * Path the properties of the current node.
    *
    * Only updates the provided properties, doesn't update other properties.
@@ -117,7 +153,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
    *
    * @param patch
    */
-  const patchCurrentNode: PatchCurrentNode = (patch: Partial<BaseNodeData>): void => {
+  const patchCurrentNode: PatchCurrentNode = (patch: PartialBaseNodeData): void => {
     const nodeToUpdateIndex = nodes.findIndex((node: BaseNodeData) => node.id === nodeProps.id);
     const existingNode: BaseNodeData = nodes[nodeToUpdateIndex];
     const nodeToUpdate = {
@@ -495,12 +531,12 @@ BaseNode.getDefaultPorts = (): BasePortData[] => {
  * @param props
  */
 BaseNode.getDefaultNodeProps = (props: GetBaseNodeDefaultPropsProps): BaseNodeDefaultProps => {
-  const { type, defaultHeight, defaultWidth } = props;
+  const { type, baseHeight, baseWidth } = props;
 
   return {
     type,
-    defaultWidth: defaultWidth || fallbackDefaultWidth,
-    defaultHeight: defaultHeight || fallbackDefaultHeight,
+    baseWidth: baseWidth || fallbackBaseWidth,
+    baseHeight: baseHeight || fallbackBaseHeight,
     // @ts-ignore
     ports: BaseNode.getDefaultPorts(),
     // nodePadding: 10 // TODO try it (left/top/bottom/right)

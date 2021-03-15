@@ -19,8 +19,8 @@ import BaseNode from './BaseNode';
 type Props = {} & BaseNodeProps<IfNodeData>;
 
 const nodeType: NodeType = 'if';
-const defaultWidth = 300;
-const defaultHeight = 300;
+const baseWidth = 300;
+const baseHeight = 300;
 
 /**
  * If/Else node.
@@ -34,6 +34,8 @@ const defaultHeight = 300;
 const IfNode: BaseNodeComponent<Props> = (props) => {
   return (
     <BaseNode
+      baseWidth={baseWidth}
+      baseHeight={baseHeight}
       {...props}
     >
       {
@@ -177,8 +179,8 @@ IfNode.getDefaultPorts = (): BasePortData[] => {
 IfNode.getDefaultNodeProps = (): BaseNodeDefaultProps => {
   return {
     type: nodeType,
-    defaultWidth: defaultWidth,
-    defaultHeight: defaultHeight,
+    baseWidth: baseWidth,
+    baseHeight: baseHeight,
     // @ts-ignore
     ports: IfNode.getDefaultPorts(),
   };

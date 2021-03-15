@@ -50,6 +50,8 @@ const defaultHeight = 250;
 const QuestionNode: BaseNodeComponent<Props> = (props) => {
   return (
     <BaseNode
+      baseWidth={baseWidth}
+      baseHeight={baseHeight}
       {...props}
     >
       {
@@ -76,7 +78,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
            */
           useEffect(() => {
             // TODO increase height depending on how many input choice there are (50px/unit)?
-            const newHeight = defaultHeight + questionTextareaAdditionalHeight + (displayChoiceInputs ? additionalHeightChoiceInputs : 0);
+            const newHeight = baseHeight + questionTextareaAdditionalHeight + (displayChoiceInputs ? additionalHeightChoiceInputs : 0);
 
             // Only update the height if it's different
             if (node?.height !== newHeight) {
@@ -271,8 +273,8 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
 QuestionNode.getDefaultNodeProps = (): BaseNodeDefaultProps => {
   return {
     type: nodeType,
-    defaultWidth: defaultWidth,
-    defaultHeight: defaultHeight,
+    baseWidth: baseWidth,
+    baseHeight: baseHeight,
     // @ts-ignore
     ports: BaseNode.getDefaultPorts(),
   };

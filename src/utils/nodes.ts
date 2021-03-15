@@ -47,17 +47,17 @@ export const createNodeFromDefaultProps = (defaultProps: BaseNodeDefaultProps): 
   console.log('createNodeFromDefaultProps', defaultProps);
   const node = {
     text: undefined, // XXX Built-in Reaflow "text", unused in our case because we use complex components and we don't need it
-    width: defaultProps.defaultWidth,
-    height: defaultProps.defaultHeight,
+    width: defaultProps.baseWidth,
+    height: defaultProps.baseHeight,
     data: {
       type: defaultProps.type,
-      defaultWidth: defaultProps.defaultWidth,
-      defaultHeight: defaultProps.defaultHeight,
+      baseWidth: defaultProps.baseWidth,
+      baseHeight: defaultProps.baseHeight,
       dynHeights: {
-        base: defaultProps.defaultHeight,
+        base: defaultProps.baseHeight,
       },
       dynWidths: {
-        base: defaultProps.defaultWidth,
+        base: defaultProps.baseWidth,
       },
     },
     ports: defaultProps.ports || [],
