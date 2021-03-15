@@ -114,14 +114,14 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
    *
    * This is very convenient when updating input's values and such, and help keeping good app's performances and reduces cost.
    *
-   * The default behavior is to wait for 1sec and there is no timeout.
+   * The default behavior is to wait for 0.5sec and there is no timeout.
    * You can override the default behavior for each specialized Node component.
    */
   const debouncedPatchCurrentNode = useDebouncedCallback(
     (patch: PartialBaseNodeData) => {
       patchCurrentNode(patch);
     },
-    patchCurrentNodeWait || 1000, // Wait for other changes to happen, if no change happen then invoke the update
+    patchCurrentNodeWait || settings.canvas.nodes.defaultDebounceWaitFor, // Wait for other changes to happen, if no change happen then invoke the update
     patchCurrentNodeOptions || {},
   );
 

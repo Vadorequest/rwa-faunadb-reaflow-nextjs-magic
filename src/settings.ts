@@ -21,7 +21,7 @@ export const settings: Settings = {
     maxWidth: 10000, // 10k should handle about 50 horizontal nodes
     maxHeight: 2000,
     nodes: {
-      defaultDebounceFor: 250,
+      defaultDebounceWaitFor: 500,
       selected: {
         borderColor: 'rgba(0, 40, 255, 0.2)',
       },
@@ -117,7 +117,7 @@ export type CanvasSettings = {
      *
      * Used for input "onChange" events, etc.
      */
-    defaultDebounceFor: number;
+    defaultDebounceWaitFor: number;
 
     selected: {
       /**

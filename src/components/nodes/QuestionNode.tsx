@@ -83,26 +83,6 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
           };
 
           /**
-           * Calculates the node's height dynamically.
-           *
-           * The node's height is dynamic and depends on various parameters (selected option, length of text, etc.).
-           */
-          // useEffect(() => {
-          //   // TODO increase height depending on how many input choice there are (50px/unit)?
-          //   const newHeight = calculateNodeHeight(node?.data?.dynHeights);
-          //   console.log('node', node);
-          //   console.log('newHeight', newHeight);
-          //
-          //   // Only update the height if it's different
-          //   if (node?.height !== newHeight) {
-          //     console.log('useEffect updating height', newHeight, node?.height);
-          //     patchCurrentNode({
-          //       height: newHeight,
-          //     });
-          //   }
-          // }, [node?.data?.dynHeights, displayChoiceInputs]);
-
-          /**
            * When textarea input height changes, we need to increase the height of the whole node accordingly.
            *
            * @param height
@@ -213,7 +193,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                 <DebounceInput
                   // @ts-ignore
                   element={Textarea}
-                  debounceTimeout={1000} // Avoids making the Canvas "lag" due to many unnecessary re-renders, by applying input changes in batches (one at most every 500ms) TODO const
+                  debounceTimeout={settings.canvas.nodes.defaultDebounceWaitFor} // Avoids making the Canvas "lag" due to many unnecessary re-renders, by applying input changes in batches (one at most every 500ms)
                   className={`textarea ${nodeType}-text`}
                   placeholder={'Say something here'}
                   onHeightChange={onQuestionInputHeightChange}
