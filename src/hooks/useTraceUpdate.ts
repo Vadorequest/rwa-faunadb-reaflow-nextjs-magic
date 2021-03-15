@@ -29,11 +29,20 @@ const useRenderingTrace = (componentName: string, propsAndStates: any, level: 'd
   useEffect(() => {
     const changedProps: { [key: string]: { old: any, new: any } } = Object.entries(propsAndStates).reduce((property: any, [key, value]: [string, any]) => {
       if (prev.current[key] !== value) {
+        let diffValue = undefined;
+        try {
+          diffValue = diff(prev.current[key], value);
+        } catch (e) {
+          // Not an object/array, cannot make a diff
+        }
         property[key] = {
           old: prev.current[key],
           new: value,
-          diff: diff(prev.current[key], value),
         };
+
+        if (typeof diffValue !== 'undefined') {
+          property[key].diff = diffValue;
+        }
       }
       return property;
     }, {});
