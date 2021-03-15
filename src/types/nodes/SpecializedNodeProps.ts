@@ -1,6 +1,9 @@
 import { NodeChildProps } from 'reaflow';
 import BaseNodeData from '../BaseNodeData';
-import { PatchCurrentNode } from '../BaseNodeProps';
+import {
+  PatchCurrentNode,
+  PatchCurrentNodeConcurrently,
+} from '../BaseNodeProps';
 import { LastCreated } from '../LastCreated';
 
 /**
@@ -15,8 +18,7 @@ export type SpecializedNodeProps<NodeData extends BaseNodeData = BaseNodeData> =
   /**
    * Path the properties of the current node.
    *
-   * Only updates the provided properties, doesn't update other properties.
-   * Also merges the 'data' object, by keeping existing data and only overwriting those that are specified.
+   * Only updates the provided properties (deep merge), doesn't update other properties.
    *
    * @param nodeData
    */
@@ -30,6 +32,16 @@ export type SpecializedNodeProps<NodeData extends BaseNodeData = BaseNodeData> =
    * @param nodeData
    */
   patchCurrentNodeImmediately: PatchCurrentNode<Partial<NodeData>>;
+
+  /**
+   * Similar to patchCurrentNode, but is being debounced and will not execute immediately.
+   *
+   * Calling multiple times this function in a short amount of time will consolidate a patch together.
+   * Eventually, the consolidated patch will be executed as one change instead of multiple changes.
+   *
+   * @param nodeData
+   */
+  patchCurrentNodeConcurrently: PatchCurrentNodeConcurrently<Partial<NodeData>>;
 
   /**
    * The last created node and its time of creation.
