@@ -21,7 +21,7 @@ export type InformationNodeAdditionalData = BaseNodeAdditionalData & {
    * we'll be able to detect that "dynHeights.baseWidth" is different from the node's "baseHeight" and update the node "dynHeights/.baseWidth",
    * so the new feature will be visible immediately.
    */
-  dynHeights: BaseNodeAdditionalData['dynHeights'] & {
+  dynHeights?: BaseNodeAdditionalData['dynHeights'] & {
     informationTextareaHeight?: number;
   }
 };

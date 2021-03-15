@@ -25,8 +25,8 @@ export type BaseNodeAdditionalData<Type extends NodeType = NodeType> = {
    *
    * XXX This property might be extended from specialized components, because each component might calculate its dynamic width differently.
    */
-  dynWidths: {
-    baseWidth: number;
+  dynWidths?: {
+    baseWidth?: number;
   };
 
   /**
@@ -43,8 +43,8 @@ export type BaseNodeAdditionalData<Type extends NodeType = NodeType> = {
    *
    * XXX This property might be extended from specialized components, because each component might calculate its dynamic height differently.
    */
-  dynHeights: {
-    baseHeight: number;
+  dynHeights?: {
+    baseHeight?: number;
   };
 };
 
