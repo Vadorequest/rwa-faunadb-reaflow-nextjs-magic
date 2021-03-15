@@ -23,6 +23,15 @@ export type SpecializedNodeProps<NodeData extends BaseNodeData = BaseNodeData> =
   patchCurrentNode: PatchCurrentNode<Partial<NodeData>>;
 
   /**
+   * Identical to patchCurrentNode, but isn't being debounced and will execute immediately.
+   *
+   * "patchCurrentNode" is a better option for anything that might happen in a burst (e.g: text input "onChange" event).
+   *
+   * @param nodeData
+   */
+  patchCurrentNodeImmediately: PatchCurrentNode<Partial<NodeData>>;
+
+  /**
    * The last created node and its time of creation.
    * Will be undefined if no node was created yet.
    */

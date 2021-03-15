@@ -18,6 +18,7 @@ import {
 } from 'reaflow';
 import { useRecoilState } from 'recoil';
 import { useDebouncedCallback } from 'use-debounce';
+import { Options as DebounceCallbackOptions } from 'use-debounce/lib/useDebouncedCallback';
 import settings from '../../settings';
 import { blockPickerMenuSelector } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
@@ -50,6 +51,8 @@ type Props = BaseNodeProps & {
   hasDeleteAction?: boolean;
   baseWidth: number;
   baseHeight: number;
+  patchCurrentNodeWait?: number;
+  patchCurrentNodeOptions?: DebounceCallbackOptions;
 };
 
 const fallbackBaseWidth = 200;
@@ -80,6 +83,8 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
     hasDeleteAction = true, // Don't forward, not expected
     baseWidth,
     baseHeight,
+    patchCurrentNodeWait,
+    patchCurrentNodeOptions,
     ...nodeProps // All props that are left will be forwarded to the Node component
   } = props;
 
@@ -108,12 +113,16 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
    * It's a safer default behavior, because we usually care only about the last update, not all those in between.
    *
    * This is very convenient when updating input's values and such, and help keeping good app's performances and reduces cost.
+   *
+   * The default behavior is to wait for 1sec and there is no timeout.
+   * You can override the default behavior for each specialized Node component.
    */
   const debouncedPatchCurrentNode = useDebouncedCallback(
     (patch: PartialBaseNodeData) => {
       patchCurrentNode(patch);
     },
-    1000, // Wait for other changes to happen, if no change happen then invoke the update
+    patchCurrentNodeWait || 1000, // Wait for other changes to happen, if no change happen then invoke the update
+    patchCurrentNodeOptions || {},
   );
 
   /**
@@ -166,10 +175,10 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
    *
    * XXX This function is being debounced by default (when used by children components) to avoid sending a burst of updates to the database.
    *
-   * XXX Make sure to call this function once per function call, otherwise only the last patch call would be persisted correctly
+   * XXX TLDR; Don't use "patchCurrentNode" multiple times in the same function, it won't work as expected:
+   *  Make sure to call this function once per function call, otherwise only the last patch call would be persisted correctly
    *  (multiple calls within the same function would be overridden by the last patch,
    *  because the "node" used as reference wouldn't be updated right away and would still use the same (outdated) reference)
-   *  TLDR; Don't use "patchCurrentNode" multiple times in the same function, it won't work as expected
    *
    * @param patch
    */
@@ -361,6 +370,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
             isReachable,
             lastCreated,
             patchCurrentNode: debouncedPatchCurrentNode,
+            patchCurrentNodeImmediately: patchCurrentNode,
           };
 
           return (
