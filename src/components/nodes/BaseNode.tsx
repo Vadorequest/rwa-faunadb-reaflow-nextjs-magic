@@ -146,7 +146,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
   const patchCurrentNodeConcurrently: PatchCurrentNodeConcurrently = (patch: PartialBaseNodeData) => {
     // Merge the current patch to the consolidated concurrent patch object
     merge(consolidatedPatches, consolidatedPatches, patch);
-    console.log('Patch applied, patch:', patch, 'result:', consolidatedPatches)
+    console.log('Patch applied, patch:', patch, 'result:', consolidatedPatches);
 
     // Apply the concurrent patches, this call will be debounced and won't take effect immediately
     _applyConcurrentPatches();
@@ -187,30 +187,43 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
    */
   useEffect(() => {
     const patchData: Partial<BaseNodeAdditionalData> = {};
+    const patch: PartialBaseNodeData = {
+      data: patchData,
+    };
 
     if (node?.data?.dynHeights?.baseHeight !== baseHeight) {
       patchData.dynHeights = {
         baseHeight: baseHeight,
       };
+
+      if (node?.data?.dynHeights?.baseHeight && node?.height) {
+        const heightDiff = node?.data?.dynHeights?.baseHeight - baseHeight;
+        patch.height = node?.height - heightDiff;
+      }
     }
 
     if (node?.data?.dynWidths?.baseWidth !== baseWidth) {
       patchData.dynWidths = {
         baseWidth: baseWidth,
       };
+
+      if (node?.data?.dynWidths?.baseWidth && node?.width) {
+        const widthDiff = node?.data?.dynWidths?.baseWidth - baseWidth;
+        patch.width = node?.width - widthDiff;
+      }
     }
 
     if (!isEmpty(patchData)) {
       console.log(`Current node's base width/height doesn't match component's own base width/height. Updating the current node with patch:`, patchData);
-      debouncedPatchCurrentNode({
-        data: patchData,
-      });
+      patchCurrentNodeConcurrently(patch);
     }
   }, [
-    baseWidth,
     baseHeight,
+    baseWidth,
     node?.height,
+    node?.width,
     node?.data?.dynHeights?.baseHeight,
+    node?.data?.dynWidths?.baseWidth,
   ]);
 
   /**

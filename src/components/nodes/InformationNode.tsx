@@ -40,7 +40,6 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
           const {
             node,
             lastCreated,
-            patchCurrentNode,
             patchCurrentNodeConcurrently,
           } = nodeProps;
           const lastCreatedNode = lastCreated?.node;

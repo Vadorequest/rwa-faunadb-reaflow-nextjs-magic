@@ -1,7 +1,5 @@
 import { Button } from '@chakra-ui/react';
 import { css } from '@emotion/react';
-import isEmpty from 'lodash.isempty';
-import merge from 'lodash.merge';
 import now from 'lodash.now';
 import sortBy from 'lodash.sortby';
 import React, { Fragment } from 'react';
@@ -9,7 +7,6 @@ import { DebounceInput } from 'react-debounce-input';
 import ReactSelect from 'react-select';
 import { OptionTypeBase } from 'react-select/src/types';
 import { TextareaHeightChangeMeta } from 'react-textarea-autosize/dist/declarations/src';
-import { useDebouncedCallback } from 'use-debounce';
 import { v1 as uuid } from 'uuid';
 import settings from '../../settings';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
@@ -34,7 +31,7 @@ type Props = {} & BaseNodeProps<QuestionNodeData>;
 
 const nodeType: NodeType = 'question';
 const baseWidth = 250;
-const baseHeight = 320;
+const baseHeight = 300;
 
 /**
  * Question node.
