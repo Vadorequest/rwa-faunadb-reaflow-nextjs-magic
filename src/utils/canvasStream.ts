@@ -251,10 +251,16 @@ export const updateUserCanvas = async (canvasRef: TypeOfRef | undefined, user: U
 
             try {
               const updateCanvasDatasetResult: CanvasDatasetResult = await client.query<CanvasDatasetResult>(Update(canvasRef, { data: newCanvasDataset }));
-              console.log('updateCanvasResult', updateCanvasDatasetResult);
+              console.log('[updateUserCanvas] updateCanvasResult', updateCanvasDatasetResult);
             } catch (e) {
               console.error(`[updateUserCanvas] Error while updating canvas:`, e);
-              // TODO handle concurrent updates error, might be beneficial to overwrite the local dataset to avoid being out-of-sync and overwriting work done by others?
+
+              // Handling concurrent updates errors by using the value from the remote
+              // This makes sure we are up-to-date with the remote to avoid overwriting work done by other
+              if(e?.message === 'contended transaction'){
+                console.log('[updateUserCanvas] Concurrent update error detected, overwriting local state with remote state. Local:', newCanvasDataset, 'remote:', existingRemoteCanvasDataset);
+                setRecoilExternalState(canvasDatasetSelector, existingRemoteCanvasDataset);
+              }
             }
           } else {
             console.log(`[updateUserCanvas] Canvas remote dataset has not changed. Database update was aborted.`, 'diff:', remoteDiff);
