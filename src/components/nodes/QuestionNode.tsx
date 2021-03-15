@@ -2,10 +2,7 @@ import { Button } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import now from 'lodash.now';
 import sortBy from 'lodash.sortby';
-import React, {
-  Fragment,
-  useEffect,
-} from 'react';
+import React, { Fragment } from 'react';
 import { DebounceInput } from 'react-debounce-input';
 import ReactSelect from 'react-select';
 import { OptionTypeBase } from 'react-select/src/types';
@@ -68,13 +65,21 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
           const lastCreatedNode = lastCreated?.node;
           const lastCreatedAt = lastCreated?.at;
           const displayChoiceInputs = node?.data?.questionChoiceType === 'single-quick-reply';
-          const additionalHeightChoiceInputs = 200;
+          const choiceBaseHeight = 200;
 
           // Autofocus works fine when the node is inside the viewport, but when it's created outside it moves the viewport back at the beginning
           const shouldAutofocus = false && lastCreatedNode?.id === node.id && isYoungerThan(lastCreatedAt, 1000); // XXX Disabled for now, need a way to auto-center on the newly created node
 
-          const calculateNodeHeight = (dynHeights?: QuestionNodeAdditionalData['dynHeights']): number => {
-            return (dynHeights?.base || baseHeight) + (dynHeights?.questionTextarea || 0) + (displayChoiceInputs ? (dynHeights?.choices || 0) : 0);
+          /**
+           * Calculates the node's height based on the dynamic source that affect the dynamic height of the component.
+           *
+           * @param dynHeights
+           * @param willDisplayChoiceInputs
+           */
+          const calculateNodeHeight = (dynHeights?: QuestionNodeAdditionalData['dynHeights'], willDisplayChoiceInputs: boolean = displayChoiceInputs): number => {
+            return (dynHeights?.baseHeight || baseHeight) +
+              (dynHeights?.questionTextareaHeight || 0) +
+              (willDisplayChoiceInputs ? (dynHeights?.choicesBaseHeight || 0) : 0);
           };
 
           /**
@@ -106,16 +111,17 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
           const onQuestionInputHeightChange = (height: number, meta: TextareaHeightChangeMeta) => {
             // Only consider additional height, by ignoring the height of the first row
             const additionalHeight = height - meta.rowHeight;
-            console.log('onTextHeightChange ', node?.data?.dynHeights?.questionTextarea, additionalHeight);
+            console.log('onTextHeightChange ', node?.data?.dynHeights?.questionTextareaHeight, additionalHeight);
 
-            if (node?.data?.dynHeights?.questionTextarea !== additionalHeight) {
+            if (node?.data?.dynHeights?.questionTextareaHeight !== additionalHeight) {
               const patchedNodeAdditionalData: Partial<QuestionNodeAdditionalData> = {
                 dynHeights: {
                   ...node?.data?.dynHeights as QuestionNodeAdditionalData['dynHeights'],
-                  questionTextarea: additionalHeight,
+                  questionTextareaHeight: additionalHeight,
                 },
               };
 
+              // Updates the value in the Recoil store
               patchCurrentNode({
                 data: patchedNodeAdditionalData,
                 height: calculateNodeHeight(patchedNodeAdditionalData.dynHeights),
@@ -158,18 +164,23 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
            */
           const onSelectedChoiceTypeChange = (selectedChoice: OptionTypeBase, action: { action: string }): void => {
             const selectedChoiceValue: QuestionChoiceType = selectedChoice?.value;
+            console.log('selectedChoiceValue', selectedChoiceValue);
 
             // Don't update if the choice is not different
             if (selectedChoiceValue !== node?.data?.questionChoiceType) {
+              const willDisplayChoiceInputs = selectedChoiceValue === 'single-quick-reply';
+              const patchedNodeAdditionalData: Partial<QuestionNodeAdditionalData> = {
+                questionChoiceType: selectedChoiceValue,
+                dynHeights: {
+                  ...node?.data?.dynHeights as QuestionNodeAdditionalData['dynHeights'],
+                  choicesBaseHeight: willDisplayChoiceInputs ? choiceBaseHeight : 0,
+                },
+              };
+
               // Updates the value in the Recoil store
               patchCurrentNodeImmediately({
-                data: {
-                  questionChoiceType: selectedChoiceValue,
-                  dynHeights: {
-                    ...node?.data?.dynHeights,
-                    choices: additionalHeightChoiceInputs,
-                  },
-                },
+                data: patchedNodeAdditionalData,
+                height: calculateNodeHeight(patchedNodeAdditionalData.dynHeights, willDisplayChoiceInputs),
               } as QuestionNodeData);
             }
           };
@@ -239,7 +250,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                         <div
                           className={'question-choices'}
                           css={css`
-                            max-height: ${additionalHeightChoiceInputs}px;
+                            max-height: ${choiceBaseHeight}px;
                             overflow: scroll;
                           `}
                         >
@@ -262,7 +273,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                           variant="secondary"
                           className={'add-question-choice'}
                           width={'100%'}
-                          onClick={() => patchCurrentNode({
+                          onClick={() => patchCurrentNodeImmediately({
                             data: {
                               questionChoices: [
                                 ...(node?.data?.questionChoices || []),
