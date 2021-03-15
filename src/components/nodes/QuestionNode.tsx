@@ -1,5 +1,6 @@
 import { Button } from '@chakra-ui/react';
 import { css } from '@emotion/react';
+import isEmpty from 'lodash.isempty';
 import merge from 'lodash.merge';
 import now from 'lodash.now';
 import sortBy from 'lodash.sortby';
@@ -72,12 +73,15 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
           // Autofocus works fine when the node is inside the viewport, but when it's created outside it moves the viewport back at the beginning
           const shouldAutofocus = false && lastCreatedNode?.id === node.id && isYoungerThan(lastCreatedAt, 1000); // XXX Disabled for now, need a way to auto-center on the newly created node
 
-          const patches: Partial<QuestionNodeData> = {};
+          let concurrentPatches: Partial<QuestionNodeData> = {};
 
           const _applyConcurrentPatches = useDebouncedCallback(
             () => {
-              console.log('Applying patches', patches);
-              patchCurrentNode(patches);
+              if (!isEmpty(concurrentPatches)) {
+                console.log('Applying concurrent patches as one consolidated patch', concurrentPatches);
+                patchCurrentNode(concurrentPatches);
+                concurrentPatches = {};
+              }
             },
             1000, // Wait for other changes to happen, if no change happen then invoke the update
             {
@@ -85,8 +89,8 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
             },
           );
 
-          const applyConcurrentPatches = (patch: Partial<QuestionNodeData>) => {
-            merge(patches, patches, patch);
+          const patchCurrentNodeConcurrently = (patch: Partial<QuestionNodeData>) => {
+            merge(concurrentPatches, concurrentPatches, patch);
             _applyConcurrentPatches();
           };
 
@@ -122,7 +126,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
 
             if (node?.data?.dynHeights?.questionTextareaHeight !== newHeight) {
               // Updates the value in the Recoil store
-              applyConcurrentPatches({
+              patchCurrentNodeConcurrently({
                 data: patchedNodeAdditionalData,
                 height: newHeight,
               } as QuestionNodeData);
@@ -136,9 +140,11 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
            */
           const onQuestionInputValueChange = (event: any) => {
             const newValue = event.target.value;
+            console.log('onQuestionInputValueChange', event);
 
             if (newValue !== node?.data?.questionText) {
-              applyConcurrentPatches({
+              console.log('onQuestionInputValueChange ', newValue);
+              patchCurrentNodeConcurrently({
                 data: {
                   questionText: newValue,
                 },
