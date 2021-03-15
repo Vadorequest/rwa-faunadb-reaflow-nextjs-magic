@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import cloneDeep from 'lodash.clonedeep';
 import includes from 'lodash.includes';
 import isEmpty from 'lodash.isempty';
+import merge from 'lodash.merge';
 import remove from 'lodash.remove';
 import React, {
   KeyboardEventHandler,
@@ -185,15 +186,8 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
   const patchCurrentNode: PatchCurrentNode = (patch: PartialBaseNodeData): void => {
     const nodeToUpdateIndex = nodes.findIndex((node: BaseNodeData) => node.id === nodeProps.id);
     const existingNode: BaseNodeData = nodes[nodeToUpdateIndex];
-    const nodeToUpdate = {
-      ...existingNode,
-      ...patch,
-      data: {
-        ...existingNode.data || {},
-        ...patch.data || {},
-      },
-      id: existingNode.id, // Force keep same id to avoid edge cases
-    };
+    const nodeToUpdate = {};
+    merge(nodeToUpdate, existingNode, patch);
     console.log('patchCurrentNode before', existingNode, 'after:', nodeToUpdate, 'using patch:', patch);
 
     const newNodes = cloneDeep(nodes);
