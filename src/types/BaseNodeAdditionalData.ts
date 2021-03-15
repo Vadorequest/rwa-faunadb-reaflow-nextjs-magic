@@ -20,13 +20,13 @@ export type BaseNodeAdditionalData<Type extends NodeType = NodeType> = {
    *
    * Also, it allows to adapt existing nodes when the node default properties change.
    * For instance, if the baseWidth is changed in the future because we add a new feature that takes some space,
-   * we'll be able to detect that "dynWidths.base" is different from the node's "baseWidth" and update the node "dynWidths/.base",
+   * we'll be able to detect that "dynWidths.baseWidth" is different from the node's "baseWidth" and update the node "dynWidths/.baseWidth",
    * so the new feature will be visible immediately.
    *
    * XXX This property might be extended from specialized components, because each component might calculate its dynamic width differently.
    */
   dynWidths: {
-    base: number;
+    baseWidth: number;
   };
 
   /**
@@ -38,13 +38,13 @@ export type BaseNodeAdditionalData<Type extends NodeType = NodeType> = {
    *
    * Also, it allows to adapt existing nodes when the node default properties change.
    * For instance, if the baseHeight is changed in the future because we add a new feature that takes some space,
-   * we'll be able to detect that "dynHeights.base" is different from the node's "baseHeight" and update the node "dynHeights/.base",
+   * we'll be able to detect that "dynHeights.baseWidth" is different from the node's "baseHeight" and update the node "dynHeights/.baseWidth",
    * so the new feature will be visible immediately.
    *
    * XXX This property might be extended from specialized components, because each component might calculate its dynamic height differently.
    */
   dynHeights: {
-    base: number;
+    baseHeight: number;
   };
 };
 

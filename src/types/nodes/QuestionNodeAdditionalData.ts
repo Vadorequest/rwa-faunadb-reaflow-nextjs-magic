@@ -61,11 +61,11 @@ export type QuestionNodeAdditionalData = BaseNodeAdditionalData & NodeDataWithVa
    *
    * Also, it allows to adapt existing nodes when the node default properties change.
    * For instance, if the baseHeight is changed in the future because we add a new feature that takes some space,
-   * we'll be able to detect that "dynHeights.base" is different from the node's "baseHeight" and update the node "dynHeights/.base",
+   * we'll be able to detect that "dynHeights.baseWidth" is different from the node's "baseHeight" and update the node "dynHeights/.baseWidth",
    * so the new feature will be visible immediately.
    */
   dynHeights: BaseNodeAdditionalData['dynHeights'] & {
-    questionTextarea?: number;
-    choices?: number;
+    questionTextareaHeight?: number;
+    choicesBaseHeight?: number;
   }
 };

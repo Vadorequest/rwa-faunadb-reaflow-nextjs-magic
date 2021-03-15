@@ -142,15 +142,15 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
   useEffect(() => {
     const patchData: Partial<BaseNodeAdditionalData> = {};
 
-    if (node?.data?.dynHeights?.base !== baseHeight) {
+    if (node?.data?.dynHeights?.baseHeight !== baseHeight) {
       patchData.dynHeights = {
-        base: baseHeight,
+        baseHeight: baseHeight,
       };
     }
 
-    if (node?.data?.dynWidths?.base !== baseWidth) {
+    if (node?.data?.dynWidths?.baseWidth !== baseWidth) {
       patchData.dynWidths = {
-        base: baseWidth,
+        baseWidth: baseWidth,
       };
     }
 
@@ -164,7 +164,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
     baseWidth,
     baseHeight,
     node?.height,
-    node?.data?.dynHeights?.base,
+    node?.data?.dynHeights?.baseHeight,
   ]);
 
   /**
