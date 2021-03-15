@@ -67,7 +67,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
           const additionalHeightChoiceInputs = 200;
 
           // Autofocus works fine when the node is inside the viewport, but when it's created outside it moves the viewport back at the beginning
-          const shouldAutofocus = false && lastCreatedNode?.id === node.id && isYoungerThan(lastCreatedAt, 1000);
+          const shouldAutofocus = false && lastCreatedNode?.id === node.id && isYoungerThan(lastCreatedAt, 1000); // XXX Disabled for now, need a way to auto-center on the newly created node
 
           /**
            * Calculates the node's height dynamically.
@@ -163,8 +163,8 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                     margin-bottom: 10px;
                     margin-top: 15px;
                   }
-                  
-                  .choice-container{
+
+                  .choice-container {
                     margin-top: 15px
                   }
 
