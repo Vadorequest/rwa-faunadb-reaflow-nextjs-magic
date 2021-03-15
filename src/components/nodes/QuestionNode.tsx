@@ -101,7 +101,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
            */
           const onTextHeightChange = (height: number, meta: TextareaHeightChangeMeta) => {
             // Only consider additional height, by ignoring the height of the first row
-            const additionalHeight = height - meta.rowHeight - 2; // TODO const? not sure
+            const additionalHeight = height - meta.rowHeight;
 
             if (node?.data?.dynHeights?.questionTextarea !== additionalHeight) {
               const patchedNodeAdditionalData: Partial<QuestionNodeAdditionalData> = {
