@@ -32,7 +32,7 @@ export const Textarea: React.FunctionComponent<Props> = (props) => {
     (height: number, meta: TextareaHeightChangeMeta) => {
       onHeightChange?.(height, meta);
     },
-    1000, // Wait 100ms for other changes to happen, if no change happen then invoke the update
+    1000, // Wait for other changes to happen, if no change happen then invoke the update
   );
 
   return (

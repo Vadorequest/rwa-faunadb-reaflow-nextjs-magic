@@ -17,6 +17,7 @@ import {
   Remove,
 } from 'reaflow';
 import { useRecoilState } from 'recoil';
+import { useDebouncedCallback } from 'use-debounce';
 import settings from '../../settings';
 import { blockPickerMenuSelector } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
@@ -101,6 +102,21 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
   const [isRecentlyCreated, setIsRecentlyCreated] = useState<boolean>(isYoungerThan(lastCreatedAt, recentlyCreatedMaxAge));
 
   /**
+   * Debounces the patchCurrentNode function.
+   *
+   * By debouncing "patchCurrentNode", it ensures all call to "patchCurrentNode" will not trigger burst of database updates.
+   * It's a safer default behavior, because we usually care only about the last update, not all those in between.
+   *
+   * This is very convenient when updating input's values and such, and help keeping good app's performances and reduces cost.
+   */
+  const debouncedPatchCurrentNode = useDebouncedCallback(
+    (patch: PartialBaseNodeData) => {
+      patchCurrentNode(patch);
+    },
+    1000, // Wait for other changes to happen, if no change happen then invoke the update
+  );
+
+  /**
    * Stops the highlight of the last created node when the node's age has reached max age.
    */
   useEffect(() => {
@@ -112,7 +128,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
   }, []);
 
   /**
-   * Update the node's dynamic width/height base in the event it'd have changed.
+   * Update the node's base width/height in the event the Node component base width/height would have changed.
    */
   useEffect(() => {
     const patchData: Partial<BaseNodeAdditionalData> = {};
@@ -130,14 +146,16 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
     }
 
     if (!isEmpty(patchData)) {
-      console.log(`Current node's base width/height doesn't match component's own base width/height. Updating the current node with patch:`, patchData)
-      patchCurrentNode({
-        data: patchData
-      })
+      console.log(`Current node's base width/height doesn't match component's own base width/height. Updating the current node with patch:`, patchData);
+      debouncedPatchCurrentNode({
+        data: patchData,
+      });
     }
   }, [
     baseWidth,
     baseHeight,
+    node?.height,
+    node?.data?.dynHeights?.base,
   ]);
 
   /**
@@ -145,6 +163,8 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
    *
    * Only updates the provided properties, doesn't update other properties.
    * Also merges the 'data' object, by keeping existing data and only overwriting those that are specified.
+   *
+   * XXX This function is being debounced by default (when used by children components) to avoid sending a burst of updates to the database.
    *
    * XXX Make sure to call this function once per function call, otherwise only the last patch call would be persisted correctly
    *  (multiple calls within the same function would be overridden by the last patch,
@@ -340,7 +360,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
             isSelected,
             isReachable,
             lastCreated,
-            patchCurrentNode,
+            patchCurrentNode: debouncedPatchCurrentNode,
           };
 
           return (
