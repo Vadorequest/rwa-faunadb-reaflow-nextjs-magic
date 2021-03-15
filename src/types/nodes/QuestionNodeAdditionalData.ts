@@ -64,7 +64,7 @@ export type QuestionNodeAdditionalData = BaseNodeAdditionalData & NodeDataWithVa
    * we'll be able to detect that "dynHeights.base" is different from the node's "baseHeight" and update the node "dynHeights/.base",
    * so the new feature will be visible immediately.
    */
-  dynHeights?: BaseNodeAdditionalData['dynHeights'] & {
+  dynHeights: BaseNodeAdditionalData['dynHeights'] & {
     questionTextarea?: number;
     choices?: number;
   }

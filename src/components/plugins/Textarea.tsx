@@ -8,6 +8,9 @@ type Props = {} & TextareaAutosizeProps;
  * Textarea with autoresize and sane default props.
  *
  * Wrapper around the TextareaAutosize component.
+ *
+ * @see https://github.com/Andarist/react-textarea-autosize
+ * @see http://andarist.github.io/react-textarea-autosize/
  */
 export const Textarea: React.FunctionComponent<Props> = (props) => {
   const {

@@ -5,7 +5,6 @@ import sortBy from 'lodash.sortby';
 import React, {
   Fragment,
   useEffect,
-  useState,
 } from 'react';
 import { DebounceInput } from 'react-debounce-input';
 import ReactSelect from 'react-select';
@@ -18,7 +17,10 @@ import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
 import { QuestionChoiceType } from '../../types/nodes/QuestionChoiceType';
 import { QuestionChoiceTypeOption } from '../../types/nodes/QuestionChoiceTypeOption';
-import { QuestionChoiceVariable } from '../../types/nodes/QuestionNodeAdditionalData';
+import {
+  QuestionChoiceVariable,
+  QuestionNodeAdditionalData,
+} from '../../types/nodes/QuestionNodeAdditionalData';
 import { QuestionNodeData } from '../../types/nodes/QuestionNodeData';
 import { SpecializedNodeProps } from '../../types/nodes/SpecializedNodeProps';
 import NodeType from '../../types/NodeType';
@@ -31,8 +33,8 @@ import BaseNode from './BaseNode';
 type Props = {} & BaseNodeProps<QuestionNodeData>;
 
 const nodeType: NodeType = 'question';
-const defaultWidth = 250;
-const defaultHeight = 250;
+const baseWidth = 250;
+const baseHeight = 300;
 
 /**
  * Question node.
@@ -61,7 +63,6 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
             lastCreated,
             patchCurrentNode,
           } = nodeProps;
-          const [questionTextareaAdditionalHeight, setQuestionTextareaAdditionalHeight] = useState<number>(0);
           const choiceTypes: QuestionChoiceTypeOption[] = settings.canvas.nodes.questionNode.choiceTypeOptions;
           const lastCreatedNode = lastCreated?.node;
           const lastCreatedAt = lastCreated?.at;
@@ -71,6 +72,10 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
           // Autofocus works fine when the node is inside the viewport, but when it's created outside it moves the viewport back at the beginning
           const shouldAutofocus = false && lastCreatedNode?.id === node.id && isYoungerThan(lastCreatedAt, 1000); // XXX Disabled for now, need a way to auto-center on the newly created node
 
+          const calculateHeight = (dynHeights?: QuestionNodeAdditionalData['dynHeights']): number => {
+            return (dynHeights?.base || baseHeight) + (dynHeights?.questionTextarea || 0) + (displayChoiceInputs ? (dynHeights?.choices || 0) : 0);
+          };
+
           /**
            * Calculates the node's height dynamically.
            *
@@ -78,7 +83,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
            */
           useEffect(() => {
             // TODO increase height depending on how many input choice there are (50px/unit)?
-            const newHeight = baseHeight + questionTextareaAdditionalHeight + (displayChoiceInputs ? additionalHeightChoiceInputs : 0);
+            const newHeight = calculateHeight(node?.data?.dynHeights);
 
             // Only update the height if it's different
             if (node?.height !== newHeight) {
@@ -86,7 +91,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                 height: newHeight,
               });
             }
-          }, [questionTextareaAdditionalHeight, displayChoiceInputs]);
+          }, [node?.data?.dynHeights, displayChoiceInputs]);
 
           /**
            * When textarea input height changes, we need to increase the height of the whole node accordingly.
@@ -96,10 +101,20 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
            */
           const onTextHeightChange = (height: number, meta: TextareaHeightChangeMeta) => {
             // Only consider additional height, by ignoring the height of the first row
-            const additionalHeight = height - meta.rowHeight;
+            const additionalHeight = height - meta.rowHeight - 2; // TODO const? not sure
 
-            if (questionTextareaAdditionalHeight !== additionalHeight) {
-              setQuestionTextareaAdditionalHeight(additionalHeight);
+            if (node?.data?.dynHeights?.questionTextarea !== additionalHeight) {
+              const patchedNodeAdditionalData: Partial<QuestionNodeAdditionalData> = {
+                dynHeights: {
+                  ...node?.data?.dynHeights as QuestionNodeAdditionalData['dynHeights'],
+                  questionTextarea: additionalHeight,
+                },
+              };
+
+              patchCurrentNode({
+                data: patchedNodeAdditionalData,
+                height: calculateHeight(patchedNodeAdditionalData.dynHeights),
+              } as QuestionNodeData);
             }
           };
 
@@ -145,6 +160,10 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
               patchCurrentNode({
                 data: {
                   questionChoiceType: selectedChoiceValue,
+                  dynHeights: {
+                    ...node?.data?.dynHeights,
+                    choices: additionalHeightChoiceInputs,
+                  },
                 },
               } as QuestionNodeData);
             }
