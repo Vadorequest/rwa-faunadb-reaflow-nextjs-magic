@@ -76,10 +76,11 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
            * @param dynHeights
            * @param willDisplayChoiceInputs
            */
-          const calculateNodeHeight = (dynHeights?: QuestionNodeAdditionalData['dynHeights'], willDisplayChoiceInputs: boolean = displayChoiceInputs): number => {
+          const calculateNodeHeight = (dynHeights: Partial<QuestionNodeAdditionalData['dynHeights']>, willDisplayChoiceInputs: boolean): number => {
+            console.log('calculateNodeHeight', dynHeights, willDisplayChoiceInputs)
             return (dynHeights?.baseHeight || baseHeight) +
               (dynHeights?.questionTextareaHeight || 0) +
-              (willDisplayChoiceInputs ? (dynHeights?.choicesBaseHeight || 0) : 0);
+              (willDisplayChoiceInputs ? (choiceBaseHeight || 0) : 0);
           };
 
           /**
@@ -93,12 +94,11 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
             const additionalHeight = height - meta.rowHeight;
             const patchedNodeAdditionalData: Partial<QuestionNodeAdditionalData> = {
               dynHeights: {
-                ...node?.data?.dynHeights as QuestionNodeAdditionalData['dynHeights'],
                 questionTextareaHeight: additionalHeight,
-              },
+              } as Partial<QuestionNodeAdditionalData['dynHeights']>,
             };
-            const newHeight = calculateNodeHeight(patchedNodeAdditionalData.dynHeights);
-            console.log('onTextHeightChange ', node?.data?.dynHeights?.questionTextareaHeight, newHeight);
+            const newHeight = calculateNodeHeight(patchedNodeAdditionalData.dynHeights, displayChoiceInputs);
+            console.log('onTextHeightChange ', node?.data?.dynHeights?.questionTextareaHeight, newHeight, node?.data?.dynHeights?.questionTextareaHeight !== newHeight);
 
             if (node?.data?.dynHeights?.questionTextareaHeight !== newHeight) {
               // Updates the value in the Recoil store
@@ -158,11 +158,12 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                   choicesBaseHeight: willDisplayChoiceInputs ? choiceBaseHeight : 0,
                 },
               };
+              const newHeight = calculateNodeHeight(patchedNodeAdditionalData.dynHeights, willDisplayChoiceInputs);
 
               // Updates the value in the Recoil store
               patchCurrentNodeImmediately({
                 data: patchedNodeAdditionalData,
-                height: calculateNodeHeight(patchedNodeAdditionalData.dynHeights, willDisplayChoiceInputs),
+                height: newHeight,
               } as QuestionNodeData);
             }
           };
