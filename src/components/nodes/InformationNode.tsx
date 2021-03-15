@@ -7,7 +7,6 @@ import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
 import { InformationNodeAdditionalData } from '../../types/nodes/InformationNodeAdditionalData';
 import { InformationNodeData } from '../../types/nodes/InformationNodeData';
-import { QuestionNodeAdditionalData } from '../../types/nodes/QuestionNodeAdditionalData';
 import { SpecializedNodeProps } from '../../types/nodes/SpecializedNodeProps';
 import NodeType from '../../types/NodeType';
 import { isYoungerThan } from '../../utils/date';
@@ -70,12 +69,11 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
             const additionalHeight = height - meta.rowHeight;
             const patchedNodeAdditionalData: Partial<InformationNodeAdditionalData> = {
               dynHeights: {
-                ...node?.data?.dynHeights as QuestionNodeAdditionalData['dynHeights'],
                 informationTextareaHeight: additionalHeight,
-              },
+              } as InformationNodeAdditionalData['dynHeights'],
             };
             const newHeight = calculateNodeHeight(patchedNodeAdditionalData.dynHeights);
-            console.log('onTextHeightChange ', node?.data?.dynHeights?.informationTextareaHeight, newHeight);
+            console.log('onTextHeightChange ', node?.data?.dynHeights?.informationTextareaHeight, newHeight, node?.data?.dynHeights?.informationTextareaHeight !== newHeight);
 
             if (node?.data?.dynHeights?.informationTextareaHeight !== newHeight) {
               // Updates the value in the Recoil store

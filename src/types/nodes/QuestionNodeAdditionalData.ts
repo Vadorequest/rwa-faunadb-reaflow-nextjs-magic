@@ -65,7 +65,9 @@ export type QuestionNodeAdditionalData = BaseNodeAdditionalData & NodeDataWithVa
    * so the new feature will be visible immediately.
    */
   dynHeights?: BaseNodeAdditionalData['dynHeights'] & {
+    /**
+     * Height of the "question" textarea input.
+     */
     questionTextareaHeight?: number;
-    choicesBaseHeight?: number;
   }
 };
