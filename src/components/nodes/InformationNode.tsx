@@ -68,19 +68,20 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
           const onInformationTextHeightChange = (height: number, meta: TextareaHeightChangeMeta) => {
             // Only consider additional height, by ignoring the height of the first row
             const additionalHeight = height - meta.rowHeight;
+            const patchedNodeAdditionalData: Partial<InformationNodeAdditionalData> = {
+              dynHeights: {
+                ...node?.data?.dynHeights as QuestionNodeAdditionalData['dynHeights'],
+                informationTextareaHeight: additionalHeight,
+              },
+            };
+            const newHeight = calculateNodeHeight(patchedNodeAdditionalData.dynHeights);
+            console.log('onTextHeightChange ', node?.data?.dynHeights?.informationTextareaHeight, newHeight);
 
-            if (node?.data?.dynHeights?.informationTextareaHeight !== additionalHeight) {
-              const patchedNodeAdditionalData: Partial<InformationNodeAdditionalData> = {
-                dynHeights: {
-                  ...node?.data?.dynHeights as QuestionNodeAdditionalData['dynHeights'],
-                  informationTextareaHeight: additionalHeight,
-                },
-              };
-
+            if (node?.data?.dynHeights?.informationTextareaHeight !== newHeight) {
               // Updates the value in the Recoil store
               patchCurrentNode({
                 data: patchedNodeAdditionalData,
-                height: calculateNodeHeight(patchedNodeAdditionalData.dynHeights),
+                height: newHeight,
               } as InformationNodeData);
             }
           };
@@ -93,12 +94,14 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
           const onInformationTextInputValueChange = (event: any) => {
             const newValue = event.target.value;
 
-            // Updates the value in the Recoil store
-            patchCurrentNode({
-              data: {
-                informationText: newValue,
-              },
-            } as InformationNodeData);
+            if (newValue !== node?.data?.informationText) {
+              // Updates the value in the Recoil store
+              patchCurrentNode({
+                data: {
+                  informationText: newValue,
+                },
+              } as InformationNodeData);
+            }
           };
 
           return (
