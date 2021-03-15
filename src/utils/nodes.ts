@@ -54,10 +54,10 @@ export const createNodeFromDefaultProps = (defaultProps: BaseNodeDefaultProps): 
       baseWidth: defaultProps.baseWidth,
       baseHeight: defaultProps.baseHeight,
       dynHeights: {
-        base: defaultProps.baseHeight,
+        baseHeight: defaultProps.baseHeight,
       },
       dynWidths: {
-        base: defaultProps.baseWidth,
+        baseWidth: defaultProps.baseWidth,
       },
     },
     ports: defaultProps.ports || [],
