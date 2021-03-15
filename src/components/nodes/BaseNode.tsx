@@ -30,10 +30,14 @@ import BaseNodeAdditionalData from '../../types/BaseNodeAdditionalData';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import BaseNodeData from '../../types/BaseNodeData';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
-import BaseNodeProps, { PatchCurrentNode } from '../../types/BaseNodeProps';
+import BaseNodeProps, {
+  PatchCurrentNode,
+  PatchCurrentNodeConcurrently,
+} from '../../types/BaseNodeProps';
 import BasePortData from '../../types/BasePortData';
 import { CanvasDataset } from '../../types/CanvasDataset';
 import { GetBaseNodeDefaultPropsProps } from '../../types/GetBaseNodeDefaultProps';
+import { QuestionNodeData } from '../../types/nodes/QuestionNodeData';
 import { SpecializedNodeProps } from '../../types/nodes/SpecializedNodeProps';
 import NodeType from '../../types/NodeType';
 import PartialBaseNodeData from '../../types/PartialBaseNodeData';
@@ -106,6 +110,47 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
   // Used to highlight the last created node for a few seconds after it's been created, to make it easier to understand where it's located
   // Particularly useful to the editor when ELK changes the nodes position to avoid losing track of the node that was just created
   const [isRecentlyCreated, setIsRecentlyCreated] = useState<boolean>(isYoungerThan(lastCreatedAt, recentlyCreatedMaxAge));
+
+  // Contains concurrent patches as an unified/consolidated patch
+  let consolidatedPatches: Partial<QuestionNodeData> = {};
+
+  /**
+   * Applies the consolidated patches.
+   *
+   * This function is debounced, and will not be executed unless there were no more patches applied, or the maxWait has been reached.
+   */
+  const _applyConcurrentPatches = useDebouncedCallback(
+    () => {
+      if (!isEmpty(consolidatedPatches)) {
+        console.log('Applying concurrent patches as one consolidated patch', consolidatedPatches);
+        patchCurrentNode(consolidatedPatches);
+
+        // Reset for the next consolidated patches
+        consolidatedPatches = {};
+      }
+    },
+    1000, // Wait for other changes to happen, if no change happen then invoke the update
+    {
+      maxWait: 10000,
+    },
+  );
+
+  /**
+   * Help consolidating multiple concurrent patches of the same node as one consolidated patch.
+   *
+   * When several events are fired at the same time and they all update the current node, it will be unpredictable to know which event will take precedence.
+   * in such case, it is necessary to have a temporary "consolidated patches" object that contains all updates and is executed once all patches have been merged.
+   *
+   * @param patch
+   */
+  const patchCurrentNodeConcurrently: PatchCurrentNodeConcurrently = (patch: PartialBaseNodeData) => {
+    // Merge the current patch to the consolidated concurrent patch object
+    merge(consolidatedPatches, consolidatedPatches, patch);
+    console.log('Patch applied, patch:', patch, 'result:', consolidatedPatches)
+
+    // Apply the concurrent patches, this call will be debounced and won't take effect immediately
+    _applyConcurrentPatches();
+  };
 
   /**
    * Debounces the patchCurrentNode function.
@@ -365,6 +410,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
             lastCreated,
             patchCurrentNode: debouncedPatchCurrentNode,
             patchCurrentNodeImmediately: patchCurrentNode,
+            patchCurrentNodeConcurrently,
           };
 
           return (

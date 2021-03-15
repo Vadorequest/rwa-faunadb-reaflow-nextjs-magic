@@ -63,6 +63,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
             lastCreated,
             patchCurrentNode,
             patchCurrentNodeImmediately,
+            patchCurrentNodeConcurrently,
           } = nodeProps;
           const choiceTypes: QuestionChoiceTypeOption[] = settings.canvas.nodes.questionNode.choiceTypeOptions;
           const lastCreatedNode = lastCreated?.node;
@@ -72,27 +73,6 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
 
           // Autofocus works fine when the node is inside the viewport, but when it's created outside it moves the viewport back at the beginning
           const shouldAutofocus = false && lastCreatedNode?.id === node.id && isYoungerThan(lastCreatedAt, 1000); // XXX Disabled for now, need a way to auto-center on the newly created node
-
-          let concurrentPatches: Partial<QuestionNodeData> = {};
-
-          const _applyConcurrentPatches = useDebouncedCallback(
-            () => {
-              if (!isEmpty(concurrentPatches)) {
-                console.log('Applying concurrent patches as one consolidated patch', concurrentPatches);
-                patchCurrentNode(concurrentPatches);
-                concurrentPatches = {};
-              }
-            },
-            1000, // Wait for other changes to happen, if no change happen then invoke the update
-            {
-              maxWait: 10000,
-            },
-          );
-
-          const patchCurrentNodeConcurrently = (patch: Partial<QuestionNodeData>) => {
-            merge(concurrentPatches, concurrentPatches, patch);
-            _applyConcurrentPatches();
-          };
 
           /**
            * Calculates the node's height based on the dynamic source that affect the dynamic height of the component.
