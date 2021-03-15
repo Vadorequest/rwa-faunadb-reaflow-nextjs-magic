@@ -1,5 +1,6 @@
 import { Button } from '@chakra-ui/react';
 import { css } from '@emotion/react';
+import merge from 'lodash.merge';
 import now from 'lodash.now';
 import sortBy from 'lodash.sortby';
 import React, { Fragment } from 'react';
@@ -7,6 +8,7 @@ import { DebounceInput } from 'react-debounce-input';
 import ReactSelect from 'react-select';
 import { OptionTypeBase } from 'react-select/src/types';
 import { TextareaHeightChangeMeta } from 'react-textarea-autosize/dist/declarations/src';
+import { useDebouncedCallback } from 'use-debounce';
 import { v1 as uuid } from 'uuid';
 import settings from '../../settings';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
@@ -70,6 +72,24 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
           // Autofocus works fine when the node is inside the viewport, but when it's created outside it moves the viewport back at the beginning
           const shouldAutofocus = false && lastCreatedNode?.id === node.id && isYoungerThan(lastCreatedAt, 1000); // XXX Disabled for now, need a way to auto-center on the newly created node
 
+          const patches: Partial<QuestionNodeData> = {};
+
+          const _applyConcurrentPatches = useDebouncedCallback(
+            () => {
+              console.log('Applying patches', patches);
+              patchCurrentNode(patches);
+            },
+            1000, // Wait for other changes to happen, if no change happen then invoke the update
+            {
+              maxWait: 10000,
+            },
+          );
+
+          const applyConcurrentPatches = (patch: Partial<QuestionNodeData>) => {
+            merge(patches, patches, patch);
+            _applyConcurrentPatches();
+          };
+
           /**
            * Calculates the node's height based on the dynamic source that affect the dynamic height of the component.
            *
@@ -77,7 +97,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
            * @param willDisplayChoiceInputs
            */
           const calculateNodeHeight = (dynHeights: Partial<QuestionNodeAdditionalData['dynHeights']>, willDisplayChoiceInputs: boolean): number => {
-            console.log('calculateNodeHeight', dynHeights, willDisplayChoiceInputs)
+            console.log('calculateNodeHeight', dynHeights, willDisplayChoiceInputs);
             return (dynHeights?.baseHeight || baseHeight) +
               (dynHeights?.questionTextareaHeight || 0) +
               (willDisplayChoiceInputs ? (choiceBaseHeight || 0) : 0);
@@ -102,7 +122,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
 
             if (node?.data?.dynHeights?.questionTextareaHeight !== newHeight) {
               // Updates the value in the Recoil store
-              patchCurrentNode({
+              applyConcurrentPatches({
                 data: patchedNodeAdditionalData,
                 height: newHeight,
               } as QuestionNodeData);
@@ -118,8 +138,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
             const newValue = event.target.value;
 
             if (newValue !== node?.data?.questionText) {
-              // Updates the value in the Recoil store
-              patchCurrentNode({
+              applyConcurrentPatches({
                 data: {
                   questionText: newValue,
                 },
@@ -153,10 +172,6 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
               const willDisplayChoiceInputs = selectedChoiceValue === 'single-quick-reply';
               const patchedNodeAdditionalData: Partial<QuestionNodeAdditionalData> = {
                 questionChoiceType: selectedChoiceValue,
-                dynHeights: {
-                  ...node?.data?.dynHeights as QuestionNodeAdditionalData['dynHeights'],
-                  choicesBaseHeight: willDisplayChoiceInputs ? choiceBaseHeight : 0,
-                },
               };
               const newHeight = calculateNodeHeight(patchedNodeAdditionalData.dynHeights, willDisplayChoiceInputs);
 
