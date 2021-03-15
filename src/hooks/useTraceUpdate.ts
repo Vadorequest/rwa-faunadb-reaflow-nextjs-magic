@@ -1,3 +1,4 @@
+import { diff } from 'deep-diff';
 import {
   useEffect,
   useRef,
@@ -31,6 +32,7 @@ const useRenderingTrace = (componentName: string, propsAndStates: any, level: 'd
         property[key] = {
           old: prev.current[key],
           new: value,
+          diff: diff(prev.current[key], value),
         };
       }
       return property;
