@@ -39,7 +39,8 @@ const useRenderingTrace = (componentName: string, propsAndStates: any, level: 'd
             diffValue = diff(prev.current[key], value);
             detailedDiffValue = detailedDiff(prev.current[key], value);
           } catch (e) {
-            console.error(e);
+            // XXX It will throw an exception when a property isn't an object (e.g: function) with "RangeError: Maximum call stack size exceeded" but we don't care
+            // console.error(e);
           }
         }
 
