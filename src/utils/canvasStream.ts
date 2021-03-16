@@ -73,7 +73,14 @@ export const initStream = async (user: UserSession | null, onStart: OnStart, onI
           console.log('[Streaming] "version" event', version);
 
           if (version.action === 'update') {
-            onUpdate(version.document.data);
+            const canvasDatasetFromRemote: CanvasDatasetResult = version.document;
+
+            if (canvasDatasetFromRemote?.data?.lastEditorId !== user?.id) {
+              console.log('[Streaming] Update event received from different editor is being applied.');
+              onUpdate(canvasDatasetFromRemote?.data);
+            } else {
+              console.log('[Streaming] Update event received from same editor has been ignored.');
+            }
           }
         })
         .on('error', async (error: any) => {
@@ -154,6 +161,7 @@ export const findOrCreateUserCanvas = async (user: UserSession): Promise<Expr | 
       const canvas: Canvas = {
         data: {
           owner: Ref(Collection('Users'), user.id),
+          lastEditorId: user.id,
           ...canvasDataset,
         },
       };
@@ -250,14 +258,22 @@ export const updateUserCanvas = async (canvasRef: TypeOfRef | undefined, user: U
             console.debug('[updateUserCanvas] Updating canvas dataset in FaunaDB. Old:', previousCanvasDataset, 'new:', newCanvasDataset, 'diff:', remoteDiff);
 
             try {
-              const updateCanvasDatasetResult: CanvasDatasetResult = await client.query<CanvasDatasetResult>(Update(canvasRef, { data: newCanvasDataset }));
+              const updateCanvasDatasetResult: CanvasDatasetResult = await client.query<CanvasDatasetResult>(Update(canvasRef, {
+                data: {
+                  ...newCanvasDataset,
+
+                  // Indicating who's the editor who's made the change, so we can safely ignore the "version:update" event we'll soon receive
+                  // when the DB will notify all subscribed editors about the update
+                  lastEditorId: user?.id,
+                },
+              }));
               console.log('[updateUserCanvas] updateCanvasResult', updateCanvasDatasetResult);
             } catch (e) {
               console.error(`[updateUserCanvas] Error while updating canvas:`, e);
 
               // Handling concurrent updates errors by using the value from the remote
               // This makes sure we are up-to-date with the remote to avoid overwriting work done by other
-              if(e?.message === 'contended transaction'){
+              if (e?.message === 'contended transaction') {
                 console.log('[updateUserCanvas] Concurrent update error detected, overwriting local state with remote state. Local:', newCanvasDataset, 'remote:', existingRemoteCanvasDataset);
                 setRecoilExternalState(canvasDatasetSelector, existingRemoteCanvasDataset);
               }
