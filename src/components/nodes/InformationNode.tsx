@@ -74,7 +74,7 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
            * @param height
            * @param meta
            */
-          const onTextHeightChange = (height: number, meta: TextareaHeightChangeMeta) => {
+          const onInformationTextHeightChange = (height: number, meta: TextareaHeightChangeMeta) => {
             // Only consider additional height, by ignoring the height of the first row
             const additionalHeight = height - meta.rowHeight;
 
@@ -88,7 +88,7 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
            *
            * @param event
            */
-          const onTextInputValueChange = (event: any) => {
+          const onInformationTextInputValueChange = (event: any) => {
             const newValue = event.target.value;
 
             // Updates the value in the Recoil store
@@ -116,8 +116,8 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
                   debounceTimeout={settings.canvas.nodes.defaultDebounceWaitFor} // Avoids making the Canvas "lag" due to many unnecessary re-renders, by applying input changes in batches (one at most every 500ms)
                   className={`textarea ${nodeType}-text`}
                   placeholder={'Say something here'}
-                  onHeightChange={onTextHeightChange}
-                  onChange={onTextInputValueChange}
+                  onHeightChange={onInformationTextHeightChange}
+                  onChange={onInformationTextInputValueChange}
                   value={node?.data?.informationText}
                   autoFocus={shouldAutofocus}
                 />
