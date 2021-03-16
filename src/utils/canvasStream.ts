@@ -18,7 +18,10 @@ import { getClient } from '../lib/faunadb/faunadb';
 import { canvasDatasetSelector } from '../states/canvasDatasetSelector';
 import { UserSession } from '../types/auth/UserSession';
 import { CanvasDataset } from '../types/CanvasDataset';
-import { Canvas } from '../types/faunadb/Canvas';
+import {
+  Canvas,
+  UpdateCanvas,
+} from '../types/faunadb/Canvas';
 import { CanvasByOwnerIndex } from '../types/faunadb/CanvasByOwnerIndex';
 import { CanvasDatasetResult } from '../types/faunadb/CanvasDatasetResult';
 import {
@@ -75,8 +78,8 @@ export const initStream = async (user: Partial<UserSession>, onStart: OnStart, o
           if (version.action === 'update') {
             const canvasDatasetFromRemote: CanvasDatasetResult = version.document;
 
-            if (canvasDatasetFromRemote?.data?.lastEditorId !== user?.id) {
-              console.log('[Streaming] Update event received from different editor is being applied.');
+            if (canvasDatasetFromRemote?.data?.lastUpdatedBySessionEphemeralId !== user?.sessionEphemeralId) {
+              console.log(`[Streaming] Update event received from different editor "${canvasDatasetFromRemote?.data?.lastUpdatedByUserName}" is being applied.`);
               onUpdate(canvasDatasetFromRemote?.data);
             } else {
               console.log('[Streaming] Update event received from same editor has been ignored.');
@@ -160,9 +163,13 @@ export const findOrCreateUserCanvas = async (user: Partial<UserSession>): Promis
       };
       const canvas: Canvas = {
         data: {
-          owner: Ref(Collection('Users'), user.id),
-          lastEditorId: user.id,
           ...canvasDataset,
+          owner: Ref(Collection('Users'), user.id),
+
+          // Indicating who's the editor who's made the change, so we can safely ignore the "version:update" event we'll soon receive
+          // when the DB will notify all subscribed editors about the update
+          lastUpdatedBySessionEphemeralId: user.sessionEphemeralId as string,
+          lastUpdatedByUserName: user?.email || `Anonymous#${user?.id?.substring(0, 8)}`,
         },
       };
 
@@ -258,15 +265,17 @@ export const updateUserCanvas = async (canvasRef: TypeOfRef | undefined, user: P
             console.debug('[updateUserCanvas] Updating canvas dataset in FaunaDB. Old:', previousCanvasDataset, 'new:', newCanvasDataset, 'diff:', remoteDiff);
 
             try {
-              const updateCanvasDatasetResult: CanvasDatasetResult = await client.query<CanvasDatasetResult>(Update(canvasRef, {
+              const newCanvas: UpdateCanvas = {
                 data: {
                   ...newCanvasDataset,
 
                   // Indicating who's the editor who's made the change, so we can safely ignore the "version:update" event we'll soon receive
                   // when the DB will notify all subscribed editors about the update
-                  lastEditorId: user?.id,
+                  lastUpdatedBySessionEphemeralId: user.sessionEphemeralId as string,
+                  lastUpdatedByUserName: user?.email || `Anonymous#${user?.id?.substring(0, 8)}`,
                 },
-              }));
+              }
+              const updateCanvasDatasetResult: CanvasDatasetResult = await client.query<CanvasDatasetResult>(Update(canvasRef, newCanvas));
               console.log('[updateUserCanvas] updateCanvasResult', updateCanvasDatasetResult);
             } catch (e) {
               console.error(`[updateUserCanvas] Error while updating canvas:`, e);
