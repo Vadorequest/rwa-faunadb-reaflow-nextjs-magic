@@ -105,7 +105,6 @@ export const QuestionChoice = <NodeData extends QuestionNodeData = QuestionNodeD
 
         .question-choice {
           width: 100%;
-         
 
           &-name {
             background-color: #F9694A;
@@ -116,9 +115,9 @@ export const QuestionChoice = <NodeData extends QuestionNodeData = QuestionNodeD
               margin: 5px 0px 5px 0px;
               background-color: #F9694A;
               color: white;
-              
-              ::placeholder{
-                color: white; !important;
+
+              ::placeholder {
+                color: white !important;
               }
             }
           }
@@ -134,9 +133,9 @@ export const QuestionChoice = <NodeData extends QuestionNodeData = QuestionNodeD
               color: #F9694A;
               border: solid 1px;
               border-radius: 5px;
-              
-              ::placeholder{
-                color: #F9694A; !important;
+
+              ::placeholder {
+                color: #F9694A !important;
               }
             }
           }
