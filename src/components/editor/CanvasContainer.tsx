@@ -19,7 +19,7 @@ import { useRecoilState } from 'recoil';
 import { useDebouncedCallback } from 'use-debounce';
 import { usePreviousValue } from '../../hooks/usePreviousValue';
 import useRenderingTrace from '../../hooks/useTraceUpdate';
-import { useUser } from '../../hooks/useUser';
+import { useUserSession } from '../../hooks/useUserSession';
 import settings from '../../settings';
 import { blockPickerMenuSelector } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
@@ -73,7 +73,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const {
     canvasRef,
   } = props;
-  const user: UserSession | null = useUser() as UserSession | null;
+  const userSession = useUserSession();
 
   /**
    * The canvas ref contains useful properties (xy, scroll, etc.) and functions (zoom, centerCanvas, etc.)
@@ -126,7 +126,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
    *  Thanks to debouncing, there is only one actual DB update.
    */
   const debouncedUpdateUserCanvas = useDebouncedCallback(
-    (canvasRef: TypeOfRef | undefined, user: UserSession | null, newCanvasDataset: CanvasDataset, previousCanvasDataset: CanvasDataset | undefined) => {
+    (canvasRef: TypeOfRef | undefined, user: Partial<UserSession>, newCanvasDataset: CanvasDataset, previousCanvasDataset: CanvasDataset | undefined) => {
       updateUserCanvas(canvasDocRef, user, canvasDataset, previousCanvasDataset);
     },
     100, // Wait 100ms for other changes to happen, if no change happen then invoke the update
@@ -141,7 +141,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   useEffect(() => {
     // Only save changes once the stream has started, to avoid saving anything until the initial canvas dataset was initialized
     if (isStreaming) {
-      debouncedUpdateUserCanvas(canvasDocRef, user, canvasDataset, previousCanvasDataset);
+      debouncedUpdateUserCanvas(canvasDocRef, userSession, canvasDataset, previousCanvasDataset);
     }
   }, [canvasDataset]);
 

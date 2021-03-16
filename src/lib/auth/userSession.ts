@@ -29,10 +29,12 @@ export const setUserSession = async (res: NextApiResponse, userMetadata: UserMet
   const createdAt = Date.now();
 
   // Create a session object with a max age that we can validate later
-  const userSession: UserSession = {
+  // "sessionEphemeralId" and "isSessionReady" are being omitted because they're set on the client, not on the server
+  const userSession: Omit<UserSession, 'sessionEphemeralId' | 'isSessionReady'> = {
     ...userMetadata,
     createdAt,
     maxAge: MAX_AGE,
+    isAuthenticated: true,
   };
   const token: string = await encryptData(userSession);
 

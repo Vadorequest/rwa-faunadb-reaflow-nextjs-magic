@@ -1,10 +1,7 @@
-import { isBrowser } from '@unly/utils';
-import { useState } from 'react';
 import DisplayOnBrowserMount from '../components/DisplayOnBrowserMount';
 import EditorContainer from '../components/editor/EditorContainer';
 import Layout from '../components/Layout';
-import { useUser } from '../hooks/useUser';
-import { UserSession } from '../types/auth/UserSession';
+import { useUserSession } from '../hooks/useUserSession';
 import { CanvasDataset } from '../types/CanvasDataset';
 
 export type Props = {
@@ -14,6 +11,8 @@ export type Props = {
 /**
  * You can use your custom business logic here to fetch the canvasDataset from your data storage.
  * We simplified this demo by storing the canvasDataset in the browser LocalStorage instead.
+ *
+ * TODO doc
  *
  * @see https://nextjs.org/docs/basic-features/data-fetching#getstaticprops-static-generation
  */
@@ -32,22 +31,7 @@ export const getStaticProps = (): { props: Props } => {
  * after it has initialized the global "initialCanvasDataset" browser variable, which is used by the nodesSelector and edgesSelector Recoil state managers.
  */
 const IndexPage = (props: any) => {
-  const user: UserSession | null | undefined = useUser(); // "user" is "undefined" until a response is received from the API
-  const [canvasDataset, setCanvasDataset] = useState<CanvasDataset | undefined>(undefined);
-
-  /**
-   * Gets the canvas dataset stored in the browser localstorage and makes it available in the global "window" object.
-   * The window.initialCanvasDataset will be used by the nodes/edges atom during their initialisation.
-   *
-   * XXX Doing it this way (instead of using a setState) ensures the Canvas is initially loaded with the proper dataset.
-   *  And it won't have multiple re-renders due to mutating state, which in turn avoids lagginess during init.
-   *  Also, it's a viable approach whether using the data from browser localstorage, or a real DB.
-   */
-  if (isBrowser()) {
-    // if (canvasDataset) {
-    //   window.initialCanvasDataset = canvasDataset;
-    // }
-  }
+  const user = useUserSession(); // "user" is "undefined" until a response is received from the API
 
   return (
     <Layout>
@@ -56,8 +40,8 @@ const IndexPage = (props: any) => {
         // deps={[canvasDataset]}
       >
         {
-          // Wait until the user has been fetched from the API endpoint (returns either "null" or "UserSession")
-          user !== undefined && (
+          // Wait until the user has been fetched from the API endpoint
+          user?.isSessionReady === true && (
             <EditorContainer />
           )
         }

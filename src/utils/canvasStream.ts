@@ -32,7 +32,7 @@ import { TypeOfRef } from '../types/faunadb/TypeOfRef';
 const PUBLIC_SHARED_FAUNABD_TOKEN = process.env.NEXT_PUBLIC_SHARED_FAUNABD_TOKEN as string;
 const SHARED_CANVAS_DOCUMENT_ID = '1';
 
-export const getUserClient = (user: UserSession | null): Client => {
+export const getUserClient = (user: Partial<UserSession>): Client => {
   const secret = user?.faunaDBToken || PUBLIC_SHARED_FAUNABD_TOKEN;
 
   return getClient(secret);
@@ -46,7 +46,7 @@ export const getUserClient = (user: UserSession | null): Client => {
  * @param onInit
  * @param onUpdate
  */
-export const initStream = async (user: UserSession | null, onStart: OnStart, onInit: OnInit, onUpdate: OnUpdate) => {
+export const initStream = async (user: Partial<UserSession>, onStart: OnStart, onInit: OnInit, onUpdate: OnUpdate) => {
   console.log('Init stream for user', user);
   const client: Client = getUserClient(user);
   const canvasRef: Expr | undefined = await findUserCanvasRef(user);
@@ -126,7 +126,7 @@ export const initStream = async (user: UserSession | null, onStart: OnStart, onI
  * Always use "1" as document ref id.
  * There is only one document in the DB, and the same document is shared with all users.
  */
-export const findUserCanvasRef = async (user: UserSession | null): Promise<Expr | undefined> => {
+export const findUserCanvasRef = async (user: Partial<UserSession>): Promise<Expr | undefined> => {
   if (user) {
     return await findOrCreateUserCanvas(user);
   } else {
@@ -139,7 +139,7 @@ export const findUserCanvasRef = async (user: UserSession | null): Promise<Expr 
  *
  * @param user
  */
-export const findOrCreateUserCanvas = async (user: UserSession): Promise<Expr | undefined> => {
+export const findOrCreateUserCanvas = async (user: Partial<UserSession>): Promise<Expr | undefined> => {
   const client: Client = getUserClient(user);
   const findUserCanvas = Paginate(
     Match(
@@ -224,7 +224,7 @@ export const hasDatasetChanged = (newCanvasDataset: CanvasDataset): boolean => {
  * @param newCanvasDataset
  * @param previousCanvasDataset
  */
-export const updateUserCanvas = async (canvasRef: TypeOfRef | undefined, user: UserSession | null, newCanvasDataset: CanvasDataset, previousCanvasDataset: CanvasDataset | undefined): Promise<void> => {
+export const updateUserCanvas = async (canvasRef: TypeOfRef | undefined, user: Partial<UserSession>, newCanvasDataset: CanvasDataset, previousCanvasDataset: CanvasDataset | undefined): Promise<void> => {
   const client: Client = getUserClient(user);
 
   try {

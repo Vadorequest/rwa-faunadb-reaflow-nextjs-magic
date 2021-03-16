@@ -38,7 +38,7 @@ const AuthFormModal = (props: Props) => {
    *
    * Fetches a DID token from Magic API.
    * Fetches our internal /api/login endpoint which creates the authentication cookie.
-   * Once the cookie is set, the "useUser" hook will return the currently authenticated user.
+   * Once the cookie is set, the "useUserSession" hook will return the currently authenticated user.
    *
    * The same function is used for both account creation and login.
    * There are 2 buttons but it's only visual, there is no difference between both, they both call the same /api/login endpoint which handles both.

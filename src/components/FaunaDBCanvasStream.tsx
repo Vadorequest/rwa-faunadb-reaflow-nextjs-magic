@@ -7,8 +7,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { useUser } from '../hooks/useUser';
-import { UserSession } from '../types/auth/UserSession';
+import { useUserSession } from '../hooks/useUserSession';
 import {
   OnInit,
   OnStart,
@@ -24,7 +23,9 @@ type Props = {
 }
 
 /**
- * TODO
+ * Handles the FaunaDB stream to the Canvas document.
+ *
+ * Handles lifecycle (init/close).
  */
 const FaunaDBCanvasStream: React.FunctionComponent<Props> = (props) => {
   const {
@@ -38,7 +39,7 @@ const FaunaDBCanvasStream: React.FunctionComponent<Props> = (props) => {
   const [stream, setStream] = useState<Subscription | undefined>(undefined);
   const [canvasRef, setCanvasRef] = useState<TypeOfRef | undefined>(undefined);
   const [startedAt, setStartedAt] = useState<number | undefined>(undefined);
-  const user: UserSession | null = useUser() as UserSession | null;
+  const user = useUserSession();
 
   if (!isBrowser()) {
     return null;
@@ -65,13 +66,14 @@ const FaunaDBCanvasStream: React.FunctionComponent<Props> = (props) => {
 
       initStream(user, onStart, onInit, onUpdate);
     } else {
+      console.log('Closing stream.');
       // If the stream was already started, then it means the user has changed (logged in, or logged out)
       // In such case, we unsubscribe to the stream and restart it
       stream?.close();
 
       initStream(user, onStart, onInit, onUpdate);
     }
-  }, [user]);
+  }, [user?.id]);
 
   // Display meta information about the current document, helps debugging/understanding which document is being updated
   return (

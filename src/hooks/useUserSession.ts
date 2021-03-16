@@ -1,6 +1,7 @@
 import Router from 'next/router';
 import { useEffect } from 'react';
 import useSWR from 'swr';
+import { v1 as uuid } from 'uuid';
 import { ApiGetUserResult } from '../pages/api/user';
 import { UserSession } from '../types/auth/UserSession';
 
@@ -8,6 +9,13 @@ type Props = {
   redirectTo?: string;
   redirectIfFound?: boolean;
 }
+
+/**
+ * Generate an ephemeral session id.
+ *
+ * This session ephemeral id will be regenerate for each page refresh.
+ */
+const sessionEphemeralId: string = uuid();
 
 /**
  * The fetcher is an async function that accepts the key of SWR, and returns the data.
@@ -28,14 +36,16 @@ const fetcher = (url: string): Promise<ApiGetUserResult> =>
 /**
  * Fetches the current user from our internal /api/user and returns it.
  *
- * The user might not be authenticated, which in this case will return "null".
- * The query might not be done, which in this case will return "undefined".
+ * Until the query is completed (async), it will return a partial UserSession.
+ * Will return a UserSession instance if the user is authenticated.
+ *
+ * You can use "isSessionReady" to know whether the session is ready or not.
  *
  * @param props
  *
  * @see https://swr.vercel.app/
  */
-export const useUser = (props?: Props): UserSession | null | undefined => {
+export const useUserSession = (props?: Props): Partial<UserSession> => {
   const { redirectTo, redirectIfFound } = props || {};
   const {
     data,
@@ -69,6 +79,23 @@ export const useUser = (props?: Props): UserSession | null | undefined => {
     console.error(error);
   }
 
-  // "user" might be "undefined" or an instance of "UserSession"
-  return error ? null : user;
+  if (error) {
+    return {
+      sessionEphemeralId,
+      isSessionReady: false,
+      error: error,
+    };
+  } else if (user) {
+    return {
+      ...data?.user || {},
+      sessionEphemeralId,
+      isSessionReady: !isLoading,
+    };
+  } else {
+    // The user session contains only partial information when the user isn't authenticated (or when the query is still loading)
+    return {
+      sessionEphemeralId,
+      isSessionReady: !isLoading,
+    };
+  }
 };
