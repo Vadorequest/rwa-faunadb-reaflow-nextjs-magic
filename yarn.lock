@@ -1206,6 +1206,13 @@
   dependencies:
     "@types/lodash" "*"
 
+"@types/lodash.isobjectlike@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/@types/lodash.isobjectlike/-/lodash.isobjectlike-4.0.6.tgz#9c22336f2bf487cf98068b3fd8a8372eff8b6960"
+  integrity sha512-PD2ydbqsEB9twmFjjWo2LIODg69sUWCgw2feU+93dSahxYXpW6i3c6UBAxUG3nOHzxwdt4Q15RK5CFSO7nL9ng==
+  dependencies:
+    "@types/lodash" "*"
+
 "@types/lodash.merge@4.6.6":
   version "4.6.6"
   resolved "https://registry.yarnpkg.com/@types/lodash.merge/-/lodash.merge-4.6.6.tgz#b84b403c1d31bc42d51772d1cd5557fa008cd3d6"
@@ -2114,6 +2121,11 @@ deep-extend@^0.6.0:
   version "0.6.0"
   resolved "https://registry.yarnpkg.com/deep-extend/-/deep-extend-0.6.0.tgz#c4fa7c95404a17a9c3e8ca7e1537312b736330ac"
   integrity sha512-LOHxIOaPYdHlJRtCQfDIVZtfw/ufM8+rVj649RIHzcm/vGwQRXFt6OPqIFWsm2XEMrNIEtWR64sY1LEKD2vAOA==
+
+deep-object-diff@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/deep-object-diff/-/deep-object-diff-1.1.0.tgz#d6fabf476c2ed1751fc94d5ca693d2ed8c18bc5a"
+  integrity sha512-b+QLs5vHgS+IoSNcUE4n9HP2NwcHj7aqnJWsjPtuG75Rh5TOaGt0OjAYInh77d5T16V5cRDC+Pw/6ZZZiETBGw==
 
 defaulty@^2.1.0:
   version "2.1.0"
@@ -3079,6 +3091,11 @@ lodash.isequal@4.5.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/lodash.isequal/-/lodash.isequal-4.5.0.tgz#415c4478f2bcc30120c22ce10ed3226f7d3e18e0"
   integrity sha1-QVxEePK8wwEgwizhDtMib30+GOA=
+
+lodash.isobjectlike@4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/lodash.isobjectlike/-/lodash.isobjectlike-4.0.0.tgz#742c5fc65add27924d3d24191681aa9a17b2b60d"
+  integrity sha1-dCxfxlrdJ5JNPSQZFoGqmheytg0=
 
 lodash.merge@4.6.2:
   version "4.6.2"

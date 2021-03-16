@@ -1,3 +1,5 @@
+import { detailedDiff } from 'deep-object-diff';
+import isObjectLike from 'lodash.isobjectlike';
 import {
   useEffect,
   useRef,
@@ -29,12 +31,15 @@ const useRenderingTrace = (componentName: string, propsAndStates: any, level: 'd
     const changedProps: { [key: string]: { old: any, new: any } } = Object.entries(propsAndStates).reduce((property: any, [key, value]: [string, any]) => {
       if (prev.current[key] !== value) {
         let diffValue = undefined;
-        // XXX Issue when one of the value's properties isn't an object/array, runs an infinite loop - See https://github.com/flitbit/diff/issues/173
-        // try {
-        //   diffValue = diff(prev.current[key], value);
-        // } catch (e) {
-        //   // Not an object/array, cannot make a diff
-        // }
+
+        if (isObjectLike(prev.current[key]) && isObjectLike(value)) {
+          try {
+            diffValue = detailedDiff(prev.current[key], value);
+          } catch (e) {
+            console.error(e);
+          }
+        }
+
         property[key] = {
           old: prev.current[key],
           new: value,
