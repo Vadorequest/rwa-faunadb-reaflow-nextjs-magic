@@ -1,4 +1,4 @@
-import { detailedDiff } from 'deep-object-diff';
+import { diff, detailedDiff } from 'deep-object-diff';
 import isObjectLike from 'lodash.isobjectlike';
 import {
   useEffect,
@@ -31,10 +31,13 @@ const useRenderingTrace = (componentName: string, propsAndStates: any, level: 'd
     const changedProps: { [key: string]: { old: any, new: any } } = Object.entries(propsAndStates).reduce((property: any, [key, value]: [string, any]) => {
       if (prev.current[key] !== value) {
         let diffValue = undefined;
+        let detailedDiffValue = undefined;
 
-        if (isObjectLike(prev.current[key]) && isObjectLike(value)) {
+        // Additional debugging details
+        if (process.env.NODE_ENV !== 'production' && isObjectLike(prev.current[key]) && isObjectLike(value)) {
           try {
-            diffValue = detailedDiff(prev.current[key], value);
+            diffValue = diff(prev.current[key], value);
+            detailedDiffValue = detailedDiff(prev.current[key], value);
           } catch (e) {
             console.error(e);
           }
@@ -47,6 +50,7 @@ const useRenderingTrace = (componentName: string, propsAndStates: any, level: 'd
 
         if (typeof diffValue !== 'undefined') {
           property[key].diff = diffValue;
+          property[key].detailedDiff = detailedDiffValue;
         }
       }
       return property;
