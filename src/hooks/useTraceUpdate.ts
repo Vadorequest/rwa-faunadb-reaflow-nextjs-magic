@@ -1,4 +1,3 @@
-import { diff } from 'deep-diff';
 import {
   useEffect,
   useRef,
@@ -30,11 +29,12 @@ const useRenderingTrace = (componentName: string, propsAndStates: any, level: 'd
     const changedProps: { [key: string]: { old: any, new: any } } = Object.entries(propsAndStates).reduce((property: any, [key, value]: [string, any]) => {
       if (prev.current[key] !== value) {
         let diffValue = undefined;
-        try {
-          diffValue = diff(prev.current[key], value);
-        } catch (e) {
-          // Not an object/array, cannot make a diff
-        }
+        // XXX Issue when one of the value's properties isn't an object/array, runs an infinite loop - See https://github.com/flitbit/diff/issues/173
+        // try {
+        //   diffValue = diff(prev.current[key], value);
+        // } catch (e) {
+        //   // Not an object/array, cannot make a diff
+        // }
         property[key] = {
           old: prev.current[key],
           new: value,
