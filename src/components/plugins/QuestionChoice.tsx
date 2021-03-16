@@ -2,6 +2,7 @@ import { css } from '@emotion/react';
 import React, { PropsWithChildren } from 'react';
 import { DebounceInput } from 'react-debounce-input';
 import TextareaAutosize from 'react-textarea-autosize';
+import settings from '../../settings';
 import { PatchCurrentNode } from '../../types/BaseNodeProps';
 import { QuestionChoiceVariable } from '../../types/nodes/QuestionNodeAdditionalData';
 import { QuestionNodeData } from '../../types/nodes/QuestionNodeData';
@@ -146,7 +147,7 @@ export const QuestionChoice = <NodeData extends QuestionNodeData = QuestionNodeD
         className={'question-choice-name'}
       >
         <DebounceInput
-          debounceTimeout={500} // Avoids making the Canvas "lag" due to many unnecessary re-renders, by applying input changes in batches (one at most every 500ms)
+          debounceTimeout={settings.canvas.nodes.defaultDebounceWaitFor} // Avoids making the Canvas "lag" due to many unnecessary re-renders, by applying input changes in batches (one at most every 500ms)
           placeholder={'Variable name'}
           onChange={updateQuestionChoiceVariableName}
           value={name}
@@ -158,7 +159,7 @@ export const QuestionChoice = <NodeData extends QuestionNodeData = QuestionNodeD
         <DebounceInput
           // @ts-ignore
           element={TextareaAutosize}
-          debounceTimeout={500} // Avoids making the Canvas "lag" due to many unnecessary re-renders, by applying input changes in batches (one at most every 500ms)
+          debounceTimeout={settings.canvas.nodes.defaultDebounceWaitFor} // Avoids making the Canvas "lag" due to many unnecessary re-renders, by applying input changes in batches (one at most every 500ms)
           placeholder={'Value'}
           onChange={updateQuestionChoiceVariableValue}
           value={value}

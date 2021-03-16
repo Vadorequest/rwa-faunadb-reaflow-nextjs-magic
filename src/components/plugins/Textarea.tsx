@@ -3,6 +3,7 @@ import React from 'react';
 import TextareaAutosize, { TextareaAutosizeProps } from 'react-textarea-autosize';
 import { TextareaHeightChangeMeta } from 'react-textarea-autosize/dist/declarations/src';
 import { useDebouncedCallback } from 'use-debounce';
+import settings from '../../settings';
 
 type Props = {} & TextareaAutosizeProps;
 
@@ -32,7 +33,7 @@ export const Textarea: React.FunctionComponent<Props> = (props) => {
     (height: number, meta: TextareaHeightChangeMeta) => {
       onHeightChange?.(height, meta);
     },
-    1000, // Wait for other changes to happen, if no change happen then invoke the update
+    settings.canvas.nodes.defaultDebounceWaitFor, // Wait for other changes to happen, if no change happen then invoke the update
   );
 
   return (

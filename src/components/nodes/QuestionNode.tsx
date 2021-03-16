@@ -213,7 +213,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                 <DebounceInput
                   // @ts-ignore
                   element={Textarea}
-                  debounceTimeout={1000} // Avoids making the Canvas "lag" due to many unnecessary re-renders, by applying input changes in batches (one at most every 500ms) TODO const
+                  debounceTimeout={settings.canvas.nodes.defaultDebounceWaitFor} // Avoids making the Canvas "lag" due to many unnecessary re-renders, by applying input changes in batches (one at most every 500ms)
                   className={`textarea ${nodeType}-text`}
                   placeholder={'Say something here'}
                   onHeightChange={onQuestionInputHeightChange}

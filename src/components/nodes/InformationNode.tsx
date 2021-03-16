@@ -5,6 +5,7 @@ import React, {
 } from 'react';
 import { DebounceInput } from 'react-debounce-input';
 import { TextareaHeightChangeMeta } from 'react-textarea-autosize/dist/declarations/src';
+import settings from '../../settings';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
@@ -112,7 +113,7 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
                 <DebounceInput
                   // @ts-ignore
                   element={Textarea}
-                  debounceTimeout={500} // Avoids making the Canvas "lag" due to many unnecessary re-renders, by applying input changes in batches (one at most every 500ms)
+                  debounceTimeout={settings.canvas.nodes.defaultDebounceWaitFor} // Avoids making the Canvas "lag" due to many unnecessary re-renders, by applying input changes in batches (one at most every 500ms)
                   className={`textarea ${nodeType}-text`}
                   placeholder={'Say something here'}
                   onHeightChange={onTextHeightChange}

@@ -121,8 +121,8 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
     (patch: PartialBaseNodeData) => {
       patchCurrentNode(patch);
     },
-    patchCurrentNodeWait || 1000, // Wait for other changes to happen, if no change happen then invoke the update
-    patchCurrentNodeOptions || {},
+    patchCurrentNodeWait || settings.canvas.nodes.defaultDebounceWaitFor, // Wait for other changes to happen, if no change happen then invoke the update
+  patchCurrentNodeOptions || {},
   );
 
   /**
