@@ -458,7 +458,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                 .textarea {
                   margin-top: 15px;
                   background-color: #F1F3FF;
-                  border: 1px solid lightgrey;
+                  border: ${settings.canvas.nodes.textarea.borderWidth}px solid lightgrey;
                   border-radius: 5px;
                 }
               `}

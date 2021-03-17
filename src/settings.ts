@@ -26,6 +26,9 @@ export const settings: Settings = {
       selected: {
         borderColor: 'rgba(0, 40, 255, 0.2)',
       },
+      textarea: {
+        borderWidth: 1,
+      },
       questionNode: {
         choiceTypeOptions: [
           {
@@ -126,6 +129,18 @@ export type CanvasSettings = {
      * The nodes always have a border, which changes of color when the node's selected.
      */
     borderWidth: 2;
+
+    /**
+     * Applies to all textarea.
+     */
+    textarea: {
+      /**
+       * Width of the textarea border.
+       *
+       * Must be multiplied by 2 to have the top + bottom width.
+       */
+      borderWidth: number;
+    };
 
     selected: {
       /**
