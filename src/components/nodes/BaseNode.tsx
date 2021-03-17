@@ -195,7 +195,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
       operationType: 'patch',
       elementId: node?.id,
       elementType: 'node',
-      patch: patch,
+      changes: patch,
     };
 
     console.log('Adding patch to the queue', 'patch:', patch, 'mutation:', mutation);

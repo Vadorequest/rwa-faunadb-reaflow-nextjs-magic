@@ -67,7 +67,7 @@ export const applyPendingMutations: ApplyPendingMutations = ({ nodes, edges, mut
         elementId,
         elementType,
         operationType,
-        patch,
+        changes,
         status,
       } = mutation;
 
@@ -79,8 +79,8 @@ export const applyPendingMutations: ApplyPendingMutations = ({ nodes, edges, mut
             const patchedNode: BaseNodeData = {} as BaseNodeData;
 
             if (typeof existingNode !== 'undefined') {
-              merge(patchedNode, existingNode, patch);
-              console.log(`Applying patch N°${mutationsCounter}:`, patch, 'to node:', existingNode, 'result:', patchedNode);
+              merge(patchedNode, existingNode, changes);
+              console.log(`Applying patch N°${mutationsCounter}:`, changes, 'to node:', existingNode, 'result:', patchedNode);
               newNodes[nodeToUpdateIndex] = patchedNode;
             } else {
               console.log(`Couldn't find node to patch with id "${nodeToUpdateIndex}".`);

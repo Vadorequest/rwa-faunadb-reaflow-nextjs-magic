@@ -136,7 +136,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
       elementId: patch.elementId,
       elementType: patch.elementType,
       operationType: patch.operationType,
-      patch: patch.patch,
+      changes: patch.changes,
     });
 
     // Updating the mutations counter will re-render the component
