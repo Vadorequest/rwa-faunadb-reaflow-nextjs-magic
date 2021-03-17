@@ -4,9 +4,9 @@ import { Subscription } from 'faunadb/src/types/Stream';
 import React, {
   Dispatch,
   SetStateAction,
-  useEffect,
   useState,
 } from 'react';
+import { useDebouncedEffect } from '../hooks/useDebouncedEffect';
 import { useUserSession } from '../hooks/useUserSession';
 import {
   OnInit,
@@ -45,7 +45,14 @@ const FaunaDBCanvasStream: React.FunctionComponent<Props> = (props) => {
     return null;
   }
 
-  const onStart: OnStart = (stream: Subscription, canvasRef: TypeOfRef, at: number) => {
+  /**
+   * Triggered when the stream has started.
+   *
+   * @param stream
+   * @param canvasRef
+   * @param at
+   */
+  const onStreamStarted: OnStart = (stream: Subscription, canvasRef: TypeOfRef, at: number) => {
     setStream(stream);
     setCanvasRef(canvasRef);
     setCanvasDocRef(canvasRef);
@@ -53,27 +60,29 @@ const FaunaDBCanvasStream: React.FunctionComponent<Props> = (props) => {
   };
 
   /**
-   * Handles stream subscription
+   * Handles stream subscription.
    *
    * Handles stream initialization and changes when the user logs in and logs out.
    * Updates when the user changes.
+   *
+   * Debounced to avoid creating too many streams in a loop when things go wrong.
    */
-  useEffect(() => {
+  useDebouncedEffect(() => {
     console.log('FaunaDBCanvasStream useEffect', hasStreamStarted, user);
     if (!hasStreamStarted) {
       // If the stream hasn't started yet, it means it's the first time the stream is opened for this browser page (there were no stream opened previously)
       setHasStreamStarted(true);
 
-      initStream(user, onStart, onInit, onUpdate);
+      initStream(user, onStreamStarted, onInit, onUpdate);
     } else {
       console.log('Closing stream.');
       // If the stream was already started, then it means the user has changed (logged in, or logged out)
       // In such case, we unsubscribe to the stream and restart it
       stream?.close();
 
-      initStream(user, onStart, onInit, onUpdate);
+      initStream(user, onStreamStarted, onInit, onUpdate);
     }
-  }, [user?.id]);
+  }, 1000, [user?.id]);
 
   // Display meta information about the current document, helps debugging/understanding which document is being updated
   return (

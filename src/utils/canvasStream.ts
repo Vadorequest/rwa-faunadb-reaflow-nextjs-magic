@@ -48,6 +48,8 @@ export const getUserClient = (user: Partial<UserSession>): Client => {
  * @param onStart
  * @param onInit
  * @param onUpdate
+ *
+ * @see https://docs.fauna.com/fauna/current/drivers/streaming.html#events
  */
 export const initStream = async (user: Partial<UserSession>, onStart: OnStart, onInit: OnInit, onUpdate: OnUpdate) => {
   console.log('Init stream for user', user);
