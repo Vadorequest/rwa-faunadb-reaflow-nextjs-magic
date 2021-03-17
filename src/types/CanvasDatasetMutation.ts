@@ -17,9 +17,9 @@ export type CanvasDatasetMutation = {
    *
    * - applied: Has been applied.
    * - processing: Is being processed.
-   * - waiting: Has not been processed yet, awaiting for the next batch of mutations.
+   * - pending: Has not been processed yet, awaiting for the next batch of mutations.
    */
-  status: 'applied' | 'processing' | 'waiting';
+  status: 'applied' | 'processing' | 'pending';
 
   /**
    * The ID of the node/edge to mutate.
