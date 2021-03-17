@@ -2,7 +2,7 @@ import BaseEdgeData from './BaseEdgeData';
 import PartialBaseNodeData from './PartialBaseNodeData';
 
 export type NewCanvasDatasetMutation = Omit<CanvasDatasetMutation, 'status' | 'id'>
-export type AddCanvasDatasetMutation = (mutation: NewCanvasDatasetMutation, stateUpdateDelay?: number) => void;
+export type QueueCanvasDatasetMutation = (mutation: NewCanvasDatasetMutation, stateUpdateDelay?: number) => void;
 
 export type CanvasDatasetMutation = {
   /**

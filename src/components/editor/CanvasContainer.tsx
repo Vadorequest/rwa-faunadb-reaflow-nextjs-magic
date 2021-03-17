@@ -29,7 +29,7 @@ import { selectedNodesSelector } from '../../states/selectedNodesState';
 import { UserSession } from '../../types/auth/UserSession';
 import BaseNodeData from '../../types/BaseNodeData';
 import { CanvasDataset } from '../../types/CanvasDataset';
-import { AddCanvasDatasetMutation } from '../../types/CanvasDatasetMutation';
+import { QueueCanvasDatasetMutation } from '../../types/CanvasDatasetMutation';
 import { TypeOfRef } from '../../types/faunadb/TypeOfRef';
 import {
   applyPendingMutations,
@@ -129,7 +129,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
    * @param patch
    * @param stateUpdateDelay (ms)
    */
-  const addCanvasDatasetMutation: AddCanvasDatasetMutation = (patch, stateUpdateDelay = 0) => {
+  const queueCanvasDatasetMutation: QueueCanvasDatasetMutation = (patch, stateUpdateDelay = 0) => {
     mutationsQueue.push({
       status: 'pending',
       id: uuid(),
@@ -303,7 +303,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     return (
       <NodeRouter
         nodeProps={nodeProps}
-        addCanvasDatasetMutation={addCanvasDatasetMutation}
+        queueCanvasDatasetMutation={queueCanvasDatasetMutation}
       />
     );
   };
@@ -318,7 +318,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     return (
       <BaseEdge
         {...edgeProps}
-        addCanvasDatasetMutation={addCanvasDatasetMutation}
+        queueCanvasDatasetMutation={queueCanvasDatasetMutation}
       />
     );
   };

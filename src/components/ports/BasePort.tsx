@@ -68,7 +68,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
     PortChildComponent,
     onDragStart: onDragStartInternal,
     onDragEnd: onDragEndInternal,
-    addCanvasDatasetMutation,
+    queueCanvasDatasetMutation,
   } = props;
 
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuSelector);
@@ -140,11 +140,11 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
     const { nodeMutation, edgeMutation }: AddNodeAndEdgeThroughPortsResult = result;
 
     console.log('Adding node/edge mutations to the queue', 'node:', nodeMutation, 'edge:', edgeMutation);
-    addCanvasDatasetMutation(nodeMutation);
+    queueCanvasDatasetMutation(nodeMutation);
 
     // edgeMutation can be null
     if (edgeMutation) {
-      addCanvasDatasetMutation(edgeMutation);
+      queueCanvasDatasetMutation(edgeMutation);
     }
 
     setLastCreatedNode({ node: newNode, at: now() });
@@ -246,7 +246,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
         };
 
         console.log('Adding edge patch to the queue', 'mutation:', mutation);
-        addCanvasDatasetMutation(mutation);
+        queueCanvasDatasetMutation(mutation);
       } else {
         console.error(`You cannot connect the link to that port.`);
         alert(`You cannot connect the link to that port.`);

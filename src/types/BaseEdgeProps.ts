@@ -1,6 +1,6 @@
 import { EdgeProps } from 'reaflow';
 import BaseEdgeData from './BaseEdgeData';
-import { AddCanvasDatasetMutation } from './CanvasDatasetMutation';
+import { QueueCanvasDatasetMutation } from './CanvasDatasetMutation';
 
 export type PatchCurrentEdge<EdgeData extends Partial<BaseEdgeData> = Partial<BaseEdgeData>> = (patch: Partial<EdgeData>) => void;
 
@@ -10,7 +10,7 @@ export type PatchCurrentEdge<EdgeData extends Partial<BaseEdgeData> = Partial<Ba
  * Doesn't do anything particular at the moment, used in case we'd need to extend it later on.
  */
 export type BaseEdgeProps = Partial<EdgeProps> & {
-  addCanvasDatasetMutation: AddCanvasDatasetMutation;
+  queueCanvasDatasetMutation: QueueCanvasDatasetMutation;
 };
 
 export default BaseEdgeProps;

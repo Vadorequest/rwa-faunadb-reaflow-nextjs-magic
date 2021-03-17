@@ -1,7 +1,7 @@
 import React from 'react';
 import { PortProps } from 'reaflow';
 import BasePortChildProps, { AdditionalPortChildProps } from './BasePortChildProps';
-import { AddCanvasDatasetMutation } from './CanvasDatasetMutation';
+import { QueueCanvasDatasetMutation } from './CanvasDatasetMutation';
 
 /**
  * Props received by any port component (BasePort).
@@ -12,7 +12,7 @@ export type BasePortProps = Partial<PortProps> & {
   fromNodeId: string;
   additionalPortChildProps: AdditionalPortChildProps;
   PortChildComponent: React.FunctionComponent<BasePortChildProps>;
-  addCanvasDatasetMutation: AddCanvasDatasetMutation;
+  queueCanvasDatasetMutation: QueueCanvasDatasetMutation;
 };
 
 export default BasePortProps;

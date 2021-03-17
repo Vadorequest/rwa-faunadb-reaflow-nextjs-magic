@@ -1,7 +1,7 @@
 import { NodeChildProps } from 'reaflow';
 import BaseNodeData from '../BaseNodeData';
 import { PatchCurrentNode } from '../BaseNodeProps';
-import { AddCanvasDatasetMutation } from '../CanvasDatasetMutation';
+import { QueueCanvasDatasetMutation } from '../CanvasDatasetMutation';
 import { LastCreated } from '../LastCreated';
 
 /**
@@ -50,6 +50,6 @@ export type SpecializedNodeProps<NodeData extends BaseNodeData = BaseNodeData> =
   /**
    * TODO
    */
-  addCanvasDatasetMutation: AddCanvasDatasetMutation;
+  queueCanvasDatasetMutation: QueueCanvasDatasetMutation;
 
 }

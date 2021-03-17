@@ -85,7 +85,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
     baseHeight,
     patchCurrentNodeWait,
     patchCurrentNodeOptions,
-    addCanvasDatasetMutation,
+    queueCanvasDatasetMutation,
     ...nodeProps // All props that are left will be forwarded to the Node component
   } = props;
 
@@ -199,7 +199,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
     };
 
     console.log('Adding node patch to the queue', 'patch:', patch, 'mutation:', mutation);
-    addCanvasDatasetMutation(mutation, stateUpdateDelay);
+    queueCanvasDatasetMutation(mutation, stateUpdateDelay);
   };
 
   /**
@@ -217,7 +217,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
     };
     console.log('Adding patch to the queue', 'node:', clonedNode, 'mutation:', mutation);
 
-    addCanvasDatasetMutation(mutation);
+    queueCanvasDatasetMutation(mutation);
   };
 
   /**
@@ -350,7 +350,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
             isNodeReachable: isReachable,
           }}
           PortChildComponent={BasePortChild}
-          addCanvasDatasetMutation={addCanvasDatasetMutation}
+          queueCanvasDatasetMutation={queueCanvasDatasetMutation}
         />
       )}
     >
@@ -374,7 +374,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
             lastCreated,
             patchCurrentNode,
             patchCurrentNodeImmediately: patchCurrentNode,
-            addCanvasDatasetMutation,
+            queueCanvasDatasetMutation,
           };
 
           return (

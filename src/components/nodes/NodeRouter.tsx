@@ -4,12 +4,12 @@ import { useRecoilState } from 'recoil';
 import { nodesSelector } from '../../states/nodesState';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import BaseNodeData from '../../types/BaseNodeData';
-import { AddCanvasDatasetMutation } from '../../types/CanvasDatasetMutation';
+import { QueueCanvasDatasetMutation } from '../../types/CanvasDatasetMutation';
 import { findNodeComponentByType } from '../../utils/nodes';
 
 type Props = {
   nodeProps: NodeProps;
-  addCanvasDatasetMutation: AddCanvasDatasetMutation;
+  queueCanvasDatasetMutation: QueueCanvasDatasetMutation;
 }
 
 /**
@@ -20,7 +20,7 @@ type Props = {
 const NodeRouter: React.FunctionComponent<Props> = (props) => {
   const {
     nodeProps,
-    addCanvasDatasetMutation,
+    queueCanvasDatasetMutation,
   } = props;
   const nodeType = nodeProps?.properties?.data?.type;
   const [nodes, setNodes] = useRecoilState(nodesSelector);
@@ -50,7 +50,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
     <NodeComponent
       {...nodeProps}
       node={node}
-      addCanvasDatasetMutation={addCanvasDatasetMutation}
+      queueCanvasDatasetMutation={queueCanvasDatasetMutation}
     />
   );
 };

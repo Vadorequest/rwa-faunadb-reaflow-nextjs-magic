@@ -1,6 +1,6 @@
 import { NodeProps } from 'reaflow';
 import BaseNodeData from './BaseNodeData';
-import { AddCanvasDatasetMutation } from './CanvasDatasetMutation';
+import { QueueCanvasDatasetMutation } from './CanvasDatasetMutation';
 import PartialBaseNodeData from './PartialBaseNodeData';
 
 export type PatchCurrentNode<NodeData extends Partial<BaseNodeData> = Partial<BaseNodeData>> = (patch: PartialBaseNodeData, stateUpdateDelay?: number) => void;
@@ -17,7 +17,7 @@ export type BaseNodeProps<NodeData extends BaseNodeData = BaseNodeData> = {
   /**
    * TODO
    */
-  addCanvasDatasetMutation: AddCanvasDatasetMutation;
+  queueCanvasDatasetMutation: QueueCanvasDatasetMutation;
 } & Partial<NodeProps>;
 
 export default BaseNodeProps;

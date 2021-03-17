@@ -55,7 +55,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
     sourcePort: sourcePortId,
     target: targetNodeId,
     targetPort: targetPortId,
-    addCanvasDatasetMutation,
+    queueCanvasDatasetMutation,
   } = props;
   // console.log('props', props)
 
@@ -107,7 +107,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
       const mutations: NewCanvasDatasetMutation[] = upsertNodeThroughPorts(cloneDeep(nodes), cloneDeep(edges), edge, newNode);
 
       // Apply all mutations
-      mutations.map((mutation) => addCanvasDatasetMutation(mutation));
+      mutations.map((mutation) => queueCanvasDatasetMutation(mutation));
 
       setLastCreatedNode({ node: newNode, at: now() });
       setSelectedNodes([newNode?.id]);
@@ -145,7 +145,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
     };
 
     console.log('Adding edge patch to the queue', 'mutation:', mutation);
-    addCanvasDatasetMutation(mutation);
+    queueCanvasDatasetMutation(mutation);
   };
 
   /**
@@ -180,7 +180,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
     };
 
     console.log('Adding edge patch to the queue', 'patch:', patch, 'mutation:', mutation);
-    addCanvasDatasetMutation(mutation, stateUpdateDelay);
+    queueCanvasDatasetMutation(mutation, stateUpdateDelay);
   };
 
   return (
