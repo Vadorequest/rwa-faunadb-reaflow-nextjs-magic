@@ -25,7 +25,6 @@ import BaseEdgeProps, { PatchCurrentEdge } from '../../types/BaseEdgeProps';
 import BaseNodeData from '../../types/BaseNodeData';
 import BasePortData from '../../types/BasePortData';
 import BlockPickerMenu, { OnBlockClick } from '../../types/BlockPickerMenu';
-import { CanvasDataset } from '../../types/CanvasDataset';
 import { NewCanvasDatasetMutation } from '../../types/CanvasDatasetMutation';
 import { LastCreated } from '../../types/LastCreated';
 import NodeType from '../../types/NodeType';
@@ -105,9 +104,11 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
     const onBlockClick: OnBlockClick = (nodeType: NodeType) => {
       console.groupCollapsed('Clicked on block from edge, upserting new node');
       const newNode: BaseNodeData = createNodeFromDefaultProps(getDefaultNodePropsWithFallback(nodeType));
-      const newDataset: CanvasDataset = upsertNodeThroughPorts(cloneDeep(nodes), cloneDeep(edges), edge, newNode);
+      const mutations: NewCanvasDatasetMutation[] = upsertNodeThroughPorts(cloneDeep(nodes), cloneDeep(edges), edge, newNode);
 
-      setCanvasDataset(newDataset);
+      // Apply all mutations
+      mutations.map((mutation) => addCanvasDatasetMutation(mutation));
+
       setLastCreatedNode({ node: newNode, at: now() });
       setSelectedNodes([newNode?.id]);
       setSelectedEdges([]);

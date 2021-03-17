@@ -27,6 +27,8 @@ export type AddNodeAndEdgeThroughPortsResult = {
   edgeMutation: NewCanvasDatasetMutation | null
 };
 
+export type UpsertNodeThroughPortsResult = NewCanvasDatasetMutation[];
+
 /**
  * Creates a new node and returns it.
  *
@@ -224,8 +226,7 @@ export const upsertNodeThroughPorts = (
   edges: BaseEdgeData[],
   edge: BaseEdgeData,
   newNode: BaseNodeData,
-): CanvasDataset => {
-  const oldEdgeIndex = edges.findIndex(e => e.id === edge.id);
+): UpsertNodeThroughPortsResult => {
   const edgeBeforeNewNode = {
     ...edge,
     id: `${edge.from}-${newNode.id}`,
@@ -248,12 +249,39 @@ export const upsertNodeThroughPorts = (
     edgeAfterNewNode.toPort = edge.toPort;
   }
 
-  edges.splice(oldEdgeIndex, 1, edgeBeforeNewNode, edgeAfterNewNode);
-
-  return {
-    nodes: [...nodes, newNode],
-    edges: [...edges],
+  const nodeMutation: NewCanvasDatasetMutation = {
+    operationType: 'add',
+    elementId: newNode?.id,
+    elementType: 'node',
+    changes: newNode,
   };
+
+  const edgeBeforeNewNodeMutation: NewCanvasDatasetMutation = {
+    operationType: 'add',
+    elementId: edgeBeforeNewNode?.id,
+    elementType: 'edge',
+    changes: edgeBeforeNewNode,
+  };
+
+  const edgeAfterNewNodeMutation: NewCanvasDatasetMutation = {
+    operationType: 'add',
+    elementId: edgeAfterNewNode?.id,
+    elementType: 'edge',
+    changes: edgeAfterNewNode,
+  };
+
+  const oldEdgeMutation: NewCanvasDatasetMutation = {
+    operationType: 'delete',
+    elementId: edge?.id,
+    elementType: 'edge',
+  };
+
+  return [
+    nodeMutation,
+    edgeBeforeNewNodeMutation,
+    edgeAfterNewNodeMutation,
+    oldEdgeMutation,
+  ]
 };
 
 /**

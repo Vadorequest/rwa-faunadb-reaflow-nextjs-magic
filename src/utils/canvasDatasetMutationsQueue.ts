@@ -120,7 +120,7 @@ export const applyPendingMutations: ApplyPendingMutations = ({ nodes, edges, mut
       }
     });
 
-    console.log('Saving new dataset (batch)', {
+    console.log('Saving new dataset (mutations batch)', {
       nodes: newNodes,
       edges: newEdges,
     });
