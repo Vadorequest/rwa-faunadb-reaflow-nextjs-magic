@@ -85,8 +85,10 @@ export const applyPendingMutations: ApplyPendingMutations = ({ nodes, edges, mut
             } else {
               console.log(`Couldn't find node to patch with id "${nodeToUpdateIndex}".`);
             }
-          } else if(operationType === 'add') {
+          } else if (operationType === 'add') {
             newNodes.push(changes as BaseNodeData);
+          } else if (operationType === 'delete') {
+            remove(newNodes, (node: BaseNodeData) => node?.id === elementId);
           } else {
             console.error(`Not implemented ${operationType}`);
           }
