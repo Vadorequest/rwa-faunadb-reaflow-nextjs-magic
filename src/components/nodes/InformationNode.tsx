@@ -1,15 +1,13 @@
-import React, {
-  Fragment,
-  useEffect,
-  useState,
-} from 'react';
+import React, { Fragment } from 'react';
 import { DebounceInput } from 'react-debounce-input';
 import { TextareaHeightChangeMeta } from 'react-textarea-autosize/dist/declarations/src';
 import settings from '../../settings';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
+import { InformationNodeAdditionalData } from '../../types/nodes/InformationNodeAdditionalData';
 import { InformationNodeData } from '../../types/nodes/InformationNodeData';
+import { QuestionNodeAdditionalData } from '../../types/nodes/QuestionNodeAdditionalData';
 import { SpecializedNodeProps } from '../../types/nodes/SpecializedNodeProps';
 import NodeType from '../../types/NodeType';
 import { isYoungerThan } from '../../utils/date';
@@ -45,7 +43,6 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
             lastCreated,
             patchCurrentNode,
           } = nodeProps;
-          const [informationTextareaAdditionalHeight, setInformationTextareaAdditionalHeight] = useState<number>(0);
           const lastCreatedNode = lastCreated?.node;
           const lastCreatedAt = lastCreated?.at;
 
@@ -53,20 +50,14 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
           const shouldAutofocus = false && lastCreatedNode?.id === node.id && isYoungerThan(lastCreatedAt, 1000);
 
           /**
-           * Calculates the node's height dynamically.
+           * Calculates the node's height based on the dynamic source that affect the dynamic height of the component.
            *
-           * The node's height is dynamic and depends on various parameters (length of text, etc.).
+           * @param dynHeights
            */
-          useEffect(() => {
-            const newHeight = baseHeight + informationTextareaAdditionalHeight;
-
-            // Only update the height if it's different
-            if (node?.height !== newHeight) {
-              patchCurrentNode({
-                height: newHeight,
-              });
-            }
-          }, [informationTextareaAdditionalHeight]);
+          const calculateNodeHeight = (dynHeights?: InformationNodeAdditionalData['dynHeights']): number => {
+            return (dynHeights?.baseHeight || baseHeight) +
+              (dynHeights?.informationTextareaHeight || 0);
+          };
 
           /**
            * When textarea input height changes, we need to increase the height of the whole node accordingly.
@@ -78,8 +69,19 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
             // Only consider additional height, by ignoring the height of the first row
             const additionalHeight = height - meta.rowHeight;
 
-            if (informationTextareaAdditionalHeight !== additionalHeight) {
-              setInformationTextareaAdditionalHeight(additionalHeight);
+            if (node?.data?.dynHeights?.informationTextareaHeight !== additionalHeight) {
+              const patchedNodeAdditionalData: Partial<InformationNodeAdditionalData> = {
+                dynHeights: {
+                  ...node?.data?.dynHeights as QuestionNodeAdditionalData['dynHeights'],
+                  informationTextareaHeight: additionalHeight,
+                },
+              };
+
+              // Updates the value in the Recoil store
+              patchCurrentNode({
+                data: patchedNodeAdditionalData,
+                height: calculateNodeHeight(patchedNodeAdditionalData.dynHeights),
+              } as InformationNodeData);
             }
           };
 
