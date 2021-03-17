@@ -21,6 +21,11 @@ import {
   getDefaultToPort,
 } from './ports';
 
+export type AddNodeAndEdgeThroughPortsResult = {
+  nodeToAdd: BaseNodeData,
+  edgeToAdd: BaseEdgeData | null
+};
+
 /**
  * Creates a new node and returns it.
  *
@@ -163,7 +168,7 @@ export const isNodeReachable = (node: BaseNodeData, edges: BaseEdgeData[]) => {
  *
  * Similar to reaflow.addNodeAndEdge utility.
  */
-export function addNodeAndEdgeThroughPorts(
+export const addNodeAndEdgeThroughPorts = (
   nodes: BaseNodeData[],
   edges: BaseEdgeData[],
   newNode: BaseNodeData,
@@ -171,7 +176,7 @@ export function addNodeAndEdgeThroughPorts(
   toNode?: BaseNodeData,
   fromPort?: BasePortData,
   toPort?: BasePortData,
-): CanvasDataset {
+): AddNodeAndEdgeThroughPortsResult  => {
   // The default destination node is the newly created node
   toNode = toNode || newNode;
 
@@ -183,15 +188,8 @@ export function addNodeAndEdgeThroughPorts(
   );
 
   return {
-    nodes: [...nodes, newNode],
-    edges: [
-      ...edges,
-      ...(fromNode ?
-        [
-          newEdge,
-        ]
-        : []),
-    ],
+    nodeToAdd: newNode,
+    edgeToAdd: fromNode ? newEdge : null,
   };
 }
 

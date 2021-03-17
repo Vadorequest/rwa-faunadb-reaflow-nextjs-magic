@@ -26,7 +26,7 @@ import { selectedEdgesSelector } from '../../states/selectedEdgesState';
 import { selectedNodesSelector } from '../../states/selectedNodesState';
 import BaseEdgeData from '../../types/BaseEdgeData';
 import BaseNodeData from '../../types/BaseNodeData';
-import BasePortChildProps, { AdditionalPortChildProps } from '../../types/BasePortChildProps';
+import BasePortChildProps from '../../types/BasePortChildProps';
 import BasePortData from '../../types/BasePortData';
 import BasePortProps from '../../types/BasePortProps';
 import BlockPickerMenu, { OnBlockClick } from '../../types/BlockPickerMenu';
@@ -38,6 +38,7 @@ import { translateXYToCanvasPosition } from '../../utils/canvas';
 import { createEdge } from '../../utils/edges';
 import {
   addNodeAndEdgeThroughPorts,
+  AddNodeAndEdgeThroughPortsResult,
   createNodeFromDefaultProps,
   getDefaultNodePropsWithFallback,
 } from '../../utils/nodes';
@@ -104,6 +105,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
     const newNode = createNodeFromDefaultProps(getDefaultNodePropsWithFallback(nodeType));
     let newDataset: CanvasDataset;
     let createNodeOnSide: PortSide | undefined;
+    let result;
 
     if (typeof draggedEdgeFromPort === 'undefined') {
       console.log(`typeof draggedEdgeFromPort === 'undefined'`);
@@ -126,18 +128,40 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
       // The from port is either the port where the node was dragged from, or the port that was clicked on
       const fromPort: BasePortData = (draggedEdgeFromPort?.fromPort || blockPickerMenu?.fromPort) as BasePortData;
 
-      newDataset = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, node, newNode, fromPort);
+      result = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, node, newNode, fromPort);
     } else {
       // The drag started from a WEST port, so we must add the new node on the left of the existing node
       const fromPort: BasePortData = newNode?.ports?.find((port: BasePortData) => port?.side === 'EAST') as BasePortData;
       const toPort: BasePortData = draggedEdgeFromPort?.fromPort as BasePortData;
 
-      newDataset = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, newNode, node, fromPort, toPort);
+      result = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, newNode, node, fromPort, toPort);
     }
-    console.log('addNodeAndEdge fromNode', newNode, 'toNode', node, 'dataset', newDataset);
-    console.log('newDataset', newDataset);
+    console.log('addNodeAndEdge fromNode:', newNode, 'toNode:', node, 'result:', result);
+    const { nodeToAdd, edgeToAdd }: AddNodeAndEdgeThroughPortsResult = result;
 
-    setCanvasDataset(newDataset);
+    const mutation: NewCanvasDatasetMutation = {
+      operationType: 'add',
+      elementId: nodeToAdd?.id,
+      elementType: 'node',
+      changes: nodeToAdd,
+    };
+
+    console.log('Adding node add to the queue', 'mutation:', mutation);
+    addCanvasDatasetMutation(mutation);
+
+    // edgeToAdd can be null
+    if (edgeToAdd) {
+      const mutation: NewCanvasDatasetMutation = {
+        operationType: 'add',
+        elementId: edgeToAdd?.id,
+        elementType: 'edge',
+        changes: edgeToAdd,
+      };
+
+      console.log('Adding edge add to the queue', 'mutation:', mutation);
+      addCanvasDatasetMutation(mutation);
+    }
+
     setLastCreatedNode({ node: newNode, at: now() });
     setSelectedNodes([newNode?.id]);
     setSelectedEdges([]);
