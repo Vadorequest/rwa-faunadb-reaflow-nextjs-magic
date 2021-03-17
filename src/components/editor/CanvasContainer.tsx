@@ -117,7 +117,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const previousCanvasDataset: CanvasDataset | undefined = usePreviousValue<CanvasDataset>(canvasDataset);
 
   /**
-   * Applies all patches that haven't been applied yet.
+   * Applies all mutations that haven't been applied yet.
    */
   useEffect(() => {
     applyPendingMutations({ nodes, edges, mutationsCounter, setCanvasDataset });
@@ -129,7 +129,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
    * @param patch
    * @param stateUpdateDelay (ms)
    */
-  const addCanvasDatasetPatch: AddCanvasDatasetMutation = (patch, stateUpdateDelay = 0) => {
+  const addCanvasDatasetMutation: AddCanvasDatasetMutation = (patch, stateUpdateDelay = 0) => {
     mutationsQueue.push({
       status: 'pending',
       id: uuid(),
@@ -303,7 +303,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     return (
       <NodeRouter
         nodeProps={nodeProps}
-        addCanvasDatasetPatch={addCanvasDatasetPatch}
+        addCanvasDatasetMutation={addCanvasDatasetMutation}
       />
     );
   };

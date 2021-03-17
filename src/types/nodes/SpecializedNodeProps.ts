@@ -50,6 +50,6 @@ export type SpecializedNodeProps<NodeData extends BaseNodeData = BaseNodeData> =
   /**
    * TODO
    */
-  addCanvasDatasetPatch: AddCanvasDatasetMutation;
+  addCanvasDatasetMutation: AddCanvasDatasetMutation;
 
 }

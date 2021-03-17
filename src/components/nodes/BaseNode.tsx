@@ -85,7 +85,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
     baseHeight,
     patchCurrentNodeWait,
     patchCurrentNodeOptions,
-    addCanvasDatasetPatch,
+    addCanvasDatasetMutation,
     ...nodeProps // All props that are left will be forwarded to the Node component
   } = props;
 
@@ -199,7 +199,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
     };
 
     console.log('Adding patch to the queue', 'patch:', patch, 'mutation:', mutation);
-    addCanvasDatasetPatch(mutation, stateUpdateDelay);
+    addCanvasDatasetMutation(mutation, stateUpdateDelay);
   };
 
   /**
@@ -370,7 +370,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
             lastCreated,
             patchCurrentNode,
             patchCurrentNodeImmediately: patchCurrentNode,
-            addCanvasDatasetPatch,
+            addCanvasDatasetMutation,
           };
 
           return (

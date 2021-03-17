@@ -9,7 +9,7 @@ import { findNodeComponentByType } from '../../utils/nodes';
 
 type Props = {
   nodeProps: NodeProps;
-  addCanvasDatasetPatch: AddCanvasDatasetMutation;
+  addCanvasDatasetMutation: AddCanvasDatasetMutation;
 }
 
 /**
@@ -20,7 +20,7 @@ type Props = {
 const NodeRouter: React.FunctionComponent<Props> = (props) => {
   const {
     nodeProps,
-    addCanvasDatasetPatch,
+    addCanvasDatasetMutation,
   } = props;
   const nodeType = nodeProps?.properties?.data?.type;
   const [nodes, setNodes] = useRecoilState(nodesSelector);
@@ -50,7 +50,7 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
     <NodeComponent
       {...nodeProps}
       node={node}
-      addCanvasDatasetPatch={addCanvasDatasetPatch}
+      addCanvasDatasetMutation={addCanvasDatasetMutation}
     />
   );
 };

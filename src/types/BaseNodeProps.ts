@@ -17,7 +17,7 @@ export type BaseNodeProps<NodeData extends BaseNodeData = BaseNodeData> = {
   /**
    * TODO
    */
-  addCanvasDatasetPatch: AddCanvasDatasetMutation;
+  addCanvasDatasetMutation: AddCanvasDatasetMutation;
 } & Partial<NodeProps>;
 
 export default BaseNodeProps;
