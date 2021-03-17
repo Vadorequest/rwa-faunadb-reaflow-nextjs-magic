@@ -76,6 +76,7 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
             console.log('onTextHeightChange ', node?.data?.dynHeights?.informationTextareaHeight, newHeight, node?.data?.dynHeights?.informationTextareaHeight !== newHeight);
 
             if (node?.data?.dynHeights?.informationTextareaHeight !== newHeight) {
+              console.log('onTextHeightChange updating height')
               // Updates the value in the Recoil store
               patchCurrentNode({
                 data: patchedNodeAdditionalData,

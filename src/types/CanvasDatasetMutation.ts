@@ -43,7 +43,7 @@ export type CanvasDatasetMutation = {
   /**
    * Patch to apply to the element.
    *
-   * Only set for "update" operations.
+   * Only set for "patch" operation.
    */
-  changes?: PartialBaseNodeData | Partial<BaseEdgeData>
+  patch?: PartialBaseNodeData | Partial<BaseEdgeData>
 }

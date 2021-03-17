@@ -147,18 +147,19 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
           elementId,
           elementType,
           operationType,
-          changes,
+          patch,
         } = mutation;
 
         if (elementType === 'node') {
           if (operationType === 'patch') {
-            const nodeToUpdateIndex: number = nodes.findIndex((node: BaseNodeData) => node.id === elementId);
-            const existingNode: BaseNodeData | undefined = nodes?.find((node: BaseNodeData) => node?.id === elementId);
-            const nodeToUpdate: BaseNodeData = {} as BaseNodeData;
+            const nodeToUpdateIndex: number = newNodes.findIndex((node: BaseNodeData) => node.id === elementId);
+            const existingNode: BaseNodeData | undefined = newNodes.find((node: BaseNodeData) => node?.id === elementId);
+            const patchedNode: BaseNodeData = {} as BaseNodeData;
 
             if (typeof existingNode !== 'undefined') {
-              merge(nodeToUpdate, existingNode, changes);
-              newNodes[nodeToUpdateIndex] = nodeToUpdate;
+              merge(patchedNode, existingNode, patch);
+              console.log('Applying patch:', patch, 'to node:', existingNode, 'result:', patchedNode);
+              newNodes[nodeToUpdateIndex] = patchedNode;
             } else {
               console.log(`Couldn't find node to patch with id "${nodeToUpdateIndex}".`);
             }
@@ -170,6 +171,10 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         }
       });
 
+      console.log('Saving new dataset (batch)', {
+        nodes: newNodes,
+        edges: newEdges,
+      });
       setCanvasDataset({
         nodes: newNodes,
         edges: newEdges,
@@ -189,7 +194,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
       elementId: patch.elementId,
       elementType: patch.elementType,
       operationType: patch.operationType,
-      changes: patch.changes,
+      patch: patch.patch,
     });
   };
 

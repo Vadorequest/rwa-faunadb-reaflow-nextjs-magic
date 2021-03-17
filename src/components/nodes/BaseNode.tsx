@@ -196,7 +196,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
       operationType: 'patch',
       elementId: node?.id,
       elementType: 'node',
-      changes: patch,
+      patch: patch,
     };
 
     console.log('Adding patch to the queue', 'patch:', patch, 'mutation:', mutation);
@@ -369,7 +369,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
             isSelected,
             isReachable,
             lastCreated,
-            patchCurrentNode: debouncedPatchCurrentNode,
+            patchCurrentNode,
             patchCurrentNodeImmediately: patchCurrentNode,
             addCanvasDatasetPatch,
           };
