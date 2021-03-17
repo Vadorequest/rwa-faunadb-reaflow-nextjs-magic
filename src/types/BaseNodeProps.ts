@@ -15,7 +15,7 @@ export type BaseNodeProps<NodeData extends BaseNodeData = BaseNodeData> = {
   node: NodeData;
 
   /**
-   * TODO
+   * Adds a new patch to apply to the existing queue.
    */
   queueCanvasDatasetMutation: QueueCanvasDatasetMutation;
 } & Partial<NodeProps>;

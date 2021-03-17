@@ -48,7 +48,7 @@ export type SpecializedNodeProps<NodeData extends BaseNodeData = BaseNodeData> =
   isReachable: boolean;
 
   /**
-   * TODO
+   * Adds a new patch to apply to the existing queue.
    */
   queueCanvasDatasetMutation: QueueCanvasDatasetMutation;
 
