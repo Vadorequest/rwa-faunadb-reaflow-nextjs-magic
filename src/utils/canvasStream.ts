@@ -1,4 +1,3 @@
-import { diff } from 'deep-diff';
 import {
   Client,
   Collection,
@@ -32,6 +31,10 @@ import {
 } from '../types/faunadb/CanvasStream';
 import { FaunadbStreamVersionEvent } from '../types/faunadb/FaunadbStreamVersionEvent';
 import { TypeOfRef } from '../types/faunadb/TypeOfRef';
+import {
+  diff,
+  detailedDiff
+} from 'deep-object-diff';
 
 const PUBLIC_SHARED_FAUNABD_TOKEN = process.env.NEXT_PUBLIC_SHARED_FAUNABD_TOKEN as string;
 const SHARED_CANVAS_DOCUMENT_ID = '1';
@@ -247,7 +250,8 @@ export const updateUserCanvas = async (canvasRef: TypeOfRef | undefined, user: P
       if (hasDatasetChanged(newCanvasDataset)) {
         // Checking if the previous and new datasets (local) have changed helps avoiding unnecessary database updates
         const areLocalDatasetsDifferent = !isEqual(previousCanvasDataset, newCanvasDataset); // isEqual performs a deep comparison
-        const localDiff = diff(previousCanvasDataset, newCanvasDataset);
+        const localDiff = diff(previousCanvasDataset || {}, newCanvasDataset);
+        const localDetailedDiff = detailedDiff(previousCanvasDataset || {}, newCanvasDataset);
 
         if (areLocalDatasetsDifferent) {
           // Even when the local dataset has changed, it might just be due to synchronizing from a remote change
@@ -264,10 +268,11 @@ export const updateUserCanvas = async (canvasRef: TypeOfRef | undefined, user: P
             edges: existingRemoteCanvasDatasetResult.data?.edges,
           };
           const isRemoteDatasetsDifferent = !isEqual(existingRemoteCanvasDataset, newCanvasDataset); // isEqual performs a deep comparison
-          const remoteDiff = diff(previousCanvasDataset, newCanvasDataset);
+          const remoteDiff = diff(previousCanvasDataset || {}, newCanvasDataset);
+          const remoteDetailedDiff = detailedDiff(previousCanvasDataset || {}, newCanvasDataset);
 
           if (isRemoteDatasetsDifferent) {
-            console.debug('[updateUserCanvas] Updating canvas dataset in FaunaDB. Old:', previousCanvasDataset, 'new:', newCanvasDataset, 'diff:', remoteDiff);
+            console.debug('[updateUserCanvas] Updating canvas dataset in FaunaDB. Old:', previousCanvasDataset, 'new:', newCanvasDataset, 'diff:', remoteDiff, 'detailedDiff:', remoteDetailedDiff);
 
             try {
               const newCanvas: UpdateCanvas = {
@@ -293,10 +298,10 @@ export const updateUserCanvas = async (canvasRef: TypeOfRef | undefined, user: P
               }
             }
           } else {
-            console.log(`[updateUserCanvas] Canvas remote dataset has not changed. Database update was aborted.`, 'diff:', remoteDiff);
+            console.log(`[updateUserCanvas] Canvas remote dataset has not changed. Database update was aborted.`, 'diff:', remoteDiff, 'detailedDiff:', remoteDetailedDiff);
           }
         } else {
-          console.log(`[updateUserCanvas] Canvas local dataset has not changed. Database update was aborted.`, 'diff:', localDiff);
+          console.log(`[updateUserCanvas] Canvas local dataset has not changed. Database update was aborted.`, 'diff:', localDiff, 'detailedDiff:', localDetailedDiff);
         }
       } else {
         console.log(`[updateUserCanvas] Canvas dataset has changed, although it's a default/empty dataset. Only non-default and non-empty changes are persisted to the DB (optimization). Database update was aborted.`);
