@@ -130,7 +130,7 @@ export const initStream = async (user: Partial<UserSession>, onStart: OnStart, o
  * There is only one document in the DB, and the same document is shared with all users.
  */
 export const findUserCanvasRef = async (user: Partial<UserSession>): Promise<Expr | undefined> => {
-  if (user) {
+  if (user?.isAuthenticated) {
     return await findOrCreateUserCanvas(user);
   } else {
     return Ref(Collection('Canvas'), SHARED_CANVAS_DOCUMENT_ID);
@@ -274,7 +274,7 @@ export const updateUserCanvas = async (canvasRef: TypeOfRef | undefined, user: P
                   lastUpdatedBySessionEphemeralId: user.sessionEphemeralId as string,
                   lastUpdatedByUserName: user?.email || `Anonymous#${user?.id?.substring(0, 8)}`,
                 },
-              }
+              };
               const updateCanvasDatasetResult: CanvasDatasetResult = await client.query<CanvasDatasetResult>(Update(canvasRef, newCanvas));
               console.log('[updateUserCanvas] updateCanvasResult', updateCanvasDatasetResult);
             } catch (e) {
