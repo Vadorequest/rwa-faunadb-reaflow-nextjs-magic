@@ -90,6 +90,13 @@ While working on this project, I've reached several milestones with a different 
    Changes to the canvas are real-time and shared with yourself when being authenticated. (open 2 tabs to see it in action)
    Users can create an account and login using Magic Link, they'll automatically load their own document.
 
+## Roadmap
+
+Here are the future variants I intend to work on:
+- FaunaDB GraphQL (GQL): We currently use FQL to manipule the real-time stream (it's not compatible with GQL).
+  I'd like to use GQL for non real-time operations.
+  I'm thinking adding the add/edit/remove project features using GQL, to showcase usage of both FaunaDB FQL and GQL languages.
+
 ## Getting started
 
 > If you want to use this project to start your own, you can either clone it using git and run the below commands, or "Deploy your own" using the Vercel button, which will create for you the Vercel and GitHub project (but won't configure environment variables for you!).
