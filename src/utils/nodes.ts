@@ -203,12 +203,12 @@ export function addNodeAndEdgeThroughPorts(
  *
  * Similar to reaflow.upsertNode utility.
  */
-export function upsertNodeThroughPorts(
+export const upsertNodeThroughPorts = (
   nodes: BaseNodeData[],
   edges: BaseEdgeData[],
   edge: BaseEdgeData,
   newNode: BaseNodeData,
-): CanvasDataset {
+): CanvasDataset => {
   const oldEdgeIndex = edges.findIndex(e => e.id === edge.id);
   const edgeBeforeNewNode = {
     ...edge,
@@ -245,7 +245,7 @@ export function upsertNodeThroughPorts(
  *
  * Similar to reaflow.removeAndUpsertNodes utility.
  */
-export function removeAndUpsertNodesThroughPorts(
+export const removeAndUpsertNodesThroughPorts = (
   nodes: BaseNodeData[],
   edges: BaseEdgeData[],
   removeNodes: BaseNodeData | BaseNodeData[],
@@ -256,7 +256,7 @@ export function removeAndUpsertNodesThroughPorts(
     to: BaseNodeData,
     port?: BasePortData,
   ) => undefined | boolean,
-): CanvasDataset {
+): CanvasDataset => {
   if (!Array.isArray(removeNodes)) {
     removeNodes = [removeNodes];
   }
