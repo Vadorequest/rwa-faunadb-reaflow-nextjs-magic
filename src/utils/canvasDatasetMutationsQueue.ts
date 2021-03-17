@@ -44,7 +44,7 @@ export const mutationsQueue: CanvasDatasetMutation[] = [];
 export const applyPendingMutations: ApplyPendingMutations = ({ nodes, edges, mutationsCounter, setCanvasDataset }) => {
   // Only consider mutations that are pending
   const mutationsToApply = mutationsQueue.filter((mutation: CanvasDatasetMutation) => mutation.status === 'pending');
-  console.log(`patchesToApply (${mutationsToApply?.length})`, mutationsToApply, 'queue:', mutationsQueue);
+  console.log(`mutationsToApply (${mutationsToApply?.length})`, cloneDeep(mutationsToApply), 'queue:', cloneDeep(mutationsQueue));
 
   if (mutationsToApply?.length > 0) {
     const newNodes: BaseNodeData[] = cloneDeep(nodes);
@@ -59,7 +59,7 @@ export const applyPendingMutations: ApplyPendingMutations = ({ nodes, edges, mut
         mutationsQueue[patchIndex].status = 'processing';
       }
     });
-    console.log(`patchesToApply (processing (${mutationsToApply?.length}))`, mutationsToApply);
+    console.log(`mutationsToApply (processing (${mutationsToApply?.length}))`, cloneDeep(mutationsToApply));
 
     // Processing all pending patches into one consolidated update
     mutationsToApply.map((mutation: CanvasDatasetMutation) => {
