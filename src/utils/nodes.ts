@@ -288,6 +288,8 @@ export const upsertNodeThroughPorts = (
  * Removes a node between two edges and merges the two edges into one, and automatically link their ports.
  *
  * Similar to reaflow.removeAndUpsertNodes utility.
+ *
+ * TODO should return mutations too, but I'm lazy (and it's unlikely that it'll ever cause concurrent updates conflicts anyway)
  */
 export const removeAndUpsertNodesThroughPorts = (
   nodes: BaseNodeData[],
