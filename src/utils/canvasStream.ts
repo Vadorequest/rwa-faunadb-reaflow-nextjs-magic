@@ -25,9 +25,10 @@ import {
 import { CanvasByOwnerIndex } from '../types/faunadb/CanvasByOwnerIndex';
 import { CanvasDatasetResult } from '../types/faunadb/CanvasDatasetResult';
 import {
-  OnInit,
-  OnStart,
-  OnUpdate,
+  OnStreamedDocumentUpdate,
+  OnStreamError,
+  OnStreamInit,
+  OnStreamStart,
 } from '../types/faunadb/CanvasStream';
 import { FaunadbStreamVersionEvent } from '../types/faunadb/FaunadbStreamVersionEvent';
 import { TypeOfRef } from '../types/faunadb/TypeOfRef';
@@ -49,9 +50,10 @@ export const getUserClient = (user: Partial<UserSession>): Client => {
  * @param onInit
  * @param onUpdate
  *
+ * @param onError
  * @see https://docs.fauna.com/fauna/current/drivers/streaming.html#events
  */
-export const initStream = async (user: Partial<UserSession>, onStart: OnStart, onInit: OnInit, onUpdate: OnUpdate) => {
+export const initStream = async (user: Partial<UserSession>, onStart: OnStreamStart, onInit: OnStreamInit, onUpdate: OnStreamedDocumentUpdate, onError: OnStreamError) => {
   console.log('Init stream for user', user);
   const client: Client = getUserClient(user);
   const canvasRef: Expr | undefined = await findUserCanvasRef(user);
@@ -108,13 +110,14 @@ export const initStream = async (user: Partial<UserSession>, onStart: OnStart, o
             onInit(result?.data);
           } else {
             stream.close();
-            setTimeout(_startStream, 1000);
+            onError(error, _startStream);
           }
         })
+        // Not tested
         .on('history_rewrite', (error: any) => {
           console.log('Error:', error);
           stream.close();
-          setTimeout(_startStream, 1000);
+          onError(error, _startStream);
         })
         .start();
     };
@@ -320,7 +323,7 @@ export const updateUserCanvas = async (canvasRef: TypeOfRef | undefined, user: P
  * @see https://fauna.com/blog/live-ui-updates-with-faunas-real-time-document-streaming#defining-the-stream
  * @see https://docs.fauna.com/fauna/current/drivers/javascript.html
  */
-export const onInit: OnInit = (canvasDataset: CanvasDataset) => {
+export const onInit: OnStreamInit = (canvasDataset: CanvasDataset) => {
   // Starts the stream between the browser and the FaunaDB using the default canvas document
   console.log('onInit canvasDataset', canvasDataset);
   setRecoilExternalState(canvasDatasetSelector, canvasDataset);
@@ -341,6 +344,6 @@ export const onInit: OnInit = (canvasDataset: CanvasDataset) => {
  * @see https://fauna.com/blog/live-ui-updates-with-faunas-real-time-document-streaming#defining-the-stream
  * @see https://docs.fauna.com/fauna/current/drivers/javascript.html
  */
-export const onUpdate: OnUpdate = (canvasDatasetRemotelyUpdated: CanvasDataset) => {
+export const onUpdate: OnStreamedDocumentUpdate = (canvasDatasetRemotelyUpdated: CanvasDataset) => {
   setRecoilExternalState(canvasDatasetSelector, canvasDatasetRemotelyUpdated);
 };
