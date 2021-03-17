@@ -13,6 +13,7 @@ import BaseNodeData from '../types/BaseNodeData';
 import { BaseNodeDefaultProps } from '../types/BaseNodeDefaultProps';
 import BasePortData from '../types/BasePortData';
 import { CanvasDataset } from '../types/CanvasDataset';
+import { NewCanvasDatasetMutation } from '../types/CanvasDatasetMutation';
 import { GetBaseNodeDefaultProps } from '../types/GetBaseNodeDefaultProps';
 import NodeType from '../types/NodeType';
 import { createEdge } from './edges';
@@ -22,8 +23,8 @@ import {
 } from './ports';
 
 export type AddNodeAndEdgeThroughPortsResult = {
-  nodeToAdd: BaseNodeData,
-  edgeToAdd: BaseEdgeData | null
+  nodeMutation: NewCanvasDatasetMutation,
+  edgeMutation: NewCanvasDatasetMutation | null
 };
 
 /**
@@ -176,7 +177,7 @@ export const addNodeAndEdgeThroughPorts = (
   toNode?: BaseNodeData,
   fromPort?: BasePortData,
   toPort?: BasePortData,
-): AddNodeAndEdgeThroughPortsResult  => {
+): AddNodeAndEdgeThroughPortsResult => {
   // The default destination node is the newly created node
   toNode = toNode || newNode;
 
@@ -187,11 +188,28 @@ export const addNodeAndEdgeThroughPorts = (
     getDefaultToPort(toNode, toPort),
   );
 
-  return {
-    nodeToAdd: newNode,
-    edgeToAdd: fromNode ? newEdge : null,
+  const nodeMutation: NewCanvasDatasetMutation = {
+    operationType: 'add',
+    elementId: newNode?.id,
+    elementType: 'node',
+    changes: newNode,
   };
-}
+
+  let edgeMutation: NewCanvasDatasetMutation | null = null;
+  if (fromNode) {
+    edgeMutation = {
+      operationType: 'add',
+      elementId: newEdge?.id,
+      elementType: 'edge',
+      changes: newEdge,
+    };
+  }
+
+  return {
+    nodeMutation,
+    edgeMutation,
+  };
+};
 
 /**
  * Helper function for upserting a node in a edge (split the edge in 2 and put the node in between), and automatically link their ports.
@@ -236,7 +254,7 @@ export const upsertNodeThroughPorts = (
     nodes: [...nodes, newNode],
     edges: [...edges],
   };
-}
+};
 
 /**
  * Removes a node between two edges and merges the two edges into one, and automatically link their ports.
@@ -304,4 +322,4 @@ export const removeAndUpsertNodesThroughPorts = (
     edges: newEdges,
     nodes: newNodes,
   };
-}
+};

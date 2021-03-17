@@ -137,29 +137,14 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
       result = addNodeAndEdgeThroughPorts(cloneDeep(nodes), cloneDeep(edges), newNode, newNode, node, fromPort, toPort);
     }
     console.log('addNodeAndEdge fromNode:', newNode, 'toNode:', node, 'result:', result);
-    const { nodeToAdd, edgeToAdd }: AddNodeAndEdgeThroughPortsResult = result;
+    const { nodeMutation, edgeMutation }: AddNodeAndEdgeThroughPortsResult = result;
 
-    const mutation: NewCanvasDatasetMutation = {
-      operationType: 'add',
-      elementId: nodeToAdd?.id,
-      elementType: 'node',
-      changes: nodeToAdd,
-    };
+    console.log('Adding node/edge mutations to the queue', 'node:', nodeMutation, 'edge:', edgeMutation);
+    addCanvasDatasetMutation(nodeMutation);
 
-    console.log('Adding node add to the queue', 'mutation:', mutation);
-    addCanvasDatasetMutation(mutation);
-
-    // edgeToAdd can be null
-    if (edgeToAdd) {
-      const mutation: NewCanvasDatasetMutation = {
-        operationType: 'add',
-        elementId: edgeToAdd?.id,
-        elementType: 'edge',
-        changes: edgeToAdd,
-      };
-
-      console.log('Adding edge add to the queue', 'mutation:', mutation);
-      addCanvasDatasetMutation(mutation);
+    // edgeMutation can be null
+    if (edgeMutation) {
+      addCanvasDatasetMutation(edgeMutation);
     }
 
     setLastCreatedNode({ node: newNode, at: now() });
