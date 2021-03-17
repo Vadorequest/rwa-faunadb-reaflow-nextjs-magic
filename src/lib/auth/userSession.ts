@@ -1,5 +1,3 @@
-import Iron from '@hapi/iron';
-import { MagicUserMetadata } from '@magic-sdk/admin';
 import {
   NextApiRequest,
   NextApiResponse,
@@ -11,7 +9,10 @@ import {
   MAX_AGE,
   setTokenCookie,
 } from './authCookies';
-import { decryptToken, encryptData } from './crypto';
+import {
+  decryptToken,
+  encryptData,
+} from './crypto';
 
 type EndpointRequest = NextApiRequest & {
   query: {};
