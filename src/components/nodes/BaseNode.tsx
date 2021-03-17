@@ -187,11 +187,10 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
    * Only updates the provided properties, doesn't update other properties.
    * Also merges the 'data' object, by keeping existing data and only overwriting those that are specified.
    *
-   * XXX This function is being debounced by default (when used by children components) to avoid sending a burst of updates to the database.
-   *
    * @param patch
+   * @param stateUpdateDelay (ms)
    */
-  const patchCurrentNode: PatchCurrentNode = (patch: PartialBaseNodeData): void => {
+  const patchCurrentNode: PatchCurrentNode = (patch: PartialBaseNodeData, stateUpdateDelay = 0): void => {
     const mutation: NewCanvasDatasetMutation = {
       operationType: 'patch',
       elementId: node?.id,
@@ -200,7 +199,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
     };
 
     console.log('Adding patch to the queue', 'patch:', patch, 'mutation:', mutation);
-    addCanvasDatasetPatch(mutation);
+    addCanvasDatasetPatch(mutation, stateUpdateDelay);
   };
 
   /**

@@ -103,6 +103,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const [cursorXY, setCursorXY] = useState<[number, number]>([0, 0]);
   const [isStreaming, setIsStreaming] = useState<boolean>(false);
   const [canvasDocRef, setCanvasDocRef] = useState<TypeOfRef | undefined>(undefined); // We store the document ref to avoid fetching it for every change
+  const [mutationsCounter, setMutationsCounter] = useState<number>(0);
   useRenderingTrace('CanvasContainer', {
     ...props,
     blockPickerMenu,
@@ -113,6 +114,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     cursorXY,
     isStreaming,
     canvasDocRef,
+    mutationsCounter,
   });
   const nodes = canvasDataset?.nodes;
   const edges = canvasDataset?.edges;
@@ -148,6 +150,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
           elementType,
           operationType,
           patch,
+          status,
         } = mutation;
 
         if (elementType === 'node') {
@@ -186,8 +189,9 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
    * Add a new patch to apply to the existing queue.
    *
    * @param patch
+   * @param stateUpdateDelay (ms)
    */
-  const addCanvasDatasetPatch: AddCanvasDatasetMutation = (patch) => {
+  const addCanvasDatasetPatch: AddCanvasDatasetMutation = (patch, stateUpdateDelay = 0) => {
     mutations.push({
       status: 'waiting',
       id: uuid(),
@@ -196,6 +200,15 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
       operationType: patch.operationType,
       patch: patch.patch,
     });
+
+    // Updating the mutations counter will re-render the component
+    if (stateUpdateDelay) {
+      setTimeout(() => {
+        setMutationsCounter(mutationsCounter + 1);
+      }, stateUpdateDelay);
+    } else {
+      setMutationsCounter(mutationsCounter + 1);
+    }
   };
 
   /**
