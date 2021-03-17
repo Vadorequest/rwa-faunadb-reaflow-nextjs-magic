@@ -350,6 +350,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
             isNodeReachable: isReachable,
           }}
           PortChildComponent={BasePortChild}
+          addCanvasDatasetMutation={addCanvasDatasetMutation}
         />
       )}
     >

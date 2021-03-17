@@ -31,6 +31,7 @@ import BasePortData from '../../types/BasePortData';
 import BasePortProps from '../../types/BasePortProps';
 import BlockPickerMenu, { OnBlockClick } from '../../types/BlockPickerMenu';
 import { CanvasDataset } from '../../types/CanvasDataset';
+import { NewCanvasDatasetMutation } from '../../types/CanvasDatasetMutation';
 import { LastCreated } from '../../types/LastCreated';
 import NodeType from '../../types/NodeType';
 import { translateXYToCanvasPosition } from '../../utils/canvas';
@@ -45,11 +46,7 @@ import {
   getDefaultToPort,
 } from '../../utils/ports';
 
-type Props = {
-  fromNodeId: string;
-  additionalPortChildProps: AdditionalPortChildProps;
-  PortChildComponent: React.FunctionComponent<BasePortChildProps>;
-} & BasePortProps;
+type Props = BasePortProps;
 
 /**
  * Base port component.
@@ -70,6 +67,7 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
     PortChildComponent,
     onDragStart: onDragStartInternal,
     onDragEnd: onDragEndInternal,
+    addCanvasDatasetMutation,
   } = props;
 
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuSelector);
@@ -231,10 +229,15 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
         const newEdge: BaseEdgeData = createEdge(fromNode, toNode, fromPort, toPort);
 
         console.log('Linking existing nodes through new edge', newEdge);
-        setEdges([
-          ...edges,
-          newEdge,
-        ]);
+        const mutation: NewCanvasDatasetMutation = {
+          operationType: 'add',
+          elementId: newEdge?.id,
+          elementType: 'edge',
+          changes: newEdge,
+        };
+
+        console.log('Adding edge patch to the queue', 'mutation:', mutation);
+        addCanvasDatasetMutation(mutation);
       } else {
         console.error(`You cannot connect the link to that port.`);
         alert(`You cannot connect the link to that port.`);
