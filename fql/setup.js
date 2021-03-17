@@ -83,16 +83,49 @@ CreateRole({
       actions: {
         // Guests should only be allowed to read the Canvas of id "1"
         read: Query(
-          Lambda('ref', Equals(
-            '1',
-            Select(['id'], Get(Var('ref'))),
-          )),
+          Lambda('ref',
+            Equals(
+              '1',
+              Select(['id'], Get(Var('ref')),
+              ),
+            )),
         ),
         // Guests should only be allowed to update the Canvas of id "1" (but I don't know how to write that)
-        write: true,
+        write: Lambda(
+          ['oldData', 'newData'],
+          And(
+            Equals(
+              '1',
+              Select(['ref', 'id'], Get(Var('newData'))),
+            ),
+            Equals(
+              Select(['data', 'owner'], Var('oldData')),
+              Select(['data', 'owner'], Var('newData')),
+            ),
+          ),
+        ),
         // Guests should only be allowed to create the Canvas of id "1", but this requires admin permissions and will fail
         // See https://fauna-community.slack.com/archives/CAKNYCHCM/p1615413941454700
-        create: true,
+        create: Lambda('values',
+          Equals(
+            '1',
+            Select(['ref', 'id'], Get(Var('values'))),
+          ),
+        )
+        ,
+        history_write: Lambda(
+          ['ref', 'ts', 'action', 'data'],
+          And(
+            Equals(
+              '1',
+              Select(['id'], Get(Var('ref'))),
+            ),
+            Equals(
+              Select(['data', 'owner'], Var('data')),
+              Select(['data', 'owner'], Get(Var('ref'))),
+            ),
+          ),
+        ),
       },
     },
   ],
