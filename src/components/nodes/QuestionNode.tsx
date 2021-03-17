@@ -104,9 +104,10 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
               ...node?.data?.dynHeights,
               ...patchedNodeAdditionalData.dynHeights
             }, displayChoiceInputs);
-            console.log('onTextHeightChange ', node?.data?.dynHeights?.questionTextareaHeight, newHeight, node?.data?.dynHeights?.questionTextareaHeight !== newHeight);
+            console.log('onTextHeightChange ', additionalHeight, newHeight);
 
-            if (node?.data?.dynHeights?.questionTextareaHeight !== newHeight) {
+            // If the current additional height stored in the node is different from the new additionalHeight, then update
+            if (node?.data?.dynHeights?.questionTextareaHeight !== additionalHeight) {
               // Updates the value in the Recoil store
               patchCurrentNode({
                 data: patchedNodeAdditionalData,
