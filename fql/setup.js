@@ -86,9 +86,10 @@ CreateRole({
           Lambda('ref',
             Equals(
               '1',
-              Select(['id'], Get(Var('ref')),
+              Select(['id'], Var('ref'),
               ),
-            )),
+            )
+          ),
         ),
         // Guests should only be allowed to update the Canvas of id "1" (but I don't know how to write that)
         write: Lambda(
