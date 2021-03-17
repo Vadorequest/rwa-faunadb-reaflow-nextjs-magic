@@ -209,12 +209,15 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
    */
   const onNodeClone = (event: React.MouseEvent<SVGGElement, MouseEvent>) => {
     const clonedNode: BaseNodeData = cloneNode(node);
-    console.log('clonedNode', clonedNode, nodes);
+    const mutation: NewCanvasDatasetMutation = {
+      operationType: 'add',
+      elementId: node?.id,
+      elementType: 'node',
+      changes: clonedNode,
+    };
+    console.log('Adding patch to the queue', 'node:', clonedNode, 'mutation:', mutation);
 
-    setNodes([
-      ...nodes,
-      clonedNode,
-    ]);
+    addCanvasDatasetMutation(mutation);
   };
 
   /**
