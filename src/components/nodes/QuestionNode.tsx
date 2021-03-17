@@ -31,7 +31,7 @@ type Props = {} & BaseNodeProps<QuestionNodeData>;
 
 const nodeType: NodeType = 'question';
 const baseWidth = 250;
-const baseHeight = 300;
+const baseHeight = 310;
 
 /**
  * Question node.
@@ -97,7 +97,10 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                 questionTextareaHeight: additionalHeight,
               } as Partial<QuestionNodeAdditionalData['dynHeights']>,
             };
-            const newHeight = calculateNodeHeight(patchedNodeAdditionalData.dynHeights, displayChoiceInputs);
+            const newHeight = calculateNodeHeight({
+              ...node?.data?.dynHeights,
+              ...patchedNodeAdditionalData.dynHeights
+            }, displayChoiceInputs);
             console.log('onTextHeightChange ', node?.data?.dynHeights?.questionTextareaHeight, newHeight, node?.data?.dynHeights?.questionTextareaHeight !== newHeight);
 
             if (node?.data?.dynHeights?.questionTextareaHeight !== newHeight) {
@@ -155,7 +158,11 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
               const patchedNodeAdditionalData: Partial<QuestionNodeAdditionalData> = {
                 questionChoiceType: selectedChoiceValue,
               };
-              const newHeight = calculateNodeHeight(patchedNodeAdditionalData.dynHeights, willDisplayChoiceInputs);
+              const newHeight = calculateNodeHeight({
+                ...node?.data?.dynHeights,
+                ...patchedNodeAdditionalData.dynHeights,
+              }, willDisplayChoiceInputs);
+              console.log('selectedChoiceValue newHeight', newHeight);
 
               // Updates the value in the Recoil store
               patchCurrentNodeImmediately({
