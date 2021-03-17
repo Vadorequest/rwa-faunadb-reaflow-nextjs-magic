@@ -65,8 +65,11 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
            * @param meta
            */
           const onInformationTextHeightChange = (height: number, meta: TextareaHeightChangeMeta) => {
+            // The height of the input takes the border into account, but it must be subtracted (and multiplied by 2 because top + bottom)
+            const trueInputHeight = height - (settings.canvas.nodes.textarea.borderWidth * 2);
+
             // Only consider additional height, by ignoring the height of the first row
-            const additionalHeight = height - meta.rowHeight;
+            const additionalHeight = trueInputHeight - meta.rowHeight;
             const patchedNodeAdditionalData: Partial<InformationNodeAdditionalData> = {
               dynHeights: {
                 informationTextareaHeight: additionalHeight,
@@ -76,7 +79,6 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
             console.log('onTextHeightChange ', node?.data?.dynHeights?.informationTextareaHeight, newHeight, node?.data?.dynHeights?.informationTextareaHeight !== newHeight);
 
             if (node?.data?.dynHeights?.informationTextareaHeight !== newHeight) {
-              console.log('onTextHeightChange updating height')
               // Updates the value in the Recoil store
               patchCurrentNode({
                 data: patchedNodeAdditionalData,

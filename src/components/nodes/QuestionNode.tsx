@@ -90,8 +90,11 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
            * @param meta
            */
           const onQuestionInputHeightChange = (height: number, meta: TextareaHeightChangeMeta) => {
+            // The height of the input takes the border into account, but it must be subtracted (and multiplied by 2 because top + bottom)
+            const trueInputHeight = height - (settings.canvas.nodes.textarea.borderWidth * 2);
+
             // Only consider additional height, by ignoring the height of the first row
-            const additionalHeight = height - meta.rowHeight;
+            const additionalHeight = trueInputHeight - meta.rowHeight;
             const patchedNodeAdditionalData: Partial<QuestionNodeAdditionalData> = {
               dynHeights: {
                 questionTextareaHeight: additionalHeight,
