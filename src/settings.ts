@@ -22,6 +22,7 @@ export const settings: Settings = {
     maxHeight: 2000,
     nodes: {
       defaultDebounceWaitFor: 500,
+      borderWidth: 2,
       selected: {
         borderColor: 'rgba(0, 40, 255, 0.2)',
       },
@@ -118,6 +119,13 @@ export type CanvasSettings = {
      * Used for input "onChange" events, etc.
      */
     defaultDebounceWaitFor: number;
+
+    /**
+     * Width of the border, in pixels.
+     *
+     * The nodes always have a border, which changes of color when the node's selected.
+     */
+    borderWidth: 2;
 
     selected: {
       /**

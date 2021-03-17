@@ -440,10 +440,11 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
               // y={0} // Relative position from the parent Node component (aligned to left)
               css={css`
                 position: relative;
+                border: ${settings.canvas.nodes.borderWidth}px solid transparent;
 
                 // Highlights the node when it's being selected
                 &.is-selected {
-                  border: 2px solid ${isReachable ? settings.canvas.nodes.selected.borderColor : 'orange'};
+                  border: ${settings.canvas.nodes.borderWidth}px solid ${isReachable ? settings.canvas.nodes.selected.borderColor : 'orange'};
                   border-radius: 2px;
                 }
 
