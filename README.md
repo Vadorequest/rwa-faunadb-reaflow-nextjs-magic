@@ -102,6 +102,8 @@ Here are the future variants I intend to work on:
   Also, I'd like to have proper function splits and unit testing to make the whole project (including roles, queries, indexes, etc.) automatically testable.
   This would greatly increase the developer experience and confidence in our ability to duplicate the project to a new DB and creating different staging/production environments.
 
+External help on those features is much welcome! Please contribute ;)
+
 ## Getting started
 
 > If you want to use this project to start your own, you can either clone it using git and run the below commands, or "Deploy your own" using the Vercel button, which will create for you the Vercel and GitHub project (but won't configure environment variables for you!).
