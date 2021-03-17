@@ -26,6 +26,7 @@ import BaseNodeData from '../../types/BaseNodeData';
 import BasePortData from '../../types/BasePortData';
 import BlockPickerMenu, { OnBlockClick } from '../../types/BlockPickerMenu';
 import { CanvasDataset } from '../../types/CanvasDataset';
+import { NewCanvasDatasetMutation } from '../../types/CanvasDatasetMutation';
 import { LastCreated } from '../../types/LastCreated';
 import NodeType from '../../types/NodeType';
 import { translateXYToCanvasPosition } from '../../utils/canvas';
@@ -55,6 +56,7 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
     sourcePort: sourcePortId,
     target: targetNodeId,
     targetPort: targetPortId,
+    addCanvasDatasetMutation,
   } = props;
   // console.log('props', props)
 
@@ -135,7 +137,14 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
    */
   const onRemoveIconClick = (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
     console.log('onRemoveIconClick', event, edge);
-    setEdges(edges.filter((edge: BaseEdgeData) => edge.id !== id));
+    const mutation: NewCanvasDatasetMutation = {
+      operationType: 'delete',
+      elementId: edge?.id,
+      elementType: 'edge',
+    };
+
+    console.log('Adding edge patch to the queue', 'mutation:', mutation);
+    addCanvasDatasetMutation(mutation);
   };
 
   /**
@@ -153,33 +162,24 @@ const BaseEdge: React.FunctionComponent<Props> = (props) => {
   };
 
   /**
-   * Path the properties of the current node.
+   * Patches the properties of the current edge.
    *
    * Only updates the provided properties, doesn't update other properties.
-   * Also merges the 'data' object, by keeping existing data and only overwriting those that are specified.
-   *
-   * XXX Make sure to call this function once per function call, otherwise only the last patch call would be persisted correctly
-   *  (multiple calls within the same function would be overridden by the last patch,
-   *  because the "node" used as reference wouldn't be updated right away and would still use the same (outdated) reference)
-   *  TLDR; Don't use "patchCurrentNode" multiple times in the same function, it won't work as expected
+   * Will use deep merge of properties.
    *
    * @param patch
+   * @param stateUpdateDelay
    */
-  const patchCurrentEdge: PatchCurrentEdge = (patch: Partial<BaseEdgeData>): void => {
-    const edgeToUpdateIndex = edges.findIndex((edge: BaseEdgeData) => edge.id === id);
-    const existingEdge: BaseEdgeData = edges[edgeToUpdateIndex];
-    const edgeToUpdate = {
-      ...existingEdge,
-      ...patch,
-      id: existingEdge.id, // Force keep same id to avoid edge cases
+  const patchCurrentEdge: PatchCurrentEdge = (patch: Partial<BaseEdgeData>, stateUpdateDelay = 0): void => {
+    const mutation: NewCanvasDatasetMutation = {
+      operationType: 'patch',
+      elementId: edge?.id,
+      elementType: 'edge',
+      changes: patch,
     };
-    console.log('patchCurrentEdge before', existingEdge, 'after:', edgeToUpdate, 'using patch:', patch);
 
-    const newEdges = cloneDeep(edges);
-    // @ts-ignore
-    newEdges[edgeToUpdateIndex] = edgeToUpdate;
-
-    setEdges(newEdges);
+    console.log('Adding edge patch to the queue', 'patch:', patch, 'mutation:', mutation);
+    addCanvasDatasetMutation(mutation, stateUpdateDelay);
   };
 
   return (

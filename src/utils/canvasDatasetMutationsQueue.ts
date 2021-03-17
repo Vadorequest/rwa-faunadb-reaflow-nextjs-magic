@@ -92,6 +92,26 @@ export const applyPendingMutations: ApplyPendingMutations = ({ nodes, edges, mut
           } else {
             console.error(`Not implemented ${operationType}`);
           }
+        } else if (elementType === 'edge') {
+          if (operationType === 'patch') {
+            const edgeToUpdateIndex: number = newEdges.findIndex((edge: BaseEdgeData) => edge.id === elementId);
+            const existingEdge: BaseEdgeData | undefined = newEdges.find((edge: BaseEdgeData) => edge?.id === elementId);
+            const patchedEdge: BaseEdgeData = {} as BaseEdgeData;
+
+            if (typeof existingEdge !== 'undefined') {
+              merge(patchedEdge, existingEdge, changes);
+              console.log(`Applying patch N°${mutationsCounter}:`, changes, 'to edge:', existingEdge, 'result:', patchedEdge);
+              newEdges[edgeToUpdateIndex] = patchedEdge;
+            } else {
+              console.log(`Couldn't find edge to patch with id "${edgeToUpdateIndex}".`);
+            }
+          } else if (operationType === 'add') {
+            newEdges.push(changes as BaseEdgeData);
+          } else if (operationType === 'delete') {
+            remove(newEdges, (edges: BaseEdgeData) => edges?.id === elementId);
+          } else {
+            console.error(`Not implemented ${elementType}`);
+          }
         } else {
           console.error(`Not implemented ${elementType}`);
         }

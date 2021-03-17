@@ -318,6 +318,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     return (
       <BaseEdge
         {...edgeProps}
+        addCanvasDatasetMutation={addCanvasDatasetMutation}
       />
     );
   };

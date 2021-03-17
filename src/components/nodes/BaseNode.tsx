@@ -182,10 +182,10 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
   ]);
 
   /**
-   * Path the properties of the current node.
+   * Patches the properties of the current node.
    *
    * Only updates the provided properties, doesn't update other properties.
-   * Also merges the 'data' object, by keeping existing data and only overwriting those that are specified.
+   * Will use deep merge of properties.
    *
    * @param patch
    * @param stateUpdateDelay (ms)
@@ -198,7 +198,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
       changes: patch,
     };
 
-    console.log('Adding patch to the queue', 'patch:', patch, 'mutation:', mutation);
+    console.log('Adding node patch to the queue', 'patch:', patch, 'mutation:', mutation);
     addCanvasDatasetMutation(mutation, stateUpdateDelay);
   };
 
