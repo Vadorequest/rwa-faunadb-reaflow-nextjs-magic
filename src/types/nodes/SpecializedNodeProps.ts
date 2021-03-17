@@ -1,9 +1,7 @@
 import { NodeChildProps } from 'reaflow';
 import BaseNodeData from '../BaseNodeData';
-import {
-  PatchCurrentNode,
-  PatchCurrentNodeConcurrently,
-} from '../BaseNodeProps';
+import { PatchCurrentNode } from '../BaseNodeProps';
+import { AddCanvasDatasetMutation } from '../CanvasDatasetMutation';
 import { LastCreated } from '../LastCreated';
 
 /**
@@ -34,16 +32,6 @@ export type SpecializedNodeProps<NodeData extends BaseNodeData = BaseNodeData> =
   patchCurrentNodeImmediately: PatchCurrentNode<Partial<NodeData>>;
 
   /**
-   * Similar to patchCurrentNode, but is being debounced and will not execute immediately.
-   *
-   * Calling multiple times this function in a short amount of time will consolidate a patch together.
-   * Eventually, the consolidated patch will be executed as one change instead of multiple changes.
-   *
-   * @param nodeData
-   */
-  patchCurrentNodeConcurrently: PatchCurrentNodeConcurrently<Partial<NodeData>>;
-
-  /**
    * The last created node and its time of creation.
    * Will be undefined if no node was created yet.
    */
@@ -58,4 +46,10 @@ export type SpecializedNodeProps<NodeData extends BaseNodeData = BaseNodeData> =
    * Whether the node can be reached.
    */
   isReachable: boolean;
+
+  /**
+   * TODO
+   */
+  addCanvasDatasetPatch: AddCanvasDatasetMutation;
+
 }

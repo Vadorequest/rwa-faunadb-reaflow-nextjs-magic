@@ -1,10 +1,8 @@
 import { css } from '@emotion/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classnames from 'classnames';
-import cloneDeep from 'lodash.clonedeep';
 import includes from 'lodash.includes';
 import isEmpty from 'lodash.isempty';
-import merge from 'lodash.merge';
 import remove from 'lodash.remove';
 import React, {
   KeyboardEventHandler,
@@ -30,14 +28,11 @@ import BaseNodeAdditionalData from '../../types/BaseNodeAdditionalData';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import BaseNodeData from '../../types/BaseNodeData';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
-import BaseNodeProps, {
-  PatchCurrentNode,
-  PatchCurrentNodeConcurrently,
-} from '../../types/BaseNodeProps';
+import BaseNodeProps, { PatchCurrentNode } from '../../types/BaseNodeProps';
 import BasePortData from '../../types/BasePortData';
 import { CanvasDataset } from '../../types/CanvasDataset';
+import { NewCanvasDatasetMutation } from '../../types/CanvasDatasetMutation';
 import { GetBaseNodeDefaultPropsProps } from '../../types/GetBaseNodeDefaultProps';
-import { QuestionNodeData } from '../../types/nodes/QuestionNodeData';
 import { SpecializedNodeProps } from '../../types/nodes/SpecializedNodeProps';
 import NodeType from '../../types/NodeType';
 import PartialBaseNodeData from '../../types/PartialBaseNodeData';
@@ -90,6 +85,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
     baseHeight,
     patchCurrentNodeWait,
     patchCurrentNodeOptions,
+    addCanvasDatasetPatch,
     ...nodeProps // All props that are left will be forwarded to the Node component
   } = props;
 
@@ -111,47 +107,6 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
   // Particularly useful to the editor when ELK changes the nodes position to avoid losing track of the node that was just created
   const [isRecentlyCreated, setIsRecentlyCreated] = useState<boolean>(isYoungerThan(lastCreatedAt, recentlyCreatedMaxAge));
 
-  // Contains concurrent patches as an unified/consolidated patch
-  let consolidatedPatches: Partial<QuestionNodeData> = {};
-
-  /**
-   * Applies the consolidated patches.
-   *
-   * This function is debounced, and will not be executed unless there were no more patches applied, or the maxWait has been reached.
-   */
-  const _applyConcurrentPatches = useDebouncedCallback(
-    () => {
-      if (!isEmpty(consolidatedPatches)) {
-        console.log('Applying concurrent patches as one consolidated patch', consolidatedPatches);
-        patchCurrentNode(consolidatedPatches);
-
-        // Reset for the next consolidated patches
-        consolidatedPatches = {};
-      }
-    },
-    1000, // Wait for other changes to happen, if no change happen then invoke the update
-    {
-      maxWait: 10000,
-    },
-  );
-
-  /**
-   * Help consolidating multiple concurrent patches of the same node as one consolidated patch.
-   *
-   * When several events are fired at the same time and they all update the current node, it will be unpredictable to know which event will take precedence.
-   * in such case, it is necessary to have a temporary "consolidated patches" object that contains all updates and is executed once all patches have been merged.
-   *
-   * @param patch
-   */
-  const patchCurrentNodeConcurrently: PatchCurrentNodeConcurrently = (patch: PartialBaseNodeData) => {
-    // Merge the current patch to the consolidated concurrent patch object
-    merge(consolidatedPatches, consolidatedPatches, patch);
-    console.log('Patch applied, patch:', patch, 'result:', consolidatedPatches);
-
-    // Apply the concurrent patches, this call will be debounced and won't take effect immediately
-    _applyConcurrentPatches();
-  };
-
   /**
    * Debounces the patchCurrentNode function.
    *
@@ -168,7 +123,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
       patchCurrentNode(patch);
     },
     patchCurrentNodeWait || settings.canvas.nodes.defaultDebounceWaitFor, // Wait for other changes to happen, if no change happen then invoke the update
-  patchCurrentNodeOptions || {},
+    patchCurrentNodeOptions || {},
   );
 
   /**
@@ -215,7 +170,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
 
     if (!isEmpty(patchData)) {
       console.log(`Current node's base width/height doesn't match component's own base width/height. Updating the current node with patch:`, patchData);
-      patchCurrentNodeConcurrently(patch);
+      patchCurrentNode(patch);
     }
   }, [
     baseHeight,
@@ -234,25 +189,18 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
    *
    * XXX This function is being debounced by default (when used by children components) to avoid sending a burst of updates to the database.
    *
-   * XXX TLDR; Don't use "patchCurrentNode" multiple times in the same function, it won't work as expected:
-   *  Make sure to call this function once per function call, otherwise only the last patch call would be persisted correctly
-   *  (multiple calls within the same function would be overridden by the last patch,
-   *  because the "node" used as reference wouldn't be updated right away and would still use the same (outdated) reference)
-   *
    * @param patch
    */
   const patchCurrentNode: PatchCurrentNode = (patch: PartialBaseNodeData): void => {
-    const nodeToUpdateIndex = nodes.findIndex((node: BaseNodeData) => node.id === nodeProps.id);
-    const existingNode: BaseNodeData = nodes[nodeToUpdateIndex];
-    const nodeToUpdate = {};
-    merge(nodeToUpdate, existingNode, patch);
-    console.log('patchCurrentNode before', existingNode, 'after:', nodeToUpdate, 'using patch:', patch);
+    const mutation: NewCanvasDatasetMutation = {
+      operationType: 'patch',
+      elementId: node?.id,
+      elementType: 'node',
+      changes: patch,
+    };
 
-    const newNodes = cloneDeep(nodes);
-    // @ts-ignore
-    newNodes[nodeToUpdateIndex] = nodeToUpdate;
-
-    setNodes(newNodes);
+    console.log('Adding patch to the queue', 'patch:', patch, 'mutation:', mutation);
+    addCanvasDatasetPatch(mutation);
   };
 
   /**
@@ -423,7 +371,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
             lastCreated,
             patchCurrentNode: debouncedPatchCurrentNode,
             patchCurrentNodeImmediately: patchCurrentNode,
-            patchCurrentNodeConcurrently,
+            addCanvasDatasetPatch,
           };
 
           return (

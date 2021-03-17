@@ -60,7 +60,6 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
             lastCreated,
             patchCurrentNode,
             patchCurrentNodeImmediately,
-            patchCurrentNodeConcurrently,
           } = nodeProps;
           const choiceTypes: QuestionChoiceTypeOption[] = settings.canvas.nodes.questionNode.choiceTypeOptions;
           const lastCreatedNode = lastCreated?.node;
@@ -103,7 +102,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
 
             if (node?.data?.dynHeights?.questionTextareaHeight !== newHeight) {
               // Updates the value in the Recoil store
-              patchCurrentNodeConcurrently({
+              patchCurrentNode({
                 data: patchedNodeAdditionalData,
                 height: newHeight,
               } as QuestionNodeData);
@@ -121,7 +120,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
 
             if (newValue !== node?.data?.questionText) {
               console.log('onQuestionInputValueChange ', newValue);
-              patchCurrentNodeConcurrently({
+              patchCurrentNode({
                 data: {
                   questionText: newValue,
                 },

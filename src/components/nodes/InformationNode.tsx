@@ -40,7 +40,7 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
           const {
             node,
             lastCreated,
-            patchCurrentNodeConcurrently,
+            patchCurrentNode,
           } = nodeProps;
           const lastCreatedNode = lastCreated?.node;
           const lastCreatedAt = lastCreated?.at;
@@ -77,7 +77,7 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
 
             if (node?.data?.dynHeights?.informationTextareaHeight !== newHeight) {
               // Updates the value in the Recoil store
-              patchCurrentNodeConcurrently({
+              patchCurrentNode({
                 data: patchedNodeAdditionalData,
                 height: newHeight,
               } as InformationNodeData);
@@ -94,7 +94,7 @@ const InformationNode: BaseNodeComponent<Props> = (props) => {
 
             if (newValue !== node?.data?.informationText) {
               // Updates the value in the Recoil store
-              patchCurrentNodeConcurrently({
+              patchCurrentNode({
                 data: {
                   informationText: newValue,
                 },

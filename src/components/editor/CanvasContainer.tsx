@@ -2,6 +2,8 @@ import { Button } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { isBrowser } from '@unly/utils';
+import cloneDeep from 'lodash.clonedeep';
+import merge from 'lodash.merge';
 import React, {
   MutableRefObject,
   useEffect,
@@ -17,6 +19,7 @@ import {
 } from 'reaflow';
 import { useRecoilState } from 'recoil';
 import { useDebouncedCallback } from 'use-debounce';
+import { v1 as uuid } from 'uuid';
 import { usePreviousValue } from '../../hooks/usePreviousValue';
 import useRenderingTrace from '../../hooks/useTraceUpdate';
 import { useUserSession } from '../../hooks/useUserSession';
@@ -26,8 +29,13 @@ import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
 import { selectedEdgesSelector } from '../../states/selectedEdgesState';
 import { selectedNodesSelector } from '../../states/selectedNodesState';
 import { UserSession } from '../../types/auth/UserSession';
+import BaseEdgeData from '../../types/BaseEdgeData';
 import BaseNodeData from '../../types/BaseNodeData';
 import { CanvasDataset } from '../../types/CanvasDataset';
+import {
+  AddCanvasDatasetMutation,
+  CanvasDatasetMutation,
+} from '../../types/CanvasDatasetMutation';
 import { TypeOfRef } from '../../types/faunadb/TypeOfRef';
 import {
   onInit,
@@ -52,6 +60,8 @@ import NodeRouter from '../nodes/NodeRouter';
 type Props = {
   canvasRef: MutableRefObject<CanvasRef | null>;
 }
+
+const mutations: CanvasDatasetMutation[] = [];
 
 /**
  * Canvas container.
@@ -107,6 +117,81 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const nodes = canvasDataset?.nodes;
   const edges = canvasDataset?.edges;
   const previousCanvasDataset: CanvasDataset | undefined = usePreviousValue<CanvasDataset>(canvasDataset);
+
+  /**
+   * Apply all patches that haven't been applied yet.
+   */
+  useEffect(() => {
+    // Only consider mutations that are waiting
+    const mutationsToApply = mutations.filter((mutation: CanvasDatasetMutation) => mutation.status === 'waiting');
+    console.log(`patchesToApply (${mutationsToApply?.length})`, mutationsToApply);
+
+    if (mutationsToApply?.length > 0) {
+      const newNodes: BaseNodeData[] = cloneDeep(nodes);
+      const newEdges: BaseEdgeData[] = cloneDeep(edges);
+
+      // Mark all patches as being processed
+      mutationsToApply.map((mutation: CanvasDatasetMutation) => {
+        const { id } = mutation;
+        const patchIndex: number = mutations.findIndex((mutation: CanvasDatasetMutation) => mutation.id === id);
+
+        if (patchIndex >= 0) {
+          mutations[patchIndex].status = 'processing';
+        }
+      });
+      console.log(`patchesToApply (processing (${mutationsToApply?.length}))`, mutationsToApply);
+
+      // Processing all waiting patches into one consolidated update
+      mutationsToApply.map((mutation: CanvasDatasetMutation) => {
+        const {
+          elementId,
+          elementType,
+          operationType,
+          changes,
+        } = mutation;
+
+        if (elementType === 'node') {
+          if (operationType === 'patch') {
+            const nodeToUpdateIndex: number = nodes.findIndex((node: BaseNodeData) => node.id === elementId);
+            const existingNode: BaseNodeData | undefined = nodes?.find((node: BaseNodeData) => node?.id === elementId);
+            const nodeToUpdate: BaseNodeData = {} as BaseNodeData;
+
+            if (typeof existingNode !== 'undefined') {
+              merge(nodeToUpdate, existingNode, changes);
+              newNodes[nodeToUpdateIndex] = nodeToUpdate;
+            } else {
+              console.log(`Couldn't find node to patch with id "${nodeToUpdateIndex}".`);
+            }
+          } else {
+            console.error(`Not implemented ${operationType}`);
+          }
+        } else {
+          console.error(`Not implemented ${elementType}`);
+        }
+      });
+
+      setCanvasDataset({
+        nodes: newNodes,
+        edges: newEdges,
+      });
+    }
+  });
+
+  /**
+   * Add a new patch to apply to the existing queue.
+   *
+   * @param patch
+   */
+  const addCanvasDatasetPatch: AddCanvasDatasetMutation = (patch) => {
+    mutations.push({
+      status: 'waiting',
+      id: uuid(),
+      elementId: patch.elementId,
+      elementType: patch.elementType,
+      operationType: patch.operationType,
+      changes: patch.changes,
+    });
+  };
 
   /**
    * Debounces the database update invocation call.
@@ -262,6 +347,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     return (
       <NodeRouter
         nodeProps={nodeProps}
+        addCanvasDatasetPatch={addCanvasDatasetPatch}
       />
     );
   };
