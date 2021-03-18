@@ -7,79 +7,21 @@ It also uses the famous Next.js framework, and it's hosted on Vercel.
 This RWA is meant to help beginners with any of the above-listed tools learn how to build a real app, using best-practices.
 Therefore, the codebase is heavily documented, not only the README but also every file in the project.
 
+The app allows users to create a discussion workflow in a visual way. 
+It displays information, questions and branching logic (if/else).
+It works in real-time for better collaboration, and provides features similar as if you'd be building a Chatbot discussion.
+
+## You want to learn?
+
 Take a look at the **[Variants](#Variants)** below **before jumping in the source code**.
 As part of my developer journey, I've reached different milestones and made different branches/PR for each of them.
 If you're only interested in Reaflow, or Magic Auth, or FaunaDB Real-Time streaming, **they'll help you focus on what's of the most interest to you**.
 
 > _If you like what you're seeing, take a look at [Next Right Now](https://github.com/UnlyEd/next-right-now), a **production-grade boilerplate** for the Next.js framework._
 
-## Overview
-
-Users can be either **Guests** or **Editors**.
-
-All requests to FaunaDB are made **from the frontend**. 
-Even though, **they're completely secure** due to a proper combination of tokens and roles/permissions.
-
-### Guests permissions (FaunaDB)
-
-By default, users are guests.
-Guests all share the same working document and see changes made by others in real-time.
-They can only access (read/write) that special shared document.
-
-Guests use a special FaunaDB token generated from the "Public" role. 
-They all share that same token. The token doesn't expire.
-Also, the token **only allows read/write on the special shared document** (ID: "1"), see the `/fql/setup.js` file "Public" role.
-
-Therefore, the public token, even though it's public, cannot be used to perform any other operation than read/write that single document. 
-
-### Editors permissions (FaunaDB)
-
-Editors are authenticated users who can only access (read/write) their own documents.
-
-A editor-related token is generated upon successful login and is used in the client to authenticate to FaunaDB.
-Even though the token is used by the browser, it's still safe because the token is only readable/writeable  from the server. (`httpOnly: true`)
-
-Also, the token won't allow read/write on other documents than their owner, see the `/fql/setup.js` file "Editor" role. 
-
-### Authentication (Magic + FaunaDB + Next.js API)
-Users authenticate through Magic Link (passwordless) sent to the email they used.
-Magic helps to simplify the authentication workflow by ensuring the users use a valid email (they must click on a link sent to their email inbox to log in).
-
-When the user clicks on the link in their inbox, Magic generates a `DID token`, which is then used as authentication `Bearer token` and sent to our `/api/login`.
-
-The `/api/login` endpoint checks the DID token and then generates a FaunaDB token (`faunaDBToken`) attached to the user.
-This `faunaDBToken` is then stored in the `token` cookie (httpOnly), alongside other user-related information (UserSession object), such as their `email` and FaunaDB `ref` and `id`.
-
-This token will then be read (`/api/user` endpoint) when the user loads the page.
-
-_Even though there are 2 buttons (login/create account), both buttons actually do the same thing, and both can be used to sign-in and sign-up.
-That's because we automatically log in new users, so whether they were an existing user or not doesn't change the authentication workflow.
-It made more sense (UX) to have two different buttons, that's what people usually expect, so we made it that way._
-
-### Workflow editor (Reaflow)
-
-The editor provides a GUI allowing users to add "nodes" and "edges" connecting those nodes.
-It is meant to help them **build a workflow** using nodes such as "Information", "Question" and "If/Else".
-
-The workflow in itself **doesn't do anything**, it's purely visual. 
-It typically represents a discussion a user would have with a Chatbot.
-
-The whole app only use one page, that uses Next.js SSG mode (it's statically rendered, and the page is generated at build time, when deploying the app).
-
-### Real-time streaming (FaunaDB)
-
-Once the user session has been fetched (through `/api/user`), the `CanvasContainer` is rendered.
-One of its child component, `CanvasStream` automatically opens a stream connection to FaunaDB on the user's document (the shared document if **Guest**, or the first document that belongs to the **Editor**).
-
-When the stream is opened, it automatically retrieves the current state of the document and updates the local state (Recoil).
-
-When changes are made on the document, FaunaDB send a push notification to all users subscribed to that document.
-This also happens when the user X updates the document (they receives a push notification if they're the author of the changes, too).
-In such case, the update is being ignored for performances reasons (we don't need to update a local state that is already up-to-date).
-
 ## Online demo
 
-[Demo](https://poc-nextjs-reaflow.vercel.app/) (automatically updated from the `master` branch).
+[Demo](https://rwa-faunadb-reaflow-nextjs-magic.vercel.app/) (automatically updated from the `master` branch).
 
 ![image](https://user-images.githubusercontent.com/3807458/109431687-08bf1680-7a08-11eb-98bd-31fa91e21680.png)
 
@@ -192,6 +134,68 @@ Deploy the example using [Vercel](https://vercel.com):
 # Advanced
 
 This section is for developers who want to understand even deeper how things work.
+
+## Application overview
+
+Users can be either **Guests** or **Editors**.
+
+All requests to FaunaDB are made **from the frontend**. Even though, **they're completely secure** due to a proper combination of tokens and roles/permissions.
+
+### Guests permissions (FaunaDB)
+
+By default, users are guests. Guests all share the same working document and see changes made by others in real-time. They can only access (read/write) that
+special shared document.
+
+Guests use a special FaunaDB token generated from the "Public" role. They all share that same token. The token doesn't expire. Also, the token **only allows
+read/write on the special shared document** (ID: "1"), see the `/fql/setup.js` file "Public" role.
+
+Therefore, the public token, even though it's public, cannot be used to perform any other operation than read/write that single document.
+
+### Editors permissions (FaunaDB)
+
+Editors are authenticated users who can only access (read/write) their own documents.
+
+A editor-related token is generated upon successful login and is used in the client to authenticate to FaunaDB. Even though the token is used by the browser,
+it's still safe because the token is only readable/writeable from the server. (`httpOnly: true`)
+
+Also, the token won't allow read/write on other documents than their owner, see the `/fql/setup.js` file "Editor" role.
+
+### Authentication (Magic + FaunaDB + Next.js API)
+
+Users authenticate through Magic Link (passwordless) sent to the email they used. Magic helps to simplify the authentication workflow by ensuring the users use
+a valid email (they must click on a link sent to their email inbox to log in).
+
+When the user clicks on the link in their inbox, Magic generates a `DID token`, which is then used as authentication `Bearer token` and sent to our `/api/login`
+.
+
+The `/api/login` endpoint checks the DID token and then generates a FaunaDB token (`faunaDBToken`) attached to the user. This `faunaDBToken` is then stored in
+the `token` cookie (httpOnly), alongside other user-related information (UserSession object), such as their `email` and FaunaDB `ref` and `id`.
+
+This token will then be read (`/api/user` endpoint) when the user loads the page.
+
+_Even though there are 2 buttons (login/create account), both buttons actually do the same thing, and both can be used to sign-in and sign-up. That's because we
+automatically log in new users, so whether they were an existing user or not doesn't change the authentication workflow. It made more sense (UX) to have two
+different buttons, that's what people usually expect, so we made it that way._
+
+### Workflow editor (Reaflow)
+
+The editor provides a GUI allowing users to add "nodes" and "edges" connecting those nodes. It is meant to help them **build a workflow** using nodes such as "
+Information", "Question" and "If/Else".
+
+The workflow in itself **doesn't do anything**, it's purely visual. It typically represents a discussion a user would have with a Chatbot.
+
+The whole app only use one page, that uses Next.js SSG mode (it's statically rendered, and the page is generated at build time, when deploying the app).
+
+### Real-time streaming (FaunaDB)
+
+Once the user session has been fetched (through `/api/user`), the `CanvasContainer` is rendered. One of its child component, `CanvasStream` automatically opens
+a stream connection to FaunaDB on the user's document (the shared document if **Guest**, or the first document that belongs to the **Editor**).
+
+When the stream is opened, it automatically retrieves the current state of the document and updates the local state (Recoil).
+
+When changes are made on the document, FaunaDB send a push notification to all users subscribed to that document. This also happens when the user X updates the
+document (they receives a push notification if they're the author of the changes, too). In such case, the update is being ignored for performances reasons (we
+don't need to update a local state that is already up-to-date).
 
 ## Reaflow Graph (ELK)
 
