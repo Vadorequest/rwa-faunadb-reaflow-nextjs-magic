@@ -1,8 +1,17 @@
-# POC Next.js + Reaflow
+# RWA FaunaDB + Reaflow + Next.js + Magic link
 
-> This project is a POC of [Reaflow](https://github.com/reaviz/reaflow) used with the Next.js framework. It is hosted on Vercel.
+This project is a Real-World App featuring [FaunaDB](https://fauna.com/) as real-time database, [Reaflow](https://github.com/reaviz/reaflow) as graph editor, and [Magic Link](https://magic.link/) for passwordless authentication.
 
-It is a single-page application (using a static page) that aims at showing an **advanced use-case with Reaflow**.
+It also uses the famous Next.js framework, and it's hosted on Vercel.
+
+This RWA is meant to help beginners with any of the above-listed tools learn how to build a real app, using best-practices.
+Therefore, the codebase is heavily documented, not only the README but also every file in the project.
+
+Take a look at the **[Variants](#Variants)** below **before jumping in the source code**.
+As part of my developer journey, I've reached different milestones and made different branches/PR for each of them.
+If you're only interested in Reaflow, or Magic Auth, or FaunaDB Real-Time streaming, **they'll help you focus on what's of the most interest to you**.
+
+> _If you like what you're seeing, take a look at [Next Right Now](https://github.com/UnlyEd/next-right-now), a **production-grade boilerplate** for the Next.js framework._
 
 ## Online demo
 
@@ -12,40 +21,100 @@ It is a single-page application (using a static page) that aims at showing an **
 
 ## Features
 
-It comes with the following features:
+This RWA comes with the following features:
 - Source code heavily **documented**
 - Strong TS typings
-- Different kinds of node (`start`, `if`, `information`, `question`) with different layouts for each type _(see [NodeRouter component](blob/main/src/components/nodes/NodeRouter.tsx))_
-- Nodes use `foreignObject`, which complicates things quite a bit (events, css), but it's the only way of writing HTML/CSS within an SVG `rect` (custom nodes UI)
-- Advanced support for **`foreignObject`** and best-practices
-- Support for **Emotion 11**
-- Reaflow Nodes, Edges and Ports are properly extended (**BaseNode** component, **BaseNodeData** type, **BaseEdge** component, **BaseEdgeData** type, etc.), 
-  which makes it easy to quickly change the properties of all nodes, edges, ports, etc.
-- Creation of nodes through the `BlockPickerMenu` component, which displays either at the bottom of the canvas, or at the mouse pointer position (e.g: when dropping edges)
-- **Undo/redo** support (with shortcuts)
-- Node/edge **deletion**
-- Node **duplication**
-- **Selection** of nodes and edges, one at a time 
-- Uses **`Recoil`** for shared state management
-- Automatically re-calculate the **height** of nodes when jumping lines in `textarea`
-- ~~Graph data (nodes, edges) are **persisted** in the browser **localstorage** and automatically loaded upon page reload~~
-  - Graph data (nodes, edges) are **persisted** in FaunaDB and automatically loaded upon page reload
-- Real-time support for collaboration (open 2 tabs), using FaunaDB
-  - FaunaDB token is public and has read/update access rights on one table of the DB only
-  - All users share the same "Canvas" document in the DB
-  - This POC will **not improve further** the collaborative experience, it's only a POC (undo/redo undoes peer actions, undo/redo seems a bit broken sometimes)
+- **Graph Editor** (Reaflow)
+    - Different kinds of node (`start`, `end`, `if`, `information`, `question`) with different layouts for each type _(see [NodeRouter component](blob/main/src/components/nodes/NodeRouter.tsx))_
+    - Nodes use `foreignObject`, which complicates things quite a bit (events, css), but it's the only way of writing HTML/CSS within an SVG `rect` (custom nodes UI)
+    - Advanced support for **`foreignObject`** and best-practices
+    - Native Reaflow Nodes, Edges and Ports are extended for reusability _(**BaseNode** component, **BaseNodeData** type, **BaseEdge** component, **BaseEdgeData** type, etc.)_,
+        which makes it easy to quickly change the properties of all nodes, edges, ports, etc.
+    - Creation of nodes visually, through the `BlockPickerMenu` component
+    - **Undo/redo** support (with shortcuts)
+    - Node/edge **deletion**
+    - Node **duplication**
+    - **Selection** of nodes and edges (one at a time)
+    - Automatically re-calculate the **height** of nodes when jumping lines in `textarea`
+        - _This is much harder than it might look like, because it triggers concurrent state updates that need to be [queued](./src/utils/canvasDatasetMutationsQueue.ts) so we don't lose part of the changes_
+- **Shared state manager**
+    - Uses **`Recoil`**
+        - It was my first time using Recoil, and I like it even more than I thought I would. It's very easy to use.
+        - The one thing that needs improvement are DevTools, it's not as powerful as other state manager have (Redux, MobX, etc.).
+          There are only few tools out there, and even fewer are compatible with Next.js.
+    - [recoil-devtools](https://github.com/ulises-jeremias/recoil-devtools) available (hit `(ctrl/cmd)+h`)
+- Passwordless Authentication (Magic Link)
+  - Use Next.js API endpoint to authenticate the user securely
+  - Stores a `token` cookie that can only be read/written from the server side (`httpOnly`)
+  - Use `/api/login` endpoint that reads the token on the server side and returns its content, used by the frontend to know if the current user is authenticated
+- **Real-time DB (FaunaDB)**
+  - Graph data _(nodes, edges, AKA `CanvasDataset`)_ are **persisted** in FaunaDB and automatically loaded upon page load
+  - Real-time stream for collaboration (open 2 tabs)
+    - When **not authenticated** (AKA "Guest"):
+      - FaunaDB token is public and has read/write access rights on one special shared document of the "Canvas" collection
+        - It cannot read/write anything else in the DB, it's completely safe
+      - All guests share the same "Canvas" document in the DB
+    - When **authenticated** (AKA "Editor"):
+      - A FaunaDB token is generated upon login and stored in the `token` cookie. This token is linked to the user and hold the **permissions** granted to the user.
+      Therefore, it will only allow what's configured in the FaunaDB "Editor" role.
+    - This RWA will **not improve further** the collaborative experience, it's only a POC (undo/redo undoes peer actions)
+- Support for **Emotion 11** (CSS in JS)
 
-Known limitations:
+_Known limitations_:
 - Editor direction is `RIGHT` (hardcoded) and adding nodes will add them to the right side, always (even if you change the direction)
     - I don't plan on changing that at the moment
 
-> This POC can be used as a boilerplate to start your own project using Reaflow.
+## Variants
+
+While working on this project, I've reached several milestones with a different set of features, available as "Examples":
+
+1. [`with-local-storage`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-local-storage)
+   ([Demo](https://poc-nextjs-reaflow-git-with-local-storage-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/14)):
+   The canvas dataset is stored in the browser localstorage.
+   There is no real-time and no authentication.
+1. [`with-faunadb-real-time`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-faunadb-real-time)
+   ([Demo](https://poc-nextjs-reaflow-git-with-faunadb-real-time-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/13)):
+   The canvas dataset is stored in FaunaDB.
+   Changes to the canvas are real-time and shared with everyone.
+   Everybody shares the same working document.
+1. [`with-magic-link-auth`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-magic-link-auth)
+   ([Demo](https://poc-nextjs-reaflow-git-with-magic-link-auth-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/15)):
+   The canvas dataset is stored in FaunaDB.
+   Changes to the canvas are real-time and shared with everyone.
+   Everybody shares the same working document.
+   Users can create an account and login using Magic Link, but they still share the same Canvas document as guests.
+1. [`with-faunadb-auth`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-faunadb-auth)
+   ([Demo](https://poc-nextjs-reaflow-git-with-faunadb-auth-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/12)):
+   The canvas dataset is stored in FaunaDB.
+   Changes to the canvas are real-time and shared with everyone when not authenticated.
+   Changes to the canvas are real-time and shared with yourself when being authenticated. (open 2 tabs to see it in action)
+   Users can create an account and login using Magic Link, they'll automatically load their own document.
+
+## Roadmap
+
+Here are the future variants I intend to work on:
+- FaunaDB GraphQL (GQL): We currently use FQL to manipule the real-time stream (it's not compatible with GQL).
+  I'd like to use GQL for non real-time operations.
+  I'm thinking adding the add/edit/remove project features using GQL, to showcase usage of both FaunaDB FQL and GQL languages.
+- FaunaDB IaC (Infrastructure as Code): Currently, the FaunaDB configuration is rather "simple", there are 2 tables, 1 index, 2 roles.
+  But it's not possible to generate the whole database configuration dynamically in an automated way.
+  I'd like to improve the DevOps experience and make it possible to deploy the whole thing in a new DB programmatically.
+  Also, I'd like to have proper function splits and unit testing to make the whole project (including roles, queries, indexes, etc.) automatically testable.
+  This would greatly increase the developer experience and confidence in our ability to duplicate the project to a new DB and creating different staging/production environments.
+
+External help on those features is much welcome! Please contribute ;)
 
 ## Getting started
 
+> If you want to use this project to start your own, you can either clone it using git and run the below commands, or "Deploy your own" using the Vercel button, which will create for you the Vercel and GitHub project (but won't configure environment variables for you!).
+
 - `yarn`
 - `yarn start`
+- Run commands in `fql/setup.js` from the Web Shell at [https://dashboard.fauna.com/](https://dashboard.fauna.com/), this will create the FaunaDB collection, indexes, roles, etc.
+- `cp .env.local.example .env.local`, and define your environment variables
 - Open browser at [http://localhost:8890](http://localhost:8890)
+
+If you deploy it to Vercel, you'll need to create Vercel environment variables for your project. (see `.env.local.example` file)
 
 ## Deploy your own
 
@@ -53,9 +122,15 @@ Deploy the example using [Vercel](https://vercel.com):
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/Vadorequest/poc-nextjs-reaflow&project-name=poc-nextjs-reaflow&repository-name=poc-nextjs-reaflow)
 
-## Advanced - ELK
+---
 
-ELKjs (and ELK) are used to draw the graph (nodes, edges). 
+# Advanced
+
+This section is for developers who want to understand even deeper how things work.
+
+## Reaflow Graph (ELK)
+
+ELKjs (and ELK) are used to draw the graph (nodes, edges).
 It's what Reaflow uses in the background.
 ELK stands for **Eclipse Layout Kernel**.
 
@@ -63,7 +138,7 @@ It seems to be one of the best Layout manager out there.
 
 Unfortunately, it is quite complicated and lacks a comprehensive documentation.
 
-You'll need to dig into the ELK documentation and issues if you're trying to change **how the graph's layout behaves**. 
+You'll need to dig into the ELK documentation and issues if you're trying to change **how the graph's layout behaves**.
 Here are some good places to start and useful links I've compiled for my own sake.
 
 - [ELKjs GitHub](https://github.com/kieler/elkjs)
@@ -79,3 +154,78 @@ Here are some good places to start and useful links I've compiled for my own sak
 
 Known limitations:
 - [Tracking issue - Manually positioning the nodes ("Standalone Edge Routing")](https://github.com/eclipse/elk/issues/315)
+
+---
+
+# Inspirations
+
+Here is a list of online resources and open-source repositories that have been the most helpful:
+
+**Understanding FaunaDB:**
+- https://fauna.com/blog/modernizing-from-postgresql-to-serverless-with-fauna-part-1
+
+**Authentication and authorization:**
+- https://docs.fauna.com/fauna/current/tutorials/basics/authentication?lang=javascript
+- https://magic.link/posts/todomvc-magic-nextjs-fauna (tuto Magic + Next.js + FaunaDB)
+    - https://github.com/magiclabs/example-nextjs-faunadb-todomvc (repo)
+
+**Real-time streaming:**
+- https://github.com/fauna-brecht/fauna-streaming-example Very different from what is built here, but holds solid foundations about streaming
+  - https://github.com/fauna-brecht/fauna-streaming-example/blob/776c911eb4/src/data/streams.js
+
+**FaunaDB Real-world apps (RWA):**
+- https://docs.fauna.com/fauna/current/start/apps/fwitter
+- https://github.com/fauna-brecht/skeleton-auth
+- https://github.com/fillipvt/with-graphql-faunadb-cookie-auth
+- https://github.com/fauna-brecht/fauna-streaming-example
+- https://github.com/magiclabs/example-nextjs-faunadb-todomvc
+
+**FaunaDB FQL:**
+- UDF
+  - https://docs.fauna.com/fauna/current/security/roles API definitions for CRUD ops
+- https://github.com/shiftx/faunadb-fql-lib
+- https://docs.fauna.com/fauna/current/cookbook/?lang=javascript
+- https://github.com/fauna-brecht/faunadb-auth-skeleton-frontend/blob/default/fauna-queries/helpers/fql.js
+
+**FaunaDB GQL:**
+- https://css-tricks.com/instant-graphql-backend-using-faunadb/
+- https://github.com/ptpaterson/faunadb-graphql-schema-loader
+- https://github.com/Plazide/fauna-gql-upload
+- Schema management
+  - https://github.com/fillipvt/with-graphql-faunadb-cookie-auth/blob/master/scripts/uploadSchema.js
+
+**FaunaDB DevOps:**
+- https://github.com/fauna-brecht/fauna-schema-migrate
+
+**FaunaDB Community resources:**
+- https://github.com/n400/awesome-faunadb
+  - https://gist.github.com/BrunoQuaresma/0236aff64dc44795f19994cbc7a07db6 React query hook
+  - https://gist.github.com/tovbinm/f76bcbf56ea8e2e3740e237b6c2f2ab9 GraphQL relation query examples
+  - https://gist.github.com/TracyNgot/291738b403cfa012fe7bf05614c22408 Query builder
+
+---
+
+# Real-time implementation, limits, and considerations for the future
+
+The way the current real-time feature is implemented is not too bad, but not great either.
+
+It works by syncing the whole dataset whether the remote `document` (on FaunaDB) is updated, which in turn updates all subscribed clients (except the author).
+While this works, changes from one client can be overwritten by another client when they happen at the same time.
+
+> `document` means "Canvas Dataset" here. It contains all `nodes` and `edges` (and other props, like `owner`, etc.)
+
+A better implementation would be not to stream the actual `document`, but only the document's **patches**.
+The whole `document` would only be useful for the initialization of the app.
+Then, any change should be streamed to another document which would only contain the changes applied to the initial document.
+When such changes are streamed (patches), they should then be applied to the current working document, one by one, in order.
+
+Each change/patch would represent a diff between the previous and after states of the document, they would only contain **what** have changed:
+- A node has been added
+- An edge has been deleted
+- An edge has been modified
+
+This way, when something changes, the client would resolve what's changed and stream the patch to the DB, which in turn would update all subscribed clients which would apply that patch.
+
+Conflict may still arise, but they'll be limited to parts of the document that have been updated simultaneously (the same node, the same edge, etc.).
+
+This would provide a much better user experience, because overwrites will happen much less often, and it'd increase collaboration.

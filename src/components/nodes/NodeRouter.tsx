@@ -2,11 +2,14 @@ import React from 'react';
 import { NodeProps } from 'reaflow';
 import { useRecoilState } from 'recoil';
 import { nodesSelector } from '../../states/nodesState';
+import BaseNodeComponent from '../../types/BaseNodeComponent';
 import BaseNodeData from '../../types/BaseNodeData';
+import { QueueCanvasDatasetMutation } from '../../types/CanvasDatasetMutation';
 import { findNodeComponentByType } from '../../utils/nodes';
 
 type Props = {
   nodeProps: NodeProps;
+  queueCanvasDatasetMutation: QueueCanvasDatasetMutation;
 }
 
 /**
@@ -17,6 +20,7 @@ type Props = {
 const NodeRouter: React.FunctionComponent<Props> = (props) => {
   const {
     nodeProps,
+    queueCanvasDatasetMutation,
   } = props;
   const nodeType = nodeProps?.properties?.data?.type;
   const [nodes, setNodes] = useRecoilState(nodesSelector);
@@ -40,12 +44,13 @@ const NodeRouter: React.FunctionComponent<Props> = (props) => {
   }
 
   // Will render a specialized node (e.g: StartNode, etc.)
-  const NodeComponent = findNodeComponentByType(nodeType);
+  const NodeComponent: BaseNodeComponent = findNodeComponentByType(nodeType);
 
   return (
     <NodeComponent
       {...nodeProps}
       node={node}
+      queueCanvasDatasetMutation={queueCanvasDatasetMutation}
     />
   );
 };

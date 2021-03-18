@@ -21,9 +21,13 @@ export const settings: Settings = {
     maxWidth: 10000, // 10k should handle about 50 horizontal nodes
     maxHeight: 2000,
     nodes: {
-      defaultDebounceFor: 250,
+      defaultDebounceWaitFor: 500,
+      borderWidth: 2,
       selected: {
-        borderColor: 'blue',
+        borderColor: 'rgba(0, 40, 255, 0.2)',
+      },
+      textarea: {
+        borderWidth: 1,
       },
       questionNode: {
         choiceTypeOptions: [
@@ -117,7 +121,26 @@ export type CanvasSettings = {
      *
      * Used for input "onChange" events, etc.
      */
-    defaultDebounceFor: number;
+    defaultDebounceWaitFor: number;
+
+    /**
+     * Width of the border, in pixels.
+     *
+     * The nodes always have a border, which changes of color when the node's selected.
+     */
+    borderWidth: 2;
+
+    /**
+     * Applies to all textarea.
+     */
+    textarea: {
+      /**
+       * Width of the textarea border.
+       *
+       * Must be multiplied by 2 to have the top + bottom width.
+       */
+      borderWidth: number;
+    };
 
     selected: {
       /**

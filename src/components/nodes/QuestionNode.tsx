@@ -2,11 +2,7 @@ import { Button } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import now from 'lodash.now';
 import sortBy from 'lodash.sortby';
-import React, {
-  Fragment,
-  useEffect,
-  useState,
-} from 'react';
+import React, { Fragment } from 'react';
 import { DebounceInput } from 'react-debounce-input';
 import ReactSelect from 'react-select';
 import { OptionTypeBase } from 'react-select/src/types';
@@ -18,7 +14,10 @@ import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps from '../../types/BaseNodeProps';
 import { QuestionChoiceType } from '../../types/nodes/QuestionChoiceType';
 import { QuestionChoiceTypeOption } from '../../types/nodes/QuestionChoiceTypeOption';
-import { QuestionChoiceVariable } from '../../types/nodes/QuestionNodeAdditionalData';
+import {
+  QuestionChoiceVariable,
+  QuestionNodeAdditionalData,
+} from '../../types/nodes/QuestionNodeAdditionalData';
 import { QuestionNodeData } from '../../types/nodes/QuestionNodeData';
 import { SpecializedNodeProps } from '../../types/nodes/SpecializedNodeProps';
 import NodeType from '../../types/NodeType';
@@ -31,8 +30,8 @@ import BaseNode from './BaseNode';
 type Props = {} & BaseNodeProps<QuestionNodeData>;
 
 const nodeType: NodeType = 'question';
-const defaultWidth = 250;
-const defaultHeight = 250;
+const baseWidth = 250;
+const baseHeight = 310;
 
 /**
  * Question node.
@@ -50,6 +49,8 @@ const defaultHeight = 250;
 const QuestionNode: BaseNodeComponent<Props> = (props) => {
   return (
     <BaseNode
+      baseWidth={baseWidth}
+      baseHeight={baseHeight}
       {...props}
     >
       {
@@ -58,33 +59,29 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
             node,
             lastCreated,
             patchCurrentNode,
+            patchCurrentNodeImmediately,
           } = nodeProps;
-          const [questionTextareaAdditionalHeight, setQuestionTextareaAdditionalHeight] = useState<number>(0);
           const choiceTypes: QuestionChoiceTypeOption[] = settings.canvas.nodes.questionNode.choiceTypeOptions;
           const lastCreatedNode = lastCreated?.node;
           const lastCreatedAt = lastCreated?.at;
           const displayChoiceInputs = node?.data?.questionChoiceType === 'single-quick-reply';
-          const additionalHeightChoiceInputs = 200;
+          const choiceBaseHeight = 200;
 
           // Autofocus works fine when the node is inside the viewport, but when it's created outside it moves the viewport back at the beginning
-          const shouldAutofocus = false && lastCreatedNode?.id === node.id && isYoungerThan(lastCreatedAt, 1000);
+          const shouldAutofocus = false && lastCreatedNode?.id === node.id && isYoungerThan(lastCreatedAt, 1000); // XXX Disabled for now, need a way to auto-center on the newly created node
 
           /**
-           * Calculates the node's height dynamically.
+           * Calculates the node's height based on the dynamic source that affect the dynamic height of the component.
            *
-           * The node's height is dynamic and depends on various parameters (selected option, length of text, etc.).
+           * @param dynHeights
+           * @param willDisplayChoiceInputs
            */
-          useEffect(() => {
-            // TODO increase height depending on how many input choice there are (50px/unit)?
-            const newHeight = defaultHeight + questionTextareaAdditionalHeight + (displayChoiceInputs ? additionalHeightChoiceInputs : 0);
-
-            // Only update the height if it's different
-            if (node?.height !== newHeight) {
-              patchCurrentNode({
-                height: newHeight,
-              });
-            }
-          }, [questionTextareaAdditionalHeight, displayChoiceInputs]);
+          const calculateNodeHeight = (dynHeights: Partial<QuestionNodeAdditionalData['dynHeights']>, willDisplayChoiceInputs: boolean): number => {
+            console.log('calculateNodeHeight', dynHeights, willDisplayChoiceInputs);
+            return (dynHeights?.baseHeight || baseHeight) +
+              (dynHeights?.questionTextareaHeight || 0) +
+              (willDisplayChoiceInputs ? (choiceBaseHeight || 0) : 0);
+          };
 
           /**
            * When textarea input height changes, we need to increase the height of the whole node accordingly.
@@ -92,29 +89,50 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
            * @param height
            * @param meta
            */
-          const onTextHeightChange = (height: number, meta: TextareaHeightChangeMeta) => {
-            // Only consider additional height, by ignoring the height of the first row
-            const additionalHeight = height - meta.rowHeight;
+          const onQuestionInputHeightChange = (height: number, meta: TextareaHeightChangeMeta) => {
+            // The height of the input takes the border into account, but it must be subtracted (and multiplied by 2 because top + bottom)
+            const trueInputHeight = height - (settings.canvas.nodes.textarea.borderWidth * 2);
 
-            if (questionTextareaAdditionalHeight !== additionalHeight) {
-              setQuestionTextareaAdditionalHeight(additionalHeight);
+            // Only consider additional height, by ignoring the height of the first row
+            const additionalHeight = trueInputHeight - meta.rowHeight;
+            const patchedNodeAdditionalData: Partial<QuestionNodeAdditionalData> = {
+              dynHeights: {
+                questionTextareaHeight: additionalHeight,
+              } as Partial<QuestionNodeAdditionalData['dynHeights']>,
+            };
+            const newHeight = calculateNodeHeight({
+              ...node?.data?.dynHeights,
+              ...patchedNodeAdditionalData.dynHeights
+            }, displayChoiceInputs);
+            console.log('onTextHeightChange ', additionalHeight, newHeight);
+
+            // If the current additional height stored in the node is different from the new additionalHeight, then update
+            if (node?.data?.dynHeights?.questionTextareaHeight !== additionalHeight) {
+              // Updates the value in the Recoil store
+              patchCurrentNode({
+                data: patchedNodeAdditionalData,
+                height: newHeight,
+              } as QuestionNodeData);
             }
           };
 
           /**
-           * Updates the current node "text" value.
+           * Updates the current node "question" value.
            *
            * @param event
            */
-          const onTextInputValueChange = (event: any) => {
+          const onQuestionInputValueChange = (event: any) => {
             const newValue = event.target.value;
+            console.log('onQuestionInputValueChange', event);
 
-            // Updates the value in the Recoil store
-            patchCurrentNode({
-              data: {
-                questionText: newValue,
-              },
-            } as QuestionNodeData);
+            if (newValue !== node?.data?.questionText) {
+              console.log('onQuestionInputValueChange ', newValue);
+              patchCurrentNode({
+                data: {
+                  questionText: newValue,
+                },
+              } as QuestionNodeData);
+            }
           };
 
           /**
@@ -136,14 +154,24 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
            */
           const onSelectedChoiceTypeChange = (selectedChoice: OptionTypeBase, action: { action: string }): void => {
             const selectedChoiceValue: QuestionChoiceType = selectedChoice?.value;
+            console.log('selectedChoiceValue', selectedChoiceValue);
 
             // Don't update if the choice is not different
             if (selectedChoiceValue !== node?.data?.questionChoiceType) {
+              const willDisplayChoiceInputs = selectedChoiceValue === 'single-quick-reply';
+              const patchedNodeAdditionalData: Partial<QuestionNodeAdditionalData> = {
+                questionChoiceType: selectedChoiceValue,
+              };
+              const newHeight = calculateNodeHeight({
+                ...node?.data?.dynHeights,
+                ...patchedNodeAdditionalData.dynHeights,
+              }, willDisplayChoiceInputs);
+              console.log('selectedChoiceValue newHeight', newHeight);
+
               // Updates the value in the Recoil store
-              patchCurrentNode({
-                data: {
-                  questionChoiceType: selectedChoiceValue,
-                },
+              patchCurrentNodeImmediately({
+                data: patchedNodeAdditionalData,
+                height: newHeight,
               } as QuestionNodeData);
             }
           };
@@ -161,6 +189,11 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                 css={css`
                   .choice-type-select {
                     margin-bottom: 10px;
+                    margin-top: 15px;
+                  }
+
+                  .choice-container {
+                    margin-top: 15px
                   }
 
                   .add-question-choice {
@@ -171,11 +204,11 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                 <DebounceInput
                   // @ts-ignore
                   element={Textarea}
-                  debounceTimeout={500} // Avoids making the Canvas "lag" due to many unnecessary re-renders, by applying input changes in batches (one at most every 500ms)
+                  debounceTimeout={settings.canvas.nodes.defaultDebounceWaitFor} // Avoids making the Canvas "lag" due to many unnecessary re-renders, by applying input changes in batches (one at most every 500ms)
                   className={`textarea ${nodeType}-text`}
                   placeholder={'Say something here'}
-                  onHeightChange={onTextHeightChange}
-                  onChange={onTextInputValueChange}
+                  onHeightChange={onQuestionInputHeightChange}
+                  onChange={onQuestionInputValueChange}
                   value={node?.data?.questionText}
                   autoFocus={shouldAutofocus}
                 />
@@ -208,7 +241,7 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                         <div
                           className={'question-choices'}
                           css={css`
-                            max-height: ${additionalHeightChoiceInputs}px;
+                            max-height: ${choiceBaseHeight}px;
                             overflow: scroll;
                           `}
                         >
@@ -228,9 +261,10 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
                         </div>
 
                         <Button
+                          variant="secondary"
                           className={'add-question-choice'}
                           width={'100%'}
-                          onClick={() => patchCurrentNode({
+                          onClick={() => patchCurrentNodeImmediately({
                             data: {
                               questionChoices: [
                                 ...(node?.data?.questionChoices || []),
@@ -265,8 +299,8 @@ const QuestionNode: BaseNodeComponent<Props> = (props) => {
 QuestionNode.getDefaultNodeProps = (): BaseNodeDefaultProps => {
   return {
     type: nodeType,
-    defaultWidth: defaultWidth,
-    defaultHeight: defaultHeight,
+    baseWidth: baseWidth,
+    baseHeight: baseHeight,
     // @ts-ignore
     ports: BaseNode.getDefaultPorts(),
   };

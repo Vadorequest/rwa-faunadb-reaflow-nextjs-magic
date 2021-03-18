@@ -2,6 +2,7 @@ import { css } from '@emotion/react';
 import React, { PropsWithChildren } from 'react';
 import { DebounceInput } from 'react-debounce-input';
 import TextareaAutosize from 'react-textarea-autosize';
+import settings from '../../settings';
 import { PatchCurrentNode } from '../../types/BaseNodeProps';
 import { QuestionChoiceVariable } from '../../types/nodes/QuestionNodeAdditionalData';
 import { QuestionNodeData } from '../../types/nodes/QuestionNodeData';
@@ -54,7 +55,7 @@ export const QuestionChoice = <NodeData extends QuestionNodeData = QuestionNodeD
     ];
 
     // @ts-ignore
-    patchCurrentNode({
+    patchCurrentNode<QuestionNodeData>({
       data: {
         questionChoices: patchedQuestionChoices,
       },
@@ -106,22 +107,36 @@ export const QuestionChoice = <NodeData extends QuestionNodeData = QuestionNodeD
           width: 100%;
 
           &-name {
-            background-color: #F6F6F6;
+            background-color: #F9694A;
+            border-radius: 5px 5px 0px 0px;
 
             input,
             textarea {
               margin: 5px 0px 5px 0px;
-              background-color: #F6F6F6;
+              background-color: #F9694A;
+              color: white;
+
+              ::placeholder {
+                color: white !important;
+              }
             }
           }
 
           &-value {
-            background-color: #E0E0E0;
+            background-color: #FEE9E4;
+            border-radius: 0px 0px 5px 5px;
 
             input,
             textarea {
-              margin: 5px 0px 5px 0px;
-              background-color: #E0E0E0;
+              margin: 6px 0px 0px 0px;
+              background-color: #FEE9E4;
+              color: #F9694A;
+              border: solid 1px;
+              border-radius: 5px;
+
+              ::placeholder {
+                color: #F9694A !important;
+              }
             }
           }
         }
@@ -131,7 +146,7 @@ export const QuestionChoice = <NodeData extends QuestionNodeData = QuestionNodeD
         className={'question-choice-name'}
       >
         <DebounceInput
-          debounceTimeout={500} // Avoids making the Canvas "lag" due to many unnecessary re-renders, by applying input changes in batches (one at most every 500ms)
+          debounceTimeout={settings.canvas.nodes.defaultDebounceWaitFor} // Avoids making the Canvas "lag" due to many unnecessary re-renders, by applying input changes in batches (one at most every 500ms)
           placeholder={'Variable name'}
           onChange={updateQuestionChoiceVariableName}
           value={name}
@@ -143,7 +158,7 @@ export const QuestionChoice = <NodeData extends QuestionNodeData = QuestionNodeD
         <DebounceInput
           // @ts-ignore
           element={TextareaAutosize}
-          debounceTimeout={500} // Avoids making the Canvas "lag" due to many unnecessary re-renders, by applying input changes in batches (one at most every 500ms)
+          debounceTimeout={settings.canvas.nodes.defaultDebounceWaitFor} // Avoids making the Canvas "lag" due to many unnecessary re-renders, by applying input changes in batches (one at most every 500ms)
           placeholder={'Value'}
           onChange={updateQuestionChoiceVariableValue}
           value={value}

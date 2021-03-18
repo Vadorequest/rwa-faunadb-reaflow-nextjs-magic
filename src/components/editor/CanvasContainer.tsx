@@ -16,22 +16,43 @@ import {
   useUndo,
 } from 'reaflow';
 import { useRecoilState } from 'recoil';
-import { updateSharedCanvasDocument } from '../../lib/faunadbClient';
+import { useDebouncedCallback } from 'use-debounce';
+import { v1 as uuid } from 'uuid';
+import { usePreviousValue } from '../../hooks/usePreviousValue';
+import useRenderingTrace from '../../hooks/useTraceUpdate';
+import { useUserSession } from '../../hooks/useUserSession';
 import settings from '../../settings';
 import { blockPickerMenuSelector } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
-import { edgesSelector } from '../../states/edgesState';
-import { nodesSelector } from '../../states/nodesState';
 import { selectedEdgesSelector } from '../../states/selectedEdgesState';
 import { selectedNodesSelector } from '../../states/selectedNodesState';
+import { UserSession } from '../../types/auth/UserSession';
 import BaseNodeData from '../../types/BaseNodeData';
+import { CanvasDataset } from '../../types/CanvasDataset';
+import { QueueCanvasDatasetMutation } from '../../types/CanvasDatasetMutation';
+import { TypeOfRef } from '../../types/faunadb/TypeOfRef';
+import {
+  applyPendingMutations,
+  mutationsQueue,
+} from '../../utils/canvasDatasetMutationsQueue';
+import {
+  onInit,
+  onUpdate,
+  updateUserCanvas,
+} from '../../utils/canvasStream';
 import { isOlderThan } from '../../utils/date';
+import { createEdge } from '../../utils/edges';
 import {
   createNodeFromDefaultProps,
   getDefaultNodePropsWithFallback,
 } from '../../utils/nodes';
+import {
+  getDefaultFromPort,
+  getDefaultToPort,
+} from '../../utils/ports';
 import canvasUtilsContext from '../context/canvasUtilsContext';
 import BaseEdge from '../edges/BaseEdge';
+import FaunaDBCanvasStream from '../FaunaDBCanvasStream';
 import NodeRouter from '../nodes/NodeRouter';
 
 type Props = {
@@ -58,6 +79,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   const {
     canvasRef,
   } = props;
+  const userSession = useUserSession();
 
   /**
    * The canvas ref contains useful properties (xy, scroll, etc.) and functions (zoom, centerCanvas, etc.)
@@ -65,28 +87,103 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
    * @see https://reaflow.dev/?path=/story/docs-advanced-refs--page
    */
   useEffect(() => {
-    console.log('canvasRef', canvasRef);
     canvasRef?.current?.fitCanvas?.();
   }, [canvasRef]);
 
   const [blockPickerMenu, setBlockPickerMenu] = useRecoilState(blockPickerMenuSelector);
   const [canvasDataset, setCanvasDataset] = useRecoilState(canvasDatasetSelector);
-  const [nodes, setNodes] = useRecoilState(nodesSelector);
-  const [edges, setEdges] = useRecoilState(edgesSelector);
   const [selectedNodes, setSelectedNodes] = useRecoilState(selectedNodesSelector);
   const [selectedEdges, setSelectedEdges] = useRecoilState(selectedEdgesSelector);
   const selections = selectedNodes; // TODO merge selected nodes and edges
   const [hasClearedUndoHistory, setHasClearedUndoHistory] = useState<boolean>(false);
   const [cursorXY, setCursorXY] = useState<[number, number]>([0, 0]);
+  const [isStreaming, setIsStreaming] = useState<boolean>(false);
+  const [canvasDocRef, setCanvasDocRef] = useState<TypeOfRef | undefined>(undefined); // We store the document ref to avoid fetching it for every change
+  const [mutationsCounter, setMutationsCounter] = useState<number>(0);
+  useRenderingTrace('CanvasContainer', {
+    ...props,
+    blockPickerMenu,
+    canvasDataset,
+    selectedNodes,
+    selectedEdges,
+    hasClearedUndoHistory,
+    cursorXY,
+    isStreaming,
+    canvasDocRef,
+    mutationsCounter,
+  });
+  const nodes = canvasDataset?.nodes;
+  const edges = canvasDataset?.edges;
+  const previousCanvasDataset: CanvasDataset | undefined = usePreviousValue<CanvasDataset>(canvasDataset);
+
+  /**
+   * Applies all mutations that haven't been applied yet.
+   */
+  useEffect(() => {
+    applyPendingMutations({ nodes, edges, mutationsCounter, setCanvasDataset });
+  });
+
+  /**
+   * Adds a new patch to apply to the existing queue.
+   *
+   * @param patch
+   * @param stateUpdateDelay (ms)
+   */
+  const queueCanvasDatasetMutation: QueueCanvasDatasetMutation = (patch, stateUpdateDelay = 0) => {
+    mutationsQueue.push({
+      status: 'pending',
+      id: uuid(),
+      elementId: patch.elementId,
+      elementType: patch.elementType,
+      operationType: patch.operationType,
+      changes: patch.changes,
+    });
+
+    // Updating the mutations counter will re-render the component
+    if (stateUpdateDelay) {
+      setTimeout(() => {
+        setMutationsCounter(mutationsCounter + 1);
+      }, stateUpdateDelay);
+    } else {
+      setMutationsCounter(mutationsCounter + 1);
+    }
+  };
+
+  /**
+   * Debounces the database update invocation call.
+   *
+   * Helps avoid multiple DB updates and group them into one (by only considering the last one, which is the one that really matters).
+   *
+   * Due to debouncing, multiple database updates are avoided (when they happen in a close time-related burst),
+   * which is really important in a real-time context because it'll greatly reduce update events received by ALL subscribed clients.
+   *
+   * By eliminating burst updates and only considering the latest update, we greatly reduce the stream of updates sent to the DB.
+   * By ensuring those updates happen at most every 1 second (maxWait), which syncs the work being done locally with the remote,
+   * we ensure the work being done locally doesn't fall behind what's done on the remote.
+   *
+   * XXX Because we handle nodes/edges using different states, without debouncing then adding/removing a node would trigger 2 updates:
+   *  - One for adding/removing the node
+   *  - One for adding/removing the edge
+   *  Thanks to debouncing, there is only one actual DB update.
+   */
+  const debouncedUpdateUserCanvas = useDebouncedCallback(
+    (canvasRef: TypeOfRef | undefined, user: Partial<UserSession>, newCanvasDataset: CanvasDataset, previousCanvasDataset: CanvasDataset | undefined) => {
+      updateUserCanvas(canvasDocRef, user, canvasDataset, previousCanvasDataset);
+    },
+    100, // Wait 100ms for other changes to happen, if no change happen then invoke the update
+    { maxWait: 1000 }, // In any case, wait for no more than 1 second, at most
+  );
 
   /**
    * When nodes or edges are modified, updates the persisted data in FaunaDB.
    *
-   * Persisted data are automatically loaded upon page refresh.
+   * Persisted data are automatically loaded when the stream is initialized.
    */
   useEffect(() => {
-    // persistCanvasDatasetInLS(canvasDataset);
-    updateSharedCanvasDocument(canvasDataset);
+    // Only save changes once the stream has started, to avoid saving anything until the initial canvas dataset was initialized
+    if (isStreaming) {
+      debouncedUpdateUserCanvas(canvasDocRef, userSession, canvasDataset, previousCanvasDataset);
+    }
   }, [canvasDataset]);
 
   /**
@@ -119,19 +216,32 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
   });
 
   /**
-   * Ensures the start node is always present.
+   * Ensures the "start" node and "end" node are always present.
    *
-   * Will automatically create the start node even if all the nodes are deleted.
+   * Will automatically create the start/end nodes, even when all the nodes have been deleted.
+   * Disabled until the stream has started to avoid creating the start node even before we got the initial canvas dataset from the stream.
    */
   useEffect(() => {
-    const startNode: BaseNodeData | undefined = nodes?.find((node: BaseNodeData) => node?.data?.type === 'start');
+    const existingStartNode: BaseNodeData | undefined = nodes?.find((node: BaseNodeData) => node?.data?.type === 'start');
+    const existingEndNode: BaseNodeData | undefined = nodes?.find((node: BaseNodeData) => node?.data?.type === 'end');
 
-    if (!startNode) {
-      console.info(`No "start" node found. Creating one automatically.`, nodes);
-      setNodes([
-        ...nodes,
-        createNodeFromDefaultProps(getDefaultNodePropsWithFallback('start')),
-      ]);
+    if ((!existingStartNode || !existingEndNode) && isStreaming) {
+      console.groupCollapsed('Creating default canvas dataset');
+      console.info(`No "start" or "end" node found. Creating them automatically.`, nodes, edges, existingStartNode, existingEndNode);
+      const startNode: BaseNodeData = createNodeFromDefaultProps(getDefaultNodePropsWithFallback('start'));
+      const endNode: BaseNodeData = createNodeFromDefaultProps(getDefaultNodePropsWithFallback('end'));
+      const newNodes = [
+        startNode,
+        endNode,
+      ];
+      const newEdges = [
+        createEdge(startNode, endNode, getDefaultFromPort(startNode), getDefaultToPort(endNode)),
+      ];
+
+      setCanvasDataset({
+        nodes: newNodes,
+        edges: newEdges,
+      });
 
       // Clearing the undo/redo history to avoid allowing the editor to "undo" the creation of the "start" node
       // If the "start" node creation step is "undoed" then it'd be re-created automatically, which would erase the whole history
@@ -142,6 +252,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         clear();
         setHasClearedUndoHistory(true);
       }
+      console.groupEnd();
     }
   }, [nodes]);
 
@@ -192,6 +303,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     return (
       <NodeRouter
         nodeProps={nodeProps}
+        queueCanvasDatasetMutation={queueCanvasDatasetMutation}
       />
     );
   };
@@ -206,6 +318,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
     return (
       <BaseEdge
         {...edgeProps}
+        queueCanvasDatasetMutation={queueCanvasDatasetMutation}
       />
     );
   };
@@ -279,12 +392,14 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         style={{ position: 'absolute', top: 10, left: 20, zIndex: 999 }}
       >
         <Button
+          variant="primary"
           onClick={undo}
           disabled={!canUndo}
         >
           Undo
         </Button>
         <Button
+          variant="primary"
           onClick={redo}
           disabled={!canRedo}
         >
@@ -296,6 +411,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         style={{ position: 'absolute', top: 10, right: 20, zIndex: 999 }}
       >
         <Button
+          variant="primary"
           onClick={() => {
             if (confirm(`Remove all nodes and edges?`)) {
               setHasClearedUndoHistory(false); // Reset to allow clearing history even if the option is used several times in the same session
@@ -314,6 +430,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
         style={{ position: 'absolute', bottom: 10, right: 20, zIndex: 999 }}
       >
         <Button
+          variant="primary"
           onClick={canvasRef?.current?.zoomOut}
         >
           <FontAwesomeIcon
@@ -321,6 +438,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
           />
         </Button>
         <Button
+          variant="primary"
           onClick={canvasRef?.current?.zoomIn}
         >
           <FontAwesomeIcon
@@ -328,6 +446,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
           />
         </Button>
         <Button
+          variant="primary"
           onClick={canvasRef?.current?.centerCanvas}
         >
           <FontAwesomeIcon
@@ -335,6 +454,7 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
           />
         </Button>
         <Button
+          variant="primary"
           onClick={canvasRef?.current?.fitCanvas}
         >
           <FontAwesomeIcon
@@ -373,6 +493,18 @@ const CanvasContainer: React.FunctionComponent<Props> = (props): JSX.Element | n
           edge={Edge}
           onLayoutChange={layout => console.log('Layout', layout)}
           layoutOptions={elkLayoutOptions}
+        />
+
+        {/* Handles the real-time stream */}
+        <FaunaDBCanvasStream
+          onInit={(canvasDataset: CanvasDataset) => {
+            onInit(canvasDataset);
+
+            // Mark the stream has running
+            setIsStreaming(true);
+          }}
+          onUpdate={onUpdate}
+          setCanvasDocRef={setCanvasDocRef}
         />
       </canvasUtilsContext.Provider>
     </div>

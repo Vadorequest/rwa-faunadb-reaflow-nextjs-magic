@@ -15,8 +15,8 @@ import BaseNode from './BaseNode';
 type Props = {} & BaseNodeProps<StartNodeData>;
 
 const nodeType: NodeType = 'start';
-const defaultWidth = 100;
-const defaultHeight = 100;
+const baseWidth = 100;
+const baseHeight = 100;
 
 /**
  * Start node.
@@ -32,6 +32,8 @@ const StartNode: BaseNodeComponent<Props> = (props) => {
     <BaseNode
       hasCloneAction={false}
       hasDeleteAction={false}
+      baseWidth={baseWidth}
+      baseHeight={baseHeight}
       {...props}
     >
       {
@@ -42,15 +44,14 @@ const StartNode: BaseNodeComponent<Props> = (props) => {
                 className={`node-content ${nodeType}-content`}
                 css={css`
                   svg {
-                    margin: 10px;
-                    margin-left: 15px;
-                    color: lime;
+                    margin: 20px;
+                    color: #2EC52B;
                   }
                 `}
               >
                 <FontAwesomeIcon
                   icon={['fas', 'play']}
-                  size={'4x'}
+                  size={'2x'}
                 />
               </div>
             </Fragment>
@@ -75,8 +76,8 @@ StartNode.getDefaultPorts = (): BasePortData[] => {
 StartNode.getDefaultNodeProps = (): BaseNodeDefaultProps => {
   return {
     type: nodeType,
-    defaultWidth: defaultWidth,
-    defaultHeight: defaultHeight,
+    baseWidth: baseWidth,
+    baseHeight: baseHeight,
     // @ts-ignore
     ports: StartNode.getDefaultPorts(),
   };

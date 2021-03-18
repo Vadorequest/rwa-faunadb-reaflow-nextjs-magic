@@ -1,5 +1,5 @@
 import React from 'react';
-import canvasUtilsContext, { CanvasUtilsContext } from '../context/canvasUtilsContext';
+import canvasUtilsContext, { CanvasUtilsContext } from '../components/context/canvasUtilsContext';
 
 export type CanvasUtils = CanvasUtilsContext;
 
