@@ -13,6 +13,10 @@ CreateIndex({
   terms: [
     { field: ['data', 'email'] },
   ],
+  // Index contains the User ref, as an array where the first element is the ref
+  values: [
+    { field: ['ref'] },
+  ],
   unique: true,
 });
 
@@ -29,7 +33,7 @@ CreateIndex({
   terms: [
     { field: ['data', 'owner'] },
   ],
-  // Index contains the Canvas ref (that's the default behavior and could be omitted)
+  // Index contains the Canvas ref, as an array where the first element is the ref
   values: [
     { field: ['ref'] },
   ],
