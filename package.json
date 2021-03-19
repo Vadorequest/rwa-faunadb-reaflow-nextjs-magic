@@ -5,7 +5,8 @@
     "build": "next build",
     "start": "next dev --port 8890",
     "type-check": "tsc",
-    "link:reaflow": "yarn link reaflow && yarn link react && yarn link react-dom"
+    "link:reaflow": "yarn link reaflow && yarn link react && yarn link react-dom",
+    "deploy:fake": "git commit --allow-empty -m \"Fake empty commit (force CI trigger)\""
   },
   "dependencies": {
     "@chakra-ui/icons": "1.0.4",
