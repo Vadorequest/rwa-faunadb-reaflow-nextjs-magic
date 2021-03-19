@@ -22,7 +22,9 @@ CreateIndex({
   name: 'canvas_by_owner',
   source: Collection('Canvas'),
   // Needs permission to read the Users, because "owner" is specified in the "terms" and is a Ref to the "Users" collection
-  permissions: { read: Collection('Users') },
+  permissions: {
+    read: Collection('Users'),
+  },
   // Allow to filter by owner ("Users")
   terms: [
     { field: ['data', 'owner'] },
@@ -43,9 +45,11 @@ CreateIndex({
 CreateRole({
   name: 'Editor',
   // All users should be editors (will apply to authenticated users only).
-  membership: [{
-    resource: Collection('Users'),
-  }],
+  membership: [
+    {
+      resource: Collection('Users'),
+    },
+  ],
   privileges: [
     {
       // Editors need read access to the canvas_by_owner index to find their own canvas
@@ -73,27 +77,27 @@ CreateRole({
         // Editors should be able to edit only Canvas documents that belongs to them
         write: Query(
           Lambda(
-            ["oldData", "newData", "ref"],
+            ['oldData', 'newData', 'ref'],
             And(
               // The owner in the current data (before writing them) must be the current user
               Equals(
                 CurrentIdentity(),
-                Select(["data", "owner"], Var("oldData"))
+                Select(['data', 'owner'], Var('oldData')),
               ),
               // The owner must not change
               Equals(
-                Select(["data", "owner"], Var("oldData")),
-                Select(["data", "owner"], Var("newData"))
-              )
-            )
-          )
+                Select(['data', 'owner'], Var('oldData')),
+                Select(['data', 'owner'], Var('newData')),
+              ),
+            ),
+          ),
         ),
         // Editors should be able to create only Canvas documents that belongs to them
         create: Query(
-          Lambda("values", Equals(
+          Lambda('values', Equals(
             CurrentIdentity(),
-            Select(["data", "owner"], Var("values")))
-          )
+            Select(['data', 'owner'], Var('values'))),
+          ),
         ),
       },
     },
@@ -130,7 +134,7 @@ CreateRole({
               '1',
               Select(['id'], Var('ref')),
             ),
-          )
+          ),
         ),
         // Guests should only be allowed to create the Canvas of id "1"
         create: Query(
@@ -139,7 +143,7 @@ CreateRole({
               '1',
               Select(['ref', 'id'], Var('values')),
             ),
-          )
+          ),
         ),
         // Creating a record with a custom ID requires history_write privilege
         // See https://fauna-community.slack.com/archives/CAKNYCHCM/p1615413941454700
@@ -150,7 +154,7 @@ CreateRole({
               '1',
               Select(['id'], Var('ref')),
             ),
-          )
+          ),
         ),
       },
     },
