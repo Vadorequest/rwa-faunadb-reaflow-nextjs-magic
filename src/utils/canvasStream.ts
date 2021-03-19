@@ -197,8 +197,7 @@ export const findOrCreateUserCanvas = async (user: Partial<UserSession>): Promis
     } else {
       // Return existing canvas reference
       // Although users could have several canvas (projects), they can only create one and thus we only care about the first
-      const [canvasRef] = findUserCanvasResult.data[0];
-      return canvasRef;
+      return findUserCanvasResult.data[0];
     }
   } catch (e) {
     console.error(`[findOrCreateUserCanvas] Error while fetching canvas:`, e);
