@@ -1,9 +1,5 @@
-import { values } from 'faunadb';
-
-export type CanvasByOwnerIndexData = [
-  values.Ref,
-];
+import { TypeOfRef } from './TypeOfRef';
 
 export type CanvasByOwnerIndex = {
-  data: CanvasByOwnerIndexData[];
+  data: TypeOfRef[];
 };
