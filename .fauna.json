@@ -1,3 +1,4 @@
 {
+  "envPath": ".env.local",
   "codegen": true
 }
