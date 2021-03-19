@@ -43,9 +43,9 @@ CreateIndex({
 CreateRole({
   name: 'Editor',
   // All users should be editors (will apply to authenticated users only).
-  membership: {
+  membership: [{
     resource: Collection('Users'),
-  },
+  }],
   privileges: [
     {
       // Editors need read access to the canvas_by_owner index to find their own canvas
@@ -103,7 +103,7 @@ CreateRole({
 CreateRole({
   name: 'Public',
   // The public role is meant to be used to generate a token which allows anyone (unauthenticated users) to update the canvas
-  membership: {},
+  membership: [],
   privileges: [
     {
       resource: Collection('Canvas'),
