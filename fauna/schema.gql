@@ -31,30 +31,38 @@ scalar Time
 
 ###################### Custom
 """
-type User {
+type User @collection(
+    name: "Users"
+){
     id: ID!
     email: String!
     projects: [Project]
 }
 
 """
-A project belongs to a user and is related to a canvas.
+A project **belongs** to a user and is related to a canvas.
 A project can be considered as Canvas metadata.
 """
-type Project {
+type Project @collection(
+    name: "Project"
+){
     id: ID!
+    """
+    Name of the project
+    """
     label: String!
     owner: User!
     canvas: Canvas
 }
-
 
 """
 The canvas contains all nodes and edges.
 Nodes and edges are not represented because they're complex shapes,
 and because we won't query them using GQL anyway. (we use GQL for that)
 """
-type Canvas {
+type Canvas @collection(
+    name: "Canvas"
+){
     id: ID!
     lastUpdatedBySessionEphemeralId: String
     lastUpdatedByUserName: String
