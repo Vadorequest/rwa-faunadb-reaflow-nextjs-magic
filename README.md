@@ -89,12 +89,19 @@ While working on this project, I've reached several milestones with a different 
    Changes to the canvas are real-time and shared with everyone.
    Everybody shares the same working document.
    Users can create an account and login using Magic Link, but they still share the same Canvas document as guests.
-1. _(Current)_ [`with-faunadb-auth`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-faunadb-auth)
+1. [`with-faunadb-auth`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-faunadb-auth)
    ([Demo](https://poc-nextjs-reaflow-git-with-faunadb-auth-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/12)):
    The canvas dataset is stored in FaunaDB.
    Changes to the canvas are real-time and shared with everyone when not authenticated.
    Changes to the canvas are real-time and shared with yourself when being authenticated. (open 2 tabs to see it in action)
    Users can create an account and login using Magic Link, they'll automatically load their own document.
+1. _(Current)_ [`with-fauna-graphql`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-faunadb-auth)
+   ([Demo](poc-nextjs-reaflow-git-with-fauna-graphql-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/16)):
+   The canvas dataset is stored in FaunaDB.
+   Changes to the canvas are real-time and shared with everyone when not authenticated.
+   Changes to the canvas are real-time and shared with yourself when being authenticated. (open 2 tabs to see it in action)
+   Users can create an account and login using Magic Link, they'll automatically load their own document.
+   Added support for quick sync of FaunaDB roles/indexes/data/functions (code as single source of truth) and GraphQL schema upload.
    _This example is also available on the `main` branch._
 
 ## Roadmap
