@@ -38,6 +38,8 @@ export class UserModel {
   /**
    * Find a user using the "users_by_email" index.
    *
+   * Don't throw on failures because we want to auto-create users when they don't exist yet.
+   *
    * @param email
    */
   async getUserByEmail(email: string): Promise<User | undefined> {
