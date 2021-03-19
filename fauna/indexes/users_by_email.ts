@@ -9,7 +9,7 @@ import { Collection } from 'faunadb';
 const users_by_email: IndexResource = {
   name: 'users_by_email',
   source: Collection('Users'),
-  values: [
+  terms: [
     { field: ['data', 'email'] },
   ],
   unique: true,
