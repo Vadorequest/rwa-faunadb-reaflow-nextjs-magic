@@ -51,25 +51,29 @@ const editorRole: RoleResource = {
           )),
         ),
         // Editors should be able to edit only Canvas documents that belongs to them
-        write: Lambda(
-          ['oldData', 'newData', 'ref'],
-          And(
-            // The owner in the current data (before writing them) must be the current user
-            Equals(
-              CurrentIdentity(),
-              Select(['data', 'owner'], Var('oldData')),
+        write: Query(
+          Lambda(
+            ['oldData', 'newData', 'ref'],
+            And(
+              // The owner in the current data (before writing them) must be the current user
+              Equals(
+                CurrentIdentity(),
+                Select(['data', 'owner'], Var('oldData')),
+              ),
+              // The owner must not change
+              Equals(
+                Select(['data', 'owner'], Var('oldData')),
+                Select(['data', 'owner'], Var('newData')),
+              ),
             ),
-            // The owner must not change
-            Equals(
-              Select(['data', 'owner'], Var('oldData')),
-              Select(['data', 'owner'], Var('newData')),
-            ),
-          ),
+          )
         ),
         // Editors should be able to create only Canvas documents that belongs to them
-        create: Lambda('values', Equals(
-          CurrentIdentity(),
-          Select(['data', 'owner'], Var('values'))),
+        create: Query(
+          Lambda('values', Equals(
+            CurrentIdentity(),
+            Select(['data', 'owner'], Var('values'))),
+          )
         ),
       },
     },

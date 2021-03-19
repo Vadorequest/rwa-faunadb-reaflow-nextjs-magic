@@ -22,7 +22,6 @@ import {
 const publicRole: RoleResource = {
   name: 'Public',
   // The public role is meant to be used to generate a token which allows anyone (unauthenticated users) to update the canvas
-  membership: [],
   privileges: [
     {
       resource: Collection('Canvas'),
@@ -38,28 +37,34 @@ const publicRole: RoleResource = {
           ),
         ),
         // Guests should only be allowed to update the Canvas of id "1"
-        write: Lambda(
-          ['oldData', 'newData', 'ref'],
-          Equals(
-            '1',
-            Select(['id'], Var('ref')),
-          ),
+        write: Query(
+          Lambda(
+            ['oldData', 'newData', 'ref'],
+            Equals(
+              '1',
+              Select(['id'], Var('ref')),
+            ),
+          )
         ),
         // Guests should only be allowed to create the Canvas of id "1"
-        create: Lambda('values',
-          Equals(
-            '1',
-            Select(['ref', 'id'], Var('values')),
-          ),
+        create: Query(
+          Lambda('values',
+            Equals(
+              '1',
+              Select(['ref', 'id'], Var('values')),
+            ),
+          )
         ),
         // Creating a record with a custom ID requires history_write privilege
         // See https://fauna-community.slack.com/archives/CAKNYCHCM/p1615413941454700
-        history_write: Lambda(
-          ['ref', 'ts', 'action', 'data'],
-          Equals(
-            '1',
-            Select(['id'], Var('ref')),
-          ),
+        history_write: Query(
+          Lambda(
+            ['ref', 'ts', 'action', 'data'],
+            Equals(
+              '1',
+              Select(['id'], Var('ref')),
+            ),
+          )
         ),
       },
     },
