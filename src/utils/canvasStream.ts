@@ -177,7 +177,7 @@ export const findOrCreateUserCanvas = async (user: Partial<UserSession>): Promis
           // Indicating who's the editor who's made the change, so we can safely ignore the "version:update" event we'll soon receive
           // when the DB will notify all subscribed editors about the update
           lastUpdatedBySessionEphemeralId: user.sessionEphemeralId as string,
-          lastUpdatedByUserName: user?.email || `Anonymous#${user?.id?.substring(0, 8)}`,
+          lastUpdatedByUserName: user?.email || `Anonymous#${user?.sessionEphemeralId?.substring(0, 8)}`,
         },
       };
 
@@ -282,7 +282,7 @@ export const updateUserCanvas = async (canvasRef: TypeOfRef | undefined, user: P
                   // Indicating who's the editor who's made the change, so we can safely ignore the "version:update" event we'll soon receive
                   // when the DB will notify all subscribed editors about the update
                   lastUpdatedBySessionEphemeralId: user.sessionEphemeralId as string,
-                  lastUpdatedByUserName: user?.email || `Anonymous#${user?.id?.substring(0, 8)}`,
+                  lastUpdatedByUserName: user?.email || `Anonymous#${user?.sessionEphemeralId?.substring(0, 8)}`,
                 },
               };
               const updateCanvasDatasetResult: CanvasDatasetResult = await client.query<CanvasDatasetResult>(Update(canvasRef, newCanvas));
