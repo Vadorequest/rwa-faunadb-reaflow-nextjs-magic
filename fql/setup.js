@@ -162,4 +162,4 @@ CreateRole({
 });
 
 // Create the shared Canvas record
-Create(Collection('Canvas'), { id: "1" })
+Create(Ref(Collection('Canvas'), '1'));
