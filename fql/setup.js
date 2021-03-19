@@ -13,7 +13,7 @@ CreateIndex({
   terms: [
     { field: ['data', 'email'] },
   ],
-  // Index contains the User ref, as an array where the first element is the ref
+  // Index will return an array of Ref
   values: [
     { field: ['ref'] },
   ],
@@ -33,7 +33,7 @@ CreateIndex({
   terms: [
     { field: ['data', 'owner'] },
   ],
-  // Index contains the Canvas ref, as an array where the first element is the ref
+  // Index will return an array of Ref
   values: [
     { field: ['ref'] },
   ],
