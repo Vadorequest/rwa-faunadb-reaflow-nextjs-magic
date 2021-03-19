@@ -32,10 +32,17 @@ type EndpointRequest = NextApiRequest & {
  */
 export const login = async (req: EndpointRequest, res: NextApiResponse): Promise<void> => {
   try {
-    const didToken = magicAdmin.utils.parseAuthorizationHeader(req?.headers?.authorization || '');
+    let didToken: string;
 
-    // XXX It is important to always validate the DID Token before using it. Will throw if invalid.
-    magicAdmin.token.validate(didToken);
+    try {
+      didToken = magicAdmin.utils.parseAuthorizationHeader(req?.headers?.authorization || '');
+
+      // XXX It is important to always validate the DID Token before using it. Will throw if invalid.
+      magicAdmin.token.validate(didToken);
+
+    } catch (e) {
+      throw new Error(`Error during Magic Link DID token validation: ${e.message}`);
+    }
 
     // The Magic API returns a few metadata, including the issuer and the user email
     const userMetadata: MagicUserMetadata = await magicAdmin.users.getMetadataByToken(didToken);
@@ -48,14 +55,24 @@ export const login = async (req: EndpointRequest, res: NextApiResponse): Promise
       throw new Error(`User doesn't have an email. Value: "${userMetadata?.email}"`);
     }
 
-    // Auto-detects new user sign-up when `getUserByEmail` resolves to `undefined`
-    const user: User = (await userModel.getUserByEmail(userMetadata?.email) ?? await userModel.createUser(userMetadata?.email)) as User;
-    console.log('Found user', user);
+    let user: User;
+    try {
+      console.log(`Fetching user by email "${userMetadata?.email}"`);
+      user = await userModel.getUserByEmail(userMetadata?.email) as User;
+
+      if (!user?.data?.email) {
+        // Auto-detects new user sign-up when `getUserByEmail` resolves to `undefined`
+        user = await userModel.createUser(userMetadata?.email) as User;
+        console.log('Automatically created new user.', user);
+      }
+    } catch (e) {
+      throw new Error(`Error while fetching or creating the user: ${e.message}`);
+    }
 
     // Generates a FaunaDB token specific associated to this user
     const faunaDBToken: string | undefined = await userModel.obtainFaunaDBToken(user);
 
-    if(!faunaDBToken){
+    if (!faunaDBToken) {
       // This isn't supposed to happen, because the user cannot not exist.
       // But it might happen if our "FAUNADB_SERVER_SECRET_KEY" doesn't have the required permission to create a token.
       // In such case, there is nothing we can do and we should crash early.
