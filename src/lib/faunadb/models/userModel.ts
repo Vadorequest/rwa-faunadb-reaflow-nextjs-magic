@@ -60,9 +60,7 @@ export class UserModel {
   async obtainFaunaDBToken(user: User): Promise<string | undefined> {
     return faunadbAdminClient?.query<FaunadbToken>(
       Create(Tokens(), { instance: Select('ref', user) }),
-    )
-      .then((res: FaunadbToken): string | undefined => res?.secret)
-      .catch(() => undefined);
+    ).then((res: FaunadbToken): string | undefined => res?.secret);
   }
 
   /**
