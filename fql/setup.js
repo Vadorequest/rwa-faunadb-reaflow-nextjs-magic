@@ -71,25 +71,29 @@ CreateRole({
           )),
         ),
         // Editors should be able to edit only Canvas documents that belongs to them
-        write: Lambda(
-          ["oldData", "newData", "ref"],
-          And(
-            // The owner in the current data (before writing them) must be the current user
-            Equals(
-              CurrentIdentity(),
-              Select(["data", "owner"], Var("oldData"))
-            ),
-            // The owner must not change
-            Equals(
-              Select(["data", "owner"], Var("oldData")),
-              Select(["data", "owner"], Var("newData"))
+        write: Query(
+          Lambda(
+            ["oldData", "newData", "ref"],
+            And(
+              // The owner in the current data (before writing them) must be the current user
+              Equals(
+                CurrentIdentity(),
+                Select(["data", "owner"], Var("oldData"))
+              ),
+              // The owner must not change
+              Equals(
+                Select(["data", "owner"], Var("oldData")),
+                Select(["data", "owner"], Var("newData"))
+              )
             )
           )
         ),
         // Editors should be able to create only Canvas documents that belongs to them
-        create: Lambda("values", Equals(
-          CurrentIdentity(),
-          Select(["data", "owner"], Var("values")))
+        create: Query(
+          Lambda("values", Equals(
+            CurrentIdentity(),
+            Select(["data", "owner"], Var("values")))
+          )
         ),
       },
     },
@@ -119,30 +123,39 @@ CreateRole({
           ),
         ),
         // Guests should only be allowed to update the Canvas of id "1"
-        write: Lambda(
-          ['oldData', 'newData', 'ref'],
-          Equals(
-            '1',
-            Select(['id'], Var('ref')),
-          ),
+        write: Query(
+          Lambda(
+            ['oldData', 'newData', 'ref'],
+            Equals(
+              '1',
+              Select(['id'], Var('ref')),
+            ),
+          )
         ),
         // Guests should only be allowed to create the Canvas of id "1"
-        create: Lambda('values',
-          Equals(
-            '1',
-            Select(['ref', 'id'], Var('values')),
-          ),
+        create: Query(
+          Lambda('values',
+            Equals(
+              '1',
+              Select(['ref', 'id'], Var('values')),
+            ),
+          )
         ),
         // Creating a record with a custom ID requires history_write privilege
         // See https://fauna-community.slack.com/archives/CAKNYCHCM/p1615413941454700
-        history_write: Lambda(
-          ['ref', 'ts', 'action', 'data'],
-          Equals(
-            '1',
-            Select(['id'], Var('ref')),
-          ),
+        history_write: Query(
+          Lambda(
+            ['ref', 'ts', 'action', 'data'],
+            Equals(
+              '1',
+              Select(['id'], Var('ref')),
+            ),
+          )
         ),
       },
     },
   ],
 });
+
+// Create the shared Canvas record
+Create(Collection('Canvas'), { id: "1" })
