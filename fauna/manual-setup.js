@@ -1,3 +1,13 @@
+/**
+ * XXX This file is not meant to be used anymore.
+ *  Also, the below commands won't be updated an might be outdated.
+ *
+ * It serves as a backup-up in case the Fauna GQL Upload wouldn't work anymore.
+ * Or, if you need to have FQL examples equivalent to what's being done by FGU.
+ *
+ * Instead of doing the below manually, you can run `yarn fauna:sync`.
+ */
+
 // ---------------------- Step 1: Create a "Users" collection ----------------------
 CreateCollection({ name: 'Users' });
 
@@ -12,6 +22,10 @@ CreateIndex({
   source: Collection('Users'),
   terms: [
     { field: ['data', 'email'] },
+  ],
+  // Index will return an array of Ref
+  values: [
+    { field: ['ref'] },
   ],
   unique: true,
 });
@@ -29,7 +43,7 @@ CreateIndex({
   terms: [
     { field: ['data', 'owner'] },
   ],
-  // Index contains the Canvas ref (that's the default behavior and could be omitted)
+  // Index will return an array of Ref
   values: [
     { field: ['ref'] },
   ],
@@ -110,7 +124,7 @@ CreateRole({
 // Guests can only read/write this particular document and not any other
 CreateRole({
   name: 'Public',
-  // The public role is meant to be used to generate a token which allows anyone (unauthenticated users) to update the canvas
+  // The public role is meant to be used to generate a key which allows anyone (unauthenticated users) to update the canvas
   membership: [],
   privileges: [
     {

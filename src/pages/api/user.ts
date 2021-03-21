@@ -23,7 +23,10 @@ type EndpointRequest = NextApiRequest & {
  */
 export const user = async (req: EndpointRequest, res: NextApiResponse): Promise<void> => {
   const userSession: UserSession | undefined = await getUserSession(req);
-  // TODO fetch user's data
+
+  // The cookie contains the UserSession object
+  // It contains all the information we need for this POC, but if you want to fetch additional user-related and up-to-date data,
+  // you should do it here
   const result: ApiGetUserResult = {
     user: userSession || null,
   };

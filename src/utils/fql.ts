@@ -15,7 +15,7 @@ const { Exists, If, Delete, Update, CreateFunction, CreateRole, Role } = q;
 
 // Inspiration from https://github.com/fauna-brecht/faunadb-auth-skeleton-frontend/blob/default/fauna-queries/helpers/fql.js
 
-export const DeleteIfExists = (ref: ExprArg) => If(Exists(ref), false, Delete(ref));
+export const DeleteIfExists = (ref: ExprArg) => If(Exists(ref), Delete(ref), false);
 
 export const IfNotExists = (ref: ExprArg, then: ExprArg) => If(Exists(ref), false, then);
 

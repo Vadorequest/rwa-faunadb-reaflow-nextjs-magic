@@ -4,6 +4,8 @@
   "scripts": {
     "build": "next build",
     "start": "next dev --port 8890",
+    "fauna:sync": "fauna-gql",
+    "fauna:override": "fauna-gql --override",
     "type-check": "tsc",
     "link:reaflow": "yarn link reaflow && yarn link react && yarn link react-dom",
     "deploy:fake": "git commit --allow-empty -m \"Fake empty commit (force CI trigger)\""
@@ -34,6 +36,7 @@
     "faunadb": "4.1.1",
     "faunadb-fql-lib": "0.13.0",
     "framer-motion": "3.2.1",
+    "graphql": "15.5.0",
     "lodash.capitalize": "4.2.1",
     "lodash.clonedeep": "4.5.0",
     "lodash.debounce": "4.0.8",
@@ -83,6 +86,7 @@
     "@types/react-dom": "17.0.0",
     "@types/react-select": "4.0.12",
     "@types/uuid": "8.3.0",
+    "fauna-gql-upload": "2.0.1",
     "typescript": "4.1.3"
   }
 }

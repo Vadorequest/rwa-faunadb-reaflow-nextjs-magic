@@ -1,0 +1,70 @@
+"""
+###################### FaunaDB internals
+directive @embedded on OBJECT
+
+directive @collection(
+    name: String!
+) on OBJECT
+
+directive @index(
+    name: String!
+) on FIELD_DEFINITION
+
+directive @resolver(
+    name: String
+    paginated: Boolean! = false
+) on FIELD_DEFINITION
+
+directive @relation(
+    name: String
+) on FIELD_DEFINITION
+
+directive @unique(
+    index: String
+) on FIELD_DEFINITION
+
+scalar Date
+
+scalar Long
+
+scalar Time
+
+###################### Custom
+"""
+type User @collection(
+    name: "Users"
+){
+    id: ID!
+    email: String!
+    projects: [Project]
+}
+
+"""
+A project **belongs** to a user and is related to a canvas.
+A project can be considered as Canvas metadata.
+"""
+type Project @collection(
+    name: "Project"
+){
+    id: ID!
+    """
+    Name of the project
+    """
+    label: String!
+    owner: User!
+    canvas: Canvas
+}
+
+"""
+The canvas contains all nodes and edges.
+Nodes and edges are not represented because they're complex shapes,
+and because we won't query them using GQL anyway. (we use GQL for that)
+"""
+type Canvas @collection(
+    name: "Canvas"
+){
+    id: ID!
+    lastUpdatedBySessionEphemeralId: String
+    lastUpdatedByUserName: String
+    project: Project!
+}

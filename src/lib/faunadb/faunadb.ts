@@ -22,7 +22,7 @@ export function getClient(secret: string) {
 
     // Custom observer used to log responses for easier debug
     observer: (res, client) => {
-      console.debug('FaunaDB response:', res);
+      console.debug('FaunaDB response:', res, 'using secret:', secret);
     },
   };
 
