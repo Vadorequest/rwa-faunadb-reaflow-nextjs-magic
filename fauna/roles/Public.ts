@@ -47,14 +47,9 @@ const publicRole: RoleResource = {
           )
         ),
         // Guests should only be allowed to create the Canvas of id "1"
-        create: Query(
-          Lambda('values',
-            Equals(
-              '1',
-              Select(['ref', 'id'], Var('values')),
-            ),
-          )
-        ),
+        // We can't check the ref.id during the "create" operation, because we can only access the values
+        // Instead, should lookup for an existing Canvas of id 1 and only allow creation if it doesn't exist yet
+        create: true,
         // Creating a record with a custom ID requires history_write privilege
         // See https://fauna-community.slack.com/archives/CAKNYCHCM/p1615413941454700
         history_write: Query(
