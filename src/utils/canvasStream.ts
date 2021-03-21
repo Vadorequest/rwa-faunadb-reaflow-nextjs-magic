@@ -1,4 +1,8 @@
 import {
+  detailedDiff,
+  diff,
+} from 'deep-object-diff';
+import {
   Client,
   Collection,
   Create,
@@ -31,10 +35,6 @@ import {
 } from '../types/faunadb/CanvasStream';
 import { FaunadbStreamVersionEvent } from '../types/faunadb/FaunadbStreamVersionEvent';
 import { TypeOfRef } from '../types/faunadb/TypeOfRef';
-import {
-  diff,
-  detailedDiff
-} from 'deep-object-diff';
 
 const PUBLIC_SHARED_FAUNABD_TOKEN = process.env.NEXT_PUBLIC_SHARED_FAUNABD_TOKEN as string;
 const SHARED_CANVAS_DOCUMENT_ID = '1';
@@ -96,21 +96,26 @@ export const initStream = async (user: Partial<UserSession>, onStart: OnStreamSt
         .on('error', async (error: any) => {
           console.error('[Streaming] "error" event:', error);
 
-          // XXX Not sure if this is still valid, it was useful at first (when not automatically creating the document if not found) but might not be needed anymore
-          //  Might still be useful when creating the shared document, which doesn't belong to a user in particular?
+          // When receiving the "instance not found" error, automatically create a shared document of ID "1"
           if (error?.name === 'NotFound') {
+            console.log('No record found, creating record...');
+            const canvasRef: Expr | undefined = await findUserCanvasRef(user);
             const defaultCanvasDataset: CanvasDataset = {
               nodes: [],
               edges: [],
             };
 
-            console.log('No record found, creating record...');
-            const createDefaultRecord = Create(findUserCanvasRef(user), {
-              data: defaultCanvasDataset,
-            });
-            const result: CanvasDatasetResult = await client.query(createDefaultRecord);
-            console.log('result', result);
-            onInit(result?.data);
+            if (canvasRef) {
+              const createDefaultRecord = Create(canvasRef, {
+                data: defaultCanvasDataset,
+              });
+              console.log('createDefaultRecord', createDefaultRecord);
+              const result: CanvasDatasetResult = await client.query(createDefaultRecord);
+              console.log('result', result);
+              onInit(result?.data);
+            } else {
+              console.error(`[initStream] "canvasRef" is undefined, auto-creating shared document aborted.`, canvasRef);
+            }
           } else {
             stream.close();
             onError(error, _startStream);
@@ -132,10 +137,9 @@ export const initStream = async (user: Partial<UserSession>, onStart: OnStreamSt
 };
 
 /**
- * Finds the shared canvas document.
+ * Finds the user's canvas document.
  *
- * Always use "1" as document ref id.
- * There is only one document in the DB, and the same document is shared with all users.
+ * If the user is not authenticated, uses the shared canvas document instead.
  */
 export const findUserCanvasRef = async (user: Partial<UserSession>): Promise<Expr | undefined> => {
   if (user?.isAuthenticated) {

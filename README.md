@@ -89,12 +89,19 @@ While working on this project, I've reached several milestones with a different 
    Changes to the canvas are real-time and shared with everyone.
    Everybody shares the same working document.
    Users can create an account and login using Magic Link, but they still share the same Canvas document as guests.
-1. _(Current)_ [`with-faunadb-auth`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-faunadb-auth)
+1. [`with-faunadb-auth`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-faunadb-auth)
    ([Demo](https://poc-nextjs-reaflow-git-with-faunadb-auth-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/12)):
    The canvas dataset is stored in FaunaDB.
    Changes to the canvas are real-time and shared with everyone when not authenticated.
    Changes to the canvas are real-time and shared with yourself when being authenticated. (open 2 tabs to see it in action)
    Users can create an account and login using Magic Link, they'll automatically load their own document.
+1. _(Current)_ [`with-fauna-fgu`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-faunadb-fgu)
+   ([Demo](https://poc-nextjs-reaflow-git-with-fauna-fgu-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/19)):
+   The canvas dataset is stored in FaunaDB.
+   Changes to the canvas are real-time and shared with everyone when not authenticated.
+   Changes to the canvas are real-time and shared with yourself when being authenticated. (open 2 tabs to see it in action)
+   Users can create an account and login using Magic Link, they'll automatically load their own document.
+   Added support for quick sync of FaunaDB roles/indexes/data/functions (code as single source of truth) and GraphQL schema upload.
    _This example is also available on the `main` branch._
 
 ## Roadmap
@@ -117,11 +124,14 @@ External help on those features is much welcome! Please contribute ;)
 
 - `yarn`
 - `yarn start`
-- Run commands in `fql/setup.js` from the Web Shell at [https://dashboard.fauna.com/](https://dashboard.fauna.com/), this will create the FaunaDB collection, indexes, roles, etc.
-- `cp .env.local.example .env.local`, and define your environment variables
+- `cp .env.local.example .env.local`, and define the `FGU_SECRET` environment variable
+- `yarn fauna:sync` will create all collections, indexes, roles, UDF in the Fauna database related to the `FGU_SECRET` environment variable
+- Define other environment variables (`NEXT_PUBLIC_SHARED_FAUNABD_TOKEN` and `FAUNADB_SERVER_SECRET_KEY` can only be created once roles have been created during the previous step when running `yarn fauna:sync`)
 - Open browser at [http://localhost:8890](http://localhost:8890)
 
 If you deploy it to Vercel, you'll need to create Vercel environment variables for your project. (see `.env.local.example` file)
+
+> Note: The current setup uses only one environment, the dev/staging/prod deployments all use the same database.
 
 ## Deploy your own
 

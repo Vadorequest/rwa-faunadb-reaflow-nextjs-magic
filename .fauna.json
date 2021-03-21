@@ -1,0 +1,6 @@
+{
+  "envPath": ".env.local",
+  "codegen": {
+    "outputFile": "src/types/graphql/graphql.ts"
+  }
+}
