@@ -1,3 +1,13 @@
+/**
+ * XXX This file is not meant to be used anymore.
+ *  Also, the below commands won't be updated an might be outdated.
+ *
+ * It serves as a backup-up in case the Fauna GQL Upload wouldn't work anymore.
+ * Or, if you need to have FQL examples equivalent to what's being done by FGU.
+ *
+ * Instead of doing the below manually, you can run `yarn fauna:sync`.
+ */
+
 // ---------------------- Step 1: Create a "Users" collection ----------------------
 CreateCollection({ name: 'Users' });
 

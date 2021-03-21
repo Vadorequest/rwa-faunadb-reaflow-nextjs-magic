@@ -1,3 +1,7 @@
+/**
+ * XXX This file is simply a collection of examples and code snippets I've used.
+ */
+
 Create(
   Collection('Canvas'),
   {
