@@ -95,13 +95,21 @@ While working on this project, I've reached several milestones with a different 
    Changes to the canvas are real-time and shared with everyone when not authenticated.
    Changes to the canvas are real-time and shared with yourself when being authenticated. (open 2 tabs to see it in action)
    Users can create an account and login using Magic Link, they'll automatically load their own document.
-1. _(Current)_ [`with-fauna-fgu`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-faunadb-fgu)
+1. [`with-fauna-fgu`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-faunadb-fgu)
    ([Demo](https://poc-nextjs-reaflow-git-with-fauna-fgu-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/19)):
    The canvas dataset is stored in FaunaDB.
    Changes to the canvas are real-time and shared with everyone when not authenticated.
    Changes to the canvas are real-time and shared with yourself when being authenticated. (open 2 tabs to see it in action)
    Users can create an account and login using Magic Link, they'll automatically load their own document.
    Added support for quick sync of FaunaDB roles/indexes/data/functions (code as single source of truth) and GraphQL schema upload.
+1. _(Current)_ [`with-fauna-graphql`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-faunadb-graphql)
+   ([Demo](https://poc-nextjs-reaflow-git-with-fauna-graphql-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/20)):
+   The canvas dataset is stored in FaunaDB.
+   Changes to the canvas are real-time and shared with everyone when not authenticated.
+   Changes to the canvas are real-time and shared with yourself when being authenticated. (open 2 tabs to see it in action)
+   Users can create an account and login using Magic Link, they'll automatically load their own document.
+   Added support for quick sync of FaunaDB roles/indexes/data/functions (code as single source of truth) and GraphQL schema upload.
+   Use GraphQL to create new projects and change current project's name.
    _This example is also available on the `main` branch._
 
 ## Roadmap
