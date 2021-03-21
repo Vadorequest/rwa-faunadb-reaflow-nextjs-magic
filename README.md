@@ -1,41 +1,76 @@
-# TypeScript Next.js example
+# POC Next.js + Reaflow
 
-This is a really simple project that shows the usage of Next.js with TypeScript.
+> This project is a POC of [Reaflow](https://github.com/reaviz/reaflow) used with the Next.js framework. It is hosted on Vercel.
+
+It is a single-page application (using a static page) that aims at showing an **advanced use-case with Reaflow**.
+
+## Online demo
+
+[Demo](https://poc-nextjs-reaflow.vercel.app/) (automatically updated from the `master` branch).
+
+![image](https://user-images.githubusercontent.com/3807458/109431687-08bf1680-7a08-11eb-98bd-31fa91e21680.png)
+
+## Features
+
+It comes with the following features:
+- Source code heavily **documented**
+- Strong TS typings
+- Different kinds of node (`start`, `if`, `information`, `question`) with different layouts for each type _(see [NodeRouter component](blob/main/src/components/nodes/NodeRouter.tsx))_
+- Nodes use `foreignObject`, which complicates things quite a bit (events, css), but it's the only way of writing HTML/CSS within an SVG `rect` (custom nodes UI)
+- Advanced support for **`foreignObject`** and best-practices
+- Support for **Emotion 11**
+- Reaflow Nodes, Edges and Ports are properly extended (**BaseNode** component, **BaseNodeData** type, **BaseEdge** component, **BaseEdgeData** type, etc.), 
+  which makes it easy to quickly change the properties of all nodes, edges, ports, etc.
+- Creation of nodes through the `BlockPickerMenu` component, which displays either at the bottom of the canvas, or at the mouse pointer position (e.g: when dropping edges)
+- **Undo/redo** support (with shortcuts)
+- Node/edge **deletion**
+- Node **duplication**
+- **Selection** of nodes and edges, one at a time 
+- Uses **`Recoil`** for shared state management
+- Automatically re-calculate the **height** of nodes when jumping lines in `textarea`
+- Graph data (nodes, edges) are **persisted** in the browser **localstorage** and loaded upon page reload
+
+Known limitations:
+- Editor direction is `RIGHT` (hardcoded) and adding nodes will add them to the right side, always (even if you change the direction)
+    - I don't plan on changing that at the moment
+
+> This POC can be used as a boilerplate to start your own project using Reaflow.
+
+## Getting started
+
+- `yarn`
+- `yarn start`
+- Open browser at [http://localhost:8890](http://localhost:8890)
 
 ## Deploy your own
 
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example):
+Deploy the example using [Vercel](https://vercel.com):
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/vercel/next.js/tree/canary/examples/with-typescript&project-name=with-typescript&repository-name=with-typescript)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/Vadorequest/poc-nextjs-reaflow&project-name=poc-nextjs-reaflow&repository-name=poc-nextjs-reaflow)
 
-## How to use it?
+## Advanced - ELK
 
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
+ELKjs (and ELK) are used to draw the graph (nodes, edges). 
+It's what Reaflow uses in the background.
+ELK stands for **Eclipse Layout Kernel**.
 
-```bash
-npx create-next-app --example with-typescript with-typescript-app
-# or
-yarn create next-app --example with-typescript with-typescript-app
-```
+It seems to be one of the best Layout manager out there.
 
-Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
+Unfortunately, it is quite complicated and lacks a comprehensive documentation.
 
-## Notes
+You'll need to dig into the ELK documentation and issues if you're trying to change **how the graph's layout behaves**. 
+Here are some good places to start and useful links I've compiled for my own sake.
 
-This example shows how to integrate the TypeScript type system into Next.js. Since TypeScript is supported out of the box with Next.js, all we have to do is to install TypeScript.
+- [ELKjs GitHub](https://github.com/kieler/elkjs)
+- [ELK official website](https://www.eclipse.org/elk/)
+- [ELK Demonstrators](https://rtsys.informatik.uni-kiel.de/elklive/index.html)
+  - [Tool to convert `elkt <=> json` both ways](https://rtsys.informatik.uni-kiel.de/elklive/conversion.html)
+  - [Tool to convert `elkt` to a graph](https://rtsys.informatik.uni-kiel.de/elklive/elkgraph.html)
+  - [Java ELK implementation of the `layered` algorithm](https://github.com/eclipse/elk/tree/master/plugins/org.eclipse.elk.alg.layered/src/org/eclipse/elk/alg/layered/p2layers)
+  - [Community examples soure code](https://github.com/eclipse/elk-models/tree/master/examples) _(which are displayed on [ELK examples](https://rtsys.informatik.uni-kiel.de/elklive/examples.html))_
+  - [Klayjs example](http://kieler.github.io/klayjs-d3/examples/interactive) (ELK is the sucessor of KlayJS and [should support the same options](https://github.com/kieler/elkjs/issues/122#issuecomment-777781503))
+- [Issues opened by Austin](https://github.com/kieler/elkjs/issues?q=is%3Aissue+sort%3Aupdated-desc+author%3Aamcdnl)
+- [Issues opened by Vadorequest](https://github.com/kieler/elkjs/issues?q=is%3Aissue+sort%3Aupdated-desc+author%3Avadorequest)
 
-```
-npm install --save-dev typescript
-```
-
-To enable TypeScript's features, we install the type declarations for React and Node.
-
-```
-npm install --save-dev @types/react @types/react-dom @types/node
-```
-
-When we run `next dev` the next time, Next.js will start looking for any `.ts` or `.tsx` files in our project and builds it. It even automatically creates a `tsconfig.json` file for our project with the recommended settings.
-
-Next.js has built-in TypeScript declarations, so we'll get autocompletion for Next.js' modules straight away.
-
-A `type-check` script is also added to `package.json`, which runs TypeScript's `tsc` CLI in `noEmit` mode to run type-checking separately. You can then include this, for example, in your `test` scripts.
+Known limitations:
+- [Tracking issue - Manually positioning the nodes ("Standalone Edge Routing")](https://github.com/eclipse/elk/issues/315)

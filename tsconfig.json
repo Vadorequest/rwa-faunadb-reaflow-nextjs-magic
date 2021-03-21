@@ -11,12 +11,21 @@
     "moduleResolution": "node",
     "noEmit": true,
     "noFallthroughCasesInSwitch": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "esnext"
+    "target": "esnext",
+
+    // Added by Emotion 11, necessary to use the "css" props using the "Babel preset", without using JSX pragma.
+    // Using the Babel preset is better (DX), because we don't have to use "/** @jsx jsx */" in every file, as Babel does it for us.
+    // See https://emotion.sh/docs/typescript#css-prop TS configuration to support the "css" prop
+    // See https://emotion.sh/docs/emotion-11#typescript Migration guide about Emotion 11 for TS
+    // See https://emotion.sh/docs/css-prop#babel-preset Babel preset vs JSX pragma configuration
+    // See https://github.com/emotion-js/emotion/issues/1606#issuecomment-757930872 Issue explanation when migrating from Emotion 10 to 11
+    // See https://github.com/UnlyEd/next-right-now/pull/247 Emotion v10 > v11 migration pull request
+    "jsxImportSource": "@emotion/react"
   },
   "exclude": ["node_modules"],
   "include": ["**/*.ts", "**/*.tsx"]
