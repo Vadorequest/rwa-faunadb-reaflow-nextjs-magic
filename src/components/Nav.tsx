@@ -36,7 +36,7 @@ const Nav: React.FunctionComponent<Props> = (props) => {
             {
               user?.isAuthenticated ? (
                 <Fragment>
-                  Welcome <b>{user?.email}</b>! You are currently working on your personal document.
+                  Welcome <b>{user?.email}</b>! You are working on a shared document<i>, even though you have your own account</i>.
                 </Fragment>
               ) : (
                 <Fragment>

@@ -35,11 +35,11 @@ const Footer: React.FunctionComponent<Props> = (props) => {
         <Box p="2">
           Demo:
           <Tooltip
-            label="This demo showcases FaunaDB Authentication where there is a global document shared by all anonymous users, and a dedicated document for each authenticated user."
+            label="This demo showcases Magic Link Authentication where there is a global document shared by all users. Authenticated users see their email being displayed and can login/logout but still share the same document as guests."
             fontSize="md"
           >
             <Tag>
-              <b><TagLabel>With Auth</TagLabel></b>
+              <b><TagLabel>With  Magic link auth</TagLabel></b>
             </Tag>
           </Tooltip>
         </Box>
