@@ -124,11 +124,14 @@ External help on those features is much welcome! Please contribute ;)
 
 - `yarn`
 - `yarn start`
-- Run commands in `fql/setup.js` from the Web Shell at [https://dashboard.fauna.com/](https://dashboard.fauna.com/), this will create the FaunaDB collection, indexes, roles, etc.
-- `cp .env.local.example .env.local`, and define your environment variables
+- `cp .env.local.example .env.local`, and define the `FGU_SECRET` environment variable
+- `yarn fauna:sync` will create all collections, indexes, roles, UDF in the Fauna database related to the `FGU_SECRET` environment variable
+- Define other environment variables (`NEXT_PUBLIC_SHARED_FAUNABD_TOKEN` and `FAUNADB_SERVER_SECRET_KEY` can only be created once roles have been created during the previous step when running `yarn fauna:sync`)
 - Open browser at [http://localhost:8890](http://localhost:8890)
 
 If you deploy it to Vercel, you'll need to create Vercel environment variables for your project. (see `.env.local.example` file)
+
+> Note: The current setup uses only one environment, the dev/staging/prod deployments all use the same database.
 
 ## Deploy your own
 
