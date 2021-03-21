@@ -120,7 +120,7 @@ CreateRole({
 // Guests can only read/write this particular document and not any other
 CreateRole({
   name: 'Public',
-  // The public role is meant to be used to generate a token which allows anyone (unauthenticated users) to update the canvas
+  // The public role is meant to be used to generate a key which allows anyone (unauthenticated users) to update the canvas
   membership: [],
   privileges: [
     {

@@ -21,7 +21,7 @@ import {
  */
 const publicRole: RoleResource = {
   name: 'Public',
-  // The public role is meant to be used to generate a token which allows anyone (unauthenticated users) to update the canvas
+  // The public role is meant to be used to generate a key which allows anyone (unauthenticated users) to update the canvas
   privileges: [
     {
       resource: Collection('Canvas'),
