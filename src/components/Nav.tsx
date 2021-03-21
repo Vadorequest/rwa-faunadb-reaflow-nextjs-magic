@@ -1,6 +1,11 @@
+import { QuestionOutlineIcon } from '@chakra-ui/icons';
 import {
   Box,
+  Button,
   Center,
+  Flex,
+  Spacer,
+  Tooltip,
 } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import React from 'react';
@@ -25,7 +30,7 @@ const Nav: React.FunctionComponent<Props> = (props) => {
       <nav className={'nav'}>
         <Center>
           <Box p="2">
-            You are a guest working on your own document. Changes are automatically saved in the browser local storage and cannot be shared or seen by anyone else.
+            You are currently working on a shared document, updated in real-time by any visitor.
           </Box>
         </Center>
       </nav>

@@ -28,13 +28,27 @@ It comes with the following features:
 - **Selection** of nodes and edges, one at a time 
 - Uses **`Recoil`** for shared state management
 - Automatically re-calculate the **height** of nodes when jumping lines in `textarea`
-- Graph data (nodes, edges) are **persisted** in the browser **localstorage** and loaded upon page reload
+- ~~Graph data (nodes, edges) are **persisted** in the browser **localstorage** and automatically loaded upon page reload~~
+  - Graph data (nodes, edges) are **persisted** in FaunaDB and automatically loaded upon page reload
+- Real-time support for collaboration (open 2 tabs), using FaunaDB
+  - FaunaDB token is public and has read/update access rights on one table of the DB only
+  - All users share the same "Canvas" document in the DB
+  - This POC will **not improve further** the collaborative experience, it's only a POC (undo/redo undoes peer actions, undo/redo seems a bit broken sometimes)
 
 Known limitations:
 - Editor direction is `RIGHT` (hardcoded) and adding nodes will add them to the right side, always (even if you change the direction)
     - I don't plan on changing that at the moment
 
 > This POC can be used as a boilerplate to start your own project using Reaflow.
+
+## Variants
+
+While working on this project, I've reached several milestones with a different set of features, available as "Examples":
+
+1. [`with-local-storage`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-local-storage) 
+   ([Demo](https://poc-nextjs-reaflow-git-with-local-storage-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/14)): 
+   The canvas dataset is stored in the browser localstorage. 
+   There is no real-time and no authentication.
 
 ## Getting started
 

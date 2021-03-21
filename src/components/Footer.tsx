@@ -35,11 +35,11 @@ const Footer: React.FunctionComponent<Props> = (props) => {
         <Box p="2">
           Demo:
           <Tooltip
-            label="This demo showcases Reaflow with a single document that is stored in the browser local storage."
+            label="This demo showcases FaunaDB real-time where there is a global document shared by all users and updated in real time. (using FaunaDB subscriptions)"
             fontSize="md"
           >
             <Tag>
-              <b><TagLabel>With Local storage</TagLabel></b>
+              <b><TagLabel>With Real-time</TagLabel></b>
             </Tag>
           </Tooltip>
         </Box>
@@ -50,11 +50,20 @@ const Footer: React.FunctionComponent<Props> = (props) => {
           />
           Made with
           <ChakraLink
-            href={'https://nextjs.org/'}
+            href={'https://nextjs.org'}
             isExternal
             color="teal.500"
           >
             {' '}Next.js{' '}
+            <ExternalLinkIcon mx="2px" />
+          </ChakraLink>
+          {' '}, {' '}
+          <ChakraLink
+            href={'https://fauna.com'}
+            isExternal
+            color="teal.500"
+          >
+            {' '}FaunaDB{' '}
             <ExternalLinkIcon mx="2px" />
           </ChakraLink>
           {' '}and{' '}

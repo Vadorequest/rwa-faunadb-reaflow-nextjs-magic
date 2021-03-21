@@ -4,6 +4,7 @@ import now from 'lodash.now';
 import React from 'react';
 import {
   Port,
+  PortChildProps,
   PortSide,
 } from 'reaflow';
 import {
@@ -25,6 +26,7 @@ import { selectedEdgesSelector } from '../../states/selectedEdgesState';
 import { selectedNodesSelector } from '../../states/selectedNodesState';
 import BaseEdgeData from '../../types/BaseEdgeData';
 import BaseNodeData from '../../types/BaseNodeData';
+import BasePortChildProps, { AdditionalPortChildProps } from '../../types/BasePortChildProps';
 import BasePortData from '../../types/BasePortData';
 import BasePortProps from '../../types/BasePortProps';
 import BlockPickerMenu, { OnBlockClick } from '../../types/BlockPickerMenu';
@@ -45,6 +47,8 @@ import {
 
 type Props = {
   fromNodeId: string;
+  additionalPortChildProps: AdditionalPortChildProps;
+  PortChildComponent: React.FunctionComponent<BasePortChildProps>;
 } & BasePortProps;
 
 /**
@@ -62,6 +66,8 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
     id,
     properties,
     fromNodeId,
+    additionalPortChildProps,
+    PortChildComponent,
     onDragStart: onDragStartInternal,
     onDragEnd: onDragEndInternal,
   } = props;
@@ -296,7 +302,20 @@ const BasePort: React.FunctionComponent<Props> = (props) => {
       style={style}
       rx={settings.canvas.ports.radius}
       ry={settings.canvas.ports.radius}
-    />
+    >
+      {
+        (portChildProps: PortChildProps) => {
+          const basePortChildProps: BasePortChildProps = {
+            ...portChildProps,
+            ...additionalPortChildProps,
+          };
+
+          return <PortChildComponent
+            {...basePortChildProps}
+          />;
+        }
+      }
+    </Port>
   );
 };
 

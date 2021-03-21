@@ -14,20 +14,20 @@ import BaseNode from './BaseNode';
 
 type Props = {} & BaseNodeProps<StartNodeData>;
 
-const nodeType: NodeType = 'start';
+const nodeType: NodeType = 'end';
 const defaultWidth = 100;
 const defaultHeight = 100;
 
 /**
- * Start node.
+ * End node.
  *
- * Used to define the workflow's entry point.
- * Is unique, there can be only one StartNode, and it's required and must always be present.
+ * Used to define the workflow's finish line.
+ * Is unique, there can be only one EndNode, and it's required and must always be present.
  *
- * Displays a start icon.
- * Has only one east port.
+ * Displays an end icon.
+ * Has only one west port.
  */
-const StartNode: BaseNodeComponent<Props> = (props) => {
+const EndNode: BaseNodeComponent<Props> = (props) => {
   return (
     <BaseNode
       hasCloneAction={false}
@@ -43,12 +43,12 @@ const StartNode: BaseNodeComponent<Props> = (props) => {
                 css={css`
                   svg {
                     margin: 20px;
-                    color: #2EC52B;
+                    color: #F9694A;
                   }
                 `}
               >
                 <FontAwesomeIcon
-                  icon={['fas', 'play']}
+                  icon={['fas', 'flag-checkered']}
                   size={'2x'}
                 />
               </div>
@@ -60,25 +60,25 @@ const StartNode: BaseNodeComponent<Props> = (props) => {
   );
 };
 
-StartNode.getDefaultPorts = (): BasePortData[] => {
+EndNode.getDefaultPorts = (): BasePortData[] => {
   return [
     createPort({
       height: settings.canvas.ports.radius,
       width: settings.canvas.ports.radius,
       alignment: 'CENTER',
-      side: 'EAST',
+      side: 'WEST',
     }),
   ];
 };
 
-StartNode.getDefaultNodeProps = (): BaseNodeDefaultProps => {
+EndNode.getDefaultNodeProps = (): BaseNodeDefaultProps => {
   return {
     type: nodeType,
     defaultWidth: defaultWidth,
     defaultHeight: defaultHeight,
     // @ts-ignore
-    ports: StartNode.getDefaultPorts(),
+    ports: EndNode.getDefaultPorts(),
   };
 };
 
-export default StartNode;
+export default EndNode;
