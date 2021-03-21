@@ -23,6 +23,10 @@ CreateIndex({
   terms: [
     { field: ['data', 'email'] },
   ],
+  // Index will return an array of Ref
+  values: [
+    { field: ['ref'] },
+  ],
   unique: true,
 });
 
@@ -39,7 +43,7 @@ CreateIndex({
   terms: [
     { field: ['data', 'owner'] },
   ],
-  // Index contains the Canvas ref (that's the default behavior and could be omitted)
+  // Index will return an array of Ref
   values: [
     { field: ['ref'] },
   ],
