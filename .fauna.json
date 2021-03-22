@@ -1,5 +1,5 @@
 {
-  "schemaPath": "fauna/source-schema.gql",
+  "schemaPath": "fauna/gql/source-schema.gql",
   "envPath": ".env.local",
   "codegen": {
     "outputFile": "src/types/graphql/graphql.ts"

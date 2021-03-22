@@ -230,10 +230,12 @@ I used [FaunaDB GraphQL Editor](https://faunadb-graphql-editor.vercel.app/) to g
 
 ### Auto-generated GraphQL schema definitions
 
-The `fauna/source-schema.gql` file contains only the **GraphQL types**, it is **the input schema** that'll be used to generate the `schema.graphql` file.
+The `fauna/gql/source-schema.gql` file contains only the **GraphQL types**, it is **the input schema** that'll be used to generate the `schema.graphql` file.
 
-The `fauna/source-schema.gql` file is uploaded to FaunaDB GraphQL endpoint by [FaunaDB GQL Upload](https://github.com/Plazide/fauna-gql-upload) when running `yarn fauna:sync`.
+The `fauna/gql/source-schema.gql` file is uploaded to FaunaDB GraphQL endpoint by [FaunaDB GQL Upload](https://github.com/Plazide/fauna-gql-upload) when running `yarn fauna:sync`.
 There, FaunaDB has some internal magic that will create a new schema that you can see in the [FaunaDB Dashboard > GraphQL](https://dashboard.fauna.com/).
+
+> Note: The `fauna/gql` folder is being ignored by WebStorm to avoid conflicting with the `schema.graphql` which is the one we really want to use for autocompletion.
 
 ### GraphQL Config WebStorm plugin
 
