@@ -215,6 +215,32 @@ When changes are made on the document, FaunaDB send a push notification to all u
 document (they receives a push notification if they're the author of the changes, too). In such case, the update is being ignored for performances reasons (we
 don't need to update a local state that is already up-to-date).
 
+## GraphQL
+
+I strongly suggest reading:
+
+- https://docs.fauna.com/fauna/current/tutorials/graphql/
+- https://docs.fauna.com/fauna/current/api/graphql/
+
+### Fauna GraphQL Editor
+
+I used [FaunaDB GraphQL Editor](https://faunadb-graphql-editor.vercel.app/) to generate our schema visually, because I'm not so familiar with GraphQL schema definition (the server-side part of GQL).
+
+> _Disclaimer: I'm the author of [FaunaDB GraphQL Editor](https://faunadb-graphql-editor.vercel.app/)_
+
+### Auto-generated GraphQL schema definitions
+
+The `fauna/source-schema.gql` file contains only the **GraphQL types**, it is **the input schema** that'll be used to generate the `schema.graphql` file.
+
+The `fauna/source-schema.gql` file is uploaded to FaunaDB GraphQL endpoint by [FaunaDB GQL Upload](https://github.com/Plazide/fauna-gql-upload) when running `yarn fauna:sync`.
+There, FaunaDB has some internal magic that will create a new schema that you can see in the [FaunaDB Dashboard > GraphQL](https://dashboard.fauna.com/).
+
+### GraphQL Config WebStorm plugin
+
+I use the [GraphQL Config WebStorm plugin](https://github.com/jimkyndemeyer/js-graphql-intellij-plugin) which send an introspection request to `https://graphql.fauna.com/graphql` using an Admin/Server key to authenticate.
+
+This generates the `schema.graphql`, which is then made available to all our GraphQL files and provides auto-completion and advanced helpers when writing GraphQL queries/mutation.
+
 ## Reaflow Graph (ELK)
 
 ELKjs (and ELK) are used to draw the graph (nodes, edges).
