@@ -35,8 +35,8 @@ type User @collection(
     name: "Users"
 ){
     id: ID!
-    email: String!
-    projects: [Project]
+    email: String! @unique
+    projects: [Project] @relation
 }
 
 """
@@ -51,8 +51,8 @@ type Project @collection(
     Name of the project
     """
     label: String!
-    owner: User!
-    canvas: Canvas
+    owner: User! @relation
+    canvas: Canvas @relation
 }
 
 """
@@ -66,5 +66,5 @@ type Canvas @collection(
     id: ID!
     lastUpdatedBySessionEphemeralId: String
     lastUpdatedByUserName: String
-    project: Project!
+    project: Project! @relation
 }
