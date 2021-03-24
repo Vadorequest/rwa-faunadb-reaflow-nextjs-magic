@@ -87,4 +87,7 @@ type Query{
     findUserByEmail(
         email: String!
     ): User
+    findProjectsByUserEmail(
+        email: String!
+    ): [Project] @resolver(name: "getProjectsByUserEmail")
 }
