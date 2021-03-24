@@ -11,18 +11,18 @@ import {
 /**
  * Returns the projects owned by the user, using the user's email.
  */
-const getProjectsByUserEmail: FunctionResource = {
-  name: 'findProjectsByUserEmail',
+const getProjectsByUser: FunctionResource = {
+  name: 'getProjectsByUser',
   body: Query(
-    Lambda(['email'],
+    Lambda(['ref'],
       Paginate(
         Match(
-          Index('projects_by_owner_email'),
-          Var('email'),
+          Index('projectsByOwner'),
+          Var('ref'),
         ),
       ),
     ),
   ),
 };
 
-export default getProjectsByUserEmail;
+export default getProjectsByUser;
