@@ -200,17 +200,19 @@ export type ProjectPage = {
 
 export type Query = {
   __typename?: 'Query';
-  /** Find a document from the collection of 'Project' by its id. */
-  findProjectByID?: Maybe<Project>;
+  findUserByEmail?: Maybe<User>;
   /** Find a document from the collection of 'User' by its id. */
   findUserByID?: Maybe<User>;
+  userByEmail?: Maybe<User>;
   /** Find a document from the collection of 'Canvas' by its id. */
   findCanvasByID?: Maybe<Canvas>;
+  /** Find a document from the collection of 'Project' by its id. */
+  findProjectByID?: Maybe<Project>;
 };
 
 
-export type QueryFindProjectByIdArgs = {
-  id: Scalars['ID'];
+export type QueryFindUserByEmailArgs = {
+  email: Scalars['String'];
 };
 
 
@@ -219,7 +221,17 @@ export type QueryFindUserByIdArgs = {
 };
 
 
+export type QueryUserByEmailArgs = {
+  email: Scalars['String'];
+};
+
+
 export type QueryFindCanvasByIdArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryFindProjectByIdArgs = {
   id: Scalars['ID'];
 };
 
@@ -253,6 +265,10 @@ export type QueryFindCanvasByIdArgs = {
  * scalar Long
  *
  * scalar Time
+ *
+ * schema{
+ * query: Query
+ * }
  *
  * ###################### Custom
  */
@@ -298,6 +314,10 @@ export type User = {
  * scalar Long
  *
  * scalar Time
+ *
+ * schema{
+ * query: Query
+ * }
  *
  * ###################### Custom
  */
