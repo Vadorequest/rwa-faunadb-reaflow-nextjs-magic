@@ -7,6 +7,7 @@ import {
   Lambda,
   Map,
   Paginate,
+  Reverse,
   Var,
 } from 'faunadb';
 import { q } from '../lib/faunadb/faunadb';
@@ -32,6 +33,7 @@ export const CreateOrUpdateRole = (obj: any) => If(
 );
 
 /**
+ * Returns all documents in a collection.
  *
  * @param collectionName
  *
@@ -44,3 +46,14 @@ export const SelectAll = (collectionName: string) => Map(
     Get(Var('ref')),
   ),
 );
+
+/**
+ * Returns a collection's documents.
+ *
+ * Equivalent to SQL "desc table".
+ *
+ * @param collectionName
+ */
+export const DescribeCollection = (collectionName: string) => {
+  return Paginate(Reverse(Documents(Collection(collectionName))));
+};

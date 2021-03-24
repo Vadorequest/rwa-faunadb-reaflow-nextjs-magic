@@ -140,7 +140,17 @@ export type ProjectOwnerRelation = {
 export type UserInput = {
   id: Scalars['ID'];
   email: Scalars['String'];
-  projects?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  projects?: Maybe<UserProjectsRelation>;
+};
+
+/** Allow manipulating the relationship between the types 'User' and 'Project'. */
+export type UserProjectsRelation = {
+  /** Create one or more documents of type 'Project' and associate them with the current document. */
+  create?: Maybe<Array<Maybe<ProjectInput>>>;
+  /** Connect one or more documents of type 'Project' with the current document using their IDs. */
+  connect?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  /** Disconnect the given documents of type 'Project' from the current document using their IDs. */
+  disconnect?: Maybe<Array<Maybe<Scalars['ID']>>>;
 };
 
 /**
@@ -177,19 +187,32 @@ export type Project = {
   _ts: Scalars['Long'];
 };
 
+/** The pagination object for elements of type 'Project'. */
+export type ProjectPage = {
+  __typename?: 'ProjectPage';
+  /** The elements of type 'Project' in this page. */
+  data: Array<Maybe<Project>>;
+  /** A cursor for elements coming after the current page. */
+  after?: Maybe<Scalars['String']>;
+  /** A cursor for elements coming before the current page. */
+  before?: Maybe<Scalars['String']>;
+};
+
 export type Query = {
   __typename?: 'Query';
-  /** Find a document from the collection of 'Project' by its id. */
-  findProjectByID?: Maybe<Project>;
+  findUserByEmail?: Maybe<User>;
   /** Find a document from the collection of 'User' by its id. */
   findUserByID?: Maybe<User>;
+  userByEmail?: Maybe<User>;
   /** Find a document from the collection of 'Canvas' by its id. */
   findCanvasByID?: Maybe<Canvas>;
+  /** Find a document from the collection of 'Project' by its id. */
+  findProjectByID?: Maybe<Project>;
 };
 
 
-export type QueryFindProjectByIdArgs = {
-  id: Scalars['ID'];
+export type QueryFindUserByEmailArgs = {
+  email: Scalars['String'];
 };
 
 
@@ -198,7 +221,17 @@ export type QueryFindUserByIdArgs = {
 };
 
 
+export type QueryUserByEmailArgs = {
+  email: Scalars['String'];
+};
+
+
 export type QueryFindCanvasByIdArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryFindProjectByIdArgs = {
   id: Scalars['ID'];
 };
 
@@ -233,6 +266,10 @@ export type QueryFindCanvasByIdArgs = {
  *
  * scalar Time
  *
+ * schema{
+ * query: Query
+ * }
+ *
  * ###################### Custom
  */
 export type User = {
@@ -241,8 +278,51 @@ export type User = {
   /** The document's ID. */
   _id: Scalars['ID'];
   id: Scalars['ID'];
-  projects?: Maybe<Array<Maybe<Project>>>;
+  projects: ProjectPage;
   /** The document's timestamp. */
   _ts: Scalars['Long'];
+};
+
+
+/**
+ * ###################### FaunaDB internals
+ * directive @embedded on OBJECT
+ *
+ * directive @collection(
+ *     name: String!
+ * ) on OBJECT
+ *
+ * directive @index(
+ *     name: String!
+ * ) on FIELD_DEFINITION
+ *
+ * directive @resolver(
+ *     name: String
+ *     paginated: Boolean! = false
+ * ) on FIELD_DEFINITION
+ *
+ * directive @relation(
+ *     name: String
+ * ) on FIELD_DEFINITION
+ *
+ * directive @unique(
+ *     index: String
+ * ) on FIELD_DEFINITION
+ *
+ * scalar Date
+ *
+ * scalar Long
+ *
+ * scalar Time
+ *
+ * schema{
+ * query: Query
+ * }
+ *
+ * ###################### Custom
+ */
+export type UserProjectsArgs = {
+  _size?: Maybe<Scalars['Int']>;
+  _cursor?: Maybe<Scalars['String']>;
 };
 

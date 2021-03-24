@@ -1,0 +1,15 @@
+{
+  "schemaPath": "schema.graphql",
+  "extensions": {
+    "endpoints": {
+      "master": {
+        "url": "https://graphql.fauna.com/graphql",
+        "introspect": true,
+        "headers": {
+          "user-agent": "JS GraphQL",
+          "Authorization": "Bearer ${env:FAUNADB_SERVER_SECRET_KEY}"
+        }
+      }
+    }
+  }
+}

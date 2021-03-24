@@ -29,14 +29,22 @@ scalar Long
 
 scalar Time
 
+schema{
+query: Query
+}
+
 ###################### Custom
 """
 type User @collection(
     name: "Users"
 ){
     id: ID!
-    email: String!
-    projects: [Project]
+    email: String! @unique(
+        index: "user_by_email"
+    )
+    projects: [Project] @relation(
+        name: "user_projects"
+    )
 }
 
 """
@@ -51,8 +59,12 @@ type Project @collection(
     Name of the project
     """
     label: String!
-    owner: User!
-    canvas: Canvas
+    owner: User! @relation(
+        name: "user_projects"
+    )
+    canvas: Canvas @relation(
+        name: "project_canvas"
+    )
 }
 
 """
@@ -66,5 +78,13 @@ type Canvas @collection(
     id: ID!
     lastUpdatedBySessionEphemeralId: String
     lastUpdatedByUserName: String
-    project: Project!
+    project: Project! @relation(
+        name: "project_canvas"
+    )
+}
+
+type Query{
+    findUserByEmail(
+        email: String!
+    ): User
 }
