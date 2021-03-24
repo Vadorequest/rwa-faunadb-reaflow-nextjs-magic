@@ -112,20 +112,6 @@ While working on this project, I've reached several milestones with a different 
    Use GraphQL to create new projects and change current project's name.
    _This example is also available on the `main` branch._
 
-## Roadmap
-
-Here are the future variants I intend to work on:
-- FaunaDB GraphQL (GQL): We currently use FQL to manipule the real-time stream (it's not compatible with GQL).
-  I'd like to use GQL for non real-time operations.
-  I'm thinking adding the add/edit/remove project features using GQL, to showcase usage of both FaunaDB FQL and GQL languages.
-- FaunaDB IaC (Infrastructure as Code): Currently, the FaunaDB configuration is rather "simple", there are 2 tables, 1 index, 2 roles.
-  But it's not possible to generate the whole database configuration dynamically in an automated way.
-  I'd like to improve the DevOps experience and make it possible to deploy the whole thing in a new DB programmatically.
-  Also, I'd like to have proper function splits and unit testing to make the whole project (including roles, queries, indexes, etc.) automatically testable.
-  This would greatly increase the developer experience and confidence in our ability to duplicate the project to a new DB and creating different staging/production environments.
-
-External help on those features is much welcome! Please contribute ;)
-
 ## Getting started
 
 > If you want to use this project to start your own, you can either clone it using git and run the below commands, or "Deploy your own" using the Vercel button, which will create for you the Vercel and GitHub project (but won't configure environment variables for you!).
@@ -146,6 +132,20 @@ If you deploy it to Vercel, you'll need to create Vercel environment variables f
 Deploy the example using [Vercel](https://vercel.com):
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/Vadorequest/poc-nextjs-reaflow&project-name=poc-nextjs-reaflow&repository-name=poc-nextjs-reaflow)
+
+## Roadmap
+
+Here are the future variants I intend to work on:
+
+- FaunaDB GraphQL (GQL): We currently use FQL to manipule the real-time stream (it's not compatible with GQL). I'd like to use GQL for non real-time operations.
+  I'm thinking adding the add/edit/remove project features using GQL, to showcase usage of both FaunaDB FQL and GQL languages.
+- FaunaDB IaC (Infrastructure as Code): Currently, the FaunaDB configuration is rather "simple", there are 2 tables, 1 index, 2 roles. But it's not possible to
+  generate the whole database configuration dynamically in an automated way. I'd like to improve the DevOps experience and make it possible to deploy the whole
+  thing in a new DB programmatically. Also, I'd like to have proper function splits and unit testing to make the whole project (including roles, queries,
+  indexes, etc.) automatically testable. This would greatly increase the developer experience and confidence in our ability to duplicate the project to a new DB
+  and creating different staging/production environments.
+
+External help on those features is much welcome! Please contribute ;)
 
 ---
 
