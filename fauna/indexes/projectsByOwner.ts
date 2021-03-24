@@ -2,7 +2,7 @@ import { IndexResource } from 'fauna-gql-upload';
 import { Collection } from 'faunadb';
 
 /**
- * Index to filter projects by owner email.
+ * Index to filter projects by owner.
  *
  * Necessary to retrieve the projects belonging to the currently authenticated user.
  * Used in GraphQL query `findProjectsByUserEmail`.
@@ -14,7 +14,7 @@ const projectsByOwner: IndexResource = {
   permissions: {
     read: Collection('Users'),
   },
-  // Allow to filter by owner email ("Users")
+  // Allow to filter by owner ("Users")
   terms: [
     { field: ['data', 'owner'] },
   ],
