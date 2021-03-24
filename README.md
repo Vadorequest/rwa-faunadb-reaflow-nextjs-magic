@@ -75,42 +75,44 @@ _Known limitations_:
 While working on this project, I've reached several milestones with a different set of features, available as "Examples":
 
 1. [`with-local-storage`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-local-storage)
-   ([Demo](https://poc-nextjs-reaflow-git-with-local-storage-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/14)):
-   The canvas dataset is stored in the browser localstorage.
-   There is no real-time and no authentication.
+    ([Demo](https://poc-nextjs-reaflow-git-with-local-storage-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/14)):
+    - The canvas dataset is stored in the browser localstorage. 
+    - There is no real-time and no authentication.
 1. [`with-faunadb-real-time`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-faunadb-real-time)
-   ([Demo](https://poc-nextjs-reaflow-git-with-faunadb-real-time-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/13)):
-   The canvas dataset is stored in FaunaDB.
-   Changes to the canvas are real-time and shared with everyone.
-   Everybody shares the same working document.
+   ([~~Demo~~](https://poc-nextjs-reaflow-git-with-faunadb-real-time-ambroise-dhenain.vercel.app/)
+   | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/13)):
+    - The canvas dataset is not stored in the browser local storage, **but in FaunaDB instead**.
+    - Changes to the canvas are real-time and shared with everyone.
+    - Everybody shares the same working document.
+    - The real-time implementation is very basic (no stream manager) and has known issues, it can potentially trigger infinite loops.
+    - The online demo has been disabled because of this.
+    _-_ The real-time implementation has been improved in `with-faunadb-auth`, by using a stream manager.
 1. [`with-magic-link-auth`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-magic-link-auth)
-   ([Demo](https://poc-nextjs-reaflow-git-with-magic-link-auth-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/15)):
-   The canvas dataset is stored in FaunaDB.
-   Changes to the canvas are real-time and shared with everyone.
-   Everybody shares the same working document.
-   Users can create an account and login using Magic Link, but they still share the same Canvas document as guests.
+   ([~~Demo~~](https://poc-nextjs-reaflow-git-with-magic-link-auth-ambroise-dhenain.vercel.app/)
+   | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/15)):
+    - Users can create an account and login using Magic Link, but they still share the same Canvas document as guests.
+    - Overall, although user can now log in, it doesn't change anything on the UI.
+    - Logging in using Magic Link doesn't authenticate to FaunaDB.
+    - The online demo has been disabled because of the random infinite loop issues above-mentioned.
 1. [`with-faunadb-auth`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-faunadb-auth)
    ([Demo](https://poc-nextjs-reaflow-git-with-faunadb-auth-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/12)):
-   The canvas dataset is stored in FaunaDB.
-   Changes to the canvas are real-time and shared with everyone when not authenticated.
-   Changes to the canvas are real-time and shared with yourself when being authenticated. (open 2 tabs to see it in action)
-   Users can create an account and login using Magic Link, they'll automatically load their own document.
+    - Authenticated users get a user-specific token which is used to authenticate themselves to FaunaDB (real-time).
+    - Authenticated users do not share a common document.
+    - Authenticated users work on their own document and nobody else can change documents that don't belong to them.
 1. [`with-fauna-fgu`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-faunadb-fgu)
    ([Demo](https://poc-nextjs-reaflow-git-with-fauna-fgu-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/19)):
-   The canvas dataset is stored in FaunaDB.
-   Changes to the canvas are real-time and shared with everyone when not authenticated.
-   Changes to the canvas are real-time and shared with yourself when being authenticated. (open 2 tabs to see it in action)
-   Users can create an account and login using Magic Link, they'll automatically load their own document.
-   Added support for quick sync of FaunaDB roles/indexes/data/functions (code as single source of truth) and GraphQL schema upload.
-1. _(Current)_ [`with-fauna-graphql`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-faunadb-graphql)
+    - Fixed FQL scripts used to configure FaunaDB (indexes, roles). They weren't working properly, and I didn't notice because I wasn't using them until now.
+    - A new command `yarn fauna:sync` automatically syncs the GraphQL schema, alongside indexes, roles, UDF, etc. It uses [FaunaDB GraphQL Upload (FGU)](https://github.com/Plazide/fauna-gql-upload).
+    - It is now possible to easily replicate an environment from scratch to a new FaunaDB database. (DevOps)
+    - The repository (source code) now acts as a single source of truth for the FaunaDB configuration, which is much better for automation/replication.
+1. [`with-fauna-graphql`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-faunadb-graphql)
    ([Demo](https://poc-nextjs-reaflow-git-with-fauna-graphql-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/20)):
-   The canvas dataset is stored in FaunaDB.
-   Changes to the canvas are real-time and shared with everyone when not authenticated.
-   Changes to the canvas are real-time and shared with yourself when being authenticated. (open 2 tabs to see it in action)
-   Users can create an account and login using Magic Link, they'll automatically load their own document.
-   Added support for quick sync of FaunaDB roles/indexes/data/functions (code as single source of truth) and GraphQL schema upload.
-   Use GraphQL to create new projects and change current project's name.
-   _This example is also available on the `main` branch._
+    - Use GraphQL to create new projects and change the current project's name.
+
+> **Notes**:
+> - The last example is always available in the `main` branch.
+> - Although there are multiple examples to ease understanding of what's changed for each step, I strongly recommend using the latest version of the source code if you wish to implement your own version.
+>   This is because the latest version fixes a lot of downstream issues and benefits from the latest patches and updates. I haven't fixed issues in old examples, and I won't.
 
 ## Getting started
 
