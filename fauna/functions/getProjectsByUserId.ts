@@ -1,8 +1,10 @@
 import { FunctionResource } from 'fauna-gql-upload';
 import {
   Collection,
+  Get,
   Index,
   Lambda,
+  Map,
   Match,
   Paginate,
   Query,
@@ -17,11 +19,18 @@ const getProjectsByUserId: FunctionResource = {
   name: 'getProjectsByUserId',
   body: Query(
     Lambda(['id'],
-      Paginate(
-        Match(
-          Index('projectsByOwner'),
-          Ref(Collection('Users'), Var('id')),
+      // For each result (project's Ref)
+      Map(
+        // Paginate results in case there would be too many to fetch them at once
+        Paginate(
+          // Finds the projects that belongs to the user (by user id)
+          Match(
+            Index('projectsByOwner'),
+            Ref(Collection('Users'), Var('id')),
+          ),
         ),
+        // Convert the project's ref into the actual object
+        Lambda(['ref'], Get(Var('ref')))
       ),
     ),
   ),
