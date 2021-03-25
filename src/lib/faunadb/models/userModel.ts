@@ -1,6 +1,10 @@
 import Expr from 'faunadb/src/types/Expr';
+import { GraphQLClient } from 'graphql-request';
+import INDEX_PAGE_QUERY, { IndexPageQueryResult } from '../../../gql/pages';
+import { UserSession } from '../../../types/auth/UserSession';
 import { FaunadbToken } from '../../../types/faunadb/FaunadbToken';
 import { User } from '../../../types/faunadb/User';
+import { Project } from '../../../types/graphql/graphql';
 import {
   getClient,
   q,
@@ -69,5 +73,36 @@ export class UserModel {
    */
   async invalidateFaunaDBToken(token: string) {
     await getClient(token)?.query<Expr>(Logout(true));
+  }
+
+  /**
+   * Fetches all the user's projects.
+   *
+   * @param userSession
+   */
+  async getProjects(userSession: UserSession): Promise<Project[]> {
+    const gqlClient = new GraphQLClient(process.env.NEXT_PUBLIC_GRAPHQL_API_ENDPOINT as string);
+
+    // User is authenticated, we need to fetch its projects and await until they've been fetched
+    gqlClient.setHeaders({
+      authorization: `Bearer ${userSession?.faunaDBToken}`,
+    });
+
+    const variables = {
+      userId: userSession?.id,
+    };
+
+    try {
+      console.log('Running GQL query', INDEX_PAGE_QUERY, variables, gqlClient);
+      const data = await gqlClient.request<IndexPageQueryResult>(INDEX_PAGE_QUERY, variables);
+
+      console.log('data', data);
+
+      return data?.projects || [];
+
+    } catch (e) {
+      console.error(JSON.stringify(e, undefined, 2));
+      return [];
+    }
   }
 }

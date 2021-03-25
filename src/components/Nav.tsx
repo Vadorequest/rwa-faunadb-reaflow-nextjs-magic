@@ -8,14 +8,16 @@ import {
 } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import React, { Fragment } from 'react';
-import settings from '../settings';
-import AuthFormModal from './AuthFormModal';
 import { useUserSession } from '../hooks/useUserSession';
+import settings from '../settings';
+import { humanizeEmail } from '../utils/user';
+import AuthFormModal from './AuthFormModal';
 
 type Props = {}
 
 const Nav: React.FunctionComponent<Props> = (props) => {
   const user = useUserSession();
+  console.log('user', user);
 
   return (
     <header
@@ -32,16 +34,34 @@ const Nav: React.FunctionComponent<Props> = (props) => {
     >
       <nav className={'nav'}>
         <Flex>
-          <Box p="2">
+          <Box
+            p="2"
+            fontSize="sm"
+          >
             {
               user?.isAuthenticated ? (
                 <Fragment>
-                  Welcome <b>{user?.email}</b>! You are currently working on your personal document.
+                  Welcome <b><Tooltip label={user?.email}>{humanizeEmail(user?.email as string)}</Tooltip></b>!<br />
+                  You are currently working on your personal document.
                 </Fragment>
               ) : (
                 <Fragment>
                   You are currently <b>anonymous</b> and working on a shared document.
                 </Fragment>
+              )
+            }
+          </Box>
+
+          <Spacer />
+
+          <Box p="2">
+            {
+              user?.isAuthenticated ? (
+                <Fragment>
+                  Project: {user?.projects?.[0]?.label}
+                </Fragment>
+              ) : (
+                null
               )
             }
           </Box>

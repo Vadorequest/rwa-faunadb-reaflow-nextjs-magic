@@ -1,3 +1,4 @@
+import { Project } from '../graphql/graphql';
 import { UserMetadataWithAuth } from '../UserMetadataWithAuth';
 
 /**
@@ -45,4 +46,9 @@ export type UserSession = UserMetadataWithAuth & {
    * Error that might happen when fetching the session.
    */
   error?: Error;
+
+  /**
+   * Projects created by the user.
+   */
+  projects?: Project[];
 };
