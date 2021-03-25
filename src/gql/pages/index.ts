@@ -10,6 +10,10 @@ const INDEX_PAGE_QUERY = gql`
     projects: findProjectsByUserId(id: $userId){
       id: _id
       label
+      owner {
+        _id
+        email
+      }
     }
   }
 `;

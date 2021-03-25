@@ -54,6 +54,36 @@ const editorRole: RoleResource = {
       },
     },
     {
+      resource: Collection('Users'),
+      actions: {
+        // Editors should be able to read (+ history) of themselves only
+        read: Query(
+          Lambda('ref', Equals(
+            CurrentIdentity(),
+            Var('ref'),
+          )),
+        ),
+        history_read: Query(
+          Lambda('ref', Equals(
+            CurrentIdentity(),
+            Var('ref'),
+          )),
+        ),
+        // Editors should be able to only themselves only
+        write: Query(
+          Lambda(
+            ['oldData', 'newData', 'ref'],
+            Equals(
+              CurrentIdentity(),
+              Var('ref'),
+            ),
+          ),
+        ),
+        // Editors don't need to create themselves (it's done using a Server role upon sign-up)
+        create: false,
+      },
+    },
+    {
       resource: Collection('Canvas'),
       actions: {
         // Editors should be able to read (+ history) of Canvas documents that belongs to them.
