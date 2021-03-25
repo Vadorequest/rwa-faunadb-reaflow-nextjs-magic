@@ -1,8 +1,8 @@
 # This file was generated based on ".graphqlconfig". Do not edit manually.
 
 schema {
-    query: Query
-    mutation: Mutation
+  query: Query
+  mutation: Mutation
 }
 
 """
@@ -12,68 +12,79 @@ Nodes and edges are not represented because they're complex shapes,
 and because we won't query them using GQL anyway. (we use GQL for that)
 """
 type Canvas {
-    "The document's ID."
-    _id: ID!
-    "The document's timestamp."
-    _ts: Long!
-    id: ID!
-    lastUpdatedBySessionEphemeralId: String
-    lastUpdatedByUserName: String
-    project: Project!
+  "The document's ID."
+  _id: ID!
+  "The document's timestamp."
+  _ts: Long!
+  id: ID!
+  lastUpdatedBySessionEphemeralId: String
+  lastUpdatedByUserName: String
+  owner: User!
+  project: Project!
+}
+
+"The pagination object for elements of type 'Canvas'."
+type CanvasPage {
+  "A cursor for elements coming after the current page."
+  after: String
+  "A cursor for elements coming before the current page."
+  before: String
+  "The elements of type 'Canvas' in this page."
+  data: [Canvas]!
 }
 
 type Mutation {
-    "Create a new document in the collection of 'Canvas'"
-    createCanvas(
-        "'Canvas' input values"
-        data: CanvasInput!
-    ): Canvas!
-    "Create a new document in the collection of 'Project'"
-    createProject(
-        "'Project' input values"
-        data: ProjectInput!
-    ): Project!
-    "Create a new document in the collection of 'User'"
-    createUser(
-        "'User' input values"
-        data: UserInput!
-    ): User!
-    "Delete an existing document in the collection of 'Canvas'"
-    deleteCanvas(
-        "The 'Canvas' document's ID"
-        id: ID!
-    ): Canvas
-    "Delete an existing document in the collection of 'Project'"
-    deleteProject(
-        "The 'Project' document's ID"
-        id: ID!
-    ): Project
-    "Delete an existing document in the collection of 'User'"
-    deleteUser(
-        "The 'User' document's ID"
-        id: ID!
-    ): User
-    "Update an existing document in the collection of 'Canvas'"
-    updateCanvas(
-        "'Canvas' input values"
-        data: CanvasInput!,
-        "The 'Canvas' document's ID"
-        id: ID!
-    ): Canvas
-    "Update an existing document in the collection of 'Project'"
-    updateProject(
-        "'Project' input values"
-        data: ProjectInput!,
-        "The 'Project' document's ID"
-        id: ID!
-    ): Project
-    "Update an existing document in the collection of 'User'"
-    updateUser(
-        "'User' input values"
-        data: UserInput!,
-        "The 'User' document's ID"
-        id: ID!
-    ): User
+  "Create a new document in the collection of 'Canvas'"
+  createCanvas(
+    "'Canvas' input values"
+    data: CanvasInput!
+  ): Canvas!
+  "Create a new document in the collection of 'Project'"
+  createProject(
+    "'Project' input values"
+    data: ProjectInput!
+  ): Project!
+  "Create a new document in the collection of 'User'"
+  createUser(
+    "'User' input values"
+    data: UserInput!
+  ): User!
+  "Delete an existing document in the collection of 'Canvas'"
+  deleteCanvas(
+    "The 'Canvas' document's ID"
+    id: ID!
+  ): Canvas
+  "Delete an existing document in the collection of 'Project'"
+  deleteProject(
+    "The 'Project' document's ID"
+    id: ID!
+  ): Project
+  "Delete an existing document in the collection of 'User'"
+  deleteUser(
+    "The 'User' document's ID"
+    id: ID!
+  ): User
+  "Update an existing document in the collection of 'Canvas'"
+  updateCanvas(
+    "'Canvas' input values"
+    data: CanvasInput!,
+    "The 'Canvas' document's ID"
+    id: ID!
+  ): Canvas
+  "Update an existing document in the collection of 'Project'"
+  updateProject(
+    "'Project' input values"
+    data: ProjectInput!,
+    "The 'Project' document's ID"
+    id: ID!
+  ): Project
+  "Update an existing document in the collection of 'User'"
+  updateUser(
+    "'User' input values"
+    data: UserInput!,
+    "The 'User' document's ID"
+    id: ID!
+  ): User
 }
 
 """
@@ -82,48 +93,48 @@ A project **belongs** to a user and is related to a canvas.
 A project can be considered as Canvas metadata.
 """
 type Project {
-    "The document's ID."
-    _id: ID!
-    "The document's timestamp."
-    _ts: Long!
-    canvas: Canvas
-    id: ID!
-    "Name of the project"
-    label: String!
-    owner: User!
+  "The document's ID."
+  _id: ID!
+  "The document's timestamp."
+  _ts: Long!
+  canvas: Canvas
+  id: ID!
+  "Name of the project"
+  label: String!
+  owner: User!
 }
 
 "The pagination object for elements of type 'Project'."
 type ProjectPage {
-    "A cursor for elements coming after the current page."
-    after: String
-    "A cursor for elements coming before the current page."
-    before: String
-    "The elements of type 'Project' in this page."
-    data: [Project]!
+  "A cursor for elements coming after the current page."
+  after: String
+  "A cursor for elements coming before the current page."
+  before: String
+  "The elements of type 'Project' in this page."
+  data: [Project]!
 }
 
 type Query {
-    "Find a document from the collection of 'Canvas' by its id."
-    findCanvasByID(
-        "The 'Canvas' document's ID"
-        id: ID!
-    ): Canvas
-    "Find a document from the collection of 'Project' by its id."
-    findProjectByID(
-        "The 'Project' document's ID"
-        id: ID!
-    ): Project
-    findProjectsByUser(ref: ID!): [Project]
-    findProjectsByUserEmail(email: String!): [Project]
-    findProjectsByUserId(id: ID!): [Project]
-    findUserByEmail(email: String!): User
-    "Find a document from the collection of 'User' by its id."
-    findUserByID(
-        "The 'User' document's ID"
-        id: ID!
-    ): User
-    userByEmail(email: String!): User
+  "Find a document from the collection of 'Canvas' by its id."
+  findCanvasByID(
+    "The 'Canvas' document's ID"
+    id: ID!
+  ): Canvas
+  "Find a document from the collection of 'Project' by its id."
+  findProjectByID(
+    "The 'Project' document's ID"
+    id: ID!
+  ): Project
+  findProjectsByUser(ref: ID!): [Project]
+  findProjectsByUserEmail(email: String!): [Project]
+  findProjectsByUserId(id: ID!): [Project]
+  findUserByEmail(email: String!): User
+  "Find a document from the collection of 'User' by its id."
+  findUserByID(
+    "The 'User' document's ID"
+    id: ID!
+  ): User
+  userByEmail(email: String!): User
 }
 
 """
@@ -165,78 +176,104 @@ query: Query
 ###################### Custom
 """
 type User {
-    "The document's ID."
-    _id: ID!
-    "The document's timestamp."
-    _ts: Long!
-    email: String!
-    id: ID!
-    projects(
-        "The pagination cursor."
-        _cursor: String,
-        "The number of items to return per page."
-        _size: Int
-    ): ProjectPage!
+  "The document's ID."
+  _id: ID!
+  "The document's timestamp."
+  _ts: Long!
+  canvases(
+    "The pagination cursor."
+    _cursor: String,
+    "The number of items to return per page."
+    _size: Int
+  ): CanvasPage!
+  email: String!
+  id: ID!
+  projects(
+    "The pagination cursor."
+    _cursor: String,
+    "The number of items to return per page."
+    _size: Int
+  ): ProjectPage!
 }
 
 "'Canvas' input values"
 input CanvasInput {
-    id: ID!
-    lastUpdatedBySessionEphemeralId: String
-    lastUpdatedByUserName: String
-    project: CanvasProjectRelation
+  id: ID!
+  lastUpdatedBySessionEphemeralId: String
+  lastUpdatedByUserName: String
+  owner: CanvasOwnerRelation
+  project: CanvasProjectRelation
+}
+
+"Allow manipulating the relationship between the types 'Canvas' and 'User' using the field 'Canvas.owner'."
+input CanvasOwnerRelation {
+  "Connect a document of type 'User' with the current document using its ID."
+  connect: ID
+  "Create a document of type 'User' and associate it with the current document."
+  create: UserInput
 }
 
 "Allow manipulating the relationship between the types 'Canvas' and 'Project' using the field 'Canvas.project'."
 input CanvasProjectRelation {
-    "Connect a document of type 'Project' with the current document using its ID."
-    connect: ID
-    "Create a document of type 'Project' and associate it with the current document."
-    create: ProjectInput
-    "If true, disconnects this document from 'Project'"
-    disconnect: Boolean
+  "Connect a document of type 'Project' with the current document using its ID."
+  connect: ID
+  "Create a document of type 'Project' and associate it with the current document."
+  create: ProjectInput
+  "If true, disconnects this document from 'Project'"
+  disconnect: Boolean
 }
 
 "Allow manipulating the relationship between the types 'Project' and 'Canvas' using the field 'Project.canvas'."
 input ProjectCanvasRelation {
-    "Connect a document of type 'Canvas' with the current document using its ID."
-    connect: ID
-    "Create a document of type 'Canvas' and associate it with the current document."
-    create: CanvasInput
+  "Connect a document of type 'Canvas' with the current document using its ID."
+  connect: ID
+  "Create a document of type 'Canvas' and associate it with the current document."
+  create: CanvasInput
 }
 
 "'Project' input values"
 input ProjectInput {
-    canvas: ProjectCanvasRelation
-    id: ID!
-    "Name of the project"
-    label: String!
-    owner: ProjectOwnerRelation
+  canvas: ProjectCanvasRelation
+  id: ID!
+  "Name of the project"
+  label: String!
+  owner: ProjectOwnerRelation
 }
 
 "Allow manipulating the relationship between the types 'Project' and 'User' using the field 'Project.owner'."
 input ProjectOwnerRelation {
-    "Connect a document of type 'User' with the current document using its ID."
-    connect: ID
-    "Create a document of type 'User' and associate it with the current document."
-    create: UserInput
+  "Connect a document of type 'User' with the current document using its ID."
+  connect: ID
+  "Create a document of type 'User' and associate it with the current document."
+  create: UserInput
+}
+
+"Allow manipulating the relationship between the types 'User' and 'Canvas'."
+input UserCanvasesRelation {
+  "Connect one or more documents of type 'Canvas' with the current document using their IDs."
+  connect: [ID]
+  "Create one or more documents of type 'Canvas' and associate them with the current document."
+  create: [CanvasInput]
+  "Disconnect the given documents of type 'Canvas' from the current document using their IDs."
+  disconnect: [ID]
 }
 
 "'User' input values"
 input UserInput {
-    email: String!
-    id: ID!
-    projects: UserProjectsRelation
+  canvases: UserCanvasesRelation
+  email: String!
+  id: ID!
+  projects: UserProjectsRelation
 }
 
 "Allow manipulating the relationship between the types 'User' and 'Project'."
 input UserProjectsRelation {
-    "Connect one or more documents of type 'Project' with the current document using their IDs."
-    connect: [ID]
-    "Create one or more documents of type 'Project' and associate them with the current document."
-    create: [ProjectInput]
-    "Disconnect the given documents of type 'Project' from the current document using their IDs."
-    disconnect: [ID]
+  "Connect one or more documents of type 'Project' with the current document using their IDs."
+  connect: [ID]
+  "Create one or more documents of type 'Project' and associate them with the current document."
+  create: [ProjectInput]
+  "Disconnect the given documents of type 'Project' from the current document using their IDs."
+  disconnect: [ID]
 }
 
 

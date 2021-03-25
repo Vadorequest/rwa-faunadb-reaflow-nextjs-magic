@@ -45,6 +45,9 @@ type User @collection(
     projects: [Project] @relation(
         name: "userProjects"
     )
+    canvases: [Canvas] @relation(
+        name: "userCanvases"
+    )
 }
 
 """
@@ -80,6 +83,9 @@ type Canvas @collection(
     lastUpdatedByUserName: String
     project: Project! @relation(
         name: "projectCanvas"
+    )
+    owner: User! @relation(
+        name: "userCanvases"
     )
 }
 
