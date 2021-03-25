@@ -208,6 +208,7 @@ export type Query = {
   findProjectsByUserEmail?: Maybe<Array<Maybe<Project>>>;
   /** Find a document from the collection of 'Canvas' by its id. */
   findCanvasByID?: Maybe<Canvas>;
+  findProjectsByUserId?: Maybe<Array<Maybe<Project>>>;
   /** Find a document from the collection of 'Project' by its id. */
   findProjectByID?: Maybe<Project>;
 };
@@ -239,6 +240,11 @@ export type QueryFindProjectsByUserEmailArgs = {
 
 
 export type QueryFindCanvasByIdArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryFindProjectsByUserIdArgs = {
   id: Scalars['ID'];
 };
 
