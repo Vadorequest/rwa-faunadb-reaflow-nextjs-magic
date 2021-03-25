@@ -8,12 +8,8 @@ import { gql } from 'graphql-request';
 const INDEX_PAGE_QUERY = gql`
   query INDEX_PAGE_QUERY($userId: ID!){
     projects: findProjectsByUserId(id: $userId){
-      _id
+      id: _id
       label
-      owner {
-        _id
-        email
-      }
     }
   }
 `;

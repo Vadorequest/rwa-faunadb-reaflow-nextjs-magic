@@ -50,7 +50,8 @@ const IndexPage: NextPage<Props> = (props): JSX.Element => {
       };
 
       try {
-        const data = await gqlClient.request<Project[]>(INDEX_PAGE_QUERY, variables)
+        console.log('Running GQL query', INDEX_PAGE_QUERY, variables, gqlClient);
+        const data = await gqlClient.request<Project[]>(INDEX_PAGE_QUERY, variables);
 
         console.log('data', data);
 
