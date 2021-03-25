@@ -1,4 +1,3 @@
-import { ApolloProvider } from '@apollo/client';
 import {
   ChakraProvider,
   extendTheme,
@@ -14,8 +13,6 @@ import { RecoilRoot } from 'recoil';
 import GlobalStyles from '../components/GlobalStyles';
 import { RecoilDevtools } from '../components/RecoilDevtools';
 import { RecoilExternalStatePortal } from '../components/RecoilExternalStatePortal';
-import { useUserSession } from '../hooks/useUserSession';
-import { useApollo } from '../lib/apollo/apolloClient';
 import '../utils/fontAwesome';
 
 type Props = {
@@ -87,24 +84,20 @@ const theme = extendTheme({
  */
 const App: React.FunctionComponent<Props> = (props): JSX.Element | null => {
   const { Component, pageProps } = props;
-  const userSession = useUserSession(); // "user" is "undefined" until a response is received from the API
-  const apolloClient = useApollo(pageProps, userSession);
 
   return (
-    <ApolloProvider client={apolloClient}>
-      <ChakraProvider theme={theme}>
-        <RecoilRoot>
-          {/* Dev tools for Recoil */}
-          <RecoilDevtools />
+    <ChakraProvider theme={theme}>
+      <RecoilRoot>
+        {/* Dev tools for Recoil */}
+        <RecoilDevtools />
 
-          {/* Utility component allowing to use the Recoil state outside of a React component */}
-          <RecoilExternalStatePortal />
+        {/* Utility component allowing to use the Recoil state outside of a React component */}
+        <RecoilExternalStatePortal />
 
-          <GlobalStyles />
-          <Component {...pageProps} />
-        </RecoilRoot>
-      </ChakraProvider>
-    </ApolloProvider>
+        <GlobalStyles />
+        <Component {...pageProps} />
+      </RecoilRoot>
+    </ChakraProvider>
   );
 };
 

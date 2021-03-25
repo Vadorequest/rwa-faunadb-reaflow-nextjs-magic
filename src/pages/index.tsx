@@ -1,8 +1,4 @@
-import {
-  ApolloClient,
-  ApolloQueryResult,
-  NormalizedCacheObject,
-} from '@apollo/client';
+import { GraphQLClient } from 'graphql-request';
 import { NextPage } from 'next';
 import useAsyncEffect from 'use-async-effect';
 import DisplayOnBrowserMount from '../components/DisplayOnBrowserMount';
@@ -10,7 +6,6 @@ import EditorContainer from '../components/editor/EditorContainer';
 import Layout from '../components/Layout';
 import INDEX_PAGE_QUERY from '../gql/pages';
 import { useUserSession } from '../hooks/useUserSession';
-import { useApollo } from '../lib/apollo/apolloClient';
 import { CanvasDataset } from '../types/CanvasDataset';
 import { Project } from '../types/graphql/graphql';
 
@@ -42,43 +37,28 @@ export const getStaticProps = (): { props: Props } => {
  */
 const IndexPage: NextPage<Props> = (props): JSX.Element => {
   const userSession = useUserSession(); // "user" is "undefined" until a response is received from the API
-  const apolloClient: ApolloClient<NormalizedCacheObject> = useApollo(props, userSession);
-  console.log('props', props);
-  console.log('apolloClient', apolloClient);
-  // useAsyncEffect(async (): Promise<void> => {
-  //   if (userSession?.isAuthenticated) {
-  //
-  //     const variables = {
-  //       userId: userSession?.id,
-  //     };
-  //     const queryOptions = {
-  //       displayName: 'LAYOUT_QUERY',
-  //       query: INDEX_PAGE_QUERY,
-  //       variables,
-  //       context: {
-  //         // headers: {
-  //         //
-  //         // },
-  //       },
-  //     };
-  //
-  //     try {
-  //       const x: ApolloQueryResult<{
-  //         projects: Project[];
-  //       }> = await apolloClient.query(queryOptions);
-  //
-  //       // if (errors) {
-  //       //   console.error(errors);
-  //       //   throw new Error('Errors were detected in GraphQL query.');
-  //       // }
-  //
-  //       console.log('data', x);
-  //
-  //     } catch (e) {
-  //       console.error(e);
-  //     }
-  //   }
-  // });
+  const gqlClient = new GraphQLClient(process.env.NEXT_PUBLIC_GRAPHQL_API_ENDPOINT as string);
+
+  useAsyncEffect(async (): Promise<void> => {
+    if (userSession?.isAuthenticated) {
+      gqlClient.setHeaders({
+        authorization: `Bearer ${userSession?.faunaDBToken}`,
+      });
+
+      const variables = {
+        userId: userSession?.id,
+      };
+
+      try {
+        const data = await gqlClient.request<Project[]>(INDEX_PAGE_QUERY, variables)
+
+        console.log('data', data);
+
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, [userSession?.faunaDBToken]);
 
   return (
     <Layout>

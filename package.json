@@ -11,7 +11,6 @@
     "deploy:fake": "git commit --allow-empty -m \"Fake empty commit (force CI trigger)\""
   },
   "dependencies": {
-    "@apollo/client": "3.3.13",
     "@chakra-ui/icons": "1.0.4",
     "@chakra-ui/react": "1.2.1",
     "@chakra-ui/theme-tools": "1.0.3",
@@ -34,11 +33,11 @@
     "classnames": "2.2.6",
     "cookie": "0.4.1",
     "deep-object-diff": "1.1.0",
-    "deepmerge": "4.2.2",
     "faunadb": "4.1.1",
     "faunadb-fql-lib": "0.13.0",
     "framer-motion": "3.2.1",
     "graphql": "15.5.0",
+    "graphql-request": "3.4.0",
     "lodash.capitalize": "4.2.1",
     "lodash.clonedeep": "4.5.0",
     "lodash.debounce": "4.0.8",
