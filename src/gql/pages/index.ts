@@ -1,4 +1,5 @@
 import { gql } from 'graphql-request';
+import project from '../fragments/project';
 
 /**
  * Used by /src/pages/index.
@@ -8,14 +9,10 @@ import { gql } from 'graphql-request';
 const INDEX_PAGE_QUERY = gql`
   query INDEX_PAGE_QUERY($userId: ID!){
     projects: findProjectsByUserId(id: $userId){
-      id: _id
-      label
-      owner {
-        _id
-        email
-      }
+      ...projectFields
     }
   }
+  ${project.projectFields}
 `;
 
 export default INDEX_PAGE_QUERY;

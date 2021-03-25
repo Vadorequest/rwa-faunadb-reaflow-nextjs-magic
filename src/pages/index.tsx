@@ -56,7 +56,7 @@ const IndexPage: NextPage<Props> = (props): JSX.Element => {
         console.log('data', data);
 
       } catch (e) {
-        console.error(e);
+        console.error(JSON.stringify(e, undefined, 2));
       }
     }
   }, [userSession?.faunaDBToken]);
