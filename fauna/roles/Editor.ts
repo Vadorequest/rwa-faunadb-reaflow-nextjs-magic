@@ -38,9 +38,9 @@ const editorRole: RoleResource = {
       },
     },
     {
-      // Editors need read access to the getProjectsByUser function to find their own projects
+      // Editors need read access to the getProjectsByUserId function to find their own projects
       // Used by GQL findProjectsByUserId query
-      resource: Function('getProjectsByUser'),
+      resource: Function('getProjectsByUserId'),
       actions: {
         call: true,
       },
