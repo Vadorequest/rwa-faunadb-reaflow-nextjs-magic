@@ -114,11 +114,16 @@ type Query {
         "The 'Project' document's ID"
         id: ID!
     ): Project
+    findProjectsByUser(ref: ID!): [Project]
+    findProjectsByUserEmail(email: String!): [Project]
+    findProjectsByUserId(id: ID!): [Project]
+    findUserByEmail(email: String!): User
     "Find a document from the collection of 'User' by its id."
     findUserByID(
         "The 'User' document's ID"
         id: ID!
     ): User
+    userByEmail(email: String!): User
 }
 
 """
@@ -152,6 +157,10 @@ scalar Date
 scalar Long
 
 scalar Time
+
+schema{
+query: Query
+}
 
 ###################### Custom
 """

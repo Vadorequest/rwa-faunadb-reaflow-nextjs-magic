@@ -43,7 +43,7 @@ type User @collection(
         index: "user_by_email"
     )
     projects: [Project] @relation(
-        name: "user_projects"
+        name: "userProjects"
     )
 }
 
@@ -60,10 +60,10 @@ type Project @collection(
     """
     label: String!
     owner: User! @relation(
-        name: "user_projects"
+        name: "userProjects"
     )
     canvas: Canvas @relation(
-        name: "project_canvas"
+        name: "projectCanvas"
     )
 }
 
@@ -79,7 +79,7 @@ type Canvas @collection(
     lastUpdatedBySessionEphemeralId: String
     lastUpdatedByUserName: String
     project: Project! @relation(
-        name: "project_canvas"
+        name: "projectCanvas"
     )
 }
 
