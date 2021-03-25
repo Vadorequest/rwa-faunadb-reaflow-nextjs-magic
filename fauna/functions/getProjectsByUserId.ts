@@ -9,6 +9,7 @@ import {
   Paginate,
   Query,
   Ref,
+  Select,
   Var,
 } from 'faunadb';
 
@@ -19,18 +20,22 @@ const getProjectsByUserId: FunctionResource = {
   name: 'getProjectsByUserId',
   body: Query(
     Lambda(['id'],
-      // For each result (project's Ref)
-      Map(
-        // Paginate results in case there would be too many to fetch them at once
-        Paginate(
-          // Finds the projects that belongs to the user (by user id)
-          Match(
-            Index('projectsByOwner'),
-            Ref(Collection('Users'), Var('id')),
+      // Select the "data" value, otherwise it'd return an object where the projects are inside "data" and that'd make the GQL query fail
+      Select(
+        ['data'],
+        // For each result (project's Ref)
+        Map(
+          // Paginate results in case there would be too many to fetch them at once
+          Paginate(
+            // Finds the projects that belongs to the user (by user id)
+            Match(
+              Index('projectsByOwner'),
+              Ref(Collection('Users'), Var('id')),
+            ),
           ),
+          // Convert the project's ref into the actual object
+          Lambda(['ref'], Get(Var('ref'))),
         ),
-        // Convert the project's ref into the actual object
-        Lambda(['ref'], Get(Var('ref')))
       ),
     ),
   ),

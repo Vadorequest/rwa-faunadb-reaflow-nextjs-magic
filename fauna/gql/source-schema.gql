@@ -85,5 +85,5 @@ type Canvas @collection(
 
 type Query{
     findUserByEmail(email: String!): User
-    findProjectsByUserId(id: ID!): [Project] @resolver(name: "getProjectsByUserId")
+    findProjectsByUserId(id: ID!): [Project!] @resolver(name: "getProjectsByUserId")
 }
