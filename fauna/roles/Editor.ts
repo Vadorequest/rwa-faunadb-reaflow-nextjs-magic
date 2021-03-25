@@ -4,6 +4,7 @@ import {
   Collection,
   CurrentIdentity,
   Equals,
+  Function,
   Get,
   Index,
   Lambda,
@@ -23,13 +24,31 @@ import {
 const editorRole: RoleResource = {
   name: 'Editor',
   // All users should be editors (will apply to authenticated users only).
-  membership: [{
-    resource: Collection('Users'),
-  }],
+  membership: [
+    {
+      resource: Collection('Users'),
+    },
+  ],
   privileges: [
     {
       // Editors need read access to the canvas_by_owner index to find their own canvas
       resource: Index('canvas_by_owner'),
+      actions: {
+        read: true,
+      },
+    },
+    {
+      // Editors need read access to the getProjectsByUser function to find their own projects
+      // Used by GQL findProjectsByUserId query
+      resource: Function('getProjectsByUser'),
+      actions: {
+        call: true,
+      },
+    },
+    {
+      // Editors need read access to the projectsByOwner index to find their own projects
+      // Used by GQL findProjectsByUserId query
+      resource: Index('projectsByOwner'),
       actions: {
         read: true,
       },
@@ -66,14 +85,57 @@ const editorRole: RoleResource = {
                 Select(['data', 'owner'], Var('newData')),
               ),
             ),
-          )
+          ),
         ),
         // Editors should be able to create only Canvas documents that belongs to them
         create: Query(
           Lambda('values', Equals(
             CurrentIdentity(),
             Select(['data', 'owner'], Var('values'))),
-          )
+          ),
+        ),
+      },
+    },
+    {
+      resource: Collection('Projects'),
+      actions: {
+        // Editors should be able to read (+ history) of Project documents that belongs to them.
+        read: Query(
+          Lambda('ref', Equals(
+            CurrentIdentity(),
+            Select(['data', 'owner'], Get(Var('ref'))),
+          )),
+        ),
+        history_read: Query(
+          Lambda('ref', Equals(
+            CurrentIdentity(),
+            Select(['data', 'owner'], Get(Var('ref'))),
+          )),
+        ),
+        // Editors should be able to edit only Project documents that belongs to them
+        write: Query(
+          Lambda(
+            ['oldData', 'newData', 'ref'],
+            And(
+              // The owner in the current data (before writing them) must be the current user
+              Equals(
+                CurrentIdentity(),
+                Select(['data', 'owner'], Var('oldData')),
+              ),
+              // The owner must not change
+              Equals(
+                Select(['data', 'owner'], Var('oldData')),
+                Select(['data', 'owner'], Var('newData')),
+              ),
+            ),
+          ),
+        ),
+        // Editors should be able to create only Project documents that belongs to them
+        create: Query(
+          Lambda('values', Equals(
+            CurrentIdentity(),
+            Select(['data', 'owner'], Var('values'))),
+          ),
         ),
       },
     },
