@@ -1,12 +1,22 @@
+import {
+  ApolloClient,
+  ApolloQueryResult,
+  NormalizedCacheObject,
+} from '@apollo/client';
+import { NextPage } from 'next';
+import useAsyncEffect from 'use-async-effect';
 import DisplayOnBrowserMount from '../components/DisplayOnBrowserMount';
 import EditorContainer from '../components/editor/EditorContainer';
 import Layout from '../components/Layout';
+import INDEX_PAGE_QUERY from '../gql/pages';
 import { useUserSession } from '../hooks/useUserSession';
+import { useApollo } from '../lib/apollo/apolloClient';
 import { CanvasDataset } from '../types/CanvasDataset';
+import { Project } from '../types/graphql/graphql';
 
 export type Props = {
   canvasDataset: CanvasDataset | null;
-}
+};
 
 /**
  * You can use your custom business logic here to fetch the canvasDataset from your data storage.
@@ -17,6 +27,7 @@ export type Props = {
  * @see https://nextjs.org/docs/basic-features/data-fetching#getstaticprops-static-generation
  */
 export const getStaticProps = (): { props: Props } => {
+
   return {
     props: {
       canvasDataset: null,
@@ -27,11 +38,47 @@ export const getStaticProps = (): { props: Props } => {
 /**
  * Index/home page.
  *
- * A simple page that does nothing more than displaying a layout and the Reaflow canvas (EditorContainer),
- * after it has initialized the global "initialCanvasDataset" browser variable, which is used by the nodesSelector and edgesSelector Recoil state managers.
+ * TODO doc
  */
-const IndexPage = (props: any) => {
-  const user = useUserSession(); // "user" is "undefined" until a response is received from the API
+const IndexPage: NextPage<Props> = (props): JSX.Element => {
+  const userSession = useUserSession(); // "user" is "undefined" until a response is received from the API
+  const apolloClient: ApolloClient<NormalizedCacheObject> = useApollo(props, userSession);
+  console.log('props', props);
+  console.log('apolloClient', apolloClient);
+  // useAsyncEffect(async (): Promise<void> => {
+  //   if (userSession?.isAuthenticated) {
+  //
+  //     const variables = {
+  //       userId: userSession?.id,
+  //     };
+  //     const queryOptions = {
+  //       displayName: 'LAYOUT_QUERY',
+  //       query: INDEX_PAGE_QUERY,
+  //       variables,
+  //       context: {
+  //         // headers: {
+  //         //
+  //         // },
+  //       },
+  //     };
+  //
+  //     try {
+  //       const x: ApolloQueryResult<{
+  //         projects: Project[];
+  //       }> = await apolloClient.query(queryOptions);
+  //
+  //       // if (errors) {
+  //       //   console.error(errors);
+  //       //   throw new Error('Errors were detected in GraphQL query.');
+  //       // }
+  //
+  //       console.log('data', x);
+  //
+  //     } catch (e) {
+  //       console.error(e);
+  //     }
+  //   }
+  // });
 
   return (
     <Layout>
@@ -41,7 +88,7 @@ const IndexPage = (props: any) => {
       >
         {
           // Wait until the user has been fetched from the API endpoint
-          user?.isSessionReady === true && (
+          userSession?.isSessionReady === true && (
             <EditorContainer />
           )
         }
