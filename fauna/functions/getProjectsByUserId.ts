@@ -5,24 +5,25 @@ import {
   Match,
   Paginate,
   Query,
+  Ref,
   Var,
 } from 'faunadb';
 
 /**
- * Returns the projects owned by the user, using the user's email.
+ * Returns the projects owned by the user, using the user's id.
  */
-const getProjectsByUser: FunctionResource = {
-  name: 'getProjectsByUser',
+const getProjectsByUserId: FunctionResource = {
+  name: 'getProjectsByUserId',
   body: Query(
-    Lambda(['ref'],
+    Lambda(['id'],
       Paginate(
         Match(
           Index('projectsByOwner'),
-          Var('ref'),
+          Ref(Var('id')),
         ),
       ),
     ),
   ),
 };
 
-export default getProjectsByUser;
+export default getProjectsByUserId;

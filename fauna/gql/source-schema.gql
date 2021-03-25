@@ -87,7 +87,5 @@ type Query{
     findUserByEmail(
         email: String!
     ): User
-    findProjectsByUser(
-        ref: ID!
-    ): [Project] @resolver(name: "getProjectsByUser")
+    findProjectsByUserId(id: ID!): [Project] @resolver(name: "getProjectsByUserId")
 }
