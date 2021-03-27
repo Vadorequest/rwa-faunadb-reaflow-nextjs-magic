@@ -72,7 +72,7 @@ const AuthFormModal = (props: Props) => {
 
         if (res.status === 200) {
           // The user is now authenticated (cookie has been set on the browser) to both Magic and FaunaDB
-          onClose(); // XXX Updating the state here has a side-effect, it'll automatically refresh the UI, which will update and display user-related informations
+          onClose();
         } else {
           throw new Error(await res.text());
         }
