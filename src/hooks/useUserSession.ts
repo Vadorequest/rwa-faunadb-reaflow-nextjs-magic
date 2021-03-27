@@ -34,6 +34,35 @@ const fetcher = (url: string): Promise<ApiGetUserResult> =>
     });
 
 /**
+ * Fetches the user session by calling our Next.js internal API endpoint.
+ */
+const fetchUseSession = () => {
+  const {
+    data,
+    error,
+  } = useSWR<ApiGetUserResult>(
+    '/api/user',
+    fetcher,
+  );
+
+  if (error) {
+    console.error(error);
+  }
+
+  const isLoading = !error && !data;
+  const user = data?.user;
+  const hasUser = Boolean(user);
+
+  return {
+    isLoading,
+    user,
+    hasUser,
+    data,
+    error,
+  };
+};
+
+/**
  * Fetches the current user from our internal /api/user and returns it.
  *
  * Until the query is completed (async), it will return a partial UserSession.
@@ -47,21 +76,7 @@ const fetcher = (url: string): Promise<ApiGetUserResult> =>
  */
 export const useUserSession = (props?: Props): Partial<UserSession> => {
   const { redirectTo, redirectIfFound } = props || {};
-  const {
-    data,
-    error,
-  } = useSWR<ApiGetUserResult>(
-    '/api/user',
-    fetcher,
-    {
-      // Automatically refresh the page once the user has logged in, to update the UI
-      refreshInterval: 1000,
-    },
-  );
-
-  const isLoading = !error && !data;
-  const user = data?.user;
-  const hasUser = Boolean(user);
+  const { hasUser, isLoading, user, error, data } = fetchUseSession();
 
   useEffect(() => {
     if (!redirectTo || isLoading) return;
@@ -74,10 +89,6 @@ export const useUserSession = (props?: Props): Partial<UserSession> => {
       Router.push(redirectTo);
     }
   }, [redirectTo, redirectIfFound, isLoading, hasUser]);
-
-  if (error) {
-    console.error(error);
-  }
 
   if (error) {
     return {
