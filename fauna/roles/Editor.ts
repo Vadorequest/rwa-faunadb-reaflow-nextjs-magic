@@ -31,8 +31,8 @@ const editorRole: RoleResource = {
   ],
   privileges: [
     {
-      // Editors need read access to the canvas_by_owner index to find their own canvas
-      resource: Index('canvas_by_owner'),
+      // Editors need read access to the canvasByOwner index to find their own canvas
+      resource: Index('canvasByOwner'),
       actions: {
         read: true,
       },

@@ -6,8 +6,8 @@ import { Collection } from 'faunadb';
  *
  * Necessary for real-time subscription, to retrieve the canvas of the current user.
  */
-const users_by_email: IndexResource = {
-  name: 'canvas_by_owner',
+const canvasByOwner: IndexResource = {
+  name: 'canvasByOwner',
   source: Collection('Canvas'),
   // Needs permission to read the Users, because "owner" is specified in the "terms" and is a Ref to the "Users" collection
   permissions: {
@@ -23,4 +23,4 @@ const users_by_email: IndexResource = {
   ],
 };
 
-export default users_by_email;
+export default canvasByOwner;
