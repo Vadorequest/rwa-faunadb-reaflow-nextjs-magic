@@ -18,7 +18,7 @@ CreateCollection({ name: 'Canvas' });
 // Index to filter users by email
 // Necessary for authentication, to find the user document based on their email
 CreateIndex({
-  name: 'users_by_email',
+  name: 'usersByEmail',
   source: Collection('Users'),
   terms: [
     { field: ['data', 'email'] },
