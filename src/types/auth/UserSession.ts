@@ -51,4 +51,9 @@ export type UserSession = UserMetadataWithAuth & {
    * Projects created by the user.
    */
   projects?: Project[];
+
+  /**
+   * Current active project being used.
+   */
+  activeProject? : Project;
 };

@@ -4,6 +4,7 @@ import useSWR from 'swr';
 import { v1 as uuid } from 'uuid';
 import { ApiGetUserResult } from '../pages/api/user';
 import { UserSession } from '../types/auth/UserSession';
+import { Project } from '../types/graphql/graphql';
 
 type Props = {
   redirectTo?: string;
@@ -76,7 +77,7 @@ const fetchUseSession = () => {
  */
 export const useUserSession = (props?: Props): Partial<UserSession> => {
   const { redirectTo, redirectIfFound } = props || {};
-  const { hasUser, isLoading, user, error, data } = fetchUseSession();
+  const { hasUser, isLoading, user, error } = fetchUseSession();
 
   useEffect(() => {
     if (!redirectTo || isLoading) return;
@@ -97,8 +98,12 @@ export const useUserSession = (props?: Props): Partial<UserSession> => {
       error: error,
     };
   } else if (user) {
+    // Load the current active user project form localstorage, fallback to the first project found
+    const activeProjectId = localStorage.getItem('activeProjectId');
+    user.activeProject = activeProjectId ? user?.projects?.find((project: Project) => project?.id === activeProjectId) : user?.projects?.[0];
+
     return {
-      ...data?.user || {},
+      ...user,
       sessionEphemeralId,
       isSessionReady: !isLoading,
     };

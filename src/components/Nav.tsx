@@ -23,9 +23,9 @@ type Props = {}
 
 const Nav: React.FunctionComponent<Props> = (props) => {
   const user = useUserSession();
+  const activeProject: Project = user?.activeProject as Project;
   const [projectFormMode, setProjectFormMode] = useState<'display' | 'edit' | 'create'>('display');
   console.log('user', user);
-  const activeProject: Project | undefined = user?.projects?.[0];
 
   return (
     <header
