@@ -1,4 +1,5 @@
 import { NextPage } from 'next';
+import React, { Fragment } from 'react';
 import DisplayOnBrowserMount from '../components/DisplayOnBrowserMount';
 import EditorContainer from '../components/editor/EditorContainer';
 import Layout from '../components/Layout';
@@ -35,17 +36,19 @@ const IndexPage: NextPage<Props> = (props): JSX.Element => {
   const userSession = useUserSession(); // "user" is "undefined" until a response is received from the API
 
   return (
-    <Layout>
-      {/* Only renders the EditorContainer on the browser because it's not server-side compatible */}
-      <DisplayOnBrowserMount>
-        {
-          // Wait until the user has been fetched from the API endpoint
-          userSession?.isSessionReady === true && (
-            <EditorContainer />
-          )
-        }
-      </DisplayOnBrowserMount>
-    </Layout>
+    <Fragment>
+      {
+        // Wait until the user has been fetched from the API endpoint
+        userSession?.isSessionReady === true && (
+          <Layout>
+            {/* Only renders the page on the browser because it's not server-side compatible */}
+            <DisplayOnBrowserMount>
+              <EditorContainer />
+            </DisplayOnBrowserMount>;
+          </Layout>
+        )
+      }
+    </Fragment>
   );
 };
 

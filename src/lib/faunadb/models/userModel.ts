@@ -1,6 +1,7 @@
 import Expr from 'faunadb/src/types/Expr';
 import { GraphQLClient } from 'graphql-request';
-import INDEX_PAGE_QUERY, { IndexPageQueryResult } from '../../../gql/pages';
+import UPDATE_PROJECT_LABEL, { UpdateProjectLabelMutationResult } from '../../../gql/mutations/project/updateProjectLabel';
+import INDEX_PAGE_QUERY, { IndexPageQueryResult } from '../../../gql/queries/pages';
 import { UserSession } from '../../../types/auth/UserSession';
 import { FaunadbToken } from '../../../types/faunadb/FaunadbToken';
 import { User } from '../../../types/faunadb/User';
@@ -82,8 +83,6 @@ export class UserModel {
    */
   async getProjects(userSession: UserSession): Promise<Project[]> {
     const gqlClient = new GraphQLClient(process.env.NEXT_PUBLIC_GRAPHQL_API_ENDPOINT as string);
-
-    // User is authenticated, we need to fetch its projects and await until they've been fetched
     gqlClient.setHeaders({
       authorization: `Bearer ${userSession?.faunaDBToken}`,
     });
@@ -103,6 +102,35 @@ export class UserModel {
     } catch (e) {
       console.error(JSON.stringify(e, undefined, 2));
       return [];
+    }
+  }
+
+  /**
+   * Updates a project's label.
+   *
+   * @param userSession
+   * @param projectId
+   * @param label
+   */
+  async updateProjectLabel(userSession: UserSession, projectId: string, label: string): Promise<Project> {
+    const gqlClient = new GraphQLClient(process.env.NEXT_PUBLIC_GRAPHQL_API_ENDPOINT as string);
+    gqlClient.setHeaders({
+      authorization: `Bearer ${userSession?.faunaDBToken}`,
+    });
+
+    const variables = {
+      projectId,
+      label,
+    };
+
+    try {
+      console.log('Running GQL query', UPDATE_PROJECT_LABEL, variables, gqlClient);
+      const result =  await gqlClient.request<UpdateProjectLabelMutationResult>(UPDATE_PROJECT_LABEL, variables);
+
+      return result?.updatedProject;
+    } catch (e) {
+      console.error(JSON.stringify(e, undefined, 2));
+      throw e;
     }
   }
 }

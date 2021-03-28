@@ -6,6 +6,7 @@ import {
   Input,
   Spacer,
   Tooltip,
+  useToast,
 } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -14,7 +15,9 @@ import React, {
   useState,
 } from 'react';
 import { useUserSession } from '../hooks/useUserSession';
+import { UserModel } from '../lib/faunadb/models/userModel';
 import settings from '../settings';
+import { UserSession } from '../types/auth/UserSession';
 import { Project } from '../types/graphql/graphql';
 import { humanizeEmail } from '../utils/user';
 import AuthFormModal from './AuthFormModal';
@@ -22,10 +25,16 @@ import AuthFormModal from './AuthFormModal';
 type Props = {}
 
 const Nav: React.FunctionComponent<Props> = (props) => {
-  const user = useUserSession();
-  const activeProject: Project = user?.activeProject as Project;
+  const userSession = useUserSession();
+  const [activeProject, setActiveProject] = useState<Project>(userSession?.activeProject as Project);
   const [projectFormMode, setProjectFormMode] = useState<'display' | 'edit' | 'create'>('display');
-  console.log('user', user);
+  console.log('user', userSession);
+  console.log('activeProject', activeProject);
+  const toast = useToast({
+    isClosable: true,
+    duration: 5000,
+    position: 'bottom-right',
+  });
 
   return (
     <header
@@ -47,9 +56,9 @@ const Nav: React.FunctionComponent<Props> = (props) => {
             fontSize="sm"
           >
             {
-              user?.isAuthenticated ? (
+              userSession?.isAuthenticated ? (
                 <Fragment>
-                  Welcome <b><Tooltip label={user?.email}>{humanizeEmail(user?.email as string)}</Tooltip></b>!<br />
+                  Welcome <b><Tooltip label={userSession?.email}>{humanizeEmail(userSession?.email as string)}</Tooltip></b>!<br />
                   You are currently working on your personal document.
                 </Fragment>
               ) : (
@@ -64,16 +73,44 @@ const Nav: React.FunctionComponent<Props> = (props) => {
 
           <Box p="2">
             {
-              user?.isAuthenticated ? (
+              userSession?.isAuthenticated ? (
                 <Flex>
                   {
                     projectFormMode === 'edit' && (
                       <Input
                         defaultValue={activeProject?.label}
                         placeholder={'Project name'}
-                        onKeyPress={(e) => {
+                        onKeyPress={async (e) => {
                           if (e.code === 'Enter') {
+                            const label: string = (e?.target as HTMLInputElement)?.value;
                             // Save the new project label
+                            const userModel = new UserModel();
+
+                            try {
+                              const updatedProject = await userModel.updateProjectLabel(userSession as UserSession, activeProject?.id, label);
+
+                              // Update local cache immediately
+                              // TODO This isn't clean, it'll only update the local component cache, we should rather have a shared state for this
+                              //  But it does the job, and it's not an issue in this small app because the project's title is only shown in this component
+                              setActiveProject({
+                                ...activeProject,
+                                ...updatedProject,
+                              });
+
+                              toast({
+                                title: `Project updated`,
+                                description: `The project "${activeProject?.label}" has been renamed to "${updatedProject?.label}"`,
+                                status: 'success',
+                              });
+                            } catch (e) {
+                              toast({
+                                title: `Error`,
+                                description: `The project "${activeProject?.label}" couldn't be renamed. Error: "${e.message}"`,
+                                status: 'error',
+                                duration: null,
+                              });
+                            }
+
                             setProjectFormMode('display');
                           }
                         }}
@@ -133,7 +170,7 @@ const Nav: React.FunctionComponent<Props> = (props) => {
 
           <Box p="2">
             {
-              user?.isAuthenticated ? (
+              userSession?.isAuthenticated ? (
                 <a href="/api/logout">
                   <Button>Logout</Button>
                 </a>
