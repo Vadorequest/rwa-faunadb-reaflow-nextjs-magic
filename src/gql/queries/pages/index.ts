@@ -16,7 +16,7 @@ const INDEX_PAGE_QUERY = gql`
     projects: findProjectsByUserId(id: $userId){
       ...projectFields
       canvas {
-        _id: id
+        id: _id
       }
     }
   }
