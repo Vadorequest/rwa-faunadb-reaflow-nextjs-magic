@@ -14,6 +14,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
+import { useUserSession } from '../hooks/useUserSession';
 import { magicClient } from '../lib/auth/magicClient';
 import Animated3Dots from './Animated3Dots';
 
@@ -32,6 +33,7 @@ const AuthFormModal = (props: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [email, setEmail] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const userSession = useUserSession();
 
   /**
    * Submits the form.
@@ -74,8 +76,8 @@ const AuthFormModal = (props: Props) => {
           // The user is now authenticated (cookie has been set on the browser) to both Magic and FaunaDB
           onClose();
 
-          // Force refresh the page
-          window.location.href = '/';
+          // Refreshes the user session
+          userSession?.refresh?.();
         } else {
           throw new Error(await res.text());
         }
