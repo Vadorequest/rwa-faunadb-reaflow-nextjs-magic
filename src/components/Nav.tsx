@@ -23,7 +23,10 @@ import { UserSession } from '../types/auth/UserSession';
 import { Project } from '../types/graphql/graphql';
 import { ReactSelectDefaultOption } from '../types/ReactSelect';
 import { humanizeEmail } from '../utils/user';
-import { mutateLocalUserActiveProjectLabel } from '../utils/userSession';
+import {
+  mutateLocalUser,
+  mutateLocalUserActiveProjectLabel,
+} from '../utils/userSession';
 import AuthFormModal from './AuthFormModal';
 
 type Props = {}
@@ -99,7 +102,7 @@ const Nav: React.FunctionComponent<Props> = (props) => {
                             const userModel = new UserModel();
 
                             try {
-                              // Update local cache immediately (while disabling revalidation to avoid fetching)
+                              // Update local cache immediately to given a feeling of instantaneousness
                               mutateLocalUserActiveProjectLabel(userSession as UserSession, label);
 
                               // Update the project in the DB, if this fails the error will be caught
@@ -141,7 +144,7 @@ const Nav: React.FunctionComponent<Props> = (props) => {
                             const userModel = new UserModel();
 
                             try {
-                              // Update local cache immediately (while disabling revalidation to avoid fetching)
+                              // Update local cache immediately
                               // mutateLocalUserActiveProjectLabel(userSession as UserSession, label);
 
                               // Create the project in the DB, if this fails the error will be caught
@@ -183,10 +186,19 @@ const Nav: React.FunctionComponent<Props> = (props) => {
                         value={projectAsReactSelectOptions?.find((option: ReactSelectDefaultOption) => option?.value === userSession?.activeProject?.id)}
                         options={projectAsReactSelectOptions}
                         onChange={((selectedOption: ReactSelectDefaultOption) => {
+                          const selectedProjectId = selectedOption?.value;
+
+                          // Update local cache immediately to given a feeling of instantaneousness
+                          mutateLocalUser(userSession as UserSession, {
+                            ...userSession as UserSession,
+                            activeProject: userSession?.projects?.find((project: Project) => project?.id === selectedProjectId),
+                          });
+
                           // Change the active project
-                          Cookies.set('activeProjectId', selectedOption?.value);
+                          Cookies.set('activeProjectId', selectedProjectId);
 
                           // Refresh our local cache to make sure it's up-to-date
+                          // This will force the user API endpoint to refresh the active project which will be resolved using the cookie's value
                           userSession?.refresh?.();
                         }) as any}
                       />
