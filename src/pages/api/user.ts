@@ -2,6 +2,10 @@ import {
   NextApiRequest,
   NextApiResponse,
 } from 'next';
+import {
+  Cookies,
+  parseCookies,
+} from '../../lib/auth/authCookies';
 import { getUserSession } from '../../lib/auth/userSession';
 import { UserModel } from '../../lib/faunadb/models/userModel';
 import { UserSession } from '../../types/auth/UserSession';
@@ -29,6 +33,7 @@ export const FETCH_USER_SESSION_ENDPOINT = '/api/user';
  */
 export const user = async (req: EndpointRequest, res: NextApiResponse): Promise<void> => {
   const userSession: UserSession | undefined = await getUserSession(req);
+  const cookies: Cookies = parseCookies(req);
 
   // The cookie contains the UserSession object
   const result: ApiGetUserResult = {
@@ -41,6 +46,9 @@ export const user = async (req: EndpointRequest, res: NextApiResponse): Promise<
     const projects: Project[] = await userModel.getProjects(userSession as UserSession);
 
     result.user.projects = projects;
+
+    // Resolve active project from cookies, fallback to first project found
+    result.user.activeProject = projects?.find((project: Project) => project?.id === cookies?.activeProjectId) || projects[0];
   }
 
   res.status(200).json(result);

@@ -10,6 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Cookies from 'js-cookie';
 import React, {
   Fragment,
   useState,
@@ -147,7 +148,7 @@ const Nav: React.FunctionComponent<Props> = (props) => {
                               const { project: createdProject } = await userModel.createProjectWithCanvas(userSession as UserSession, label);
 
                               // Change the active project
-                              localStorage.setItem('activeProjectId', createdProject?.id);
+                              Cookies.set('activeProjectId', createdProject?.id);
 
                               toast({
                                 title: `Project created`,
@@ -183,7 +184,10 @@ const Nav: React.FunctionComponent<Props> = (props) => {
                         options={projectAsReactSelectOptions}
                         onChange={((selectedOption: ReactSelectDefaultOption) => {
                           // Change the active project
-                          localStorage.setItem('activeProjectId', selectedOption?.value);
+                          Cookies.set('activeProjectId', selectedOption?.value);
+
+                          // Refresh our local cache to make sure it's up-to-date
+                          userSession?.refresh?.();
                         }) as any}
                       />
                     )

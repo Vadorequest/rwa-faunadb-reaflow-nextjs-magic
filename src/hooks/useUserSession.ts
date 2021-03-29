@@ -121,12 +121,6 @@ export const useUserSession = (props?: Props): Partial<UserSession> => {
       error: error,
     };
   } else if (user) {
-    if (isBrowser()) {
-      // Load the current active user project form localstorage, fallback to the first project found
-      const activeProjectId = localStorage.getItem('activeProjectId');
-      user.activeProject = activeProjectId ? user?.projects?.find((project: Project) => project?.id === activeProjectId) : user?.projects?.[0];
-    }
-
     return {
       ...user,
       sessionEphemeralId,
