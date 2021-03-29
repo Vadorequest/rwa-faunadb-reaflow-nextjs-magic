@@ -65,6 +65,14 @@ This RWA comes with the following features:
       Therefore, it will only allow what's configured in the FaunaDB "Editor" role.
     - This RWA will **not improve further** the collaborative experience, it's only a POC (undo/redo undoes peer actions)
 - Support for **Emotion 11** (CSS in JS)
+- FaunaDB IaC (Infrastructure as Code)
+    - Using [`fauna-gql-upload`](https://github.com/Plazide/fauna-gql-upload) to sync the project's configuration with the FaunaDB database.
+    - Makes it easy to replicate a whole database.
+    - Simplifies FaunaDB configuration updates (roles, indexes, functions (UDF), GraphQL schema) through `yarn fauna:sync`.
+    - The code acts as the source of truth for the whole configuration, and it can be versioned.
+- FaunaDB GraphQL
+    - Uses `.graphqlconfig` file to easily sync the FaunaDB GraphQL schema with the local project. (updates `schema.graphql`)
+    - The `schema.graphql` is used by GraphQL queries/mutations and provides autocompletion and advances in-editor debugging capabilities.
 
 _Known limitations_:
 - Editor direction is `RIGHT` (hardcoded) and adding nodes will add them to the right side, always (even if you change the direction)
@@ -139,13 +147,10 @@ Deploy the example using [Vercel](https://vercel.com):
 
 Here are the future variants I intend to work on:
 
-- FaunaDB GraphQL (GQL): We currently use FQL to manipule the real-time stream (it's not compatible with GQL). I'd like to use GQL for non real-time operations.
-  I'm thinking adding the add/edit/remove project features using GQL, to showcase usage of both FaunaDB FQL and GQL languages.
-- FaunaDB IaC (Infrastructure as Code): Currently, the FaunaDB configuration is rather "simple", there are 2 tables, 1 index, 2 roles. But it's not possible to
-  generate the whole database configuration dynamically in an automated way. I'd like to improve the DevOps experience and make it possible to deploy the whole
-  thing in a new DB programmatically. Also, I'd like to have proper function splits and unit testing to make the whole project (including roles, queries,
-  indexes, etc.) automatically testable. This would greatly increase the developer experience and confidence in our ability to duplicate the project to a new DB
-  and creating different staging/production environments.
+- Tests framework: Unfortunately, FQL is really complicated to get right, any small mistake can cost hours of debugging.
+  Thanks to `fauna-gql-upload`, the project is much easier to manage now, but it's still lacking observability.
+  I want to bring high observability to quickly understand from where errors come from, by having a whole test suite built around the project, and testing every role and FQL/GQL functions.
+  This might use [`fauna-schema-migrate`](https://github.com/fauna-brecht/fauna-schema-migrate) once it's more mature. (it'd replace the current `fauna-gql-upload`)
 
 External help on those features is much welcome! Please contribute ;)
 
