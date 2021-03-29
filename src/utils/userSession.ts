@@ -1,7 +1,9 @@
 import { UserSession } from '../types/auth/UserSession';
+import { Project } from '../types/graphql/graphql';
+import { mutateProject } from './project';
 
 /**
- * Mutates the local user cache.
+ * Mutates the user in the SWR cache.
  *
  * @param userSession
  * @param user
@@ -13,3 +15,18 @@ export const mutateLocalUser = (userSession: UserSession, user: Partial<UserSess
   }, false);
 };
 
+/**
+ * Mutates the user project's label in the SWR cache.
+ *
+ * @param userSession
+ * @param label
+ */
+export const mutateLocalUserActiveProjectLabel = (userSession: UserSession, label: string): void => {
+  mutateLocalUser(userSession, {
+    ...userSession as UserSession,
+    projects: mutateProject(userSession?.projects as Project[], {
+      id: userSession?.activeProject?.id,
+      label,
+    } as Project),
+  });
+};

@@ -18,10 +18,8 @@ import { useUserSession } from '../hooks/useUserSession';
 import { UserModel } from '../lib/faunadb/models/userModel';
 import settings from '../settings';
 import { UserSession } from '../types/auth/UserSession';
-import { Project } from '../types/graphql/graphql';
-import { mutateProject } from '../utils/project';
 import { humanizeEmail } from '../utils/user';
-import { mutateLocalUser } from '../utils/userSession';
+import { mutateLocalUserActiveProjectLabel } from '../utils/userSession';
 import AuthFormModal from './AuthFormModal';
 
 type Props = {}
@@ -88,13 +86,7 @@ const Nav: React.FunctionComponent<Props> = (props) => {
 
                             try {
                               // Update local cache immediately (while disabling revalidation to avoid fetching)
-                              mutateLocalUser(userSession as UserSession, {
-                                ...userSession as UserSession,
-                                projects: mutateProject(userSession?.projects as Project[], {
-                                  id: userSession?.activeProject?.id,
-                                  label,
-                                } as Project),
-                              });
+                              mutateLocalUserActiveProjectLabel(userSession as UserSession, label);
 
                               // Update the project in the DB, if this fails it'll be caught
                               const updatedProject = await userModel.updateProjectLabel(userSession as UserSession, userSession?.activeProject?.id as string, label);
