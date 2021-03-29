@@ -14,10 +14,13 @@ import React, {
   Fragment,
   useState,
 } from 'react';
+import ReactSelect from 'react-select';
 import { useUserSession } from '../hooks/useUserSession';
 import { UserModel } from '../lib/faunadb/models/userModel';
 import settings from '../settings';
 import { UserSession } from '../types/auth/UserSession';
+import { Project } from '../types/graphql/graphql';
+import { ReactSelectDefaultOption } from '../types/ReactSelect';
 import { humanizeEmail } from '../utils/user';
 import { mutateLocalUserActiveProjectLabel } from '../utils/userSession';
 import AuthFormModal from './AuthFormModal';
@@ -33,6 +36,12 @@ const Nav: React.FunctionComponent<Props> = (props) => {
     duration: 5000,
     position: 'bottom-right',
   });
+  const projectAsReactSelectOptions: ReactSelectDefaultOption[] = userSession?.projects?.map((project: Project) => {
+    return {
+      value: project?.id as string,
+      label: project?.label as string,
+    };
+  }) as ReactSelectDefaultOption[];
 
   return (
     <header
@@ -43,6 +52,10 @@ const Nav: React.FunctionComponent<Props> = (props) => {
           a {
             margin-left: 10px;
             margin-right: 10px;
+          }
+
+          .select-active-project {
+            width: 200px;
           }
         }
       `}
@@ -133,29 +146,44 @@ const Nav: React.FunctionComponent<Props> = (props) => {
 
                   {
                     projectFormMode === 'display' && (
-                      <b>{userSession?.activeProject?.label}</b>
+                      <ReactSelect
+                        className={'select-active-project'}
+                        isMulti={false}
+                        value={projectAsReactSelectOptions?.find((option: ReactSelectDefaultOption) => option?.value === userSession?.activeProject?.id)}
+                        options={projectAsReactSelectOptions}
+                        onChange={((selectedOption: ReactSelectDefaultOption) => {
+                          console.log('selectedOption', selectedOption);
+                        }) as any}
+                      />
                     )
                   }
 
-                  <Tooltip label={`Edit title`}>
+                  <Tooltip label={`Edit active project's title`}>
                     <Button
                       size={'xs'}
                       variant={'ghost'}
-                      onClick={() => setProjectFormMode('edit')}
+                      onClick={() => {
+                        // Toggle display/edit
+                        projectFormMode === 'display' ? setProjectFormMode('edit') : setProjectFormMode('display');
+                      }}
                     >
-                      <FontAwesomeIcon icon={'edit'} />
+                      <FontAwesomeIcon icon={projectFormMode === 'display' ? 'edit' : 'times-circle'} />
                     </Button>
                   </Tooltip>
 
-                  <Tooltip label={`Add a new project`}>
-                    <Button
-                      size={'xs'}
-                      variant={'ghost'}
-                      onClick={() => setProjectFormMode('create')}
-                    >
-                      <FontAwesomeIcon icon={'plus-circle'} />
-                    </Button>
-                  </Tooltip>
+                  {
+                    projectFormMode === 'display' && (
+                      <Tooltip label={`Add a new project`}>
+                        <Button
+                          size={'xs'}
+                          variant={'ghost'}
+                          onClick={() => setProjectFormMode('create')}
+                        >
+                          <FontAwesomeIcon icon={'plus-circle'} />
+                        </Button>
+                      </Tooltip>
+                    )
+                  }
                 </Flex>
               ) : (
                 null
