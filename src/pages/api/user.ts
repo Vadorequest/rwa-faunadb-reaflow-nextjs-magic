@@ -43,7 +43,13 @@ export const user = async (req: EndpointRequest, res: NextApiResponse): Promise<
   // If the user is authenticated, fetch their projects and add them in the user session
   if (result?.user) {
     const userModel = new UserModel();
-    const projects: Project[] = await userModel.getProjects(userSession as UserSession);
+    let projects: Project[] = await userModel.getProjects(userSession as UserSession);
+
+    // If no project exist, create the default one automatically
+    if (!projects?.length) {
+      const { project } = await userModel.createProjectWithCanvas(userSession as UserSession, 'Default');
+      projects = [project];
+    }
 
     result.user.projects = projects;
 
