@@ -35,11 +35,11 @@ const Footer: React.FunctionComponent<Props> = (props) => {
         <Box p="2">
           Demo:
           <Tooltip
-            label="This demo showcases FaunaDB Authentication where there is a global document shared by all anonymous users, and a dedicated document for each authenticated user."
+            label="This demo showcases FaunaDB Authentication where there is a global document shared by all anonymous users, and a dedicated document for each authenticated user. In addition, it uses Fauna GraphQL Upload to easily sync the FaunaDB configuration from source code (Infra as Code)"
             fontSize="md"
           >
             <Tag>
-              <b><TagLabel>With Auth</TagLabel></b>
+              <b><TagLabel>With Fauna FGU</TagLabel></b>
             </Tag>
           </Tooltip>
         </Box>
