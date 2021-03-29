@@ -133,9 +133,36 @@ const Nav: React.FunctionComponent<Props> = (props) => {
                     projectFormMode === 'create' && (
                       <Input
                         placeholder={'New project name'}
-                        onKeyPress={(e) => {
+                        onKeyPress={async (e) => {
                           if (e.code === 'Enter') {
-                            // Create the new project
+                            const label: string = (e?.target as HTMLInputElement)?.value;
+                            // Save the new project label
+                            const userModel = new UserModel();
+
+                            try {
+                              // Update local cache immediately (while disabling revalidation to avoid fetching)
+                              // mutateLocalUserActiveProjectLabel(userSession as UserSession, label);
+
+                              // Create the project in the DB, if this fails it'll be caught
+                              const { project: createdProject } = await userModel.createProjectWithCanvas(userSession as UserSession, label);
+
+                              toast({
+                                title: `Project created`,
+                                description: `The project "${createdProject?.label}" has been created."`,
+                                status: 'success',
+                              });
+                            } catch (e) {
+                              toast({
+                                title: `Error`,
+                                description: `The project "${label}" couldn't be created. Error: "${e.message}"`,
+                                status: 'error',
+                                duration: null,
+                              });
+                            } finally {
+                              // Refresh our local cache to make sure it's up-to-date
+                              userSession?.refresh?.();
+                            }
+
                             setProjectFormMode('display');
                           }
                         }}
