@@ -154,7 +154,7 @@ export const findOrCreateUserCanvas = async (user: Partial<UserSession>): Promis
   const client: Client = getUserClient(user);
   const findUserCanvas = Paginate(
     Match(
-      Index('canvas_by_owner'),
+      Index('canvasByOwner'),
       Ref(Collection('Users'), user.id),
     ),
   );
