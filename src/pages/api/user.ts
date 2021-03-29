@@ -15,6 +15,8 @@ type EndpointRequest = NextApiRequest & {
   query: {};
 };
 
+export const FETCH_USER_SESSION_ENDPOINT = '/api/user';
+
 /**
  * Returns the user session from the server-only cookie.
  *

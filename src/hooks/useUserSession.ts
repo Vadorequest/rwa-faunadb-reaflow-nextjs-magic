@@ -1,14 +1,25 @@
+import { isBrowser } from '@unly/utils';
 import Router from 'next/router';
 import { useEffect } from 'react';
 import useSWR from 'swr';
 import { v1 as uuid } from 'uuid';
-import { ApiGetUserResult } from '../pages/api/user';
+import {
+  ApiGetUserResult,
+  FETCH_USER_SESSION_ENDPOINT,
+} from '../pages/api/user';
 import { UserSession } from '../types/auth/UserSession';
 import { Project } from '../types/graphql/graphql';
 
 type Props = {
   redirectTo?: string;
   redirectIfFound?: boolean;
+}
+
+type FetchUseSession = () => {
+  isLoading: boolean;
+  user: UserSession;
+  hasUser: boolean;
+  error?: Error;
 }
 
 /**
@@ -37,12 +48,13 @@ const fetcher = (url: string): Promise<ApiGetUserResult> =>
 /**
  * Fetches the user session by calling our Next.js internal API endpoint.
  */
-const fetchUseSession = () => {
+const fetchUseSession: FetchUseSession = () => {
   const {
     data,
     error,
+    mutate,
   } = useSWR<ApiGetUserResult>(
-    '/api/user',
+    FETCH_USER_SESSION_ENDPOINT,
     fetcher,
   );
 
@@ -51,14 +63,17 @@ const fetchUseSession = () => {
   }
 
   const isLoading = !error && !data;
-  const user = data?.user;
+  const user: UserSession = {
+    ...data?.user as UserSession,
+    mutate,
+    refresh: () => mutate(), // Alias to mutate, without any argument
+  };
   const hasUser = Boolean(user);
 
   return {
     isLoading,
     user,
     hasUser,
-    data,
     error,
   };
 };
@@ -76,8 +91,16 @@ const fetchUseSession = () => {
  * @see https://swr.vercel.app/
  */
 export const useUserSession = (props?: Props): Partial<UserSession> => {
-  const { redirectTo, redirectIfFound } = props || {};
-  const { hasUser, isLoading, user, error } = fetchUseSession();
+  const {
+    redirectTo,
+    redirectIfFound,
+  } = props || {};
+  const {
+    hasUser,
+    isLoading,
+    user,
+    error,
+  } = fetchUseSession();
 
   useEffect(() => {
     if (!redirectTo || isLoading) return;
@@ -98,9 +121,11 @@ export const useUserSession = (props?: Props): Partial<UserSession> => {
       error: error,
     };
   } else if (user) {
-    // Load the current active user project form localstorage, fallback to the first project found
-    const activeProjectId = localStorage.getItem('activeProjectId');
-    user.activeProject = activeProjectId ? user?.projects?.find((project: Project) => project?.id === activeProjectId) : user?.projects?.[0];
+    if (isBrowser()) {
+      // Load the current active user project form localstorage, fallback to the first project found
+      const activeProjectId = localStorage.getItem('activeProjectId');
+      user.activeProject = activeProjectId ? user?.projects?.find((project: Project) => project?.id === activeProjectId) : user?.projects?.[0];
+    }
 
     return {
       ...user,

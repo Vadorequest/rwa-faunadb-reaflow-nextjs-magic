@@ -26,10 +26,8 @@ type Props = {}
 
 const Nav: React.FunctionComponent<Props> = (props) => {
   const userSession = useUserSession();
-  const [activeProject, setActiveProject] = useState<Project>(userSession?.activeProject as Project);
   const [projectFormMode, setProjectFormMode] = useState<'display' | 'edit' | 'create'>('display');
   console.log('user', userSession);
-  console.log('activeProject', activeProject);
   const toast = useToast({
     isClosable: true,
     duration: 5000,
@@ -78,7 +76,7 @@ const Nav: React.FunctionComponent<Props> = (props) => {
                   {
                     projectFormMode === 'edit' && (
                       <Input
-                        defaultValue={activeProject?.label}
+                        defaultValue={userSession?.activeProject?.label}
                         placeholder={'Project name'}
                         onKeyPress={async (e) => {
                           if (e.code === 'Enter') {
@@ -87,28 +85,38 @@ const Nav: React.FunctionComponent<Props> = (props) => {
                             const userModel = new UserModel();
 
                             try {
-                              const updatedProject = await userModel.updateProjectLabel(userSession as UserSession, activeProject?.id, label);
+                              // Update local cache immediately (while disabling revalidation to avoid fetching)
+                              userSession?.mutate?.({
+                                user: {
+                                  ...userSession as UserSession,
+                                  projects: [
+                                    ...userSession?.projects?.filter((project: Project) => project?.id !== userSession?.activeProject?.id) as Project[] || [],
+                                    {
+                                      ...userSession?.activeProject,
+                                      label,
+                                    } as Project,
+                                  ],
+                                },
+                              }, false);
 
-                              // Update local cache immediately
-                              // TODO This isn't clean, it'll only update the local component cache, we should rather have a shared state for this
-                              //  But it does the job, and it's not an issue in this small app because the project's title is only shown in this component
-                              setActiveProject({
-                                ...activeProject,
-                                ...updatedProject,
-                              });
+                              // Update the project in the DB, if this fails it'll be caught
+                              const updatedProject = await userModel.updateProjectLabel(userSession as UserSession, userSession?.activeProject?.id as string, label);
 
                               toast({
                                 title: `Project updated`,
-                                description: `The project "${activeProject?.label}" has been renamed to "${updatedProject?.label}"`,
+                                description: `The project "${userSession?.activeProject?.label}" has been renamed to "${updatedProject?.label}"`,
                                 status: 'success',
                               });
                             } catch (e) {
                               toast({
                                 title: `Error`,
-                                description: `The project "${activeProject?.label}" couldn't be renamed. Error: "${e.message}"`,
+                                description: `The project "${userSession?.activeProject?.label}" couldn't be renamed. Error: "${e.message}"`,
                                 status: 'error',
                                 duration: null,
                               });
+                            } finally {
+                              // Refresh our local cache to make sure it's up-to-date
+                              userSession?.refresh?.();
                             }
 
                             setProjectFormMode('display');
@@ -136,7 +144,7 @@ const Nav: React.FunctionComponent<Props> = (props) => {
 
                   {
                     projectFormMode === 'display' && (
-                      <b>{activeProject?.label}</b>
+                      <b>{userSession?.activeProject?.label}</b>
                     )
                   }
 

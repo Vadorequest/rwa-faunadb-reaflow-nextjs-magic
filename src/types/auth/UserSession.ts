@@ -1,3 +1,5 @@
+import { mutateCallback } from 'swr/dist/types';
+import { ApiGetUserResult } from '../../pages/api/user';
 import { Project } from '../graphql/graphql';
 import { UserMetadataWithAuth } from '../UserMetadataWithAuth';
 
@@ -55,5 +57,28 @@ export type UserSession = UserMetadataWithAuth & {
   /**
    * Current active project being used.
    */
-  activeProject? : Project;
+  activeProject?: Project;
+
+  /**
+   * Mutates the user (SWR mutation).
+   *
+   * If `shouldRevalidate=false` then it'll only mutate the local cache.
+   * If `shouldRevalidate=false` then it'll perform a revalidation by calling the API endpoint for real and then update the local cache.
+   *
+   * @param data
+   * @param shouldRevalidate
+   *
+   * @see https://swr.vercel.app/docs/mutation
+   */
+  mutate?: (data?: ApiGetUserResult | Promise<ApiGetUserResult> | mutateCallback<ApiGetUserResult>, shouldRevalidate?: boolean) => Promise<ApiGetUserResult | undefined>;
+
+  /**
+   * Refreshes the user.
+   *
+   * Alias to `mutate` which doesn't take any argument (and thus won't mutate the data but only perform revalidation).
+   *
+   * @see https://swr.vercel.app/docs/mutation
+   * @see https://swr.vercel.app/docs/mutation#mutation-and-post-request
+   */
+  refresh?: () => Promise<ApiGetUserResult | undefined>;
 };
