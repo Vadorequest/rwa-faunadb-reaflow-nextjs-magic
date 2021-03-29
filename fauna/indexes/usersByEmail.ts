@@ -2,12 +2,13 @@ import { IndexResource } from 'fauna-gql-upload';
 import { Collection } from 'faunadb';
 
 /**
- * Index to filter users by email
+ * Index to filter users by email.
  *
  * Necessary for authentication, to find the user document based on their email.
+ * Unique index, will only return at most one user per email.
  */
-const users_by_email: IndexResource = {
-  name: 'users_by_email',
+const usersByEmail: IndexResource = {
+  name: 'usersByEmail',
   source: Collection('Users'),
   terms: [
     { field: ['data', 'email'] },
@@ -15,4 +16,4 @@ const users_by_email: IndexResource = {
   unique: true,
 };
 
-export default users_by_email;
+export default usersByEmail;

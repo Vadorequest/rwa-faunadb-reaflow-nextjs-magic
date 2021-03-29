@@ -75,48 +75,44 @@ _Known limitations_:
 While working on this project, I've reached several milestones with a different set of features, available as "Examples":
 
 1. [`with-local-storage`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-local-storage)
-   ([Demo](https://poc-nextjs-reaflow-git-with-local-storage-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/14)):
-   The canvas dataset is stored in the browser localstorage.
-   There is no real-time and no authentication.
+    ([Demo](https://poc-nextjs-reaflow-git-with-local-storage-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/14)):
+    - The canvas dataset is stored in the browser localstorage. 
+    - There is no real-time and no authentication.
 1. [`with-faunadb-real-time`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-faunadb-real-time)
-   ([Demo](https://poc-nextjs-reaflow-git-with-faunadb-real-time-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/13)):
-   The canvas dataset is stored in FaunaDB.
-   Changes to the canvas are real-time and shared with everyone.
-   Everybody shares the same working document.
+   ([~~Demo~~](https://poc-nextjs-reaflow-git-with-faunadb-real-time-ambroise-dhenain.vercel.app/)
+   | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/13)):
+    - The canvas dataset is not stored in the browser local storage, **but in FaunaDB instead**.
+    - Changes to the canvas are real-time and shared with everyone.
+    - Everybody shares the same working document.
+    - The real-time implementation is very basic (no stream manager) and has known issues, it can potentially trigger infinite loops.
+    - The online demo has been disabled because of this.
+    _-_ The real-time implementation has been improved in `with-faunadb-auth`, by using a stream manager.
 1. [`with-magic-link-auth`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-magic-link-auth)
-   ([Demo](https://poc-nextjs-reaflow-git-with-magic-link-auth-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/15)):
-   The canvas dataset is stored in FaunaDB.
-   Changes to the canvas are real-time and shared with everyone.
-   Everybody shares the same working document.
-   Users can create an account and login using Magic Link, but they still share the same Canvas document as guests.
+   ([~~Demo~~](https://poc-nextjs-reaflow-git-with-magic-link-auth-ambroise-dhenain.vercel.app/)
+   | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/15)):
+    - Users can create an account and login using Magic Link, but they still share the same Canvas document as guests.
+    - Overall, although user can now log in, it doesn't change anything on the UI.
+    - Logging in using Magic Link doesn't authenticate to FaunaDB.
+    - The online demo has been disabled because of the random infinite loop issues above-mentioned.
 1. [`with-faunadb-auth`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-faunadb-auth)
    ([Demo](https://poc-nextjs-reaflow-git-with-faunadb-auth-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/12)):
-   The canvas dataset is stored in FaunaDB.
-   Changes to the canvas are real-time and shared with everyone when not authenticated.
-   Changes to the canvas are real-time and shared with yourself when being authenticated. (open 2 tabs to see it in action)
-   Users can create an account and login using Magic Link, they'll automatically load their own document.
-1. _(Current)_ [`with-fauna-fgu`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-faunadb-fgu)
+    - Authenticated users get a user-specific token which is used to authenticate themselves to FaunaDB (real-time).
+    - Authenticated users do not share a common document.
+    - Authenticated users work on their own document and nobody else can change documents that don't belong to them.
+1. [`with-fauna-fgu`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-faunadb-fgu)
    ([Demo](https://poc-nextjs-reaflow-git-with-fauna-fgu-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/19)):
-   The canvas dataset is stored in FaunaDB.
-   Changes to the canvas are real-time and shared with everyone when not authenticated.
-   Changes to the canvas are real-time and shared with yourself when being authenticated. (open 2 tabs to see it in action)
-   Users can create an account and login using Magic Link, they'll automatically load their own document.
-   Added support for quick sync of FaunaDB roles/indexes/data/functions (code as single source of truth) and GraphQL schema upload.
-   _This example is also available on the `main` branch._
+    - Fixed FQL scripts used to configure FaunaDB (indexes, roles). They weren't working properly, and I didn't notice because I wasn't using them until now.
+    - A new command `yarn fauna:sync` automatically syncs the GraphQL schema, alongside indexes, roles, UDF, etc. It uses [FaunaDB GraphQL Upload (FGU)](https://github.com/Plazide/fauna-gql-upload).
+    - It is now possible to easily replicate an environment from scratch to a new FaunaDB database. (DevOps)
+    - The repository (source code) now acts as a single source of truth for the FaunaDB configuration, which is much better for automation/replication.
+1. [`with-fauna-graphql`](https://github.com/Vadorequest/poc-nextjs-reaflow/tree/with-faunadb-graphql)
+   ([Demo](https://poc-nextjs-reaflow-git-with-fauna-graphql-ambroise-dhenain.vercel.app/) | [Diff](https://github.com/Vadorequest/poc-nextjs-reaflow/pull/20)):
+    - Use GraphQL to create new projects and change the current project's name.
 
-## Roadmap
-
-Here are the future variants I intend to work on:
-- FaunaDB GraphQL (GQL): We currently use FQL to manipule the real-time stream (it's not compatible with GQL).
-  I'd like to use GQL for non real-time operations.
-  I'm thinking adding the add/edit/remove project features using GQL, to showcase usage of both FaunaDB FQL and GQL languages.
-- FaunaDB IaC (Infrastructure as Code): Currently, the FaunaDB configuration is rather "simple", there are 2 tables, 1 index, 2 roles.
-  But it's not possible to generate the whole database configuration dynamically in an automated way.
-  I'd like to improve the DevOps experience and make it possible to deploy the whole thing in a new DB programmatically.
-  Also, I'd like to have proper function splits and unit testing to make the whole project (including roles, queries, indexes, etc.) automatically testable.
-  This would greatly increase the developer experience and confidence in our ability to duplicate the project to a new DB and creating different staging/production environments.
-
-External help on those features is much welcome! Please contribute ;)
+> **Notes**:
+> - The last example is always available in the `main` branch.
+> - Although there are multiple examples to ease understanding of what's changed for each step, I strongly recommend using the latest version of the source code if you wish to implement your own version.
+>   This is because the latest version fixes a lot of downstream issues and benefits from the latest patches and updates. I haven't fixed issues in old examples, and I won't.
 
 ## Getting started
 
@@ -138,6 +134,20 @@ If you deploy it to Vercel, you'll need to create Vercel environment variables f
 Deploy the example using [Vercel](https://vercel.com):
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/Vadorequest/poc-nextjs-reaflow&project-name=poc-nextjs-reaflow&repository-name=poc-nextjs-reaflow)
+
+## Roadmap
+
+Here are the future variants I intend to work on:
+
+- FaunaDB GraphQL (GQL): We currently use FQL to manipule the real-time stream (it's not compatible with GQL). I'd like to use GQL for non real-time operations.
+  I'm thinking adding the add/edit/remove project features using GQL, to showcase usage of both FaunaDB FQL and GQL languages.
+- FaunaDB IaC (Infrastructure as Code): Currently, the FaunaDB configuration is rather "simple", there are 2 tables, 1 index, 2 roles. But it's not possible to
+  generate the whole database configuration dynamically in an automated way. I'd like to improve the DevOps experience and make it possible to deploy the whole
+  thing in a new DB programmatically. Also, I'd like to have proper function splits and unit testing to make the whole project (including roles, queries,
+  indexes, etc.) automatically testable. This would greatly increase the developer experience and confidence in our ability to duplicate the project to a new DB
+  and creating different staging/production environments.
+
+External help on those features is much welcome! Please contribute ;)
 
 ---
 
@@ -206,6 +216,34 @@ When the stream is opened, it automatically retrieves the current state of the d
 When changes are made on the document, FaunaDB send a push notification to all users subscribed to that document. This also happens when the user X updates the
 document (they receives a push notification if they're the author of the changes, too). In such case, the update is being ignored for performances reasons (we
 don't need to update a local state that is already up-to-date).
+
+## GraphQL
+
+I strongly suggest reading:
+
+- https://docs.fauna.com/fauna/current/tutorials/graphql/
+- https://docs.fauna.com/fauna/current/api/graphql/
+
+### Fauna GraphQL Editor
+
+I used [FaunaDB GraphQL Editor](https://faunadb-graphql-editor.vercel.app/) to generate our schema visually, because I'm not so familiar with GraphQL schema definition (the server-side part of GQL).
+
+> _Disclaimer: I'm the author of [FaunaDB GraphQL Editor](https://faunadb-graphql-editor.vercel.app/)_
+
+### Auto-generated GraphQL schema definitions
+
+The `fauna/gql/source-schema.gql` file contains only the **GraphQL types**, it is **the input schema** that'll be used to generate the `schema.graphql` file.
+
+The `fauna/gql/source-schema.gql` file is uploaded to FaunaDB GraphQL endpoint by [FaunaDB GQL Upload](https://github.com/Plazide/fauna-gql-upload) when running `yarn fauna:sync`.
+There, FaunaDB has some internal magic that will create a new schema that you can see in the [FaunaDB Dashboard > GraphQL](https://dashboard.fauna.com/).
+
+> Note: The `fauna/gql` folder is being ignored by WebStorm to avoid conflicting with the `schema.graphql` which is the one we really want to use for autocompletion.
+
+### GraphQL Config WebStorm plugin
+
+I use the [GraphQL Config WebStorm plugin](https://github.com/jimkyndemeyer/js-graphql-intellij-plugin) which send an introspection request to `https://graphql.fauna.com/graphql` using an Admin/Server key to authenticate.
+
+This generates the `schema.graphql`, which is then made available to all our GraphQL files and provides auto-completion and advanced helpers when writing GraphQL queries/mutation.
 
 ## Reaflow Graph (ELK)
 

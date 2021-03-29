@@ -7,7 +7,7 @@ import {
   NextApiResponse,
 } from 'next';
 
-type Cookies = { [key: string]: string }
+export type Cookies = { [key: string]: string }
 
 const COOKIE_TOKEN_NAME = 'token';
 

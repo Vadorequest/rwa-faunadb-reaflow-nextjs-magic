@@ -16,7 +16,7 @@ import {
  *
  * @see https://github.com/Plazide/fauna-gql-upload#uploading-functions
  */
-const getCurrentUserUDF: FunctionResource = {
+const getCurrentUser: FunctionResource = {
   name: 'getCurrentUser',
   body: Query(
     Lambda([],
@@ -28,4 +28,4 @@ const getCurrentUserUDF: FunctionResource = {
   ),
 };
 
-export default getCurrentUserUDF;
+export default getCurrentUser;

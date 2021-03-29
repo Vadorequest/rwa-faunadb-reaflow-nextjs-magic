@@ -1,13 +1,25 @@
+import { isBrowser } from '@unly/utils';
 import Router from 'next/router';
 import { useEffect } from 'react';
 import useSWR from 'swr';
 import { v1 as uuid } from 'uuid';
-import { ApiGetUserResult } from '../pages/api/user';
+import {
+  ApiGetUserResult,
+  FETCH_USER_SESSION_ENDPOINT,
+} from '../pages/api/user';
 import { UserSession } from '../types/auth/UserSession';
+import { Project } from '../types/graphql/graphql';
 
 type Props = {
   redirectTo?: string;
   redirectIfFound?: boolean;
+}
+
+type FetchUseSession = () => {
+  isLoading: boolean;
+  user: UserSession;
+  hasUser: boolean;
+  error?: Error;
 }
 
 /**
@@ -34,6 +46,39 @@ const fetcher = (url: string): Promise<ApiGetUserResult> =>
     });
 
 /**
+ * Fetches the user session by calling our Next.js internal API endpoint.
+ */
+const fetchUseSession: FetchUseSession = () => {
+  const {
+    data,
+    error,
+    mutate,
+  } = useSWR<ApiGetUserResult>(
+    FETCH_USER_SESSION_ENDPOINT,
+    fetcher,
+  );
+
+  if (error) {
+    console.error(error);
+  }
+
+  const isLoading = !error && !data;
+  const user: UserSession = {
+    ...data?.user as UserSession,
+    mutate,
+    refresh: () => mutate(), // Alias to mutate, without any argument
+  };
+  const hasUser = Boolean(user);
+
+  return {
+    isLoading,
+    user,
+    hasUser,
+    error,
+  };
+};
+
+/**
  * Fetches the current user from our internal /api/user and returns it.
  *
  * Until the query is completed (async), it will return a partial UserSession.
@@ -46,22 +91,16 @@ const fetcher = (url: string): Promise<ApiGetUserResult> =>
  * @see https://swr.vercel.app/
  */
 export const useUserSession = (props?: Props): Partial<UserSession> => {
-  const { redirectTo, redirectIfFound } = props || {};
   const {
-    data,
+    redirectTo,
+    redirectIfFound,
+  } = props || {};
+  const {
+    hasUser,
+    isLoading,
+    user,
     error,
-  } = useSWR<ApiGetUserResult>(
-    '/api/user',
-    fetcher,
-    {
-      // Automatically refresh the page once the user has logged in, to update the UI
-      refreshInterval: 1000,
-    },
-  );
-
-  const isLoading = !error && !data;
-  const user = data?.user;
-  const hasUser = Boolean(user);
+  } = fetchUseSession();
 
   useEffect(() => {
     if (!redirectTo || isLoading) return;
@@ -76,10 +115,6 @@ export const useUserSession = (props?: Props): Partial<UserSession> => {
   }, [redirectTo, redirectIfFound, isLoading, hasUser]);
 
   if (error) {
-    console.error(error);
-  }
-
-  if (error) {
     return {
       sessionEphemeralId,
       isSessionReady: false,
@@ -87,7 +122,7 @@ export const useUserSession = (props?: Props): Partial<UserSession> => {
     };
   } else if (user) {
     return {
-      ...data?.user || {},
+      ...user,
       sessionEphemeralId,
       isSessionReady: !isLoading,
     };

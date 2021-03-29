@@ -3,8 +3,10 @@ import { getClient } from './faunadb';
 
 const FAUNADB_SERVER_SECRET_KEY = process.env.FAUNADB_SERVER_SECRET_KEY as string;
 
-if (!FAUNADB_SERVER_SECRET_KEY || FAUNADB_SERVER_SECRET_KEY?.length < 32) {
-  throw new Error(`You must define a "FAUNADB_SERVER_SECRET_KEY" environment variable in order to use authentication. Found "${FAUNADB_SERVER_SECRET_KEY}".`);
+if (!isBrowser()) {
+  if (!FAUNADB_SERVER_SECRET_KEY || FAUNADB_SERVER_SECRET_KEY?.length < 32) {
+    throw new Error(`You must define a "FAUNADB_SERVER_SECRET_KEY" environment variable in order to use authentication. Found "${FAUNADB_SERVER_SECRET_KEY}".`);
+  }
 }
 
 /**

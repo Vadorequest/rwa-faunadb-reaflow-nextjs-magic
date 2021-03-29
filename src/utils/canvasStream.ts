@@ -8,9 +8,6 @@ import {
   Create,
   Expr,
   Get,
-  Index,
-  Match,
-  Paginate,
   Ref,
   Update,
 } from 'faunadb';
@@ -25,7 +22,6 @@ import {
   Canvas,
   UpdateCanvas,
 } from '../types/faunadb/Canvas';
-import { CanvasByOwnerIndex } from '../types/faunadb/CanvasByOwnerIndex';
 import { CanvasDatasetResult } from '../types/faunadb/CanvasDatasetResult';
 import {
   OnStreamedDocumentUpdate,
@@ -150,25 +146,21 @@ export const findUserCanvasRef = async (user: Partial<UserSession>): Promise<Exp
 };
 
 /**
- * Finds the canvas of the given user, creates it if doesn't exist.
+ * Finds the canvas ref of the given user, creates it if doesn't exist.
  *
  * @param user
  */
 export const findOrCreateUserCanvas = async (user: Partial<UserSession>): Promise<Expr | undefined> => {
   const client: Client = getUserClient(user);
-  const findUserCanvas = Paginate(
-    Match(
-      Index('canvas_by_owner'),
-      Ref(Collection('Users'), user.id),
-    ),
-  );
+  const canvasId = user?.activeProject?.canvas?.id;
 
-  try {
-    const findUserCanvasResult: CanvasByOwnerIndex = await client.query<CanvasByOwnerIndex>(findUserCanvas);
-    console.log('findUserCanvasResult', findUserCanvasResult);
-
-    if (findUserCanvasResult?.data?.length === 0) {
-      // This user doesn't have a Canvas document yet
+  if (canvasId) {
+    // If the user already has an existing canvas (taken from the active project), then simply return it
+    return Ref(Collection('Canvas'), canvasId);
+  } else {
+    // Otherwise, the user doesn't have a Canvas document yet, so we create it
+    // (this shouldn't happen anymore, because the canvas is automatically created when the project is created)
+    try {
       const canvasDataset: CanvasDataset = {
         nodes: [],
         edges: [],
@@ -198,13 +190,9 @@ export const findOrCreateUserCanvas = async (user: Partial<UserSession>): Promis
       } catch (e) {
         console.error(`[findOrCreateUserCanvas] Error while creating canvas:`, e);
       }
-    } else {
-      // Return existing canvas reference
-      // Although users could have several canvas (projects), they can only create one and thus we only care about the first
-      return findUserCanvasResult.data[0];
+    } catch (e) {
+      console.error(`[findOrCreateUserCanvas] Error while fetching canvas:`, e);
     }
-  } catch (e) {
-    console.error(`[findOrCreateUserCanvas] Error while fetching canvas:`, e);
   }
 };
 

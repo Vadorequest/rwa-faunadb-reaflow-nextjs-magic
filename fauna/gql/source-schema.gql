@@ -29,14 +29,25 @@ scalar Long
 
 scalar Time
 
+schema{
+query: Query
+}
+
 ###################### Custom
 """
 type User @collection(
     name: "Users"
 ){
     id: ID!
-    email: String!
-    projects: [Project]
+    email: String! @unique(
+        index: "user_by_email"
+    )
+    projects: [Project] @relation(
+        name: "userProjects"
+    )
+    canvases: [Canvas] @relation(
+        name: "userCanvases"
+    )
 }
 
 """
@@ -44,15 +55,19 @@ A project **belongs** to a user and is related to a canvas.
 A project can be considered as Canvas metadata.
 """
 type Project @collection(
-    name: "Project"
+    name: "Projects"
 ){
     id: ID!
     """
     Name of the project
     """
     label: String!
-    owner: User!
-    canvas: Canvas
+    owner: User! @relation(
+        name: "userProjects"
+    )
+    canvas: Canvas @relation(
+        name: "projectCanvas"
+    )
 }
 
 """
@@ -66,5 +81,15 @@ type Canvas @collection(
     id: ID!
     lastUpdatedBySessionEphemeralId: String
     lastUpdatedByUserName: String
-    project: Project!
+    project: Project! @relation(
+        name: "projectCanvas"
+    )
+    owner: User! @relation(
+        name: "userCanvases"
+    )
+}
+
+type Query{
+    findUserByEmail(email: String!): User @index(name: "usersByEmail")
+    findProjectsByUserId(id: ID!): [Project!] @resolver(name: "getProjectsByUserId")
 }

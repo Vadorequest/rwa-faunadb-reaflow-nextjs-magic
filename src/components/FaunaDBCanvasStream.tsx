@@ -123,7 +123,10 @@ const FaunaDBCanvasStream: React.FunctionComponent<Props> = (props) => {
 
       initStream(user, onStreamStarted, onInit, onUpdate, onStreamError);
     }
-  }, 1000, [user?.id]);
+  }, 1000, [
+    user?.id,
+    user?.activeProject?.canvas?.id,
+  ]);
 
   // Display meta information about the current document, helps debugging/understanding which document is being updated
   return (

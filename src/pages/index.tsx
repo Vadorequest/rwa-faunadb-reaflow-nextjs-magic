@@ -1,3 +1,5 @@
+import { NextPage } from 'next';
+import React, { Fragment } from 'react';
 import DisplayOnBrowserMount from '../components/DisplayOnBrowserMount';
 import EditorContainer from '../components/editor/EditorContainer';
 import Layout from '../components/Layout';
@@ -6,7 +8,7 @@ import { CanvasDataset } from '../types/CanvasDataset';
 
 export type Props = {
   canvasDataset: CanvasDataset | null;
-}
+};
 
 /**
  * You can use your custom business logic here to fetch the canvasDataset from your data storage.
@@ -17,6 +19,7 @@ export type Props = {
  * @see https://nextjs.org/docs/basic-features/data-fetching#getstaticprops-static-generation
  */
 export const getStaticProps = (): { props: Props } => {
+
   return {
     props: {
       canvasDataset: null,
@@ -27,26 +30,25 @@ export const getStaticProps = (): { props: Props } => {
 /**
  * Index/home page.
  *
- * A simple page that does nothing more than displaying a layout and the Reaflow canvas (EditorContainer),
- * after it has initialized the global "initialCanvasDataset" browser variable, which is used by the nodesSelector and edgesSelector Recoil state managers.
+ * TODO doc
  */
-const IndexPage = (props: any) => {
-  const user = useUserSession(); // "user" is "undefined" until a response is received from the API
+const IndexPage: NextPage<Props> = (props): JSX.Element => {
+  const userSession = useUserSession(); // "user" is "undefined" until a response is received from the API
 
   return (
-    <Layout>
-      {/* Only renders the EditorContainer on the browser because it's not server-side compatible */}
-      <DisplayOnBrowserMount
-        // deps={[canvasDataset]}
-      >
-        {
-          // Wait until the user has been fetched from the API endpoint
-          user?.isSessionReady === true && (
-            <EditorContainer />
-          )
-        }
-      </DisplayOnBrowserMount>
-    </Layout>
+    <Fragment>
+      {
+        // Wait until the user has been fetched from the API endpoint
+        userSession?.isSessionReady === true && (
+          <Layout>
+            {/* Only renders the page on the browser because it's not server-side compatible */}
+            <DisplayOnBrowserMount>
+              <EditorContainer />
+            </DisplayOnBrowserMount>;
+          </Layout>
+        )
+      }
+    </Fragment>
   );
 };
 
