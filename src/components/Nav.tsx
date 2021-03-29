@@ -19,7 +19,9 @@ import { UserModel } from '../lib/faunadb/models/userModel';
 import settings from '../settings';
 import { UserSession } from '../types/auth/UserSession';
 import { Project } from '../types/graphql/graphql';
+import { mutateProject } from '../utils/project';
 import { humanizeEmail } from '../utils/user';
+import { mutateLocalUser } from '../utils/userSession';
 import AuthFormModal from './AuthFormModal';
 
 type Props = {}
@@ -86,18 +88,13 @@ const Nav: React.FunctionComponent<Props> = (props) => {
 
                             try {
                               // Update local cache immediately (while disabling revalidation to avoid fetching)
-                              userSession?.mutate?.({
-                                user: {
-                                  ...userSession as UserSession,
-                                  projects: [
-                                    ...userSession?.projects?.filter((project: Project) => project?.id !== userSession?.activeProject?.id) as Project[] || [],
-                                    {
-                                      ...userSession?.activeProject,
-                                      label,
-                                    } as Project,
-                                  ],
-                                },
-                              }, false);
+                              mutateLocalUser(userSession as UserSession, {
+                                ...userSession as UserSession,
+                                projects: mutateProject(userSession?.projects as Project[], {
+                                  id: userSession?.activeProject?.id,
+                                  label,
+                                } as Project),
+                              });
 
                               // Update the project in the DB, if this fails it'll be caught
                               const updatedProject = await userModel.updateProjectLabel(userSession as UserSession, userSession?.activeProject?.id as string, label);
