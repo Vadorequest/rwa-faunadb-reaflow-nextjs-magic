@@ -6,6 +6,7 @@ import {
   Get,
   Lambda,
   Map,
+  NewId,
   Paginate,
   Reverse,
   Var,
@@ -56,4 +57,15 @@ export const SelectAll = (collectionName: string) => Map(
  */
 export const DescribeCollection = (collectionName: string) => {
   return Paginate(Reverse(Documents(Collection(collectionName))));
+};
+
+/**
+ * The NewId function produces a unique number.
+ *
+ * This number is guaranteed to be unique across the entire cluster and once generated is never generated a second time.
+ *
+ * @see https://docs.fauna.com/fauna/current/api/fql/functions/newid?lang=javascript
+ */
+export const GetNewId = () => {
+  return NewId();
 };
