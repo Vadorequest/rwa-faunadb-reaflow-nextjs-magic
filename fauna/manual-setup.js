@@ -18,7 +18,7 @@ CreateCollection({ name: 'Canvas' });
 // Index to filter users by email
 // Necessary for authentication, to find the user document based on their email
 CreateIndex({
-  name: 'users_by_email',
+  name: 'usersByEmail',
   source: Collection('Users'),
   terms: [
     { field: ['data', 'email'] },
@@ -33,7 +33,7 @@ CreateIndex({
 // Index to filter canvas by owner
 // Necessary for real-time subscription, to retrieve the canvas of the current user
 CreateIndex({
-  name: 'canvas_by_owner',
+  name: 'canvasByOwner',
   source: Collection('Canvas'),
   // Needs permission to read the Users, because "owner" is specified in the "terms" and is a Ref to the "Users" collection
   permissions: {
@@ -66,8 +66,8 @@ CreateRole({
   ],
   privileges: [
     {
-      // Editors need read access to the canvas_by_owner index to find their own canvas
-      resource: Index('canvas_by_owner'),
+      // Editors need read access to the canvasByOwner index to find their own canvas
+      resource: Index('canvasByOwner'),
       actions: {
         read: true,
       },

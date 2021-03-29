@@ -36,7 +36,7 @@ export class UserModel {
   }
 
   /**
-   * Find a user using the "users_by_email" index.
+   * Find a user using the "usersByEmail" index.
    *
    * Don't throw on failures because we want to auto-create users when they don't exist yet.
    *
@@ -44,7 +44,7 @@ export class UserModel {
    */
   async getUserByEmail(email: string): Promise<User | undefined> {
     return faunadbAdminClient?.query<User>(
-      Get(Match(Index('users_by_email'), email)),
+      Get(Match(Index('usersByEmail'), email)),
     ).catch(() => undefined);
   }
 
