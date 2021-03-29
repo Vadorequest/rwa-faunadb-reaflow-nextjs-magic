@@ -13,6 +13,7 @@ import BaseNodeData from '../types/BaseNodeData';
 import { BaseNodeDefaultProps } from '../types/BaseNodeDefaultProps';
 import BasePortData from '../types/BasePortData';
 import { CanvasDataset } from '../types/CanvasDataset';
+import { NewCanvasDatasetMutation } from '../types/CanvasDatasetMutation';
 import { GetBaseNodeDefaultProps } from '../types/GetBaseNodeDefaultProps';
 import NodeType from '../types/NodeType';
 import { createEdge } from './edges';
@@ -20,6 +21,13 @@ import {
   getDefaultFromPort,
   getDefaultToPort,
 } from './ports';
+
+export type AddNodeAndEdgeThroughPortsResult = {
+  nodeMutation: NewCanvasDatasetMutation,
+  edgeMutation: NewCanvasDatasetMutation | null
+};
+
+export type UpsertNodeThroughPortsResult = NewCanvasDatasetMutation[];
 
 /**
  * Creates a new node and returns it.
@@ -47,12 +55,18 @@ export const createNodeFromDefaultProps = (defaultProps: BaseNodeDefaultProps): 
   console.log('createNodeFromDefaultProps', defaultProps);
   const node = {
     text: undefined, // XXX Built-in Reaflow "text", unused in our case because we use complex components and we don't need it
-    width: defaultProps.defaultWidth,
-    height: defaultProps.defaultHeight,
+    width: defaultProps.baseWidth,
+    height: defaultProps.baseHeight,
     data: {
       type: defaultProps.type,
-      defaultWidth: defaultProps.defaultWidth,
-      defaultHeight: defaultProps.defaultHeight,
+      baseWidth: defaultProps.baseWidth,
+      baseHeight: defaultProps.baseHeight,
+      dynHeights: {
+        baseHeight: defaultProps.baseHeight,
+      },
+      dynWidths: {
+        baseWidth: defaultProps.baseWidth,
+      },
     },
     ports: defaultProps.ports || [],
   };
@@ -157,7 +171,7 @@ export const isNodeReachable = (node: BaseNodeData, edges: BaseEdgeData[]) => {
  *
  * Similar to reaflow.addNodeAndEdge utility.
  */
-export function addNodeAndEdgeThroughPorts(
+export const addNodeAndEdgeThroughPorts = (
   nodes: BaseNodeData[],
   edges: BaseEdgeData[],
   newNode: BaseNodeData,
@@ -165,7 +179,7 @@ export function addNodeAndEdgeThroughPorts(
   toNode?: BaseNodeData,
   fromPort?: BasePortData,
   toPort?: BasePortData,
-): CanvasDataset {
+): AddNodeAndEdgeThroughPortsResult => {
   // The default destination node is the newly created node
   toNode = toNode || newNode;
 
@@ -176,18 +190,28 @@ export function addNodeAndEdgeThroughPorts(
     getDefaultToPort(toNode, toPort),
   );
 
-  return {
-    nodes: [...nodes, newNode],
-    edges: [
-      ...edges,
-      ...(fromNode ?
-        [
-          newEdge,
-        ]
-        : []),
-    ],
+  const nodeMutation: NewCanvasDatasetMutation = {
+    operationType: 'add',
+    elementId: newNode?.id,
+    elementType: 'node',
+    changes: newNode,
   };
-}
+
+  let edgeMutation: NewCanvasDatasetMutation | null = null;
+  if (fromNode) {
+    edgeMutation = {
+      operationType: 'add',
+      elementId: newEdge?.id,
+      elementType: 'edge',
+      changes: newEdge,
+    };
+  }
+
+  return {
+    nodeMutation,
+    edgeMutation,
+  };
+};
 
 /**
  * Helper function for upserting a node in a edge (split the edge in 2 and put the node in between), and automatically link their ports.
@@ -197,13 +221,12 @@ export function addNodeAndEdgeThroughPorts(
  *
  * Similar to reaflow.upsertNode utility.
  */
-export function upsertNodeThroughPorts(
+export const upsertNodeThroughPorts = (
   nodes: BaseNodeData[],
   edges: BaseEdgeData[],
   edge: BaseEdgeData,
   newNode: BaseNodeData,
-): CanvasDataset {
-  const oldEdgeIndex = edges.findIndex(e => e.id === edge.id);
+): UpsertNodeThroughPortsResult => {
   const edgeBeforeNewNode = {
     ...edge,
     id: `${edge.from}-${newNode.id}`,
@@ -226,20 +249,49 @@ export function upsertNodeThroughPorts(
     edgeAfterNewNode.toPort = edge.toPort;
   }
 
-  edges.splice(oldEdgeIndex, 1, edgeBeforeNewNode, edgeAfterNewNode);
-
-  return {
-    nodes: [...nodes, newNode],
-    edges: [...edges],
+  const nodeMutation: NewCanvasDatasetMutation = {
+    operationType: 'add',
+    elementId: newNode?.id,
+    elementType: 'node',
+    changes: newNode,
   };
-}
+
+  const edgeBeforeNewNodeMutation: NewCanvasDatasetMutation = {
+    operationType: 'add',
+    elementId: edgeBeforeNewNode?.id,
+    elementType: 'edge',
+    changes: edgeBeforeNewNode,
+  };
+
+  const edgeAfterNewNodeMutation: NewCanvasDatasetMutation = {
+    operationType: 'add',
+    elementId: edgeAfterNewNode?.id,
+    elementType: 'edge',
+    changes: edgeAfterNewNode,
+  };
+
+  const oldEdgeMutation: NewCanvasDatasetMutation = {
+    operationType: 'delete',
+    elementId: edge?.id,
+    elementType: 'edge',
+  };
+
+  return [
+    nodeMutation,
+    edgeBeforeNewNodeMutation,
+    edgeAfterNewNodeMutation,
+    oldEdgeMutation,
+  ]
+};
 
 /**
  * Removes a node between two edges and merges the two edges into one, and automatically link their ports.
  *
  * Similar to reaflow.removeAndUpsertNodes utility.
+ *
+ * TODO should return mutations too, but I'm lazy (and it's unlikely that it'll ever cause concurrent updates conflicts anyway)
  */
-export function removeAndUpsertNodesThroughPorts(
+export const removeAndUpsertNodesThroughPorts = (
   nodes: BaseNodeData[],
   edges: BaseEdgeData[],
   removeNodes: BaseNodeData | BaseNodeData[],
@@ -250,7 +302,7 @@ export function removeAndUpsertNodesThroughPorts(
     to: BaseNodeData,
     port?: BasePortData,
   ) => undefined | boolean,
-): CanvasDataset {
+): CanvasDataset => {
   if (!Array.isArray(removeNodes)) {
     removeNodes = [removeNodes];
   }
@@ -300,4 +352,4 @@ export function removeAndUpsertNodesThroughPorts(
     edges: newEdges,
     nodes: newNodes,
   };
-}
+};

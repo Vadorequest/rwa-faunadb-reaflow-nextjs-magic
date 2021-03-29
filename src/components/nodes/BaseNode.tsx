@@ -1,7 +1,8 @@
 import { css } from '@emotion/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classnames from 'classnames';
-import cloneDeep from 'lodash.clonedeep';
+import includes from 'lodash.includes';
+import isEmpty from 'lodash.isempty';
 import remove from 'lodash.remove';
 import React, {
   KeyboardEventHandler,
@@ -15,21 +16,26 @@ import {
   Remove,
 } from 'reaflow';
 import { useRecoilState } from 'recoil';
+import { useDebouncedCallback } from 'use-debounce';
+import { Options as DebounceCallbackOptions } from 'use-debounce/lib/useDebouncedCallback';
 import settings from '../../settings';
 import { blockPickerMenuSelector } from '../../states/blockPickerMenuState';
 import { canvasDatasetSelector } from '../../states/canvasDatasetSelector';
 import { lastCreatedState } from '../../states/lastCreatedState';
 import { nodesSelector } from '../../states/nodesState';
 import { selectedNodesSelector } from '../../states/selectedNodesState';
+import BaseNodeAdditionalData from '../../types/BaseNodeAdditionalData';
 import BaseNodeComponent from '../../types/BaseNodeComponent';
 import BaseNodeData from '../../types/BaseNodeData';
 import { BaseNodeDefaultProps } from '../../types/BaseNodeDefaultProps';
 import BaseNodeProps, { PatchCurrentNode } from '../../types/BaseNodeProps';
 import BasePortData from '../../types/BasePortData';
 import { CanvasDataset } from '../../types/CanvasDataset';
+import { NewCanvasDatasetMutation } from '../../types/CanvasDatasetMutation';
 import { GetBaseNodeDefaultPropsProps } from '../../types/GetBaseNodeDefaultProps';
 import { SpecializedNodeProps } from '../../types/nodes/SpecializedNodeProps';
 import NodeType from '../../types/NodeType';
+import PartialBaseNodeData from '../../types/PartialBaseNodeData';
 import { isYoungerThan } from '../../utils/date';
 import {
   cloneNode,
@@ -43,10 +49,14 @@ import BasePortChild from '../ports/BasePortChild';
 type Props = BaseNodeProps & {
   hasCloneAction?: boolean;
   hasDeleteAction?: boolean;
+  baseWidth: number;
+  baseHeight: number;
+  patchCurrentNodeWait?: number;
+  patchCurrentNodeOptions?: DebounceCallbackOptions;
 };
 
-const fallbackDefaultWidth = 200;
-const fallbackDefaultHeight = 100;
+const fallbackBaseWidth = 200;
+const fallbackBaseHeight = 100;
 
 /**
  * Base node component.
@@ -71,6 +81,11 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
     node, // Don't forward, not expected
     hasCloneAction = true, // Don't forward, not expected
     hasDeleteAction = true, // Don't forward, not expected
+    baseWidth,
+    baseHeight,
+    patchCurrentNodeWait,
+    patchCurrentNodeOptions,
+    queueCanvasDatasetMutation,
     ...nodeProps // All props that are left will be forwarded to the Node component
   } = props;
 
@@ -93,6 +108,25 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
   const [isRecentlyCreated, setIsRecentlyCreated] = useState<boolean>(isYoungerThan(lastCreatedAt, recentlyCreatedMaxAge));
 
   /**
+   * Debounces the patchCurrentNode function.
+   *
+   * By debouncing "patchCurrentNode", it ensures all call to "patchCurrentNode" will not trigger burst of database updates.
+   * It's a safer default behavior, because we usually care only about the last update, not all those in between.
+   *
+   * This is very convenient when updating input's values and such, and help keeping good app's performances and reduces cost.
+   *
+   * The default behavior is to wait for 1sec and there is no timeout.
+   * You can override the default behavior for each specialized Node component.
+   */
+  const debouncedPatchCurrentNode = useDebouncedCallback(
+    (patch: PartialBaseNodeData) => {
+      patchCurrentNode(patch);
+    },
+    patchCurrentNodeWait || settings.canvas.nodes.defaultDebounceWaitFor, // Wait for other changes to happen, if no change happen then invoke the update
+    patchCurrentNodeOptions || {},
+  );
+
+  /**
    * Stops the highlight of the last created node when the node's age has reached max age.
    */
   useEffect(() => {
@@ -104,37 +138,68 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
   }, []);
 
   /**
-   * Path the properties of the current node.
+   * Update the node's base width/height in the event the Node component base width/height would have changed.
+   */
+  useEffect(() => {
+    const patchData: Partial<BaseNodeAdditionalData> = {};
+    const patch: PartialBaseNodeData = {
+      data: patchData,
+    };
+
+    if (node?.data?.dynHeights?.baseHeight !== baseHeight) {
+      patchData.dynHeights = {
+        baseHeight: baseHeight,
+      };
+
+      if (node?.data?.dynHeights?.baseHeight && node?.height) {
+        const heightDiff = node?.data?.dynHeights?.baseHeight - baseHeight;
+        patch.height = node?.height - heightDiff;
+      }
+    }
+
+    if (node?.data?.dynWidths?.baseWidth !== baseWidth) {
+      patchData.dynWidths = {
+        baseWidth: baseWidth,
+      };
+
+      if (node?.data?.dynWidths?.baseWidth && node?.width) {
+        const widthDiff = node?.data?.dynWidths?.baseWidth - baseWidth;
+        patch.width = node?.width - widthDiff;
+      }
+    }
+
+    if (!isEmpty(patchData)) {
+      console.log(`Current node's base width/height doesn't match component's own base width/height. Updating the current node with patch:`, patchData);
+      patchCurrentNode(patch);
+    }
+  }, [
+    baseHeight,
+    baseWidth,
+    node?.height,
+    node?.width,
+    node?.data?.dynHeights?.baseHeight,
+    node?.data?.dynWidths?.baseWidth,
+  ]);
+
+  /**
+   * Patches the properties of the current node.
    *
    * Only updates the provided properties, doesn't update other properties.
-   * Also merges the 'data' object, by keeping existing data and only overwriting those that are specified.
-   *
-   * XXX Make sure to call this function once per function call, otherwise only the last patch call would be persisted correctly
-   *  (multiple calls within the same function would be overridden by the last patch,
-   *  because the "node" used as reference wouldn't be updated right away and would still use the same (outdated) reference)
-   *  TLDR; Don't use "patchCurrentNode" multiple times in the same function, it won't work as expected
+   * Will use deep merge of properties.
    *
    * @param patch
+   * @param stateUpdateDelay (ms)
    */
-  const patchCurrentNode: PatchCurrentNode = (patch: Partial<BaseNodeData>): void => {
-    const nodeToUpdateIndex = nodes.findIndex((node: BaseNodeData) => node.id === nodeProps.id);
-    const existingNode: BaseNodeData = nodes[nodeToUpdateIndex];
-    const nodeToUpdate = {
-      ...existingNode,
-      ...patch,
-      data: {
-        ...existingNode.data || {},
-        ...patch.data || {},
-      },
-      id: existingNode.id, // Force keep same id to avoid edge cases
+  const patchCurrentNode: PatchCurrentNode = (patch: PartialBaseNodeData, stateUpdateDelay = 0): void => {
+    const mutation: NewCanvasDatasetMutation = {
+      operationType: 'patch',
+      elementId: node?.id,
+      elementType: 'node',
+      changes: patch,
     };
-    console.log('patchCurrentNode before', existingNode, 'after:', nodeToUpdate, 'using patch:', patch);
 
-    const newNodes = cloneDeep(nodes);
-    // @ts-ignore
-    newNodes[nodeToUpdateIndex] = nodeToUpdate;
-
-    setNodes(newNodes);
+    console.log('Adding node patch to the queue', 'patch:', patch, 'mutation:', mutation);
+    queueCanvasDatasetMutation(mutation, stateUpdateDelay);
   };
 
   /**
@@ -144,12 +209,15 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
    */
   const onNodeClone = (event: React.MouseEvent<SVGGElement, MouseEvent>) => {
     const clonedNode: BaseNodeData = cloneNode(node);
-    console.log('clonedNode', clonedNode, nodes);
+    const mutation: NewCanvasDatasetMutation = {
+      operationType: 'add',
+      elementId: node?.id,
+      elementType: 'node',
+      changes: clonedNode,
+    };
+    console.log('Adding patch to the queue', 'node:', clonedNode, 'mutation:', mutation);
 
-    setNodes([
-      ...nodes,
-      clonedNode,
-    ]);
+    queueCanvasDatasetMutation(mutation);
   };
 
   /**
@@ -189,7 +257,10 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
    */
   const onNodeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>) => {
     console.log(`node clicked (${node?.data?.type})`, 'node:', node);
-    setSelectedNodes([node.id]);
+    // Don't select nodes that are already selected
+    if (!includes(selectedNodes, node?.id)) {
+      setSelectedNodes([node.id]);
+    }
   };
 
   /**
@@ -258,7 +329,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
       {...nodeProps}
       style={{
         strokeWidth: 0,
-        fill: isReachable ? 'white' : 'lightgray',
+        fill: isReachable ? 'white' : '#eaeaea',
         color: 'black',
         cursor: 'auto',
       }}
@@ -279,6 +350,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
             isNodeReachable: isReachable,
           }}
           PortChildComponent={BasePortChild}
+          queueCanvasDatasetMutation={queueCanvasDatasetMutation}
         />
       )}
     >
@@ -301,6 +373,8 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
             isReachable,
             lastCreated,
             patchCurrentNode,
+            patchCurrentNodeImmediately: patchCurrentNode,
+            queueCanvasDatasetMutation,
           };
 
           return (
@@ -317,15 +391,32 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
               // y={0} // Relative position from the parent Node component (aligned to left)
               css={css`
                 position: relative;
+                border: ${settings.canvas.nodes.borderWidth}px solid transparent;
 
                 // Highlights the node when it's being selected
                 &.is-selected {
-                  border: 1px dashed ${settings.canvas.nodes.selected.borderColor};
+                  border: ${settings.canvas.nodes.borderWidth}px solid ${isReachable ? settings.canvas.nodes.selected.borderColor : 'orange'};
+                  border-radius: 2px;
                 }
 
                 // Highlights the node when it's the last created node
                 &.is-recently-created {
-                  box-shadow: 0px 0px 10px 0px blue;
+                  animation: fadeIn ease-in-out 1.3s;
+
+                  @keyframes fadeIn {
+                    0% {
+                      opacity: 0;
+                      box-shadow: 0px 5px 15px rgba(0, 40, 255, 1);
+                    }
+                    35% {
+                      opacity: 0;
+                      box-shadow: 0px 5px 15px rgba(0, 40, 255, 1);
+                    }
+                    100% {
+                      opacity: 1;
+                      box-shadow: 0px 5px 15px rgba(0, 40, 255, 0);
+                    }
+                  }
                 }
 
                 // Disabling pointer-events on top-level containers, for events to be forwarded to the underlying <rect>
@@ -366,7 +457,9 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                 // Applied to all textarea for all nodes
                 .textarea {
                   margin-top: 15px;
-                  background-color: #eaeaea;
+                  background-color: #F1F3FF;
+                  border: ${settings.canvas.nodes.textarea.borderWidth}px solid lightgrey;
+                  border-radius: 5px;
                 }
               `}
               // Use the same onClick/onMouseEnter/onMouseLeave handlers as the one used by the Node component, to yield the same behavior whether clicking on the <rect> or on the <foreignObject> element
@@ -394,6 +487,10 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
 
                     .node-action {
                       cursor: pointer;
+
+                      .svg-inline--fa {
+                        margin-right: 5px;
+                      }
                     }
                   `}
                 >
@@ -403,7 +500,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                         className={'node-action delete-action'}
                         onClick={onNodeClone as MouseEventHandler}
                       >
-                        <FontAwesomeIcon icon={['fas', 'clone']} />
+                        <FontAwesomeIcon color="#0028FF" icon={['fas', 'clone']} />
                       </div>
                     )
                   }
@@ -414,7 +511,7 @@ const BaseNode: BaseNodeComponent<Props> = (props) => {
                         className={'node-action delete-action'}
                         onClick={onNodeRemove as MouseEventHandler}
                       >
-                        <FontAwesomeIcon icon={['fas', 'trash-alt']} />
+                        <FontAwesomeIcon color="#F9694A" icon={['fas', 'trash-alt']} />
                       </div>
                     )
                   }
@@ -469,12 +566,12 @@ BaseNode.getDefaultPorts = (): BasePortData[] => {
  * @param props
  */
 BaseNode.getDefaultNodeProps = (props: GetBaseNodeDefaultPropsProps): BaseNodeDefaultProps => {
-  const { type, defaultHeight, defaultWidth } = props;
+  const { type, baseHeight, baseWidth } = props;
 
   return {
     type,
-    defaultWidth: defaultWidth || fallbackDefaultWidth,
-    defaultHeight: defaultHeight || fallbackDefaultHeight,
+    baseWidth: baseWidth || fallbackBaseWidth,
+    baseHeight: baseHeight || fallbackBaseHeight,
     // @ts-ignore
     ports: BaseNode.getDefaultPorts(),
     // nodePadding: 10 // TODO try it (left/top/bottom/right)

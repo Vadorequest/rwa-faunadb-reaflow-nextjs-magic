@@ -8,7 +8,7 @@ import NodeType from './NodeType';
  */
 export type BaseNodeDefaultProps = {
   type: NodeType;
-  defaultWidth: number;
-  defaultHeight: number;
+  baseWidth: number;
+  baseHeight: number;
   ports: BasePortData[];
 }

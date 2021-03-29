@@ -1,6 +1,7 @@
 import React from 'react';
 import BaseBlockComponent from '../../types/BaseBlockComponent';
 import { OnBlockClick } from '../../types/BlockPickerMenu';
+import { Button } from '@chakra-ui/button';
 
 type Props = {
   onBlockClick: OnBlockClick;
@@ -19,11 +20,12 @@ const InformationBlock: BaseBlockComponent<Props> = (props) => {
   };
 
   return (
-    <div
+    <Button
+      variant="tertiary"
       onClick={onClick}
     >
       Information
-    </div>
+    </Button>
   );
 };
 

@@ -1,16 +1,18 @@
-import Iron from '@hapi/iron';
-import { MagicUserMetadata } from '@magic-sdk/admin';
 import {
   NextApiRequest,
   NextApiResponse,
 } from 'next';
 import { UserSession } from '../../types/auth/UserSession';
+import { UserMetadataWithAuth } from '../../types/UserMetadataWithAuth';
 import {
   getTokenCookie,
   MAX_AGE,
   setTokenCookie,
 } from './authCookies';
-import { decryptToken, encryptData } from './crypto';
+import {
+  decryptToken,
+  encryptData,
+} from './crypto';
 
 type EndpointRequest = NextApiRequest & {
   query: {};
@@ -24,14 +26,16 @@ type EndpointRequest = NextApiRequest & {
  * @param res
  * @param userMetadata
  */
-export const setUserSession = async (res: NextApiResponse, userMetadata: MagicUserMetadata): Promise<void> => {
+export const setUserSession = async (res: NextApiResponse, userMetadata: UserMetadataWithAuth): Promise<void> => {
   const createdAt = Date.now();
 
   // Create a session object with a max age that we can validate later
-  const userSession: UserSession = {
+  // "sessionEphemeralId" and "isSessionReady" are being omitted because they're set on the client, not on the server
+  const userSession: Omit<UserSession, 'sessionEphemeralId' | 'isSessionReady'> = {
     ...userMetadata,
     createdAt,
     maxAge: MAX_AGE,
+    isAuthenticated: true,
   };
   const token: string = await encryptData(userSession);
 

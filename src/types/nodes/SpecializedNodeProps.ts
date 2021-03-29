@@ -1,6 +1,7 @@
 import { NodeChildProps } from 'reaflow';
 import BaseNodeData from '../BaseNodeData';
 import { PatchCurrentNode } from '../BaseNodeProps';
+import { QueueCanvasDatasetMutation } from '../CanvasDatasetMutation';
 import { LastCreated } from '../LastCreated';
 
 /**
@@ -15,12 +16,20 @@ export type SpecializedNodeProps<NodeData extends BaseNodeData = BaseNodeData> =
   /**
    * Path the properties of the current node.
    *
-   * Only updates the provided properties, doesn't update other properties.
-   * Also merges the 'data' object, by keeping existing data and only overwriting those that are specified.
+   * Only updates the provided properties (deep merge), doesn't update other properties.
    *
    * @param nodeData
    */
   patchCurrentNode: PatchCurrentNode<Partial<NodeData>>;
+
+  /**
+   * Identical to patchCurrentNode, but isn't being debounced and will execute immediately.
+   *
+   * "patchCurrentNode" is a better option for anything that might happen in a burst (e.g: text input "onChange" event).
+   *
+   * @param nodeData
+   */
+  patchCurrentNodeImmediately: PatchCurrentNode<Partial<NodeData>>;
 
   /**
    * The last created node and its time of creation.
@@ -37,4 +46,10 @@ export type SpecializedNodeProps<NodeData extends BaseNodeData = BaseNodeData> =
    * Whether the node can be reached.
    */
   isReachable: boolean;
+
+  /**
+   * Adds a new patch to apply to the existing queue.
+   */
+  queueCanvasDatasetMutation: QueueCanvasDatasetMutation;
+
 }

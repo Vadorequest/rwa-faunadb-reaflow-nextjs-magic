@@ -10,12 +10,12 @@ import { css } from '@emotion/react';
 import React, { Fragment } from 'react';
 import settings from '../settings';
 import AuthFormModal from './AuthFormModal';
-import { useUser } from './hooks/useUser';
+import { useUserSession } from '../hooks/useUserSession';
 
 type Props = {}
 
 const Nav: React.FunctionComponent<Props> = (props) => {
-  const user = useUser();
+  const user = useUserSession();
 
   return (
     <header
@@ -34,7 +34,7 @@ const Nav: React.FunctionComponent<Props> = (props) => {
         <Flex>
           <Box p="2">
             {
-              user ? (
+              user?.isAuthenticated ? (
                 <Fragment>
                   Welcome <b>{user?.email}</b>! You are working on a shared document<i>, even though you have your own account</i>.
                 </Fragment>
@@ -50,7 +50,7 @@ const Nav: React.FunctionComponent<Props> = (props) => {
 
           <Box p="2">
             {
-              user ? (
+              user?.isAuthenticated ? (
                 <a href="/api/logout">
                   <Button>Logout</Button>
                 </a>

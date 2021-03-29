@@ -37,7 +37,6 @@ export const mouseEnteredSelector = selector<MouseEntered>({
    * @param newValue
    */
   set: ({ set, get, reset }, newValue): void => {
-    console.log('mouseEnteredSelector set', newValue);
     set(mouseEnteredState, newValue);
   },
 });

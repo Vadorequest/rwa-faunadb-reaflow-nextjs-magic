@@ -28,7 +28,6 @@ export const selectedNodesSelector = selector<string[]>({
    * @param newValue
    */
   set: ({ set, get, reset }, newValue): void => {
-    console.log('selectedNodesSelector set', newValue);
     set(selectedNodesState, newValue);
   },
 });
