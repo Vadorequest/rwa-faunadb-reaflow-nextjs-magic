@@ -101,7 +101,7 @@ const Nav: React.FunctionComponent<Props> = (props) => {
                               // Update local cache immediately (while disabling revalidation to avoid fetching)
                               mutateLocalUserActiveProjectLabel(userSession as UserSession, label);
 
-                              // Update the project in the DB, if this fails it'll be caught
+                              // Update the project in the DB, if this fails the error will be caught
                               const updatedProject = await userModel.updateProjectLabel(userSession as UserSession, userSession?.activeProject?.id as string, label);
 
                               toast({
@@ -143,8 +143,11 @@ const Nav: React.FunctionComponent<Props> = (props) => {
                               // Update local cache immediately (while disabling revalidation to avoid fetching)
                               // mutateLocalUserActiveProjectLabel(userSession as UserSession, label);
 
-                              // Create the project in the DB, if this fails it'll be caught
+                              // Create the project in the DB, if this fails the error will be caught
                               const { project: createdProject } = await userModel.createProjectWithCanvas(userSession as UserSession, label);
+
+                              // Change the active project
+                              localStorage.setItem('activeProjectId', createdProject?.id);
 
                               toast({
                                 title: `Project created`,
@@ -179,7 +182,8 @@ const Nav: React.FunctionComponent<Props> = (props) => {
                         value={projectAsReactSelectOptions?.find((option: ReactSelectDefaultOption) => option?.value === userSession?.activeProject?.id)}
                         options={projectAsReactSelectOptions}
                         onChange={((selectedOption: ReactSelectDefaultOption) => {
-                          console.log('selectedOption', selectedOption);
+                          // Change the active project
+                          localStorage.setItem('activeProjectId', selectedOption?.value);
                         }) as any}
                       />
                     )
