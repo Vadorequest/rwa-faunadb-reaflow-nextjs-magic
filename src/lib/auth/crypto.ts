@@ -1,9 +1,12 @@
-import Iron from '@hapi/iron'
+import Iron from '@hapi/iron';
+import { isBrowser } from '@unly/utils';
 
 const CRYPTO_TOKEN_SECRET = process.env.CRYPTO_TOKEN_SECRET as string;
 
-if (!CRYPTO_TOKEN_SECRET || CRYPTO_TOKEN_SECRET?.length < 32) {
-  throw new Error(`You must define a "CRYPTO_TOKEN_SECRET" environment variable of at least 32 characters in order to use authentication. Found "${CRYPTO_TOKEN_SECRET}".`);
+if (!isBrowser()) {
+  if (!CRYPTO_TOKEN_SECRET || CRYPTO_TOKEN_SECRET?.length < 32) {
+    throw new Error(`You must define a "CRYPTO_TOKEN_SECRET" environment variable of at least 32 characters in order to use authentication. Found "${CRYPTO_TOKEN_SECRET}".`);
+  }
 }
 
 /**
