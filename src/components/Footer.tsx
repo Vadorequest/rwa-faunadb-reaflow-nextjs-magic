@@ -1,10 +1,6 @@
-import {
-  ExternalLinkIcon,
-  QuestionOutlineIcon,
-} from '@chakra-ui/icons';
+import { ExternalLinkIcon } from '@chakra-ui/icons';
 import {
   Box,
-  Button,
   Flex,
   Link as ChakraLink,
   Spacer,
