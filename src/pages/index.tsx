@@ -44,7 +44,7 @@ const IndexPage: NextPage<Props> = (props): JSX.Element => {
             {/* Only renders the page on the browser because it's not server-side compatible */}
             <DisplayOnBrowserMount>
               <EditorContainer />
-            </DisplayOnBrowserMount>;
+            </DisplayOnBrowserMount>
           </Layout>
         )
       }
