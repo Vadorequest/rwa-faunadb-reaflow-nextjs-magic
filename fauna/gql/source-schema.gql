@@ -40,7 +40,7 @@ type User @collection(
 ){
     id: ID!
     email: String! @unique(
-        index: "user_by_email"
+        index: "userByEmail"
     )
     projects: [Project] @relation(
         name: "userProjects"
